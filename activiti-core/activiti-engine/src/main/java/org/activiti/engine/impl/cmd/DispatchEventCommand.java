@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.ActivitiException;
@@ -29,25 +28,24 @@ import org.activiti.engine.impl.interceptor.CommandContext;
  */
 public class DispatchEventCommand implements Command<Void> {
 
-  protected ActivitiEvent event;
+    protected ActivitiEvent event;
 
-  public DispatchEventCommand(ActivitiEvent event) {
-    this.event = event;
-  }
-
-  @Override
-  public Void execute(CommandContext commandContext) {
-    if (event == null) {
-      throw new ActivitiIllegalArgumentException("event is null");
+    public DispatchEventCommand(ActivitiEvent event) {
+        this.event = event;
     }
 
-    if (commandContext.getEventDispatcher().isEnabled()) {
-      commandContext.getEventDispatcher().dispatchEvent(event);
-    } else {
-      throw new ActivitiException("Message dispatcher is disabled, cannot dispatch event");
+    @Override
+    public Void execute(CommandContext commandContext) {
+        if (event == null) {
+            throw new ActivitiIllegalArgumentException("event is null");
+        }
+
+        if (commandContext.getEventDispatcher().isEnabled()) {
+            commandContext.getEventDispatcher().dispatchEvent(event);
+        } else {
+            throw new ActivitiException("Message dispatcher is disabled, cannot dispatch event");
+        }
+
+        return null;
     }
-
-    return null;
-  }
-
 }

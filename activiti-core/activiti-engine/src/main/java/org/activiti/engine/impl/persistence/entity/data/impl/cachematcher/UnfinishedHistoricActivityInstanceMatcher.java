@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,28 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.persistence.entity.data.impl.cachematcher;
 
 import java.util.Map;
-
 import org.activiti.engine.impl.persistence.CachedEntityMatcherAdapter;
 import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntity;
 
 /**
 
  */
-public class UnfinishedHistoricActivityInstanceMatcher extends CachedEntityMatcherAdapter<HistoricActivityInstanceEntity> {
+public class UnfinishedHistoricActivityInstanceMatcher
+    extends CachedEntityMatcherAdapter<HistoricActivityInstanceEntity> {
 
-  @Override
-  public boolean isRetained(HistoricActivityInstanceEntity entity, Object parameter) {
-    Map<String, String> paramMap = (Map<String, String>) parameter;
-    String executionId = paramMap.get("executionId");
-    String activityId = paramMap.get("activityId");
+    @Override
+    public boolean isRetained(HistoricActivityInstanceEntity entity, Object parameter) {
+        Map<String, String> paramMap = (Map<String, String>) parameter;
+        String executionId = paramMap.get("executionId");
+        String activityId = paramMap.get("activityId");
 
-    return entity.getExecutionId() != null && entity.getExecutionId().equals(executionId)
-        && entity.getActivityId() != null && entity.getActivityId().equals(activityId)
-        && entity.getEndTime() == null;
-  }
-
+        return (
+            entity.getExecutionId() != null &&
+            entity.getExecutionId().equals(executionId) &&
+            entity.getActivityId() != null &&
+            entity.getActivityId().equals(activityId) &&
+            entity.getEndTime() == null
+        );
+    }
 }

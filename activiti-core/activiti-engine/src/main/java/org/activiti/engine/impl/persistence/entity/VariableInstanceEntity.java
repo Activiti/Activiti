@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.persistence.entity;
 
 import org.activiti.engine.api.internal.Internal;
@@ -26,18 +25,17 @@ import org.activiti.engine.impl.variable.VariableType;
  */
 @Internal
 public interface VariableInstanceEntity extends VariableInstance {
+    void setDeleted(boolean isDeleted);
 
-  void setDeleted(boolean isDeleted);
+    boolean isDeleted();
 
-  boolean isDeleted();
+    void setExecution(ExecutionEntity execution);
 
-  void setExecution(ExecutionEntity execution);
+    void forceUpdate();
 
-  void forceUpdate();
+    ByteArrayRef getByteArrayRef();
 
-  ByteArrayRef getByteArrayRef();
+    VariableType getType();
 
-  VariableType getType();
-
-  void setType(VariableType type);
+    void setType(VariableType type);
 }

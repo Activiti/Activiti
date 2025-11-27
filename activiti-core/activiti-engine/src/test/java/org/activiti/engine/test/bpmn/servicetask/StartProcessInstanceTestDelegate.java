@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.test.bpmn.servicetask;
 
 import org.activiti.engine.RuntimeService;
@@ -26,9 +25,8 @@ import org.activiti.engine.impl.context.Context;
  */
 public class StartProcessInstanceTestDelegate implements JavaDelegate {
 
-  public void execute(DelegateExecution execution) {
-    RuntimeService runtimeService = Context.getProcessEngineConfiguration().getRuntimeService();
-    runtimeService.startProcessInstanceByKey("oneTaskProcess");
-  }
-
+    public void execute(DelegateExecution execution) {
+        RuntimeService runtimeService = Context.getProcessEngineConfiguration().getRuntimeService();
+        runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    }
 }

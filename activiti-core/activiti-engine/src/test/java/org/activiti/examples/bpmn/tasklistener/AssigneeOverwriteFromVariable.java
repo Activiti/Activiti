@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.examples.bpmn.tasklistener;
 
 import java.util.Map;
-
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
@@ -27,20 +25,19 @@ import org.activiti.engine.delegate.TaskListener;
  */
 public class AssigneeOverwriteFromVariable implements TaskListener {
 
-  @SuppressWarnings("unchecked")
-  public void notify(DelegateTask delegateTask) {
-    // get mapping table from variable
-    DelegateExecution execution = delegateTask.getExecution();
-    Map<String, String> assigneeMappingTable = (Map<String, String>) execution.getVariable("assigneeMappingTable");
+    @SuppressWarnings("unchecked")
+    public void notify(DelegateTask delegateTask) {
+        // get mapping table from variable
+        DelegateExecution execution = delegateTask.getExecution();
+        Map<String, String> assigneeMappingTable = (Map<String, String>) execution.getVariable("assigneeMappingTable");
 
-    // get assignee from process
-    String assigneeFromProcessDefinition = delegateTask.getAssignee();
+        // get assignee from process
+        String assigneeFromProcessDefinition = delegateTask.getAssignee();
 
-    // overwrite assignee if there is an entry in the mapping table
-    if (assigneeMappingTable.containsKey(assigneeFromProcessDefinition)) {
-      String assigneeFromMappingTable = assigneeMappingTable.get(assigneeFromProcessDefinition);
-      delegateTask.setAssignee(assigneeFromMappingTable);
+        // overwrite assignee if there is an entry in the mapping table
+        if (assigneeMappingTable.containsKey(assigneeFromProcessDefinition)) {
+            String assigneeFromMappingTable = assigneeMappingTable.get(assigneeFromProcessDefinition);
+            delegateTask.setAssignee(assigneeFromMappingTable);
+        }
     }
-  }
-
 }

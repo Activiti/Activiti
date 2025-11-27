@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import org.apache.batik.svggen.SVGGraphics2D;
 import org.w3c.dom.Element;
 
 public class LinkCatchIconType extends IconType {
+
     @Override
     public String getFillValue() {
         return "none";
@@ -35,30 +36,20 @@ public class LinkCatchIconType extends IconType {
         return "m 3 3 l 0 0 m 8 8 l 8 0 l 0 -2 l 4 4 l -4 4 l 0 -2 l -8 0 l 0 -4 z";
     }
 
-    public void drawIcon(final int imageX,
-                         final int imageY,
-                         final int iconPadding,
-                         final ProcessDiagramSVGGraphics2D svgGenerator) {
-        Element gTag = svgGenerator.getDOMFactory().createElementNS(null,
-            SVGGraphics2D.SVG_G_TAG);
-        gTag.setAttributeNS(null,
-            "transform",
-            "translate(" + (imageX - 7) + "," + (imageY - 7) + ")");
+    public void drawIcon(
+        final int imageX,
+        final int imageY,
+        final int iconPadding,
+        final ProcessDiagramSVGGraphics2D svgGenerator
+    ) {
+        Element gTag = svgGenerator.getDOMFactory().createElementNS(null, SVGGraphics2D.SVG_G_TAG);
+        gTag.setAttributeNS(null, "transform", "translate(" + (imageX - 7) + "," + (imageY - 7) + ")");
 
-        Element pathTag = svgGenerator.getDOMFactory().createElementNS(null,
-            SVGGraphics2D.SVG_PATH_TAG);
-        pathTag.setAttributeNS(null,
-            "d",
-            this.getDValue());
-        pathTag.setAttributeNS(null,
-            "style",
-            this.getStyleValue());
-        pathTag.setAttributeNS(null,
-            "fill",
-            this.getFillValue());
-        pathTag.setAttributeNS(null,
-            "stroke",
-            this.getStrokeValue());
+        Element pathTag = svgGenerator.getDOMFactory().createElementNS(null, SVGGraphics2D.SVG_PATH_TAG);
+        pathTag.setAttributeNS(null, "d", this.getDValue());
+        pathTag.setAttributeNS(null, "style", this.getStyleValue());
+        pathTag.setAttributeNS(null, "fill", this.getFillValue());
+        pathTag.setAttributeNS(null, "stroke", this.getStrokeValue());
 
         gTag.appendChild(pathTag);
         svgGenerator.getExtendDOMGroupManager().addElement(gTag);

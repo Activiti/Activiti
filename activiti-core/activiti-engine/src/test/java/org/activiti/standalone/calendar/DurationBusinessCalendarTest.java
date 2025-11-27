@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.standalone.calendar;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
 import org.activiti.engine.impl.test.AbstractTestCase;
 import org.activiti.engine.impl.util.DefaultClockImpl;
@@ -32,19 +29,18 @@ import org.activiti.engine.runtime.Clock;
  */
 public class DurationBusinessCalendarTest extends AbstractTestCase {
 
-  public void testSimpleDuration() throws Exception {
-    Clock testingClock = new DefaultClockImpl();
-    DurationBusinessCalendar businessCalendar = new DurationBusinessCalendar(testingClock);
+    public void testSimpleDuration() throws Exception {
+        Clock testingClock = new DefaultClockImpl();
+        DurationBusinessCalendar businessCalendar = new DurationBusinessCalendar(testingClock);
 
-    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy MM dd - HH:mm");
-    Date now = simpleDateFormat.parse("2010 06 11 - 17:23");
-    testingClock.setCurrentTime(now);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy MM dd - HH:mm");
+        Date now = simpleDateFormat.parse("2010 06 11 - 17:23");
+        testingClock.setCurrentTime(now);
 
-    Date duedate = businessCalendar.resolveDuedate("P2DT5H70M");
+        Date duedate = businessCalendar.resolveDuedate("P2DT5H70M");
 
-    Date expectedDuedate = simpleDateFormat.parse("2010 06 13 - 23:33");
+        Date expectedDuedate = simpleDateFormat.parse("2010 06 13 - 23:33");
 
-    assertThat(duedate).isEqualTo(expectedDuedate);
-  }
-
+        assertThat(duedate).isEqualTo(expectedDuedate);
+    }
 }

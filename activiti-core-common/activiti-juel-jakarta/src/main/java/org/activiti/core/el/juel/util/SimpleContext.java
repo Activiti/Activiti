@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.core.el.juel.util;
 
 import jakarta.el.ELContext;
@@ -42,11 +41,7 @@ public class SimpleContext extends ELContext {
             return map.get(prefix + ":" + localName);
         }
 
-        public void setFunction(
-            String prefix,
-            String localName,
-            Method method
-        ) {
+        public void setFunction(String prefix, String localName, Method method) {
             if (map.isEmpty()) {
                 map = new HashMap<String, Method>();
             }
@@ -64,10 +59,7 @@ public class SimpleContext extends ELContext {
         }
 
         @Override
-        public ValueExpression setVariable(
-            String variable,
-            ValueExpression expression
-        ) {
+        public ValueExpression setVariable(String variable, ValueExpression expression) {
             if (map.isEmpty()) {
                 map = new HashMap<String, ValueExpression>();
             }
@@ -106,10 +98,7 @@ public class SimpleContext extends ELContext {
     /**
      * Define a variable.
      */
-    public ValueExpression setVariable(
-        String name,
-        ValueExpression expression
-    ) {
+    public ValueExpression setVariable(String name, ValueExpression expression) {
         if (variables == null) {
             variables = new Variables();
         }

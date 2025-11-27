@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.spring.test.executionListener;
 
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.ProcessEngine;
@@ -30,20 +28,29 @@ import org.activiti.engine.impl.history.HistoryLevel;
 /**
 
  */
-public class MyTransactionalOperationTransactionDependentExecutionListener extends CurrentActivityTransactionDependentExecutionListener {
+public class MyTransactionalOperationTransactionDependentExecutionListener
+    extends CurrentActivityTransactionDependentExecutionListener {
 
-  @Override
-  public void notify(String processInstanceId, String executionId, FlowElement currentFlowElement,
-                     Map<String, Object> executionVariables, Map<String, Object> customPropertiesMap) {
+    @Override
+    public void notify(
+        String processInstanceId,
+        String executionId,
+        FlowElement currentFlowElement,
+        Map<String, Object> executionVariables,
+        Map<String, Object> customPropertiesMap
+    ) {
+        super.notify(processInstanceId, executionId, currentFlowElement, executionVariables, customPropertiesMap);
 
-    super.notify(processInstanceId, executionId, currentFlowElement, executionVariables, customPropertiesMap);
+        if (Context.getProcessEngineConfiguration().getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+            HistoryService historyService = Context.getProcessEngineConfiguration().getHistoryService();
 
-    if (Context.getProcessEngineConfiguration().getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
-      HistoryService historyService = Context.getProcessEngineConfiguration().getHistoryService();
-
-      // delete first historic instance
-      List<HistoricProcessInstance> historicProcessInstances = historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceStartTime().asc().list();
-      historyService.deleteHistoricProcessInstance(historicProcessInstances.get(0).getId());
+            // delete first historic instance
+            List<HistoricProcessInstance> historicProcessInstances = historyService
+                .createHistoricProcessInstanceQuery()
+                .orderByProcessInstanceStartTime()
+                .asc()
+                .list();
+            historyService.deleteHistoricProcessInstance(historicProcessInstances.get(0).getId());
+        }
     }
-  }
 }

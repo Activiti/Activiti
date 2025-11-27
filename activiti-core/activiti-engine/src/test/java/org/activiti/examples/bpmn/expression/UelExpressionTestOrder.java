@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.examples.bpmn.expression;
 
 import java.io.Serializable;
@@ -26,24 +24,23 @@ import java.io.Serializable;
  */
 public class UelExpressionTestOrder implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected int price;
+    protected int price;
 
-  public UelExpressionTestOrder(int price) {
-    this.price = price;
-  }
+    public UelExpressionTestOrder(int price) {
+        this.price = price;
+    }
 
-  public void setPrice(int price) {
-    this.price = price;
-  }
+    public void setPrice(int price) {
+        this.price = price;
+    }
 
-  public int getPrice() {
-    return price;
-  }
+    public int getPrice() {
+        return price;
+    }
 
-  public boolean isPremiumOrder() {
-    return price >= 250;
-  }
-
+    public boolean isPremiumOrder() {
+        return price >= 250;
+    }
 }

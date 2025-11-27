@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,10 +40,10 @@ public class DeploymentResourceLoaderTest {
         Resource resource = new ClassPathResource("file-selected.txt");
 
         RepositoryService service = Mockito.mock(RepositoryService.class);
-        Mockito.when(service.getDeploymentResourceNames("123456"))
-                .thenReturn(names);
-        Mockito.when(service.getResourceAsStream("123456", "classpath:file-selected.txt"))
-                .thenReturn(resource.getInputStream());
+        Mockito.when(service.getDeploymentResourceNames("123456")).thenReturn(names);
+        Mockito.when(service.getResourceAsStream("123456", "classpath:file-selected.txt")).thenReturn(
+            resource.getInputStream()
+        );
 
         DeploymentResourceLoader deploymentResourceLoader = new DeploymentResourceLoader<String>();
         deploymentResourceLoader.setRepositoryService(service);
@@ -52,7 +52,6 @@ public class DeploymentResourceLoaderTest {
             @Override
             public Predicate<String> getResourceNameSelector() {
                 return resourceName -> resourceName.endsWith("-selected.txt");
-
             }
 
             @Override
@@ -65,9 +64,6 @@ public class DeploymentResourceLoaderTest {
         List<String> loaded = deploymentResourceLoader.loadResourcesForDeployment("123456", selectorReader);
 
         //then
-        assertThat(loaded)
-                .hasSize(1)
-                .contains("a selected resource\n");
-
+        assertThat(loaded).hasSize(1).contains("a selected resource\n");
     }
 }

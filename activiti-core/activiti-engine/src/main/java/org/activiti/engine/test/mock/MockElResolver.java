@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.test.mock;
 
 import jakarta.el.ELContext;
@@ -24,37 +22,35 @@ import java.util.Iterator;
 
 public class MockElResolver extends ELResolver {
 
-  @Override
-  public Class<?> getCommonPropertyType(ELContext context, Object base) {
-    return Object.class;
-  }
-
-  @Override
-  public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
-    return null;
-  }
-
-  @Override
-  public Class<?> getType(ELContext context, Object base, Object property) {
-    return null;
-  }
-
-  @Override
-  public Object getValue(ELContext context, Object base, Object property) {
-    Object bean = Mocks.get(property);
-    if (bean != null) {
-      context.setPropertyResolved(true);
+    @Override
+    public Class<?> getCommonPropertyType(ELContext context, Object base) {
+        return Object.class;
     }
-    return bean;
-  }
 
-  @Override
-  public boolean isReadOnly(ELContext context, Object base, Object property) {
-    return false;
-  }
+    @Override
+    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
+        return null;
+    }
 
-  @Override
-  public void setValue(ELContext context, Object base, Object property, Object value) {
-  }
+    @Override
+    public Class<?> getType(ELContext context, Object base, Object property) {
+        return null;
+    }
 
+    @Override
+    public Object getValue(ELContext context, Object base, Object property) {
+        Object bean = Mocks.get(property);
+        if (bean != null) {
+            context.setPropertyResolved(true);
+        }
+        return bean;
+    }
+
+    @Override
+    public boolean isReadOnly(ELContext context, Object base, Object property) {
+        return false;
+    }
+
+    @Override
+    public void setValue(ELContext context, Object base, Object property, Object value) {}
 }

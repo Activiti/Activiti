@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.persistence;
 
 import org.activiti.engine.ActivitiException;
@@ -44,8 +42,10 @@ public class GenericManagerFactory implements SessionFactory {
         try {
             return implementationClass.getDeclaredConstructor().newInstance();
         } catch (Exception e) {
-            throw new ActivitiException("couldn't instantiate " + implementationClass.getName() + ": " + e.getMessage(), e);
+            throw new ActivitiException(
+                "couldn't instantiate " + implementationClass.getName() + ": " + e.getMessage(),
+                e
+            );
         }
     }
-
 }

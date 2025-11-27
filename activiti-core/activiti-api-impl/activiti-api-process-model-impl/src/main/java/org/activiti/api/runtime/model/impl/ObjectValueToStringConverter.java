@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,14 +17,13 @@ package org.activiti.api.runtime.model.impl;
 
 import static org.activiti.api.runtime.model.impl.ProcessVariablesMapTypeRegistry.OBJECT_TYPE_KEY;
 
-import java.util.Map;
-
-import org.springframework.core.convert.converter.Converter;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Map;
+import org.springframework.core.convert.converter.Converter;
 
 @ProcessVariableTypeConverter
 public class ObjectValueToStringConverter implements Converter<ObjectValue, String> {
+
     private static final String CLASS = "@class";
     private final ObjectMapper objectMapper;
 
@@ -35,7 +34,6 @@ public class ObjectValueToStringConverter implements Converter<ObjectValue, Stri
     @SuppressWarnings("unchecked")
     @Override
     public String convert(ObjectValue source) {
-
         try {
             Map<String, Object> value = objectMapper.convertValue(source, Map.class);
 

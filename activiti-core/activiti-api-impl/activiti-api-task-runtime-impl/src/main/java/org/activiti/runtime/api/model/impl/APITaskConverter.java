@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,35 +29,32 @@ import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class APITaskConverter extends ListConverter<org.activiti.engine.task.Task, Task> implements ModelConverter<org.activiti.engine.task.Task, Task> {
+public class APITaskConverter
+    extends ListConverter<org.activiti.engine.task.Task, Task>
+    implements ModelConverter<org.activiti.engine.task.Task, Task> {
 
     private final TaskService taskService;
 
     @Autowired
-    public APITaskConverter(TaskService taskService){
+    public APITaskConverter(TaskService taskService) {
         this.taskService = taskService;
     }
 
     @Override
     public Task from(org.activiti.engine.task.Task internalTask) {
-        return from(internalTask,
-                    calculateStatus(internalTask));
+        return from(internalTask, calculateStatus(internalTask));
     }
 
     public Task fromWithCandidates(org.activiti.engine.task.Task internalTask) {
-        TaskImpl task = buildFromInternalTask(internalTask,
-                                        calculateStatus(internalTask));
+        TaskImpl task = buildFromInternalTask(internalTask, calculateStatus(internalTask));
         extractCandidateUsersAndGroups(internalTask, task);
         return task;
     }
 
-    private TaskImpl buildFromInternalTask(org.activiti.engine.task.Task internalTask,
-        Task.TaskStatus status){
-
-        TaskImpl task = new TaskImpl(internalTask.getId(),
-            internalTask.getName(),
-            status);
+    private TaskImpl buildFromInternalTask(org.activiti.engine.task.Task internalTask, Task.TaskStatus status) {
+        TaskImpl task = new TaskImpl(internalTask.getId(), internalTask.getName(), status);
         task.setProcessDefinitionId(internalTask.getProcessDefinitionId());
+        task.setTaskProcessRootProcessInstanceId(internalTask.getTaskProcessRootProcessInstanceId());
         task.setProcessInstanceId(internalTask.getProcessInstanceId());
         task.setAssignee(internalTask.getAssignee());
         task.setClaimedDate(internalTask.getClaimTime());
@@ -73,23 +70,21 @@ public class APITaskConverter extends ListConverter<org.activiti.engine.task.Tas
         task.setBusinessKey(internalTask.getBusinessKey());
 
         return task;
-
     }
 
-    public Task from(org.activiti.engine.task.Task internalTask,
-        Task.TaskStatus status) {
-
+    public Task from(org.activiti.engine.task.Task internalTask, Task.TaskStatus status) {
         return buildFromInternalTask(internalTask, status);
     }
 
-    public Task fromWithCompletedBy(org.activiti.engine.task.Task internalTask,
-        Task.TaskStatus status, String completedBy) {
-
-        TaskImpl task =  buildFromInternalTask(internalTask, status);
+    public Task fromWithCompletedBy(
+        org.activiti.engine.task.Task internalTask,
+        Task.TaskStatus status,
+        String completedBy
+    ) {
+        TaskImpl task = buildFromInternalTask(internalTask, status);
         task.setCompletedBy(completedBy);
 
         return task;
-
     }
 
     private void extractCandidateUsersAndGroups(org.activiti.engine.task.Task source, TaskImpl destination) {
@@ -102,18 +97,17 @@ public class APITaskConverter extends ListConverter<org.activiti.engine.task.Tas
         List<String> result = emptyList();
         if (candidates != null) {
             result = candidates
-                             .stream()
-                             .filter(candidate -> IdentityLinkType.CANDIDATE.equals(candidate.getType()))
-                             .map(extractor::apply)
-                             .filter(Objects::nonNull)
-                             .collect(Collectors.toList());
+                .stream()
+                .filter(candidate -> IdentityLinkType.CANDIDATE.equals(candidate.getType()))
+                .map(extractor::apply)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
         }
         return result;
     }
 
     private Task.TaskStatus calculateStatus(org.activiti.engine.task.Task source) {
-        if (source instanceof TaskEntity &&
-            (((TaskEntity) source).isDeleted() || ((TaskEntity) source).isCanceled())) {
+        if (source instanceof TaskEntity && (((TaskEntity) source).isDeleted() || ((TaskEntity) source).isCanceled())) {
             return Task.TaskStatus.CANCELLED;
         } else if (source.isSuspended()) {
             return Task.TaskStatus.SUSPENDED;

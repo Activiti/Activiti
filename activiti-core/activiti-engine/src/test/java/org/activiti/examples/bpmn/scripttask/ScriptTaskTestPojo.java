@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,9 @@ import java.io.Serializable;
 
 public class ScriptTaskTestPojo implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  public static void foo() {
-    throw new IllegalStateException();
-  }
-
+    public static void foo() {
+        throw new IllegalStateException();
+    }
 }

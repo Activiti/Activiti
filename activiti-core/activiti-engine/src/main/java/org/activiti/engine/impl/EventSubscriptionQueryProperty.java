@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl;
 
 import org.activiti.engine.query.QueryProperty;
@@ -24,22 +22,21 @@ import org.activiti.engine.query.QueryProperty;
  */
 public class EventSubscriptionQueryProperty implements QueryProperty {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  // properties used in event subscription queries:
+    // properties used in event subscription queries:
 
-  public final static EventSubscriptionQueryProperty CREATED = new EventSubscriptionQueryProperty("RES.CREATED_");
+    public static final EventSubscriptionQueryProperty CREATED = new EventSubscriptionQueryProperty("RES.CREATED_");
 
-  // ///////////////////////////////////////////////
+    // ///////////////////////////////////////////////
 
-  private final String propertyName;
+    private final String propertyName;
 
-  public EventSubscriptionQueryProperty(String propertyName) {
-    this.propertyName = propertyName;
-  }
+    public EventSubscriptionQueryProperty(String propertyName) {
+        this.propertyName = propertyName;
+    }
 
-  public String getName() {
-    return propertyName;
-  }
-
+    public String getName() {
+        return propertyName;
+    }
 }

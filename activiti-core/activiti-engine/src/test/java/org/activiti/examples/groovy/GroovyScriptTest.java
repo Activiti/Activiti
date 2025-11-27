@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.examples.groovy;
 
 import static java.util.Collections.singletonMap;
@@ -34,9 +32,11 @@ public class GroovyScriptTest extends PluggableActivitiTestCase {
 
     @Deployment
     public void testScriptExecution() {
-        int[] inputArray = new int[]{1, 2, 3, 4, 5};
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey("scriptExecution",
-                                                                      singletonMap("inputArray", inputArray));
+        int[] inputArray = new int[] { 1, 2, 3, 4, 5 };
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey(
+            "scriptExecution",
+            singletonMap("inputArray", inputArray)
+        );
 
         Integer result = (Integer) runtimeService.getVariable(pi.getId(), "sum");
         assertThat(result.intValue()).isEqualTo(15);
@@ -61,7 +61,8 @@ public class GroovyScriptTest extends PluggableActivitiTestCase {
         assertThat(jobs).hasSize(1);
 
         // After setting the clock to time '1 hour and 5 seconds', the second timer should fire
-        waitForJobExecutorToProcessAllJobs(5000L, 100L);assertThat(jobQuery.count()).isEqualTo(0L);
+        waitForJobExecutorToProcessAllJobs(5000L, 100L);
+        assertThat(jobQuery.count()).isEqualTo(0L);
 
         assertProcessEnded(processInstance.getId());
     }

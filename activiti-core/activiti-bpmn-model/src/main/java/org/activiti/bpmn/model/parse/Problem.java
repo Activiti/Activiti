@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,32 +20,32 @@ import org.activiti.bpmn.model.GraphicInfo;
 
 public class Problem {
 
-  protected String errorMessage;
-  protected String resource;
-  protected int line;
-  protected int column;
+    protected String errorMessage;
+    protected String resource;
+    protected int line;
+    protected int column;
 
-  public Problem(String errorMessage, String localName, int lineNumber, int columnNumber) {
-    this.errorMessage = errorMessage;
-    this.resource = localName;
-    this.line = lineNumber;
-    this.column = columnNumber;
-  }
+    public Problem(String errorMessage, String localName, int lineNumber, int columnNumber) {
+        this.errorMessage = errorMessage;
+        this.resource = localName;
+        this.line = lineNumber;
+        this.column = columnNumber;
+    }
 
-  public Problem(String errorMessage, BaseElement element) {
-    this.errorMessage = errorMessage;
-    this.resource = element.getId();
-    this.line = element.getXmlRowNumber();
-    this.column = element.getXmlColumnNumber();
-  }
+    public Problem(String errorMessage, BaseElement element) {
+        this.errorMessage = errorMessage;
+        this.resource = element.getId();
+        this.line = element.getXmlRowNumber();
+        this.column = element.getXmlColumnNumber();
+    }
 
-  public Problem(String errorMessage, GraphicInfo graphicInfo) {
-    this.errorMessage = errorMessage;
-    this.line = graphicInfo.getXmlRowNumber();
-    this.column = graphicInfo.getXmlColumnNumber();
-  }
+    public Problem(String errorMessage, GraphicInfo graphicInfo) {
+        this.errorMessage = errorMessage;
+        this.line = graphicInfo.getXmlRowNumber();
+        this.column = graphicInfo.getXmlColumnNumber();
+    }
 
-  public String toString() {
-    return errorMessage + (resource != null ? " | " + resource : "") + " | line " + line + " | column " + column;
-  }
+    public String toString() {
+        return errorMessage + (resource != null ? " | " + resource : "") + " | line " + line + " | column " + column;
+    }
 }

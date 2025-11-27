@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.bpmn.behavior;
 
 import org.activiti.engine.delegate.DelegateExecution;
@@ -25,25 +24,24 @@ import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
  */
 public class ErrorEndEventActivityBehavior extends FlowNodeActivityBehavior {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected String errorRef;
+    protected String errorRef;
 
-  public ErrorEndEventActivityBehavior(String errorRef) {
-    this.errorRef = errorRef;
-  }
+    public ErrorEndEventActivityBehavior(String errorRef) {
+        this.errorRef = errorRef;
+    }
 
-  @Override
-  public void execute(DelegateExecution execution) {
-    ErrorPropagation.propagateError(errorRef, execution);
-  }
+    @Override
+    public void execute(DelegateExecution execution) {
+        ErrorPropagation.propagateError(errorRef, execution);
+    }
 
-  public String getErrorRef() {
-    return errorRef;
-  }
+    public String getErrorRef() {
+        return errorRef;
+    }
 
-  public void setErrorRef(String errorRef) {
-    this.errorRef = errorRef;
-  }
-
+    public void setErrorRef(String errorRef) {
+        this.errorRef = errorRef;
+    }
 }

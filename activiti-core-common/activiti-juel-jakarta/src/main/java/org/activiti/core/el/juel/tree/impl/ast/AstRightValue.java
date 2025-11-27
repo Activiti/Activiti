@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.core.el.juel.tree.impl.ast;
 
 import jakarta.el.ELContext;
@@ -52,17 +51,8 @@ public abstract class AstRightValue extends AstNode {
     /**
      * non-lvalues are always readonly, so throw an exception
      */
-    public final void setValue(
-        Bindings bindings,
-        ELContext context,
-        Object value
-    ) {
-        throw new ELException(
-            LocalMessages.get(
-                "error.value.set.rvalue",
-                getStructuralId(bindings)
-            )
-        );
+    public final void setValue(Bindings bindings, ELContext context, Object value) {
+        throw new ELException(LocalMessages.get("error.value.set.rvalue", getStructuralId(bindings)));
     }
 
     public final MethodInfo getMethodInfo(
@@ -81,9 +71,7 @@ public abstract class AstRightValue extends AstNode {
         Class<?>[] paramTypes,
         Object[] paramValues
     ) {
-        throw new ELException(
-            LocalMessages.get("error.method.invalid", getStructuralId(bindings))
-        );
+        throw new ELException(LocalMessages.get("error.method.invalid", getStructuralId(bindings)));
     }
 
     public final boolean isLeftValue() {
@@ -94,10 +82,7 @@ public abstract class AstRightValue extends AstNode {
         return false;
     }
 
-    public final ValueReference getValueReference(
-        Bindings bindings,
-        ELContext context
-    ) {
+    public final ValueReference getValueReference(Bindings bindings, ELContext context) {
         return null;
     }
 }

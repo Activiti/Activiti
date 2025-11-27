@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.test.bpmn.multiinstance;
 
 import org.activiti.engine.delegate.DelegateExecution;
@@ -25,18 +23,14 @@ import org.activiti.engine.delegate.ExecutionListener;
  */
 public class ActivityStartListener implements ExecutionListener {
 
-  public void notify(DelegateExecution execution) {
-
-  	Integer loopCounter = (Integer) execution.getVariable("loopCounter");
-  	if (loopCounter != null) {
-
-	    Integer counter = (Integer) execution.getVariable("executionListenerCounter");
-	    if (counter == null) {
-	      counter = 0;
-	    }
-	    execution.setVariable("executionListenerCounter", ++counter);
-
-  	}
-  }
-
+    public void notify(DelegateExecution execution) {
+        Integer loopCounter = (Integer) execution.getVariable("loopCounter");
+        if (loopCounter != null) {
+            Integer counter = (Integer) execution.getVariable("executionListenerCounter");
+            if (counter == null) {
+                counter = 0;
+            }
+            execution.setVariable("executionListenerCounter", ++counter);
+        }
+    }
 }

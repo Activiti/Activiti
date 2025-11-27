@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,19 @@
  */
 package org.activiti.spring.process;
 
-import org.activiti.spring.process.model.Extension;
-import org.activiti.spring.process.model.VariableDefinition;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import java.util.Optional;
-
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.Optional;
+import org.activiti.spring.process.model.Extension;
+import org.activiti.spring.process.model.VariableDefinition;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
 class ProcessExtensionServiceTest {
 
     private ProcessExtensionRepository processExtensionRepository = Mockito.mock(ProcessExtensionRepository.class);
-
 
     private ProcessExtensionService processExtensionService = new ProcessExtensionService(processExtensionRepository);
 
@@ -96,5 +95,4 @@ class ProcessExtensionServiceTest {
         boolean result = processExtensionService.hasEphemeralVariable(null, variableName);
         assertThat(result).isFalse();
     }
-
 }

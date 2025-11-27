@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
-
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.JobQueryImpl;
@@ -35,8 +32,10 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
 
     protected JobDataManager jobDataManager;
 
-    public JobEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration,
-                                JobDataManager jobDataManager) {
+    public JobEntityManagerImpl(
+        ProcessEngineConfigurationImpl processEngineConfiguration,
+        JobDataManager jobDataManager
+    ) {
         super(processEngineConfiguration);
         this.jobDataManager = jobDataManager;
     }
@@ -48,19 +47,15 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
 
     @Override
     public boolean insertJobEntity(JobEntity timerJobEntity) {
-        return doInsert(timerJobEntity,
-                        true);
+        return doInsert(timerJobEntity, true);
     }
 
     @Override
-    public void insert(JobEntity jobEntity,
-                       boolean fireCreateEvent) {
-        doInsert(jobEntity,
-                 fireCreateEvent);
+    public void insert(JobEntity jobEntity, boolean fireCreateEvent) {
+        doInsert(jobEntity, fireCreateEvent);
     }
 
-    protected boolean doInsert(JobEntity jobEntity,
-                               boolean fireCreateEvent) {
+    protected boolean doInsert(JobEntity jobEntity, boolean fireCreateEvent) {
         // add link to execution
         if (jobEntity.getExecutionId() != null) {
             ExecutionEntity execution = getExecutionEntityManager().findById(jobEntity.getExecutionId());
@@ -81,8 +76,7 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
             }
         }
 
-        super.insert(jobEntity,
-                     fireCreateEvent);
+        super.insert(jobEntity, fireCreateEvent);
         return true;
     }
 
@@ -101,10 +95,8 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
     }
 
     @Override
-    public List<JobEntity> findJobsByTypeAndProcessDefinitionId(String jobTypeTimer,
-                                                                String id) {
-        return jobDataManager.findJobsByTypeAndProcessDefinitionId(jobTypeTimer,
-                                                                   id);
+    public List<JobEntity> findJobsByTypeAndProcessDefinitionId(String jobTypeTimer, String id) {
+        return jobDataManager.findJobsByTypeAndProcessDefinitionId(jobTypeTimer, id);
     }
 
     @Override
@@ -123,10 +115,8 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
     }
 
     @Override
-    public List<Job> findJobsByQueryCriteria(JobQueryImpl jobQuery,
-                                             Page page) {
-        return jobDataManager.findJobsByQueryCriteria(jobQuery,
-                                                      page);
+    public List<Job> findJobsByQueryCriteria(JobQueryImpl jobQuery, Page page) {
+        return jobDataManager.findJobsByQueryCriteria(jobQuery, page);
     }
 
     @Override
@@ -135,10 +125,8 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
     }
 
     @Override
-    public void updateJobTenantIdForDeployment(String deploymentId,
-                                               String newTenantId) {
-        jobDataManager.updateJobTenantIdForDeployment(deploymentId,
-                                                      newTenantId);
+    public void updateJobTenantIdForDeployment(String deploymentId, String newTenantId) {
+        jobDataManager.updateJobTenantIdForDeployment(deploymentId, newTenantId);
     }
 
     @Override
@@ -151,22 +139,23 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
 
         // Send event
         if (getEventDispatcher().isEnabled()) {
-            getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED,
-                                                                                      this));
+            getEventDispatcher().dispatchEvent(
+                ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, this)
+            );
         }
     }
 
     @Override
-    public void delete(JobEntity entity,
-                       boolean fireDeleteEvent) {
+    public void delete(JobEntity entity, boolean fireDeleteEvent) {
         if (entity.getExecutionId() != null && isExecutionRelatedEntityCountEnabledGlobally()) {
-            CountingExecutionEntity executionEntity = (CountingExecutionEntity) getExecutionEntityManager().findById(entity.getExecutionId());
+            CountingExecutionEntity executionEntity = (CountingExecutionEntity) getExecutionEntityManager().findById(
+                entity.getExecutionId()
+            );
             if (isExecutionRelatedEntityCountEnabled(executionEntity)) {
                 executionEntity.setJobCount(executionEntity.getJobCount() - 1);
             }
         }
-        super.delete(entity,
-                     fireDeleteEvent);
+        super.delete(entity, fireDeleteEvent);
     }
 
     /**

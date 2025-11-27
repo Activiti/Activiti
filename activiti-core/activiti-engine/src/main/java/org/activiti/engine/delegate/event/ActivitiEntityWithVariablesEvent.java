@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.delegate.event;
 
 import java.util.Map;
@@ -24,12 +23,11 @@ import java.util.Map;
 
  */
 public interface ActivitiEntityWithVariablesEvent extends ActivitiEntityEvent {
+    /**
+     * @return the variables created together with the entity.
+     */
+    @SuppressWarnings("rawtypes")
+    Map getVariables();
 
-  /**
-   * @return the variables created together with the entity.
-   */
-  @SuppressWarnings("rawtypes")
-  Map getVariables();
-
-  boolean isLocalScope();
+    boolean isLocalScope();
 }

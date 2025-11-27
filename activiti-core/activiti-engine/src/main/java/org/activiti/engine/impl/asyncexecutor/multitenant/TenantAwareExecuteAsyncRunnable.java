@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.asyncexecutor.multitenant;
 
 import org.activiti.engine.impl.asyncexecutor.ExecuteAsyncRunnable;
@@ -29,20 +27,24 @@ import org.activiti.engine.runtime.Job;
  */
 public class TenantAwareExecuteAsyncRunnable extends ExecuteAsyncRunnable {
 
-  protected TenantInfoHolder tenantInfoHolder;
-  protected String tenantId;
+    protected TenantInfoHolder tenantInfoHolder;
+    protected String tenantId;
 
-  public TenantAwareExecuteAsyncRunnable(Job job, ProcessEngineConfigurationImpl processEngineConfiguration, TenantInfoHolder tenantInfoHolder, String tenantId) {
-    super(job, processEngineConfiguration);
-    this.tenantInfoHolder = tenantInfoHolder;
-    this.tenantId = tenantId;
-  }
+    public TenantAwareExecuteAsyncRunnable(
+        Job job,
+        ProcessEngineConfigurationImpl processEngineConfiguration,
+        TenantInfoHolder tenantInfoHolder,
+        String tenantId
+    ) {
+        super(job, processEngineConfiguration);
+        this.tenantInfoHolder = tenantInfoHolder;
+        this.tenantId = tenantId;
+    }
 
-  @Override
-  public void run() {
-    tenantInfoHolder.setCurrentTenantId(tenantId);
-    super.run();
-    tenantInfoHolder.clearCurrentTenantId();
-  }
-
+    @Override
+    public void run() {
+        tenantInfoHolder.setCurrentTenantId(tenantId);
+        super.run();
+        tenantInfoHolder.clearCurrentTenantId();
+    }
 }

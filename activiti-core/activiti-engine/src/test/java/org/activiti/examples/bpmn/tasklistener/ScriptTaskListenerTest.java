@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.examples.bpmn.tasklistener;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,27 +29,29 @@ import org.activiti.engine.test.Deployment;
  */
 public class ScriptTaskListenerTest extends PluggableActivitiTestCase {
 
-  @Deployment(resources = { "org/activiti/examples/bpmn/tasklistener/ScriptTaskListenerTest.bpmn20.xml" })
-  public void testScriptTaskListener() {
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("scriptTaskListenerProcess");
-    Task task = taskService.createTaskQuery().singleResult();
-    assertThat(task.getName()).as("Name does not match").isEqualTo("All your base are belong to us");
+    @Deployment(resources = { "org/activiti/examples/bpmn/tasklistener/ScriptTaskListenerTest.bpmn20.xml" })
+    public void testScriptTaskListener() {
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("scriptTaskListenerProcess");
+        Task task = taskService.createTaskQuery().singleResult();
+        assertThat(task.getName()).as("Name does not match").isEqualTo("All your base are belong to us");
 
-    taskService.complete(task.getId());
+        taskService.complete(task.getId());
 
-    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
-      HistoricTaskInstance historicTask = historyService.createHistoricTaskInstanceQuery().taskId(task.getId()).singleResult();
-      assertThat(historicTask.getOwner()).isEqualTo("kermit");
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+            HistoricTaskInstance historicTask = historyService
+                .createHistoricTaskInstanceQuery()
+                .taskId(task.getId())
+                .singleResult();
+            assertThat(historicTask.getOwner()).isEqualTo("kermit");
 
-      task = taskService.createTaskQuery().singleResult();
-      assertThat(task.getName()).as("Task name not set with 'bar' variable").isEqualTo("BAR");
+            task = taskService.createTaskQuery().singleResult();
+            assertThat(task.getName()).as("Task name not set with 'bar' variable").isEqualTo("BAR");
+        }
+
+        Object bar = runtimeService.getVariable(processInstance.getId(), "bar");
+        assertThat(bar).as("Expected 'bar' variable to be local to script").isNull();
+
+        Object foo = runtimeService.getVariable(processInstance.getId(), "foo");
+        assertThat(foo).as("Could not find the 'foo' variable in variable scope").isEqualTo("FOO");
     }
-
-    Object bar = runtimeService.getVariable(processInstance.getId(), "bar");
-    assertThat(bar).as("Expected 'bar' variable to be local to script").isNull();
-
-    Object foo = runtimeService.getVariable(processInstance.getId(), "foo");
-    assertThat(foo).as("Could not find the 'foo' variable in variable scope").isEqualTo("FOO");
-  }
-
 }

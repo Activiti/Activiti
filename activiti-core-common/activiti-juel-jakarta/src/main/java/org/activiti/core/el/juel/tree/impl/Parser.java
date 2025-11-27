@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.core.el.juel.tree.impl;
 
 import java.util.ArrayList;
@@ -63,19 +62,8 @@ public class Parser {
         final String encountered;
         final String expected;
 
-        public ParseException(
-            int position,
-            String encountered,
-            String expected
-        ) {
-            super(
-                LocalMessages.get(
-                    "error.parse",
-                    position,
-                    encountered,
-                    expected
-                )
-            );
+        public ParseException(int position, String encountered, String expected) {
+            super(LocalMessages.get("error.parse", position, encountered, expected));
             this.position = position;
             this.encountered = encountered;
             this.expected = expected;
@@ -178,13 +166,9 @@ public class Parser {
         return new Scanner(expression);
     }
 
-    public void putExtensionHandler(
-        Scanner.ExtensionToken token,
-        ExtensionHandler extension
-    ) {
+    public void putExtensionHandler(Scanner.ExtensionToken token, ExtensionHandler extension) {
         if (extensions.isEmpty()) {
-            extensions =
-                new HashMap<Scanner.ExtensionToken, ExtensionHandler>(16);
+            extensions = new HashMap<Scanner.ExtensionToken, ExtensionHandler>(16);
         }
         extensions.put(token, extension);
     }
@@ -221,34 +205,15 @@ public class Parser {
         }
     }
 
-    protected AstBinary createAstBinary(
-        AstNode left,
-        AstNode right,
-        AstBinary.Operator operator
-    ) {
+    protected AstBinary createAstBinary(AstNode left, AstNode right, AstBinary.Operator operator) {
         return new AstBinary(left, right, operator);
     }
 
-    protected AstBracket createAstBracket(
-        AstNode base,
-        AstNode property,
-        boolean lvalue,
-        boolean strict
-    ) {
-        return new AstBracket(
-            base,
-            property,
-            lvalue,
-            strict,
-            context.isEnabled(Builder.Feature.IGNORE_RETURN_TYPE)
-        );
+    protected AstBracket createAstBracket(AstNode base, AstNode property, boolean lvalue, boolean strict) {
+        return new AstBracket(base, property, lvalue, strict, context.isEnabled(Builder.Feature.IGNORE_RETURN_TYPE));
     }
 
-    protected AstChoice createAstChoice(
-        AstNode question,
-        AstNode yes,
-        AstNode no
-    ) {
+    protected AstChoice createAstChoice(AstNode question, AstNode yes, AstNode no) {
         return new AstChoice(question, yes, no);
     }
 
@@ -256,51 +221,23 @@ public class Parser {
         return new AstComposite(nodes);
     }
 
-    protected AstDot createAstDot(
-        AstNode base,
-        String property,
-        boolean lvalue
-    ) {
-        return new AstDot(
-            base,
-            property,
-            lvalue,
-            context.isEnabled(Builder.Feature.IGNORE_RETURN_TYPE)
-        );
+    protected AstDot createAstDot(AstNode base, String property, boolean lvalue) {
+        return new AstDot(base, property, lvalue, context.isEnabled(Builder.Feature.IGNORE_RETURN_TYPE));
     }
 
-    protected AstFunction createAstFunction(
-        String name,
-        int index,
-        AstParameters params
-    ) {
-        return new AstFunction(
-            name,
-            index,
-            params,
-            context.isEnabled(Builder.Feature.VARARGS)
-        );
+    protected AstFunction createAstFunction(String name, int index, AstParameters params) {
+        return new AstFunction(name, index, params, context.isEnabled(Builder.Feature.VARARGS));
     }
 
     protected AstIdentifier createAstIdentifier(String name, int index) {
-        return new AstIdentifier(
-            name,
-            index,
-            context.isEnabled(Builder.Feature.IGNORE_RETURN_TYPE)
-        );
+        return new AstIdentifier(name, index, context.isEnabled(Builder.Feature.IGNORE_RETURN_TYPE));
     }
 
-    protected AstMethod createAstMethod(
-        AstProperty property,
-        AstParameters params
-    ) {
+    protected AstMethod createAstMethod(AstProperty property, AstParameters params) {
         return new AstMethod(property, params);
     }
 
-    protected AstUnary createAstUnary(
-        AstNode child,
-        AstUnary.Operator operator
-    ) {
+    protected AstUnary createAstUnary(AstNode child, AstUnary.Operator operator) {
         return new AstUnary(child, operator);
     }
 
@@ -320,11 +257,7 @@ public class Parser {
      * throw exception
      */
     protected void fail(String expected) throws ParseException {
-        throw new ParseException(
-            position,
-            "'" + token.getImage() + "'",
-            expected
-        );
+        throw new ParseException(position, "'" + token.getImage() + "'", expected);
     }
 
     /**
@@ -337,15 +270,12 @@ public class Parser {
     /**
      * get lookahead symbol.
      */
-    protected final Scanner.Token lookahead(int index)
-        throws Scanner.ScanException, ParseException {
+    protected final Scanner.Token lookahead(int index) throws Scanner.ScanException, ParseException {
         if (lookahead.isEmpty()) {
             lookahead = new LinkedList<LookaheadToken>();
         }
         while (index >= lookahead.size()) {
-            lookahead.add(
-                new LookaheadToken(scanner.next(), scanner.getPosition())
-            );
+            lookahead.add(new LookaheadToken(scanner.next(), scanner.getPosition()));
         }
         return lookahead.get(index).token;
     }
@@ -354,8 +284,7 @@ public class Parser {
      * consume current token (get next token).
      * @return the consumed token (which was the current token when calling this method)
      */
-    protected final Scanner.Token consumeToken()
-        throws Scanner.ScanException, ParseException {
+    protected final Scanner.Token consumeToken() throws Scanner.ScanException, ParseException {
         Scanner.Token result = token;
         if (lookahead.isEmpty()) {
             token = scanner.next();
@@ -372,8 +301,7 @@ public class Parser {
      * consume current token (get next token); throw exception if the current token doesn't
      * match the expected symbol.
      */
-    protected final Scanner.Token consumeToken(Scanner.Symbol expected)
-        throws Scanner.ScanException, ParseException {
+    protected final Scanner.Token consumeToken(Scanner.Symbol expected) throws Scanner.ScanException, ParseException {
         if (token.getSymbol() != expected) {
             fail(expected);
         }
@@ -416,12 +344,7 @@ public class Parser {
                 list.add(t);
             }
         }
-        return new Tree(
-            createAstComposite(list),
-            functions,
-            identifiers,
-            e.isDeferred()
-        );
+        return new Tree(createAstComposite(list), functions, identifiers, e.isDeferred());
     }
 
     /**
@@ -444,11 +367,7 @@ public class Parser {
         if (e == null) {
             e = eval(false, true);
             if (e == null) {
-                fail(
-                    Scanner.Symbol.START_EVAL_DEFERRED +
-                    "|" +
-                    Scanner.Symbol.START_EVAL_DYNAMIC
-                );
+                fail(Scanner.Symbol.START_EVAL_DEFERRED + "|" + Scanner.Symbol.START_EVAL_DYNAMIC);
             }
         }
         return e;
@@ -458,12 +377,9 @@ public class Parser {
      * dynmamic := &lt;START_EVAL_DYNAMIC&gt; expr &lt;END_EVAL&gt;
      * deferred := &lt;START_EVAL_DEFERRED&gt; expr &lt;END_EVAL&gt;
      */
-    protected AstEval eval(boolean required, boolean deferred)
-        throws Scanner.ScanException, ParseException {
+    protected AstEval eval(boolean required, boolean deferred) throws Scanner.ScanException, ParseException {
         AstEval v = null;
-        Scanner.Symbol start_eval = deferred
-            ? Scanner.Symbol.START_EVAL_DEFERRED
-            : Scanner.Symbol.START_EVAL_DYNAMIC;
+        Scanner.Symbol start_eval = deferred ? Scanner.Symbol.START_EVAL_DEFERRED : Scanner.Symbol.START_EVAL_DYNAMIC;
         if (token.getSymbol() == start_eval) {
             consumeToken();
             v = new AstEval(expr(true), deferred);
@@ -477,8 +393,7 @@ public class Parser {
     /**
      * expr := or (&lt;QUESTION&gt; expr &lt;COLON&gt; expr)?
      */
-    protected AstNode expr(boolean required)
-        throws Scanner.ScanException, ParseException {
+    protected AstNode expr(boolean required) throws Scanner.ScanException, ParseException {
         AstNode v = or(required);
         if (v == null) {
             return null;
@@ -496,8 +411,7 @@ public class Parser {
     /**
      * or := and (&lt;OR&gt; and)*
      */
-    protected AstNode or(boolean required)
-        throws Scanner.ScanException, ParseException {
+    protected AstNode or(boolean required) throws Scanner.ScanException, ParseException {
         AstNode v = and(required);
         if (v == null) {
             return null;
@@ -509,13 +423,8 @@ public class Parser {
                     v = createAstBinary(v, and(true), AstBinary.OR);
                     break;
                 case EXTENSION:
-                    if (
-                        getExtensionHandler(token).getExtensionPoint() ==
-                        ExtensionPoint.OR
-                    ) {
-                        v =
-                            getExtensionHandler(consumeToken())
-                                .createAstNode(v, and(true));
+                    if (getExtensionHandler(token).getExtensionPoint() == ExtensionPoint.OR) {
+                        v = getExtensionHandler(consumeToken()).createAstNode(v, and(true));
                         break;
                     }
                 default:
@@ -527,8 +436,7 @@ public class Parser {
     /**
      * and := eq (&lt;AND&gt; eq)*
      */
-    protected AstNode and(boolean required)
-        throws Scanner.ScanException, ParseException {
+    protected AstNode and(boolean required) throws Scanner.ScanException, ParseException {
         AstNode v = eq(required);
         if (v == null) {
             return null;
@@ -540,13 +448,8 @@ public class Parser {
                     v = createAstBinary(v, eq(true), AstBinary.AND);
                     break;
                 case EXTENSION:
-                    if (
-                        getExtensionHandler(token).getExtensionPoint() ==
-                        ExtensionPoint.AND
-                    ) {
-                        v =
-                            getExtensionHandler(consumeToken())
-                                .createAstNode(v, eq(true));
+                    if (getExtensionHandler(token).getExtensionPoint() == ExtensionPoint.AND) {
+                        v = getExtensionHandler(consumeToken()).createAstNode(v, eq(true));
                         break;
                     }
                 default:
@@ -558,8 +461,7 @@ public class Parser {
     /**
      * eq := cmp (&lt;EQ&gt; cmp | &lt;NE&gt; cmp)*
      */
-    protected AstNode eq(boolean required)
-        throws Scanner.ScanException, ParseException {
+    protected AstNode eq(boolean required) throws Scanner.ScanException, ParseException {
         AstNode v = cmp(required);
         if (v == null) {
             return null;
@@ -575,13 +477,8 @@ public class Parser {
                     v = createAstBinary(v, cmp(true), AstBinary.NE);
                     break;
                 case EXTENSION:
-                    if (
-                        getExtensionHandler(token).getExtensionPoint() ==
-                        ExtensionPoint.EQ
-                    ) {
-                        v =
-                            getExtensionHandler(consumeToken())
-                                .createAstNode(v, cmp(true));
+                    if (getExtensionHandler(token).getExtensionPoint() == ExtensionPoint.EQ) {
+                        v = getExtensionHandler(consumeToken()).createAstNode(v, cmp(true));
                         break;
                     }
                 default:
@@ -593,8 +490,7 @@ public class Parser {
     /**
      * cmp := add (&lt;LT&gt; add | &lt;LE&gt; add | &lt;GE&gt; add | &lt;GT&gt; add)*
      */
-    protected AstNode cmp(boolean required)
-        throws Scanner.ScanException, ParseException {
+    protected AstNode cmp(boolean required) throws Scanner.ScanException, ParseException {
         AstNode v = add(required);
         if (v == null) {
             return null;
@@ -618,13 +514,8 @@ public class Parser {
                     v = createAstBinary(v, add(true), AstBinary.GT);
                     break;
                 case EXTENSION:
-                    if (
-                        getExtensionHandler(token).getExtensionPoint() ==
-                        ExtensionPoint.CMP
-                    ) {
-                        v =
-                            getExtensionHandler(consumeToken())
-                                .createAstNode(v, add(true));
+                    if (getExtensionHandler(token).getExtensionPoint() == ExtensionPoint.CMP) {
+                        v = getExtensionHandler(consumeToken()).createAstNode(v, add(true));
                         break;
                     }
                 default:
@@ -636,8 +527,7 @@ public class Parser {
     /**
      * add := add (&lt;PLUS&gt; mul | &lt;MINUS&gt; mul)*
      */
-    protected AstNode add(boolean required)
-        throws Scanner.ScanException, ParseException {
+    protected AstNode add(boolean required) throws Scanner.ScanException, ParseException {
         AstNode v = mul(required);
         if (v == null) {
             return null;
@@ -653,13 +543,8 @@ public class Parser {
                     v = createAstBinary(v, mul(true), AstBinary.SUB);
                     break;
                 case EXTENSION:
-                    if (
-                        getExtensionHandler(token).getExtensionPoint() ==
-                        ExtensionPoint.ADD
-                    ) {
-                        v =
-                            getExtensionHandler(consumeToken())
-                                .createAstNode(v, mul(true));
+                    if (getExtensionHandler(token).getExtensionPoint() == ExtensionPoint.ADD) {
+                        v = getExtensionHandler(consumeToken()).createAstNode(v, mul(true));
                         break;
                     }
                 default:
@@ -671,8 +556,7 @@ public class Parser {
     /**
      * mul := unary (&lt;MUL&gt; unary | &lt;DIV&gt; unary | &lt;MOD&gt; unary)*
      */
-    protected AstNode mul(boolean required)
-        throws Scanner.ScanException, ParseException {
+    protected AstNode mul(boolean required) throws Scanner.ScanException, ParseException {
         AstNode v = unary(required);
         if (v == null) {
             return null;
@@ -692,13 +576,8 @@ public class Parser {
                     v = createAstBinary(v, unary(true), AstBinary.MOD);
                     break;
                 case EXTENSION:
-                    if (
-                        getExtensionHandler(token).getExtensionPoint() ==
-                        ExtensionPoint.MUL
-                    ) {
-                        v =
-                            getExtensionHandler(consumeToken())
-                                .createAstNode(v, unary(true));
+                    if (getExtensionHandler(token).getExtensionPoint() == ExtensionPoint.MUL) {
+                        v = getExtensionHandler(consumeToken()).createAstNode(v, unary(true));
                         break;
                     }
                 default:
@@ -710,8 +589,7 @@ public class Parser {
     /**
      * unary := &lt;NOT&gt; unary | &lt;MINUS&gt; unary | &lt;EMPTY&gt; unary | value
      */
-    protected AstNode unary(boolean required)
-        throws Scanner.ScanException, ParseException {
+    protected AstNode unary(boolean required) throws Scanner.ScanException, ParseException {
         AstNode v = null;
         switch (token.getSymbol()) {
             case NOT:
@@ -727,13 +605,8 @@ public class Parser {
                 v = createAstUnary(unary(true), AstUnary.EMPTY);
                 break;
             case EXTENSION:
-                if (
-                    getExtensionHandler(token).getExtensionPoint() ==
-                    ExtensionPoint.UNARY
-                ) {
-                    v =
-                        getExtensionHandler(consumeToken())
-                            .createAstNode(unary(true));
+                if (getExtensionHandler(token).getExtensionPoint() == ExtensionPoint.UNARY) {
+                    v = getExtensionHandler(consumeToken()).createAstNode(unary(true));
                     break;
                 }
             default:
@@ -762,8 +635,7 @@ public class Parser {
             switch (token.getSymbol()) {
                 case DOT:
                     consumeToken();
-                    String name = consumeToken(Scanner.Symbol.IDENTIFIER)
-                        .getImage();
+                    String name = consumeToken(Scanner.Symbol.IDENTIFIER).getImage();
                     AstDot dot = createAstDot(v, name, lvalue);
                     if (
                         token.getSymbol() == Scanner.Symbol.LPAREN &&
@@ -777,16 +649,9 @@ public class Parser {
                 case LBRACK:
                     consumeToken();
                     AstNode property = expr(true);
-                    boolean strict = !context.isEnabled(
-                        Builder.Feature.NULL_PROPERTIES
-                    );
+                    boolean strict = !context.isEnabled(Builder.Feature.NULL_PROPERTIES);
                     consumeToken(Scanner.Symbol.RBRACK);
-                    AstBracket bracket = createAstBracket(
-                        v,
-                        property,
-                        lvalue,
-                        strict
-                    );
+                    AstBracket bracket = createAstBracket(v, property, lvalue, strict);
                     if (
                         token.getSymbol() == Scanner.Symbol.LPAREN &&
                         context.isEnabled(Builder.Feature.METHOD_INVOCATIONS)
@@ -806,8 +671,7 @@ public class Parser {
      * nonliteral := &lt;IDENTIFIER&gt; | function | &lt;LPAREN&gt; expr &lt;RPAREN&gt;
      * function   := (&lt;IDENTIFIER&gt; &lt;COLON&gt;)? &lt;IDENTIFIER&gt; &lt;LPAREN&gt; list? &lt;RPAREN&gt;
      */
-    protected AstNode nonliteral()
-        throws Scanner.ScanException, ParseException {
+    protected AstNode nonliteral() throws Scanner.ScanException, ParseException {
         AstNode v = null;
         switch (token.getSymbol()) {
             case IDENTIFIER:
@@ -816,14 +680,17 @@ public class Parser {
                     token.getSymbol() == Scanner.Symbol.COLON &&
                     lookahead(0).getSymbol() == Scanner.Symbol.IDENTIFIER &&
                     lookahead(1).getSymbol() == Scanner.Symbol.LPAREN
-                ) { // ns:f(...)
+                ) {
+                    // ns:f(...)
                     consumeToken();
                     name += ":" + token.getImage();
                     consumeToken();
                 }
-                if (token.getSymbol() == Scanner.Symbol.LPAREN) { // function
+                if (token.getSymbol() == Scanner.Symbol.LPAREN) {
+                    // function
                     v = function(name, params());
-                } else { // identifier
+                } else {
+                    // identifier
                     v = identifier(name);
                 }
                 break;
@@ -840,8 +707,7 @@ public class Parser {
     /**
      * params := &lt;LPAREN&gt; (expr (&lt;COMMA&gt; expr)*)? &lt;RPAREN&gt;
      */
-    protected AstParameters params()
-        throws Scanner.ScanException, ParseException {
+    protected AstParameters params() throws Scanner.ScanException, ParseException {
         consumeToken(Scanner.Symbol.LPAREN);
         List<AstNode> l = Collections.emptyList();
         AstNode v = expr(false);
@@ -888,10 +754,7 @@ public class Parser {
                 consumeToken();
                 break;
             case EXTENSION:
-                if (
-                    getExtensionHandler(token).getExtensionPoint() ==
-                    ExtensionPoint.LITERAL
-                ) {
+                if (getExtensionHandler(token).getExtensionPoint() == ExtensionPoint.LITERAL) {
                     v = getExtensionHandler(consumeToken()).createAstNode();
                     break;
                 }
@@ -903,11 +766,7 @@ public class Parser {
         if (functions.isEmpty()) {
             functions = new ArrayList<FunctionNode>(4);
         }
-        AstFunction function = createAstFunction(
-            name,
-            functions.size(),
-            params
-        );
+        AstFunction function = createAstFunction(name, functions.size(), params);
         functions.add(function);
         return function;
     }
@@ -916,10 +775,7 @@ public class Parser {
         if (identifiers.isEmpty()) {
             identifiers = new ArrayList<IdentifierNode>(4);
         }
-        AstIdentifier identifier = createAstIdentifier(
-            name,
-            identifiers.size()
-        );
+        AstIdentifier identifier = createAstIdentifier(name, identifiers.size());
         identifiers.add(identifier);
         return identifier;
     }

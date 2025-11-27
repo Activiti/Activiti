@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package org.activiti.bpmn.converter.parser;
 
 import javax.xml.stream.XMLStreamReader;
-
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BpmnModel;
@@ -28,28 +27,27 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class DataStoreParser implements BpmnXMLConstants {
 
-  public void parse(XMLStreamReader xtr, BpmnModel model) throws Exception {
-    String id = xtr.getAttributeValue(null, ATTRIBUTE_ID);
-    if (StringUtils.isNotEmpty(id)) {
+    public void parse(XMLStreamReader xtr, BpmnModel model) throws Exception {
+        String id = xtr.getAttributeValue(null, ATTRIBUTE_ID);
+        if (StringUtils.isNotEmpty(id)) {
+            DataStore dataStore = new DataStore();
+            dataStore.setId(xtr.getAttributeValue(null, ATTRIBUTE_ID));
 
-      DataStore dataStore = new DataStore();
-      dataStore.setId(xtr.getAttributeValue(null, ATTRIBUTE_ID));
+            String name = xtr.getAttributeValue(null, ATTRIBUTE_NAME);
+            if (StringUtils.isNotEmpty(name)) {
+                dataStore.setName(name);
+            }
 
-      String name = xtr.getAttributeValue(null, ATTRIBUTE_NAME);
-      if (StringUtils.isNotEmpty(name)) {
-        dataStore.setName(name);
-      }
+            String itemSubjectRef = xtr.getAttributeValue(null, ATTRIBUTE_ITEM_SUBJECT_REF);
+            if (StringUtils.isNotEmpty(itemSubjectRef)) {
+                dataStore.setItemSubjectRef(itemSubjectRef);
+            }
 
-      String itemSubjectRef = xtr.getAttributeValue(null, ATTRIBUTE_ITEM_SUBJECT_REF);
-      if (StringUtils.isNotEmpty(itemSubjectRef)) {
-        dataStore.setItemSubjectRef(itemSubjectRef);
-      }
+            BpmnXMLUtil.addXMLLocation(dataStore, xtr);
 
-      BpmnXMLUtil.addXMLLocation(dataStore, xtr);
+            model.addDataStore(dataStore.getId(), dataStore);
 
-      model.addDataStore(dataStore.getId(), dataStore);
-
-      BpmnXMLUtil.parseChildElements(ELEMENT_DATA_STORE, dataStore, xtr, model);
+            BpmnXMLUtil.parseChildElements(ELEMENT_DATA_STORE, dataStore, xtr, model);
+        }
     }
-  }
 }

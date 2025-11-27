@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,18 @@
  */
 package org.activiti.spring.process.variable.types;
 
-import org.activiti.engine.ActivitiException;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.activiti.engine.ActivitiException;
+import org.junit.jupiter.api.Test;
 
 public class BigDecimalVariableTypeTest {
 
     @Test
     public void should_returnException_when_validatingNotNumericType() {
-
         BigDecimalVariableType bigDecimalVariableType = new BigDecimalVariableType();
         List<ActivitiException> exceptionList = new ArrayList<>();
 
@@ -42,7 +40,6 @@ public class BigDecimalVariableTypeTest {
 
     @Test
     public void should_returnEmptyExceptionList_when_validatingNumericType() {
-
         BigDecimalVariableType bigDecimalVariableType = new BigDecimalVariableType();
         List<ActivitiException> exceptionList = new ArrayList<>();
 
@@ -55,7 +52,6 @@ public class BigDecimalVariableTypeTest {
 
     @Test
     public void should_returnAccurateResult_whenParsingDoubleValue() {
-
         BigDecimalVariableType bigDecimalVariableType = new BigDecimalVariableType();
 
         double value1 = 0.1;
@@ -65,5 +61,4 @@ public class BigDecimalVariableTypeTest {
 
         assertThat(parsedValue1.add(parsedValue2)).isEqualTo(new BigDecimal("0.3"));
     }
-
 }

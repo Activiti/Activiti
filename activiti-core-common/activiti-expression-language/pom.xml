@@ -11,7 +11,7 @@
   <artifactId>activiti-expression-language</artifactId>
   <name>Activiti :: Expression Language Support</name>
   <properties>
-    <system.stubs.jupiter.version>2.0.2</system.stubs.jupiter.version>
+    <system.stubs.jupiter.version>2.1.8</system.stubs.jupiter.version>
   </properties>
   <dependencies>
     <dependency>

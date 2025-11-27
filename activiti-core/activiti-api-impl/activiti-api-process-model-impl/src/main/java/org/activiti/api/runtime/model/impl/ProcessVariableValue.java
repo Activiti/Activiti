@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ public class ProcessVariableValue implements Serializable {
     private String type;
     private String value;
 
-    ProcessVariableValue() { }
+    ProcessVariableValue() {}
 
     private ProcessVariableValue(Builder builder) {
         this.type = builder.type;
@@ -78,13 +78,12 @@ public class ProcessVariableValue implements Serializable {
 
     public String toJson() {
         StringBuilder builder = new StringBuilder();
-        builder.append("{\"type\":\"")
-               .append(type)
-               .append("\",\"value\":")
-               .append(Optional.ofNullable(value)
-                               .map(this::escape)
-                               .orElse("null"))
-               .append("}");
+        builder
+            .append("{\"type\":\"")
+            .append(type)
+            .append("\",\"value\":")
+            .append(Optional.ofNullable(value).map(this::escape).orElse("null"))
+            .append("}");
         return builder.toString();
     }
 
@@ -93,28 +92,19 @@ public class ProcessVariableValue implements Serializable {
         return toJson();
     }
 
-    private String escape( String value )
-    {
+    private String escape(String value) {
         StringBuilder builder = new StringBuilder();
-        builder.append( "\"" );
-        for( char c : value.toCharArray() )
-        {
-            if( c == '\'' )
-                builder.append( "\\'" );
-            else if ( c == '\"' )
-                builder.append( "\\\"" );
-            else if( c == '\r' )
-                builder.append( "\\r" );
-            else if( c == '\n' )
-                builder.append( "\\n" );
-            else if( c == '\t' )
-                builder.append( "\\t" );
-            else if( c < 32 || c >= 127 )
-                builder.append( String.format( "\\u%04x", (int)c ) );
-            else
-                builder.append( c );
+        builder.append("\"");
+        for (char c : value.toCharArray()) {
+            if (c == '\'') builder.append("\\'");
+            else if (c == '\"') builder.append("\\\"");
+            else if (c == '\r') builder.append("\\r");
+            else if (c == '\n') builder.append("\\n");
+            else if (c == '\t') builder.append("\\t");
+            else if (c < 32 || c >= 127) builder.append(String.format("\\u%04x", (int) c));
+            else builder.append(c);
         }
-        builder.append( "\"" );
+        builder.append("\"");
         return builder.toString();
     }
 
@@ -130,12 +120,11 @@ public class ProcessVariableValue implements Serializable {
      * Definition of a stage for staged builder.
      */
     public interface ITypeStage {
-
         /**
-        * Builder method for type parameter.
-        * @param type field to set
-        * @return builder
-        */
+         * Builder method for type parameter.
+         * @param type field to set
+         * @return builder
+         */
         public IValueStage type(String type);
     }
 
@@ -143,12 +132,11 @@ public class ProcessVariableValue implements Serializable {
      * Definition of a stage for staged builder.
      */
     public interface IValueStage {
-
         /**
-        * Builder method for value parameter.
-        * @param value field to set
-        * @return builder
-        */
+         * Builder method for value parameter.
+         * @param value field to set
+         * @return builder
+         */
         public IBuildStage value(String value);
     }
 
@@ -156,11 +144,10 @@ public class ProcessVariableValue implements Serializable {
      * Definition of a stage for staged builder.
      */
     public interface IBuildStage {
-
         /**
-        * Builder method of the builder.
-        * @return built class
-        */
+         * Builder method of the builder.
+         * @return built class
+         */
         public ProcessVariableValue build();
     }
 
@@ -172,8 +159,7 @@ public class ProcessVariableValue implements Serializable {
         private String type;
         private String value;
 
-        private Builder() {
-        }
+        private Builder() {}
 
         @Override
         public IValueStage type(String type) {

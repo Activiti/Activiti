@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,29 +38,31 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 // Ignored for the moment. Josh is working on this.
 public class XmlNamespaceProcessScopeTest {
 
-  private ProcessScopeTestEngine processScopeTestEngine;
+    private ProcessScopeTestEngine processScopeTestEngine;
 
-  @Autowired
-  private ProcessEngine processEngine;
+    @Autowired
+    private ProcessEngine processEngine;
 
-  @Before
-  public void before() throws Throwable {
-    this.processEngine.getRepositoryService().createDeployment().addClasspathResource("org/activiti/spring/test/components/spring-component-waiter.bpmn20.xml").deploy();
+    @Before
+    public void before() throws Throwable {
+        this.processEngine.getRepositoryService()
+            .createDeployment()
+            .addClasspathResource("org/activiti/spring/test/components/spring-component-waiter.bpmn20.xml")
+            .deploy();
 
-    processScopeTestEngine = new ProcessScopeTestEngine(this.processEngine);
-  }
-
-  @After
-  public void after() {
-    RepositoryService repositoryService = this.processEngine.getRepositoryService();
-    for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
-      repositoryService.deleteDeployment(deployment.getId(), true);
+        processScopeTestEngine = new ProcessScopeTestEngine(this.processEngine);
     }
-  }
 
-  @Test
-  public void testScopedProxyCreation() throws Throwable {
-    processScopeTestEngine.testScopedProxyCreation();
-  }
+    @After
+    public void after() {
+        RepositoryService repositoryService = this.processEngine.getRepositoryService();
+        for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
+            repositoryService.deleteDeployment(deployment.getId(), true);
+        }
+    }
 
+    @Test
+    public void testScopedProxyCreation() throws Throwable {
+        processScopeTestEngine.testScopedProxyCreation();
+    }
 }

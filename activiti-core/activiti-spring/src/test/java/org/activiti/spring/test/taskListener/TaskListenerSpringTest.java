@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.spring.test.taskListener;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -52,12 +49,15 @@ public class TaskListenerSpringTest extends SpringActivitiTestCase {
         // Completing first task will set variable on process instance
         Task task = taskService.createTaskQuery().singleResult();
         taskService.complete(task.getId());
-        assertThat(runtimeService.getVariable(processInstance.getId(), "calledInExpression")).isEqualTo("task1-complete");
+        assertThat(runtimeService.getVariable(processInstance.getId(), "calledInExpression")).isEqualTo(
+            "task1-complete"
+        );
 
         // Completing second task will set variable on process instance
         task = taskService.createTaskQuery().singleResult();
         taskService.complete(task.getId());
-        assertThat(runtimeService.getVariable(processInstance.getId(), "calledThroughNotify")).isEqualTo("task2-notify");
+        assertThat(runtimeService.getVariable(processInstance.getId(), "calledThroughNotify")).isEqualTo(
+            "task2-notify"
+        );
     }
-
 }

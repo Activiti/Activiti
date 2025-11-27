@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package org.activiti.spring.process;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.activiti.spring.resources.ResourceFinderDescriptor;
 import org.springframework.core.io.Resource;
 
@@ -27,10 +26,11 @@ public class ProcessExtensionResourceFinderDescriptor implements ResourceFinderD
     private String locationPrefix;
     private List<String> locationSuffixes;
 
-    public ProcessExtensionResourceFinderDescriptor(boolean checkResources,
-                                                    String locationPrefix,
-                                                    String locationSuffix) {
-
+    public ProcessExtensionResourceFinderDescriptor(
+        boolean checkResources,
+        String locationPrefix,
+        String locationSuffix
+    ) {
         this.checkResources = checkResources;
         this.locationPrefix = locationPrefix;
         locationSuffixes = new ArrayList<>();
@@ -63,8 +63,5 @@ public class ProcessExtensionResourceFinderDescriptor implements ResourceFinderD
     }
 
     @Override
-    public void validate(List<Resource> resources) {
-
-    }
-
+    public void validate(List<Resource> resources) {}
 }

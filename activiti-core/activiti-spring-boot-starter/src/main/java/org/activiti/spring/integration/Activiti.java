@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.spring.integration;
 
 import org.activiti.engine.ProcessEngine;
@@ -53,11 +52,11 @@ public class Activiti {
         return new MessageHandler() {
             @Override
             public void handleMessage(Message<?> message) throws MessagingException {
-                String executionId = message.getHeaders().containsKey("executionId") ?
-                        (String) message.getHeaders().get("executionId") : (String) null;
+                String executionId = message.getHeaders().containsKey("executionId")
+                    ? (String) message.getHeaders().get("executionId")
+                    : (String) null;
 
-                if (null != executionId)
-                    processEngine.getRuntimeService().trigger(executionId);
+                if (null != executionId) processEngine.getRuntimeService().trigger(executionId);
             }
         };
     }

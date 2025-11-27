@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,8 +26,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.activiti.bpmn.converter.child.ElementParser;
 import org.activiti.bpmn.model.MultiInstanceLoopCharacteristics;
 
-public class MultiInstanceAttributesParser implements
-    ElementParser<MultiInstanceLoopCharacteristics> {
+public class MultiInstanceAttributesParser implements ElementParser<MultiInstanceLoopCharacteristics> {
 
     @Override
     public boolean canParseCurrentElement(XMLStreamReader reader) {
@@ -35,17 +34,18 @@ public class MultiInstanceAttributesParser implements
     }
 
     @Override
-    public void setInformation(XMLStreamReader reader,
-        MultiInstanceLoopCharacteristics loopCharacteristics) {
-        loopCharacteristics.setInputDataItem(reader.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE,
-            ATTRIBUTE_MULTIINSTANCE_COLLECTION));
-        loopCharacteristics.setElementVariable(reader.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE,
-            ATTRIBUTE_MULTIINSTANCE_VARIABLE));
-        loopCharacteristics.setElementIndexVariable(reader.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE,
-            ATTRIBUTE_MULTIINSTANCE_INDEX_VARIABLE));
+    public void setInformation(XMLStreamReader reader, MultiInstanceLoopCharacteristics loopCharacteristics) {
+        loopCharacteristics.setInputDataItem(
+            reader.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_MULTIINSTANCE_COLLECTION)
+        );
+        loopCharacteristics.setElementVariable(
+            reader.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_MULTIINSTANCE_VARIABLE)
+        );
+        loopCharacteristics.setElementIndexVariable(
+            reader.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_MULTIINSTANCE_INDEX_VARIABLE)
+        );
 
-        String isSequentialValue = reader.getAttributeValue(null,
-            ATTRIBUTE_MULTIINSTANCE_SEQUENTIAL);
+        String isSequentialValue = reader.getAttributeValue(null, ATTRIBUTE_MULTIINSTANCE_SEQUENTIAL);
         if (isSequentialValue != null) {
             loopCharacteristics.setSequential(Boolean.valueOf(isSequentialValue));
         }

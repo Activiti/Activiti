@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.editor.language.json.converter;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.Artifact;
 import org.activiti.bpmn.model.Association;
@@ -68,8 +66,7 @@ import org.slf4j.LoggerFactory;
 /**
 
  */
-public abstract class BaseBpmnJsonConverter implements EditorJsonConstants,
-                                                       StencilConstants {
+public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, StencilConstants {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(BaseBpmnJsonConverter.class);
 
@@ -83,14 +80,15 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants,
     protected double subProcessY;
     protected ArrayNode shapesArrayNode;
 
-    public void convertToJson(BaseElement baseElement,
-                              ActivityProcessor processor,
-                              BpmnModel model,
-                              FlowElementsContainer container,
-                              ArrayNode shapesArrayNode,
-                              double subProcessX,
-                              double subProcessY) {
-
+    public void convertToJson(
+        BaseElement baseElement,
+        ActivityProcessor processor,
+        BpmnModel model,
+        FlowElementsContainer container,
+        ArrayNode shapesArrayNode,
+        double subProcessX,
+        double subProcessY
+    ) {
         this.model = model;
         this.processor = processor;
         this.subProcessX = subProcessX;
@@ -116,12 +114,14 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants,
             stencilId = getStencilId(baseElement);
         }
 
-        flowElementNode = BpmnJsonConverterUtil.createChildShape(baseElement.getId(),
-                                                                 stencilId,
-                                                                 graphicInfo.getX() - subProcessX + graphicInfo.getWidth(),
-                                                                 graphicInfo.getY() - subProcessY + graphicInfo.getHeight(),
-                                                                 graphicInfo.getX() - subProcessX,
-                                                                 graphicInfo.getY() - subProcessY);
+        flowElementNode = BpmnJsonConverterUtil.createChildShape(
+            baseElement.getId(),
+            stencilId,
+            graphicInfo.getX() - subProcessX + graphicInfo.getWidth(),
+            graphicInfo.getY() - subProcessY + graphicInfo.getHeight(),
+            graphicInfo.getX() - subProcessX,
+            graphicInfo.getY() - subProcessY
+        );
         shapesArrayNode.add(flowElementNode);
         ObjectNode propertiesNode = objectMapper.createObjectNode();
         propertiesNode.put(PROPERTY_OVERRIDE_ID, baseElement.getId());
@@ -156,60 +156,54 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants,
         }
 
         if (baseElement instanceof Activity) {
-
             Activity activity = (Activity) baseElement;
             for (BoundaryEvent boundaryEvent : activity.getBoundaryEvents()) {
                 outgoingArrayNode.add(BpmnJsonConverterUtil.createResourceNode(boundaryEvent.getId()));
             }
 
-            propertiesNode.put(PROPERTY_ASYNCHRONOUS,
-                               activity.isAsynchronous());
-            propertiesNode.put(PROPERTY_EXCLUSIVE,
-                               !activity.isNotExclusive());
+            propertiesNode.put(PROPERTY_ASYNCHRONOUS, activity.isAsynchronous());
+            propertiesNode.put(PROPERTY_EXCLUSIVE, !activity.isNotExclusive());
 
             if (activity.getLoopCharacteristics() != null) {
                 MultiInstanceLoopCharacteristics loopDef = activity.getLoopCharacteristics();
-                if (StringUtils.isNotEmpty(loopDef.getLoopCardinality()) || StringUtils.isNotEmpty(loopDef.getInputDataItem()) || StringUtils.isNotEmpty(loopDef.getCompletionCondition())) {
-
+                if (
+                    StringUtils.isNotEmpty(loopDef.getLoopCardinality()) ||
+                    StringUtils.isNotEmpty(loopDef.getInputDataItem()) ||
+                    StringUtils.isNotEmpty(loopDef.getCompletionCondition())
+                ) {
                     if (!loopDef.isSequential()) {
-                        propertiesNode.put(PROPERTY_MULTIINSTANCE_TYPE,
-                                           "Parallel");
+                        propertiesNode.put(PROPERTY_MULTIINSTANCE_TYPE, "Parallel");
                     } else {
-                        propertiesNode.put(PROPERTY_MULTIINSTANCE_TYPE,
-                                           "Sequential");
+                        propertiesNode.put(PROPERTY_MULTIINSTANCE_TYPE, "Sequential");
                     }
 
                     if (StringUtils.isNotEmpty(loopDef.getLoopCardinality())) {
-                        propertiesNode.put(PROPERTY_MULTIINSTANCE_CARDINALITY,
-                                           loopDef.getLoopCardinality());
+                        propertiesNode.put(PROPERTY_MULTIINSTANCE_CARDINALITY, loopDef.getLoopCardinality());
                     }
                     if (StringUtils.isNotEmpty(loopDef.getInputDataItem())) {
-                        propertiesNode.put(PROPERTY_MULTIINSTANCE_COLLECTION,
-                                           loopDef.getInputDataItem());
+                        propertiesNode.put(PROPERTY_MULTIINSTANCE_COLLECTION, loopDef.getInputDataItem());
                     }
                     if (StringUtils.isNotEmpty(loopDef.getElementVariable())) {
-                        propertiesNode.put(PROPERTY_MULTIINSTANCE_VARIABLE,
-                                           loopDef.getElementVariable());
+                        propertiesNode.put(PROPERTY_MULTIINSTANCE_VARIABLE, loopDef.getElementVariable());
                     }
                     if (StringUtils.isNotEmpty(loopDef.getCompletionCondition())) {
-                        propertiesNode.put(PROPERTY_MULTIINSTANCE_CONDITION,
-                                           loopDef.getCompletionCondition());
+                        propertiesNode.put(PROPERTY_MULTIINSTANCE_CONDITION, loopDef.getCompletionCondition());
                     }
                 }
             }
 
             if (activity instanceof UserTask) {
-                BpmnJsonConverterUtil.convertListenersToJson(((UserTask) activity).getTaskListeners(),
-                                                             false,
-                                                             propertiesNode);
+                BpmnJsonConverterUtil.convertListenersToJson(
+                    ((UserTask) activity).getTaskListeners(),
+                    false,
+                    propertiesNode
+                );
             }
 
             if (CollectionUtils.isNotEmpty(activity.getDataInputAssociations())) {
                 for (DataAssociation dataAssociation : activity.getDataInputAssociations()) {
                     if (model.getFlowElement(dataAssociation.getSourceRef()) != null) {
-                        createDataAssociation(dataAssociation,
-                                              true,
-                                              activity);
+                        createDataAssociation(dataAssociation, true, activity);
                     }
                 }
             }
@@ -217,9 +211,7 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants,
             if (CollectionUtils.isNotEmpty(activity.getDataOutputAssociations())) {
                 for (DataAssociation dataAssociation : activity.getDataOutputAssociations()) {
                     if (model.getFlowElement(dataAssociation.getTargetRef()) != null) {
-                        createDataAssociation(dataAssociation,
-                                              false,
-                                              activity);
+                        createDataAssociation(dataAssociation, false, activity);
                         outgoingArrayNode.add(BpmnJsonConverterUtil.createResourceNode(dataAssociation.getId()));
                     }
                 }
@@ -227,15 +219,20 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants,
         }
 
         if (baseElement instanceof FlowElement) {
-            BpmnJsonConverterUtil.convertListenersToJson(((FlowElement) baseElement).getExecutionListeners(),
-                                                         true,
-                                                         propertiesNode);
+            BpmnJsonConverterUtil.convertListenersToJson(
+                ((FlowElement) baseElement).getExecutionListeners(),
+                true,
+                propertiesNode
+            );
         }
 
         for (Artifact artifact : container.getArtifacts()) {
             if (artifact instanceof Association) {
                 Association association = (Association) artifact;
-                if (StringUtils.isNotEmpty(association.getSourceRef()) && association.getSourceRef().equals(baseElement.getId())) {
+                if (
+                    StringUtils.isNotEmpty(association.getSourceRef()) &&
+                    association.getSourceRef().equals(baseElement.getId())
+                ) {
                     outgoingArrayNode.add(BpmnJsonConverterUtil.createResourceNode(association.getId()));
                 }
             }
@@ -243,19 +240,18 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants,
 
         if (baseElement instanceof DataStoreReference) {
             for (Process process : model.getProcesses()) {
-                processDataStoreReferences(process,
-                                           baseElement.getId(),
-                                           outgoingArrayNode);
+                processDataStoreReferences(process, baseElement.getId(), outgoingArrayNode);
             }
         }
 
-        flowElementNode.set("outgoing",
-                            outgoingArrayNode);
+        flowElementNode.set("outgoing", outgoingArrayNode);
     }
 
-    protected void processDataStoreReferences(FlowElementsContainer container,
-                                              String dataStoreReferenceId,
-                                              ArrayNode outgoingArrayNode) {
+    protected void processDataStoreReferences(
+        FlowElementsContainer container,
+        String dataStoreReferenceId,
+        ArrayNode outgoingArrayNode
+    ) {
         for (FlowElement flowElement : container.getFlowElements()) {
             if (flowElement instanceof Activity) {
                 Activity activity = (Activity) flowElement;
@@ -268,16 +264,12 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants,
                     }
                 }
             } else if (flowElement instanceof SubProcess) {
-                processDataStoreReferences((SubProcess) flowElement,
-                                           dataStoreReferenceId,
-                                           outgoingArrayNode);
+                processDataStoreReferences((SubProcess) flowElement, dataStoreReferenceId, outgoingArrayNode);
             }
         }
     }
 
-    protected void createDataAssociation(DataAssociation dataAssociation,
-                                         boolean incoming,
-                                         Activity activity) {
+    protected void createDataAssociation(DataAssociation dataAssociation, boolean incoming, Activity activity) {
         String sourceRef = null;
         String targetRef = null;
         if (incoming) {
@@ -288,102 +280,90 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants,
             targetRef = dataAssociation.getTargetRef();
         }
 
-        ObjectNode flowNode = BpmnJsonConverterUtil.createChildShape(dataAssociation.getId(),
-                                                                     STENCIL_DATA_ASSOCIATION,
-                                                                     172,
-                                                                     212,
-                                                                     128,
-                                                                     212);
+        ObjectNode flowNode = BpmnJsonConverterUtil.createChildShape(
+            dataAssociation.getId(),
+            STENCIL_DATA_ASSOCIATION,
+            172,
+            212,
+            128,
+            212
+        );
         ArrayNode dockersArrayNode = objectMapper.createArrayNode();
         ObjectNode dockNode = objectMapper.createObjectNode();
 
-        dockNode.put(EDITOR_BOUNDS_X,
-                     model.getGraphicInfo(sourceRef).getWidth() / 2.0);
-        dockNode.put(EDITOR_BOUNDS_Y,
-                     model.getGraphicInfo(sourceRef).getHeight() / 2.0);
+        dockNode.put(EDITOR_BOUNDS_X, model.getGraphicInfo(sourceRef).getWidth() / 2.0);
+        dockNode.put(EDITOR_BOUNDS_Y, model.getGraphicInfo(sourceRef).getHeight() / 2.0);
         dockersArrayNode.add(dockNode);
 
         if (model.getFlowLocationGraphicInfo(dataAssociation.getId()).size() > 2) {
             for (int i = 1; i < model.getFlowLocationGraphicInfo(dataAssociation.getId()).size() - 1; i++) {
                 GraphicInfo graphicInfo = model.getFlowLocationGraphicInfo(dataAssociation.getId()).get(i);
                 dockNode = objectMapper.createObjectNode();
-                dockNode.put(EDITOR_BOUNDS_X,
-                             graphicInfo.getX());
-                dockNode.put(EDITOR_BOUNDS_Y,
-                             graphicInfo.getY());
+                dockNode.put(EDITOR_BOUNDS_X, graphicInfo.getX());
+                dockNode.put(EDITOR_BOUNDS_Y, graphicInfo.getY());
                 dockersArrayNode.add(dockNode);
             }
         }
 
         dockNode = objectMapper.createObjectNode();
-        dockNode.put(EDITOR_BOUNDS_X,
-                     model.getGraphicInfo(targetRef).getWidth() / 2.0);
-        dockNode.put(EDITOR_BOUNDS_Y,
-                     model.getGraphicInfo(targetRef).getHeight() / 2.0);
+        dockNode.put(EDITOR_BOUNDS_X, model.getGraphicInfo(targetRef).getWidth() / 2.0);
+        dockNode.put(EDITOR_BOUNDS_Y, model.getGraphicInfo(targetRef).getHeight() / 2.0);
         dockersArrayNode.add(dockNode);
-        flowNode.set("dockers",
-                     dockersArrayNode);
+        flowNode.set("dockers", dockersArrayNode);
         ArrayNode outgoingArrayNode = objectMapper.createArrayNode();
         outgoingArrayNode.add(BpmnJsonConverterUtil.createResourceNode(targetRef));
-        flowNode.set("outgoing",
-                     outgoingArrayNode);
-        flowNode.set("target",
-                     BpmnJsonConverterUtil.createResourceNode(targetRef));
+        flowNode.set("outgoing", outgoingArrayNode);
+        flowNode.set("target", BpmnJsonConverterUtil.createResourceNode(targetRef));
 
         ObjectNode propertiesNode = objectMapper.createObjectNode();
-        propertiesNode.put(PROPERTY_OVERRIDE_ID,
-                           dataAssociation.getId());
+        propertiesNode.put(PROPERTY_OVERRIDE_ID, dataAssociation.getId());
 
-        flowNode.set(EDITOR_SHAPE_PROPERTIES,
-                     propertiesNode);
+        flowNode.set(EDITOR_SHAPE_PROPERTIES, propertiesNode);
         shapesArrayNode.add(flowNode);
     }
 
-    public void convertToBpmnModel(JsonNode elementNode,
-                                   JsonNode modelNode,
-                                   ActivityProcessor processor,
-                                   BaseElement parentElement,
-                                   Map<String, JsonNode> shapeMap,
-                                   BpmnModel bpmnModel) {
-
+    public void convertToBpmnModel(
+        JsonNode elementNode,
+        JsonNode modelNode,
+        ActivityProcessor processor,
+        BaseElement parentElement,
+        Map<String, JsonNode> shapeMap,
+        BpmnModel bpmnModel
+    ) {
         this.processor = processor;
         this.model = bpmnModel;
 
-        BaseElement baseElement = convertJsonToElement(elementNode,
-                                                       modelNode,
-                                                       shapeMap);
+        BaseElement baseElement = convertJsonToElement(elementNode, modelNode, shapeMap);
         baseElement.setId(BpmnJsonConverterUtil.getElementId(elementNode));
 
         if (baseElement instanceof FlowElement) {
             FlowElement flowElement = (FlowElement) baseElement;
-            flowElement.setName(getPropertyValueAsString(PROPERTY_NAME,
-                                                         elementNode));
-            flowElement.setDocumentation(getPropertyValueAsString(PROPERTY_DOCUMENTATION,
-                                                                  elementNode));
+            flowElement.setName(getPropertyValueAsString(PROPERTY_NAME, elementNode));
+            flowElement.setDocumentation(getPropertyValueAsString(PROPERTY_DOCUMENTATION, elementNode));
 
-            BpmnJsonConverterUtil.convertJsonToListeners(elementNode,
-                                                         flowElement);
+            BpmnJsonConverterUtil.convertJsonToListeners(elementNode, flowElement);
 
             if (baseElement instanceof Activity) {
                 Activity activity = (Activity) baseElement;
-                activity.setAsynchronous(getPropertyValueAsBoolean(PROPERTY_ASYNCHRONOUS,
-                                                                   elementNode));
-                activity.setNotExclusive(!getPropertyValueAsBoolean(PROPERTY_EXCLUSIVE,
-                                                                    elementNode));
+                activity.setAsynchronous(getPropertyValueAsBoolean(PROPERTY_ASYNCHRONOUS, elementNode));
+                activity.setNotExclusive(!getPropertyValueAsBoolean(PROPERTY_EXCLUSIVE, elementNode));
 
-                String multiInstanceType = getPropertyValueAsString(PROPERTY_MULTIINSTANCE_TYPE,
-                                                                    elementNode);
-                String multiInstanceCardinality = getPropertyValueAsString(PROPERTY_MULTIINSTANCE_CARDINALITY,
-                                                                           elementNode);
-                String multiInstanceCollection = getPropertyValueAsString(PROPERTY_MULTIINSTANCE_COLLECTION,
-                                                                          elementNode);
-                String multiInstanceCondition = getPropertyValueAsString(PROPERTY_MULTIINSTANCE_CONDITION,
-                                                                         elementNode);
+                String multiInstanceType = getPropertyValueAsString(PROPERTY_MULTIINSTANCE_TYPE, elementNode);
+                String multiInstanceCardinality = getPropertyValueAsString(
+                    PROPERTY_MULTIINSTANCE_CARDINALITY,
+                    elementNode
+                );
+                String multiInstanceCollection = getPropertyValueAsString(
+                    PROPERTY_MULTIINSTANCE_COLLECTION,
+                    elementNode
+                );
+                String multiInstanceCondition = getPropertyValueAsString(PROPERTY_MULTIINSTANCE_CONDITION, elementNode);
 
                 if (StringUtils.isNotEmpty(multiInstanceType) && !"none".equalsIgnoreCase(multiInstanceType)) {
-
-                    String multiInstanceVariable = getPropertyValueAsString(PROPERTY_MULTIINSTANCE_VARIABLE,
-                                                                            elementNode);
+                    String multiInstanceVariable = getPropertyValueAsString(
+                        PROPERTY_MULTIINSTANCE_VARIABLE,
+                        elementNode
+                    );
 
                     MultiInstanceLoopCharacteristics multiInstanceObject = new MultiInstanceLoopCharacteristics();
                     if ("sequential".equalsIgnoreCase(multiInstanceType)) {
@@ -398,8 +378,7 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants,
                     activity.setLoopCharacteristics(multiInstanceObject);
                 }
             } else if (baseElement instanceof Gateway) {
-                JsonNode flowOrderNode = getProperty(PROPERTY_SEQUENCEFLOW_ORDER,
-                                                     elementNode);
+                JsonNode flowOrderNode = getProperty(PROPERTY_SEQUENCEFLOW_ORDER, elementNode);
                 if (flowOrderNode != null) {
                     flowOrderNode = BpmnJsonConverterUtil.validateIfNodeIsTextual(flowOrderNode);
                     JsonNode orderArray = flowOrderNode.get("sequenceFlowOrder");
@@ -447,26 +426,23 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants,
         }
     }
 
-    protected abstract void convertElementToJson(ObjectNode propertiesNode,
-                                                 BaseElement baseElement);
+    protected abstract void convertElementToJson(ObjectNode propertiesNode, BaseElement baseElement);
 
-    protected abstract BaseElement convertJsonToElement(JsonNode elementNode,
-                                                        JsonNode modelNode,
-                                                        Map<String, JsonNode> shapeMap);
+    protected abstract BaseElement convertJsonToElement(
+        JsonNode elementNode,
+        JsonNode modelNode,
+        Map<String, JsonNode> shapeMap
+    );
 
     protected abstract String getStencilId(BaseElement baseElement);
 
-    protected void setPropertyValue(String name,
-                                    String value,
-                                    ObjectNode propertiesNode) {
+    protected void setPropertyValue(String name, String value, ObjectNode propertiesNode) {
         if (StringUtils.isNotEmpty(value)) {
-            propertiesNode.put(name,
-                               value);
+            propertiesNode.put(name, value);
         }
     }
 
-    protected void addFormProperties(List<FormProperty> formProperties,
-                                     ObjectNode propertiesNode) {
+    protected void addFormProperties(List<FormProperty> formProperties, ObjectNode propertiesNode) {
         if (CollectionUtils.isEmpty(formProperties)) {
             return;
         }
@@ -512,8 +488,7 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants,
         propertiesNode.set(PROPERTY_FORM_PROPERTIES, formPropertiesNode);
     }
 
-    protected void addFieldExtensions(List<FieldExtension> extensions,
-                                      ObjectNode propertiesNode) {
+    protected void addFieldExtensions(List<FieldExtension> extensions, ObjectNode propertiesNode) {
         ObjectNode fieldExtensionsNode = objectMapper.createObjectNode();
         ArrayNode itemsNode = objectMapper.createArrayNode();
         for (FieldExtension extension : extensions) {
@@ -532,59 +507,51 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants,
         propertiesNode.set(PROPERTY_SERVICETASK_FIELDS, fieldExtensionsNode);
     }
 
-    protected void addEventProperties(Event event,
-                                      ObjectNode propertiesNode) {
+    protected void addEventProperties(Event event, ObjectNode propertiesNode) {
         List<EventDefinition> eventDefinitions = event.getEventDefinitions();
         if (eventDefinitions.size() == 1) {
-
             EventDefinition eventDefinition = eventDefinitions.get(0);
             if (eventDefinition instanceof ErrorEventDefinition) {
                 ErrorEventDefinition errorDefinition = (ErrorEventDefinition) eventDefinition;
                 if (StringUtils.isNotEmpty(errorDefinition.getErrorRef())) {
-                    propertiesNode.put(PROPERTY_ERRORREF,
-                                       errorDefinition.getErrorRef());
+                    propertiesNode.put(PROPERTY_ERRORREF, errorDefinition.getErrorRef());
                 }
             } else if (eventDefinition instanceof SignalEventDefinition) {
                 SignalEventDefinition signalDefinition = (SignalEventDefinition) eventDefinition;
                 if (StringUtils.isNotEmpty(signalDefinition.getSignalRef())) {
-                    propertiesNode.put(PROPERTY_SIGNALREF,
-                                       signalDefinition.getSignalRef());
+                    propertiesNode.put(PROPERTY_SIGNALREF, signalDefinition.getSignalRef());
                 }
             } else if (eventDefinition instanceof MessageEventDefinition) {
                 MessageEventDefinition messageDefinition = (MessageEventDefinition) eventDefinition;
                 if (StringUtils.isNotEmpty(messageDefinition.getMessageRef())) {
-                    propertiesNode.put(PROPERTY_MESSAGEREF,
-                                       messageDefinition.getMessageRef());
+                    propertiesNode.put(PROPERTY_MESSAGEREF, messageDefinition.getMessageRef());
                 }
             } else if (eventDefinition instanceof TimerEventDefinition) {
                 TimerEventDefinition timerDefinition = (TimerEventDefinition) eventDefinition;
                 if (StringUtils.isNotEmpty(timerDefinition.getTimeDuration())) {
-                    propertiesNode.put(PROPERTY_TIMER_DURATON,
-                                       timerDefinition.getTimeDuration());
+                    propertiesNode.put(PROPERTY_TIMER_DURATON, timerDefinition.getTimeDuration());
                 }
                 if (StringUtils.isNotEmpty(timerDefinition.getTimeCycle())) {
-                    propertiesNode.put(PROPERTY_TIMER_CYCLE,
-                                       timerDefinition.getTimeCycle());
+                    propertiesNode.put(PROPERTY_TIMER_CYCLE, timerDefinition.getTimeCycle());
                 }
                 if (StringUtils.isNotEmpty(timerDefinition.getTimeDate())) {
-                    propertiesNode.put(PROPERTY_TIMER_DATE,
-                                       timerDefinition.getTimeDate());
+                    propertiesNode.put(PROPERTY_TIMER_DATE, timerDefinition.getTimeDate());
                 }
                 if (StringUtils.isNotEmpty(timerDefinition.getEndDate())) {
-                    propertiesNode.put(PROPERTY_TIMER_CYCLE_END_DATE,
-                                       timerDefinition.getEndDate());
+                    propertiesNode.put(PROPERTY_TIMER_CYCLE_END_DATE, timerDefinition.getEndDate());
                 }
             } else if (eventDefinition instanceof TerminateEventDefinition) {
                 TerminateEventDefinition terminateEventDefinition = (TerminateEventDefinition) eventDefinition;
                 propertiesNode.put(PROPERTY_TERMINATE_ALL, terminateEventDefinition.isTerminateAll());
-                propertiesNode.put(PROPERTY_TERMINATE_MULTI_INSTANCE, terminateEventDefinition.isTerminateMultiInstance());
+                propertiesNode.put(
+                    PROPERTY_TERMINATE_MULTI_INSTANCE,
+                    terminateEventDefinition.isTerminateMultiInstance()
+                );
             }
         }
     }
 
-    protected void convertJsonToFormProperties(JsonNode objectNode,
-                                               BaseElement element) {
-
+    protected void convertJsonToFormProperties(JsonNode objectNode, BaseElement element) {
         JsonNode formPropertiesNode = getProperty(PROPERTY_FORM_PROPERTIES, objectNode);
         if (formPropertiesNode != null) {
             formPropertiesNode = BpmnJsonConverterUtil.validateIfNodeIsTextual(formPropertiesNode);
@@ -593,29 +560,26 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants,
                 for (JsonNode formNode : propertiesArray) {
                     JsonNode formIdNode = formNode.get(PROPERTY_FORM_ID);
                     if (formIdNode != null && StringUtils.isNotEmpty(formIdNode.asText())) {
-
                         FormProperty formProperty = new FormProperty();
                         formProperty.setId(formIdNode.asText());
-                        formProperty.setName(getValueAsString(PROPERTY_FORM_NAME,
-                                                              formNode));
-                        formProperty.setType(getValueAsString(PROPERTY_FORM_TYPE,
-                                                              formNode));
-                        formProperty.setExpression(getValueAsString(PROPERTY_FORM_EXPRESSION,
-                                                                    formNode));
-                        formProperty.setVariable(getValueAsString(PROPERTY_FORM_VARIABLE,
-                                                                  formNode));
+                        formProperty.setName(getValueAsString(PROPERTY_FORM_NAME, formNode));
+                        formProperty.setType(getValueAsString(PROPERTY_FORM_TYPE, formNode));
+                        formProperty.setExpression(getValueAsString(PROPERTY_FORM_EXPRESSION, formNode));
+                        formProperty.setVariable(getValueAsString(PROPERTY_FORM_VARIABLE, formNode));
 
                         if ("date".equalsIgnoreCase(formProperty.getType())) {
-                            formProperty.setDatePattern(getValueAsString(PROPERTY_FORM_DATE_PATTERN,
-                                                                         formNode));
+                            formProperty.setDatePattern(getValueAsString(PROPERTY_FORM_DATE_PATTERN, formNode));
                         } else if ("enum".equalsIgnoreCase(formProperty.getType())) {
                             JsonNode enumValuesNode = formNode.get(PROPERTY_FORM_ENUM_VALUES);
                             if (enumValuesNode != null) {
                                 List<FormValue> formValueList = new ArrayList<FormValue>();
                                 for (JsonNode enumNode : enumValuesNode) {
-                                    if (enumNode.get(PROPERTY_FORM_ENUM_VALUES_ID) != null && !enumNode.get(PROPERTY_FORM_ENUM_VALUES_ID).isNull() && enumNode.get(PROPERTY_FORM_ENUM_VALUES_NAME) != null
-                                            && !enumNode.get(PROPERTY_FORM_ENUM_VALUES_NAME).isNull()) {
-
+                                    if (
+                                        enumNode.get(PROPERTY_FORM_ENUM_VALUES_ID) != null &&
+                                        !enumNode.get(PROPERTY_FORM_ENUM_VALUES_ID).isNull() &&
+                                        enumNode.get(PROPERTY_FORM_ENUM_VALUES_NAME) != null &&
+                                        !enumNode.get(PROPERTY_FORM_ENUM_VALUES_NAME).isNull()
+                                    ) {
                                         FormValue formValue = new FormValue();
                                         formValue.setId(enumNode.get(PROPERTY_FORM_ENUM_VALUES_ID).asText());
                                         formValue.setName(enumNode.get(PROPERTY_FORM_ENUM_VALUES_NAME).asText());
@@ -631,12 +595,9 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants,
                             }
                         }
 
-                        formProperty.setRequired(getValueAsBoolean(PROPERTY_FORM_REQUIRED,
-                                                                   formNode));
-                        formProperty.setReadable(getValueAsBoolean(PROPERTY_FORM_READABLE,
-                                                                   formNode));
-                        formProperty.setWriteable(getValueAsBoolean(PROPERTY_FORM_WRITABLE,
-                                                                    formNode));
+                        formProperty.setRequired(getValueAsBoolean(PROPERTY_FORM_REQUIRED, formNode));
+                        formProperty.setReadable(getValueAsBoolean(PROPERTY_FORM_READABLE, formNode));
+                        formProperty.setWriteable(getValueAsBoolean(PROPERTY_FORM_WRITABLE, formNode));
 
                         if (element instanceof StartEvent) {
                             ((StartEvent) element).getFormProperties().add(formProperty);
@@ -649,17 +610,11 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants,
         }
     }
 
-    protected void convertJsonToTimerDefinition(JsonNode objectNode,
-                                                Event event) {
-
-        String timeDate = getPropertyValueAsString(PROPERTY_TIMER_DATE,
-                                                   objectNode);
-        String timeCycle = getPropertyValueAsString(PROPERTY_TIMER_CYCLE,
-                                                    objectNode);
-        String timeDuration = getPropertyValueAsString(PROPERTY_TIMER_DURATON,
-                                                       objectNode);
-        String endDate = getPropertyValueAsString(PROPERTY_TIMER_CYCLE_END_DATE,
-                                                  objectNode);
+    protected void convertJsonToTimerDefinition(JsonNode objectNode, Event event) {
+        String timeDate = getPropertyValueAsString(PROPERTY_TIMER_DATE, objectNode);
+        String timeCycle = getPropertyValueAsString(PROPERTY_TIMER_CYCLE, objectNode);
+        String timeDuration = getPropertyValueAsString(PROPERTY_TIMER_DURATON, objectNode);
+        String endDate = getPropertyValueAsString(PROPERTY_TIMER_CYCLE_END_DATE, objectNode);
 
         TimerEventDefinition eventDefinition = new TimerEventDefinition();
         if (StringUtils.isNotEmpty(timeDate)) {
@@ -677,35 +632,28 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants,
         event.getEventDefinitions().add(eventDefinition);
     }
 
-    protected void convertJsonToSignalDefinition(JsonNode objectNode,
-                                                 Event event) {
-        String signalRef = getPropertyValueAsString(PROPERTY_SIGNALREF,
-                                                    objectNode);
+    protected void convertJsonToSignalDefinition(JsonNode objectNode, Event event) {
+        String signalRef = getPropertyValueAsString(PROPERTY_SIGNALREF, objectNode);
         SignalEventDefinition eventDefinition = new SignalEventDefinition();
         eventDefinition.setSignalRef(signalRef);
         event.getEventDefinitions().add(eventDefinition);
     }
 
-    protected void convertJsonToMessageDefinition(JsonNode objectNode,
-                                                  Event event) {
-        String messageRef = getPropertyValueAsString(PROPERTY_MESSAGEREF,
-                                                     objectNode);
+    protected void convertJsonToMessageDefinition(JsonNode objectNode, Event event) {
+        String messageRef = getPropertyValueAsString(PROPERTY_MESSAGEREF, objectNode);
         MessageEventDefinition eventDefinition = new MessageEventDefinition();
         eventDefinition.setMessageRef(messageRef);
         event.getEventDefinitions().add(eventDefinition);
     }
 
-    protected void convertJsonToErrorDefinition(JsonNode objectNode,
-                                                Event event) {
-        String errorRef = getPropertyValueAsString(PROPERTY_ERRORREF,
-                                                   objectNode);
+    protected void convertJsonToErrorDefinition(JsonNode objectNode, Event event) {
+        String errorRef = getPropertyValueAsString(PROPERTY_ERRORREF, objectNode);
         ErrorEventDefinition eventDefinition = new ErrorEventDefinition();
         eventDefinition.setErrorRef(errorRef);
         event.getEventDefinitions().add(eventDefinition);
     }
 
-    protected String getValueAsString(String name,
-                                      JsonNode objectNode) {
+    protected String getValueAsString(String name, JsonNode objectNode) {
         String propertyValue = null;
         JsonNode propertyNode = objectNode.get(name);
         if (propertyNode != null && !propertyNode.isNull()) {
@@ -714,8 +662,7 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants,
         return propertyValue;
     }
 
-    protected boolean getValueAsBoolean(String name,
-                                        JsonNode objectNode) {
+    protected boolean getValueAsBoolean(String name, JsonNode objectNode) {
         boolean propertyValue = false;
         JsonNode propertyNode = objectNode.get(name);
         if (propertyNode != null && !propertyNode.isNull()) {
@@ -724,8 +671,7 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants,
         return propertyValue;
     }
 
-    protected List<String> getValueAsList(String name,
-                                          JsonNode objectNode) {
+    protected List<String> getValueAsList(String name, JsonNode objectNode) {
         List<String> resultList = new ArrayList<String>();
         JsonNode valuesNode = objectNode.get(name);
         if (valuesNode != null) {
@@ -738,13 +684,10 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants,
         return resultList;
     }
 
-    protected void addField(String name,
-                            JsonNode elementNode,
-                            ServiceTask task) {
+    protected void addField(String name, JsonNode elementNode, ServiceTask task) {
         FieldExtension field = new FieldExtension();
         field.setFieldName(name.substring(8));
-        String value = getPropertyValueAsString(name,
-                                                elementNode);
+        String value = getPropertyValueAsString(name, elementNode);
         if (StringUtils.isNotEmpty(value)) {
             if ((value.contains("${") || value.contains("#{")) && value.contains("}")) {
                 field.setExpression(value);
@@ -755,14 +698,10 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants,
         }
     }
 
-    protected void addField(String name,
-                            String propertyName,
-                            JsonNode elementNode,
-                            ServiceTask task) {
+    protected void addField(String name, String propertyName, JsonNode elementNode, ServiceTask task) {
         FieldExtension field = new FieldExtension();
         field.setFieldName(name);
-        String value = getPropertyValueAsString(propertyName,
-                                                elementNode);
+        String value = getPropertyValueAsString(propertyName, elementNode);
         if (StringUtils.isNotEmpty(value)) {
             if ((value.contains("${") || value.contains("#{")) && value.contains("}")) {
                 field.setExpression(value);
@@ -773,28 +712,20 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants,
         }
     }
 
-    protected String getPropertyValueAsString(String name,
-                                              JsonNode objectNode) {
-        return JsonConverterUtil.getPropertyValueAsString(name,
-                                                          objectNode);
+    protected String getPropertyValueAsString(String name, JsonNode objectNode) {
+        return JsonConverterUtil.getPropertyValueAsString(name, objectNode);
     }
 
-    protected boolean getPropertyValueAsBoolean(String name,
-                                                JsonNode objectNode) {
-        return JsonConverterUtil.getPropertyValueAsBoolean(name,
-                                                           objectNode);
+    protected boolean getPropertyValueAsBoolean(String name, JsonNode objectNode) {
+        return JsonConverterUtil.getPropertyValueAsBoolean(name, objectNode);
     }
 
-    protected List<String> getPropertyValueAsList(String name,
-                                                  JsonNode objectNode) {
-        return JsonConverterUtil.getPropertyValueAsList(name,
-                                                        objectNode);
+    protected List<String> getPropertyValueAsList(String name, JsonNode objectNode) {
+        return JsonConverterUtil.getPropertyValueAsList(name, objectNode);
     }
 
-    protected JsonNode getProperty(String name,
-                                   JsonNode objectNode) {
-        return JsonConverterUtil.getProperty(name,
-                                             objectNode);
+    protected JsonNode getProperty(String name, JsonNode objectNode) {
+        return JsonConverterUtil.getProperty(name, objectNode);
     }
 
     protected String convertListToCommaSeparatedString(List<String> stringList) {

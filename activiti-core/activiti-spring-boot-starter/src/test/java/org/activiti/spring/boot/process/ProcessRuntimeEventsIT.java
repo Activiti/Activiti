@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ProcessRuntimeEventsIT {
 
@@ -76,40 +75,38 @@ public class ProcessRuntimeEventsIT {
     }
 
     @AfterEach
-    public void cleanUp(){
+    public void cleanUp() {
         processCleanUpUtil.cleanUpWithAdmin();
     }
 
     @Test
     public void taskCreatedEvent_should_includeCandidates() {
         //given
-        processRuntime.start(ProcessPayloadBuilder.start()
-            .withProcessDefinitionKey(SINGLE_TASK_PROCESS)
-            .build());
+        processRuntime.start(ProcessPayloadBuilder.start().withProcessDefinitionKey(SINGLE_TASK_PROCESS).build());
 
         //when
         List<TaskCreatedEvent> events = localEventSource.getEvents(TaskCreatedEvent.class);
 
         //then
         assertThat(events)
-            .extracting(
-                event -> event.getEntity().getCandidateUsers(),
-                event -> event.getEntity().getCandidateGroups()
-                )
+            .extracting(event -> event.getEntity().getCandidateUsers(), event -> event.getEntity().getCandidateGroups())
             .containsExactly(
-                tuple(Arrays.asList("firstCandidateUser", "secondCandidateUser"),
-                    Arrays.asList("firstCandidateGroup", "secondCandidateGroup"))
+                tuple(
+                    Arrays.asList("firstCandidateUser", "secondCandidateUser"),
+                    Arrays.asList("firstCandidateGroup", "secondCandidateGroup")
+                )
             );
-
     }
 
     @Test
-    public void should_emitWithSameProcessInstanceForAllSequenceFlowTakenEvents(){
+    public void should_emitWithSameProcessInstanceForAllSequenceFlowTakenEvents() {
         //when
-        ProcessInstance singleTaskProcess = processRuntime.start(ProcessPayloadBuilder.start()
+        ProcessInstance singleTaskProcess = processRuntime.start(
+            ProcessPayloadBuilder.start()
                 .withProcessDefinitionKey(SINGLE_TASK_PROCESS)
                 .withVariable("name", "peter")
-                .build());
+                .build()
+        );
 
         //then
         assertThat(localEventSource.getEvents(BPMNSequenceFlowTakenEvent.class))
@@ -118,12 +115,14 @@ public class ProcessRuntimeEventsIT {
     }
 
     @Test
-    public void should_emitSingleVariableCreatedEvent_when_createdWithVariable(){
+    public void should_emitSingleVariableCreatedEvent_when_createdWithVariable() {
         //when
-        ProcessInstance singleTaskProcess = processRuntime.start(ProcessPayloadBuilder.start()
-            .withProcessDefinitionKey(SINGLE_TASK_PROCESS)
-            .withVariable("name", "peter")
-            .build());
+        ProcessInstance singleTaskProcess = processRuntime.start(
+            ProcessPayloadBuilder.start()
+                .withProcessDefinitionKey(SINGLE_TASK_PROCESS)
+                .withVariable("name", "peter")
+                .build()
+        );
 
         //then
         List<VariableCreatedEvent> variableCreatedEvents = localEventSource.getEvents(VariableCreatedEvent.class);
@@ -138,15 +137,16 @@ public class ProcessRuntimeEventsIT {
     }
 
     @Test
-    public void should_emitThreeVariableCreatedEvents_when_createdWithThreeVariables(){
+    public void should_emitThreeVariableCreatedEvents_when_createdWithThreeVariables() {
         //when
-        ProcessInstance singleTaskProcess = processRuntime.start(ProcessPayloadBuilder.start()
-            .withProcessDefinitionKey(SINGLE_TASK_PROCESS)
-            .withVariables(Map.ofEntries(
-                Map.entry("name", "peter"),
-                Map.entry("active", true),
-                Map.entry("age", 25)))
-            .build());
+        ProcessInstance singleTaskProcess = processRuntime.start(
+            ProcessPayloadBuilder.start()
+                .withProcessDefinitionKey(SINGLE_TASK_PROCESS)
+                .withVariables(
+                    Map.ofEntries(Map.entry("name", "peter"), Map.entry("active", true), Map.entry("age", 25))
+                )
+                .build()
+        );
 
         //then
         List<VariableCreatedEvent> variableCreatedEvents = localEventSource.getEvents(VariableCreatedEvent.class);
@@ -160,18 +160,22 @@ public class ProcessRuntimeEventsIT {
     }
 
     @Test
-    public void should_emitSingleVariableUpdatedEvent_when_updatedWithVariable(){
+    public void should_emitSingleVariableUpdatedEvent_when_updatedWithVariable() {
         //given
-        ProcessInstance singleTaskProcess = processRuntime.start(ProcessPayloadBuilder.start()
-            .withProcessDefinitionKey(SINGLE_TASK_PROCESS)
-            .withVariable("name", "peter")
-            .build());
+        ProcessInstance singleTaskProcess = processRuntime.start(
+            ProcessPayloadBuilder.start()
+                .withProcessDefinitionKey(SINGLE_TASK_PROCESS)
+                .withVariable("name", "peter")
+                .build()
+        );
 
         //when
-        processRuntime.setVariables(ProcessPayloadBuilder.setVariables(singleTaskProcess)
-            .withVariable("name", "paul")
-            .withProcessInstance(singleTaskProcess)
-            .build());
+        processRuntime.setVariables(
+            ProcessPayloadBuilder.setVariables(singleTaskProcess)
+                .withVariable("name", "paul")
+                .withProcessInstance(singleTaskProcess)
+                .build()
+        );
 
         //then
         List<VariableUpdatedEvent> variableCreatedEvents = localEventSource.getEvents(VariableUpdatedEvent.class);
@@ -188,11 +192,13 @@ public class ProcessRuntimeEventsIT {
     @Test
     public void should_emmitEventOnProcessDeletion() {
         //given
-        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder.start()
-            .withProcessDefinitionKey(SINGLE_TASK_PROCESS)
-            .withName("to be deleted")
-            .withBusinessKey("my business key")
-            .build());
+        ProcessInstance processInstance = processRuntime.start(
+            ProcessPayloadBuilder.start()
+                .withProcessDefinitionKey(SINGLE_TASK_PROCESS)
+                .withName("to be deleted")
+                .withBusinessKey("my business key")
+                .build()
+        );
 
         //when
         processRuntime.delete(ProcessPayloadBuilder.delete(processInstance));
@@ -204,7 +210,9 @@ public class ProcessRuntimeEventsIT {
         ProcessCancelledEvent processCancelledEvent = processCancelledEvents.get(0);
         assertThat(processCancelledEvent.getCause()).isEqualTo("process instance deleted");
         assertThat(processCancelledEvent.getEntity().getId()).isEqualTo(processInstance.getId());
-        assertThat(processCancelledEvent.getEntity().getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
+        assertThat(processCancelledEvent.getEntity().getProcessDefinitionId()).isEqualTo(
+            processInstance.getProcessDefinitionId()
+        );
         assertThat(processCancelledEvent.getEntity().getName()).isEqualTo(processInstance.getName());
         assertThat(processCancelledEvent.getEntity().getBusinessKey()).isEqualTo(processInstance.getBusinessKey());
         assertThat(processCancelledEvent.getEntity().getStartDate()).isEqualTo(processInstance.getStartDate());
@@ -218,11 +226,11 @@ public class ProcessRuntimeEventsIT {
         ProcessDefinition childProcessDefinition = processRuntime.processDefinition(SUB_PROCESS_CALL_ACTIVITY);
 
         String instanceName = "myNamedInstance";
-        processRuntime.start(ProcessPayloadBuilder
-            .start()
-            .withProcessDefinitionKey(PARENT_PROCESS_CALL_ACTIVITY)
-            .withName(instanceName)
-            .build()
+        processRuntime.start(
+            ProcessPayloadBuilder.start()
+                .withProcessDefinitionKey(PARENT_PROCESS_CALL_ACTIVITY)
+                .withName(instanceName)
+                .build()
         );
 
         //when
@@ -251,6 +259,7 @@ public class ProcessRuntimeEventsIT {
                     childProcessDefinition.getVersion(),
                     childProcessDefinition.getKey(),
                     childProcessDefinition.getId()
-                ));
+                )
+            );
     }
 }

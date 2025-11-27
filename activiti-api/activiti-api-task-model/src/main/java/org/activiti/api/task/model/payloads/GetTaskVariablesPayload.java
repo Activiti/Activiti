@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,13 @@
 package org.activiti.api.task.model.payloads;
 
 import java.util.UUID;
-
 import org.activiti.api.model.shared.Payload;
 
 public class GetTaskVariablesPayload implements Payload {
 
     private String id;
     private String taskId;
+
     public GetTaskVariablesPayload() {
         this.id = UUID.randomUUID().toString();
     }

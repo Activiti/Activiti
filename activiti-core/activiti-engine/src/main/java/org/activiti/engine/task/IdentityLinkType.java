@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.task;
 
 import org.activiti.engine.TaskService;
@@ -28,16 +27,15 @@ import org.activiti.engine.TaskService;
  */
 public class IdentityLinkType {
 
-  /* Activiti native roles */
+    /* Activiti native roles */
 
-  public static final String ASSIGNEE = "assignee";
+    public static final String ASSIGNEE = "assignee";
 
-  public static final String CANDIDATE = "candidate";
+    public static final String CANDIDATE = "candidate";
 
-  public static final String OWNER = "owner";
+    public static final String OWNER = "owner";
 
-  public static final String STARTER = "starter";
+    public static final String STARTER = "starter";
 
-  public static final String PARTICIPANT = "participant";
-
+    public static final String PARTICIPANT = "participant";
 }

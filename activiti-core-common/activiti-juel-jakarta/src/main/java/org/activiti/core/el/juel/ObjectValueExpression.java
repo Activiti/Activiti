@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.core.el.juel;
 
 import jakarta.el.ELContext;
@@ -41,20 +40,14 @@ public final class ObjectValueExpression extends ValueExpression {
      * @param object the object to wrap
      * @param type the expected type this object will be coerced in {@link #getValue(ELContext)}.
      */
-    public ObjectValueExpression(
-        TypeConverter converter,
-        Object object,
-        Class<?> type
-    ) {
+    public ObjectValueExpression(TypeConverter converter, Object object, Class<?> type) {
         super();
         this.converter = converter;
         this.object = object;
         this.type = type;
 
         if (type == null) {
-            throw new NullPointerException(
-                LocalMessages.get("error.value.notype")
-            );
+            throw new NullPointerException(LocalMessages.get("error.value.notype"));
         }
     }
 
@@ -68,11 +61,7 @@ public final class ObjectValueExpression extends ValueExpression {
             if (type != other.type) {
                 return false;
             }
-            return (
-                object == other.object ||
-                object != null &&
-                object.equals(other.object)
-            );
+            return (object == other.object || (object != null && object.equals(other.object)));
         }
         return false;
     }
@@ -127,12 +116,7 @@ public final class ObjectValueExpression extends ValueExpression {
      */
     @Override
     public void setValue(ELContext context, Object value) {
-        throw new ELException(
-            LocalMessages.get(
-                "error.value.set.rvalue",
-                "<object value expression>"
-            )
-        );
+        throw new ELException(LocalMessages.get("error.value.set.rvalue", "<object value expression>"));
     }
 
     @Override

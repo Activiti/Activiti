@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.delegate.event.impl;
 
 import org.activiti.engine.delegate.event.ActivitiActivityCancelledEvent;
@@ -24,20 +23,21 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
  *
 
  */
-public class ActivitiActivityCancelledEventImpl extends ActivitiActivityEventImpl implements ActivitiActivityCancelledEvent {
+public class ActivitiActivityCancelledEventImpl
+    extends ActivitiActivityEventImpl
+    implements ActivitiActivityCancelledEvent {
 
-  protected Object cause;
+    protected Object cause;
 
-  public ActivitiActivityCancelledEventImpl() {
-    super(ActivitiEventType.ACTIVITY_CANCELLED);
-  }
+    public ActivitiActivityCancelledEventImpl() {
+        super(ActivitiEventType.ACTIVITY_CANCELLED);
+    }
 
-  public void setCause(Object cause) {
-    this.cause = cause;
-  }
+    public void setCause(Object cause) {
+        this.cause = cause;
+    }
 
-  public Object getCause() {
-    return cause;
-  }
-
+    public Object getCause() {
+        return cause;
+    }
 }

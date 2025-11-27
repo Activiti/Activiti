@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -27,26 +25,25 @@ import org.activiti.engine.task.DelegationState;
  */
 public class DelegateTaskCmd extends NeedsActiveTaskCmd<Object> {
 
-  private static final long serialVersionUID = 1L;
-  protected String userId;
+    private static final long serialVersionUID = 1L;
+    protected String userId;
 
-  public DelegateTaskCmd(String taskId, String userId) {
-    super(taskId);
-    this.userId = userId;
-  }
-
-  protected Object execute(CommandContext commandContext, TaskEntity task) {
-    task.setDelegationState(DelegationState.PENDING);
-    if (task.getOwner() == null) {
-      task.setOwner(task.getAssignee());
+    public DelegateTaskCmd(String taskId, String userId) {
+        super(taskId);
+        this.userId = userId;
     }
-    commandContext.getTaskEntityManager().changeTaskAssignee(task, userId);
-    return null;
-  }
 
-  @Override
-  protected String getSuspendedTaskException() {
-    return "Cannot delegate a suspended task";
-  }
+    protected Object execute(CommandContext commandContext, TaskEntity task) {
+        task.setDelegationState(DelegationState.PENDING);
+        if (task.getOwner() == null) {
+            task.setOwner(task.getAssignee());
+        }
+        commandContext.getTaskEntityManager().changeTaskAssignee(task, userId);
+        return null;
+    }
 
+    @Override
+    protected String getSuspendedTaskException() {
+        return "Cannot delegate a suspended task";
+    }
 }

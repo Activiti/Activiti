@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ObjectValue {
+
     private Object object;
 
-    ObjectValue() {
-    }
+    ObjectValue() {}
 
     public ObjectValue(Object object) {
         this.object = object;
@@ -31,5 +31,4 @@ public class ObjectValue {
     public Object getObject() {
         return object;
     }
-
 }

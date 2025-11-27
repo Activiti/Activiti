@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,15 @@
  */
 package org.activiti.engine.impl.bpmn.helper;
 
-import java.util.Map;
-
-import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.junit.Test;
-
 import static java.util.Collections.singletonMap;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.util.Map;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.junit.Test;
 
 /**
 
@@ -55,7 +54,8 @@ public class SubProcessVariableSnapshotterTest {
     }
 
     @Test
-    public void setVariablesSnapshots_should_set_parent_variables_in_the_snapshot_holder_when_parent_is_multi_instance() throws Exception {
+    public void setVariablesSnapshots_should_set_parent_variables_in_the_snapshot_holder_when_parent_is_multi_instance()
+        throws Exception {
         //given
         Map<String, Object> parentVariables = singletonMap("parentCount", 1L);
         ExecutionEntity parentExecution = buildExecutionEntity(parentVariables);
@@ -81,7 +81,8 @@ public class SubProcessVariableSnapshotterTest {
     }
 
     @Test
-    public void setVariablesSnapshots_should_not_set_parent_variables_in_the_snapshot_holder_when_parent_is_not_multi_instance() throws Exception {
+    public void setVariablesSnapshots_should_not_set_parent_variables_in_the_snapshot_holder_when_parent_is_not_multi_instance()
+        throws Exception {
         //given
         Map<String, Object> parentVariables = singletonMap("parentCount", 1L);
         ExecutionEntity parentExecution = buildExecutionEntity(parentVariables);
@@ -99,6 +100,4 @@ public class SubProcessVariableSnapshotterTest {
         verify(snapshotHolderExecution).setVariablesLocal(localVariables);
         verify(snapshotHolderExecution, never()).setVariablesLocal(parentVariables);
     }
-
-
 }

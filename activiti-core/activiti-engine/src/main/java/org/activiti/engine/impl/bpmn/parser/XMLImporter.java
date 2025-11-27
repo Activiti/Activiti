@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.bpmn.parser;
 
 import java.util.Map;
-
 import org.activiti.bpmn.model.Import;
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.bpmn.data.StructureDefinition;
@@ -30,18 +28,17 @@ import org.activiti.engine.impl.webservice.WSService;
  */
 @Internal
 public interface XMLImporter {
+    /**
+     * Imports the definitions in the XML declared in element
+     *
+     * @param element
+     *          the declarations to be imported
+     */
+    void importFrom(Import theImport, String sourceSystemId);
 
-  /**
-   * Imports the definitions in the XML declared in element
-   *
-   * @param element
-   *          the declarations to be imported
-   */
-  void importFrom(Import theImport, String sourceSystemId);
+    Map<String, StructureDefinition> getStructures();
 
-  Map<String, StructureDefinition> getStructures();
+    Map<String, WSService> getServices();
 
-  Map<String, WSService> getServices();
-
-  Map<String, WSOperation> getOperations();
+    Map<String, WSOperation> getOperations();
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.spring.integration;
 
 import java.util.Collections;
@@ -21,7 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
-
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.springframework.integration.gateway.MessagingGatewaySupport;
@@ -59,8 +57,7 @@ public class ActivitiInboundGateway extends MessagingGatewaySupport {
         this.sync.add(processInstanceId);
     }
 
-    public void execute(IntegrationActivityBehavior receiveTaskActivityBehavior,
-                        DelegateExecution execution) {
+    public void execute(IntegrationActivityBehavior receiveTaskActivityBehavior, DelegateExecution execution) {
         Map<String, Object> stringObjectMap = new HashMap<String, Object>();
         stringObjectMap.put(executionId, execution.getId());
 
@@ -80,9 +77,12 @@ public class ActivitiInboundGateway extends MessagingGatewaySupport {
         }
     }
 
-    public void signal(IntegrationActivityBehavior receiveTaskActivityBehavior, DelegateExecution execution, String signalName, Object data) {
+    public void signal(
+        IntegrationActivityBehavior receiveTaskActivityBehavior,
+        DelegateExecution execution,
+        String signalName,
+        Object data
+    ) {
         receiveTaskActivityBehavior.leave(execution);
     }
-
-
 }

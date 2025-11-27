@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,8 +40,10 @@ public class TaskRuntimeTerminateEndEventTest {
 
     @Autowired
     private TaskBaseRuntime taskBaseRuntime;
+
     @Autowired
     private ProcessBaseRuntime processBaseRuntime;
+
     @Autowired
     private TaskCleanUpUtil taskCleanUpUtil;
 
@@ -52,13 +54,12 @@ public class TaskRuntimeTerminateEndEventTest {
     private LocalEventSource localEventSource;
 
     @BeforeEach
-    public void setUp(){
+    public void setUp() {
         localEventSource.clearEvents();
-
     }
 
     @AfterEach
-    public void tearDown(){
+    public void tearDown() {
         taskCleanUpUtil.cleanUpWithAdmin();
         localEventSource.clearEvents();
     }
@@ -77,15 +78,15 @@ public class TaskRuntimeTerminateEndEventTest {
 
         List<Task> taskAfterCompleted = taskBaseRuntime.getTasksByProcessInstanceId(process.getId());
         assertThat(taskAfterCompleted).hasSize(0);
-
     }
 
     @Test
-    public void should_CancelledTasksByTerminateEndEventHaveCancellationReasonSet(){
-
+    public void should_CancelledTasksByTerminateEndEventHaveCancellationReasonSet() {
         securityUtil.logInAs("user");
 
-        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(PROCESS_TERMINATE_EVENT);
+        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(
+            PROCESS_TERMINATE_EVENT
+        );
         assertThat(processInstance).isNotNull();
 
         List<Task> tasks = taskBaseRuntime.getTasks(processInstance);
@@ -97,12 +98,9 @@ public class TaskRuntimeTerminateEndEventTest {
         List<Task> tasksAfterCompletion = taskBaseRuntime.getTasks(processInstance);
         assertThat(tasksAfterCompletion).hasSize(0);
 
-        List<TaskCancelledEvent> taskCancelledEvents =
-            localEventSource.getEvents(TaskCancelledEvent.class);
+        List<TaskCancelledEvent> taskCancelledEvents = localEventSource.getEvents(TaskCancelledEvent.class);
 
         assertThat(taskCancelledEvents).hasSize(1);
         assertThat(taskCancelledEvents.get(0).getReason()).contains("Terminated by end event");
-
     }
-
 }

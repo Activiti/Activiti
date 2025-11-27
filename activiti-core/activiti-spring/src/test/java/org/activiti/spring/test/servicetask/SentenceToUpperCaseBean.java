@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.spring.test.servicetask;
 
 import org.activiti.engine.delegate.DelegateExecution;
@@ -23,14 +22,13 @@ import org.activiti.engine.delegate.DelegateExecution;
  */
 public class SentenceToUpperCaseBean {
 
-  protected SentenceGenerator sentenceGenerator;
+    protected SentenceGenerator sentenceGenerator;
 
-  public void setSentence(DelegateExecution execution) {
-    execution.setVariable("myVar", sentenceGenerator.getSentence().toUpperCase());
-  }
+    public void setSentence(DelegateExecution execution) {
+        execution.setVariable("myVar", sentenceGenerator.getSentence().toUpperCase());
+    }
 
-  public void setSentenceGenerator(SentenceGenerator sentenceGenerator) {
-    this.sentenceGenerator = sentenceGenerator;
-  }
-
+    public void setSentenceGenerator(SentenceGenerator sentenceGenerator) {
+        this.sentenceGenerator = sentenceGenerator;
+    }
 }

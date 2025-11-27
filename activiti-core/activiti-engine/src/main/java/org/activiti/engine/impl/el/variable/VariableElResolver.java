@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,8 +40,7 @@ public class VariableElResolver implements VariableScopeItemELResolver {
     public Object resolve(String property, VariableScope variableScope) {
         VariableInstance variableInstance = variableScope.getVariableInstance(property);
         Object value = variableInstance.getValue();
-        if (hasJsonType(variableInstance) && (value instanceof JsonNode) &&
-            ((JsonNode) value).isArray()) {
+        if (hasJsonType(variableInstance) && (value instanceof JsonNode) && ((JsonNode) value).isArray()) {
             return objectMapper.convertValue(value, List.class);
         } else {
             return value;
@@ -49,8 +48,9 @@ public class VariableElResolver implements VariableScopeItemELResolver {
     }
 
     private boolean hasJsonType(VariableInstance variableInstance) {
-        return JsonType.JSON.equals(variableInstance.getTypeName()) ||
-            LongJsonType.LONG_JSON.equals(variableInstance.getTypeName());
+        return (
+            JsonType.JSON.equals(variableInstance.getTypeName()) ||
+            LongJsonType.LONG_JSON.equals(variableInstance.getTypeName())
+        );
     }
-
 }

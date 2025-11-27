@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.bpmn.helper;
 
 import org.activiti.engine.ActivitiException;
@@ -30,40 +29,42 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
  */
 public class ErrorThrowingEventListener extends BaseDelegateEventListener {
 
-  protected String errorCode;
+    protected String errorCode;
 
-  @Override
-  public void onEvent(ActivitiEvent event) {
-    if (isValidEvent(event)) {
-      onEventInternal(event);
+    @Override
+    public void onEvent(ActivitiEvent event) {
+        if (isValidEvent(event)) {
+            onEventInternal(event);
+        }
     }
-  }
 
-  protected void onEventInternal(ActivitiEvent event){
-      ExecutionEntity execution = null;
+    protected void onEventInternal(ActivitiEvent event) {
+        ExecutionEntity execution = null;
 
-      if (event.getExecutionId() != null) {
-          // Get the execution based on the event's execution ID instead
-          execution = Context.getCommandContext().getExecutionEntityManager().findById(event.getExecutionId());
-      }
+        if (event.getExecutionId() != null) {
+            // Get the execution based on the event's execution ID instead
+            execution = Context.getCommandContext().getExecutionEntityManager().findById(event.getExecutionId());
+        }
 
-      if (execution == null) {
-          throw new ActivitiException("No execution context active and event is not related to an execution. No compensation event can be thrown.");
-      }
+        if (execution == null) {
+            throw new ActivitiException(
+                "No execution context active and event is not related to an execution. No compensation event can be thrown."
+            );
+        }
 
-      try {
-          ErrorPropagation.propagateError(errorCode, execution);
-      } catch (Exception e) {
-          throw new ActivitiException("Error while propagating error-event", e);
-      }
-  }
+        try {
+            ErrorPropagation.propagateError(errorCode, execution);
+        } catch (Exception e) {
+            throw new ActivitiException("Error while propagating error-event", e);
+        }
+    }
 
-  public void setErrorCode(String errorCode) {
-    this.errorCode = errorCode;
-  }
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
+    }
 
-  @Override
-  public boolean isFailOnException() {
-    return true;
-  }
+    @Override
+    public boolean isFailOnException() {
+        return true;
+    }
 }

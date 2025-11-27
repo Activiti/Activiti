@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,10 @@ public class ProfileSession {
     protected long totalTime;
 
     protected ThreadLocal<CommandExecutionResult> currentCommandExecution = new ThreadLocal<CommandExecutionResult>();
-    protected Map<String, List<CommandExecutionResult>> commandExecutionResults = new HashMap<String, List<CommandExecutionResult>>();
+    protected Map<String, List<CommandExecutionResult>> commandExecutionResults = new HashMap<
+        String,
+        List<CommandExecutionResult>
+    >();
 
     public ProfileSession(String name) {
         this.name = name;
@@ -111,5 +114,4 @@ public class ProfileSession {
         }
         return result;
     }
-
 }

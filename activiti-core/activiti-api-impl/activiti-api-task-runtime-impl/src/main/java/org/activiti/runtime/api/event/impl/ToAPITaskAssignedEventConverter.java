@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,10 @@
  */
 package org.activiti.runtime.api.event.impl;
 
+import java.util.Optional;
 import org.activiti.api.task.runtime.events.TaskAssignedEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
-
-import java.util.Optional;
 
 public class ToAPITaskAssignedEventConverter implements EventConverter<TaskAssignedEvent, ActivitiEntityEvent> {
 
@@ -31,6 +30,8 @@ public class ToAPITaskAssignedEventConverter implements EventConverter<TaskAssig
 
     @Override
     public Optional<TaskAssignedEvent> from(ActivitiEntityEvent internalEvent) {
-        return Optional.of(new TaskAssignedEventImpl(taskConverter.from((org.activiti.engine.task.Task) internalEvent.getEntity())));
+        return Optional.of(
+            new TaskAssignedEventImpl(taskConverter.from((org.activiti.engine.task.Task) internalEvent.getEntity()))
+        );
     }
 }

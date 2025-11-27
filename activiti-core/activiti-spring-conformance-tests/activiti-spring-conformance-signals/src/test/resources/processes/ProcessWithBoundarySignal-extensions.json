@@ -1,6 +1,6 @@
 {
-  "id":"ProcessWithBoundarySignalModel",
-  "name":"myProcess234.bpmn",
+  "id": "ProcessWithBoundarySignalModel",
+  "name": "myProcess234.bpmn",
   "extensions": {
     "ProcessWithBoundarySignal": {
       "properties": {},

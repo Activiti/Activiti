@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,15 +19,13 @@ import org.activiti.api.process.model.BPMNActivity;
 import org.activiti.api.process.model.events.BPMNActivityEvent;
 import org.activiti.api.runtime.event.impl.RuntimeEventImpl;
 
-public abstract class BPMNActivityEventImpl extends RuntimeEventImpl<BPMNActivity, BPMNActivityEvent.ActivityEvents>
-        implements BPMNActivityEvent {
+public abstract class BPMNActivityEventImpl
+    extends RuntimeEventImpl<BPMNActivity, BPMNActivityEvent.ActivityEvents>
+    implements BPMNActivityEvent {
 
-    public BPMNActivityEventImpl() {
-    }
+    public BPMNActivityEventImpl() {}
 
     public BPMNActivityEventImpl(BPMNActivity entity) {
         super(entity);
     }
-
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package org.activiti.bpmn.converter;
 
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
-
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
@@ -28,29 +27,28 @@ import org.activiti.bpmn.model.EventGateway;
  */
 public class EventGatewayXMLConverter extends BaseBpmnXMLConverter {
 
-  public Class<? extends BaseElement> getBpmnElementType() {
-    return EventGateway.class;
-  }
+    public Class<? extends BaseElement> getBpmnElementType() {
+        return EventGateway.class;
+    }
 
-  @Override
-  protected String getXMLElementName() {
-    return ELEMENT_GATEWAY_EVENT;
-  }
+    @Override
+    protected String getXMLElementName() {
+        return ELEMENT_GATEWAY_EVENT;
+    }
 
-  @Override
-  protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
-    EventGateway gateway = new EventGateway();
-    BpmnXMLUtil.addXMLLocation(gateway, xtr);
-    parseChildElements(getXMLElementName(), gateway, model, xtr);
-    return gateway;
-  }
+    @Override
+    protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
+        EventGateway gateway = new EventGateway();
+        BpmnXMLUtil.addXMLLocation(gateway, xtr);
+        parseChildElements(getXMLElementName(), gateway, model, xtr);
+        return gateway;
+    }
 
-  @Override
-  protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
-  }
+    @Override
+    protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw)
+        throws Exception {}
 
-  @Override
-  protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
-
-  }
+    @Override
+    protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw)
+        throws Exception {}
 }

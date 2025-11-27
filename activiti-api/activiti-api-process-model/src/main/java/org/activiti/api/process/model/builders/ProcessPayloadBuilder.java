@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.activiti.api.process.model.builders;
-
 
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.payloads.CreateProcessInstancePayload;
@@ -35,15 +34,17 @@ public class ProcessPayloadBuilder {
     }
 
     public static StartProcessPayloadBuilder start(StartProcessPayload from) {
-        return new StartProcessPayloadBuilder().withBusinessKey(from.getBusinessKey())
-                                               .withName(from.getName())
-                                               .withProcessDefinitionId(from.getProcessDefinitionId())
-                                               .withProcessDefinitionKey(from.getProcessDefinitionKey())
-                                               .withVariables(from.getVariables());
+        return new StartProcessPayloadBuilder()
+            .withBusinessKey(from.getBusinessKey())
+            .withName(from.getName())
+            .withProcessDefinitionId(from.getProcessDefinitionId())
+            .withProcessDefinitionKey(from.getProcessDefinitionKey())
+            .withVariables(from.getVariables());
     }
 
     public static CreateProcessPayloadBuilder create(CreateProcessInstancePayload from) {
-        return new CreateProcessPayloadBuilder().withName(from.getName())
+        return new CreateProcessPayloadBuilder()
+            .withName(from.getName())
             .withProcessDefinitionId(from.getProcessDefinitionId())
             .withProcessDefinitionKey(from.getProcessDefinitionKey())
             .withBusinessKey(from.getBusinessKey());
@@ -102,7 +103,9 @@ public class ProcessPayloadBuilder {
     }
 
     public static GetProcessInstancesPayload subprocesses(ProcessInstance parentProcessInstance) {
-        return new GetProcessInstancesPayloadBuilder().withParentProcessInstanceId(parentProcessInstance.getId()).build();
+        return new GetProcessInstancesPayloadBuilder()
+            .withParentProcessInstanceId(parentProcessInstance.getId())
+            .build();
     }
 
     /* shortcuts - This needs to be justified and validated before adding any new one*/

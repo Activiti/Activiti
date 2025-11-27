@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.event;
 
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
@@ -27,7 +25,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
  */
 public class MessageEventHandler extends AbstractEventHandler {
 
-    public final static String EVENT_HANDLER_TYPE = "message";
+    public static final String EVENT_HANDLER_TYPE = "message";
 
     private final EventSubscriptionPayloadMappingProvider messageEventVariableMappingProvider;
 
@@ -48,19 +46,16 @@ public class MessageEventHandler extends AbstractEventHandler {
             String messageName = eventSubscription.getEventName();
             String correlationKey = eventSubscription.getConfiguration();
 
-            commandContext.getProcessEngineConfiguration()
-                          .getEventDispatcher()
-                          .dispatchEvent(
-                                         ActivitiEventBuilder.createMessageReceivedEvent(execution,
-                                                                                         messageName,
-                                                                                         correlationKey,
-                                                                                         payload));
+            commandContext
+                .getProcessEngineConfiguration()
+                .getEventDispatcher()
+                .dispatchEvent(
+                    ActivitiEventBuilder.createMessageReceivedEvent(execution, messageName, correlationKey, payload)
+                );
         }
 
-        Object variables = messageEventVariableMappingProvider.apply(payload,
-                                                                     eventSubscription);
+        Object variables = messageEventVariableMappingProvider.apply(payload, eventSubscription);
 
         super.handleEvent(eventSubscription, variables, commandContext);
     }
-
 }

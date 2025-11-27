@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,18 @@
  */
 package org.activiti.bpmn.converter;
 
-import org.activiti.bpmn.model.LinkEventDefinition;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
-
 import static org.activiti.bpmn.constants.BpmnXMLConstants.ATTRIBUTE_ID;
 import static org.activiti.bpmn.constants.BpmnXMLConstants.ATTRIBUTE_NAME;
 import static org.activiti.bpmn.constants.BpmnXMLConstants.BPMN2_NAMESPACE;
 import static org.activiti.bpmn.constants.BpmnXMLConstants.BPMN2_PREFIX;
 
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
+import org.activiti.bpmn.model.LinkEventDefinition;
+import org.apache.commons.lang3.StringUtils;
 
 public class LinkEventDefinitionXMLConverter {
+
     public static final String ELEMENT_EVENT_LINK_DEFINITION = "linkEventDefinition";
     public static final String ATTRIBUTE_LINK_SOURCE = "source";
     public static final String ATTRIBUTE_LINK_TARGET = "target";
@@ -45,7 +44,8 @@ public class LinkEventDefinitionXMLConverter {
         xtw.writeEndElement();
     }
 
-    private void writeAttribute(XMLStreamWriter xtw, String attributeName, String attributeValue) throws XMLStreamException {
+    private void writeAttribute(XMLStreamWriter xtw, String attributeName, String attributeValue)
+        throws XMLStreamException {
         if (attributeValue != null) {
             xtw.writeAttribute(attributeName, attributeValue);
         }

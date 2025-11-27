@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package org.activiti.api.process.model.payloads;
 
 import java.util.Set;
 import java.util.UUID;
-
 import org.activiti.api.model.shared.Payload;
 
 public class GetProcessDefinitionsPayload implements Payload {
@@ -25,16 +24,41 @@ public class GetProcessDefinitionsPayload implements Payload {
     private String id;
     private String processDefinitionId;
     private Set<String> processDefinitionKeys;
+    private String processCategoryToExclude;
+    private boolean latestVersionOnly;
 
     public GetProcessDefinitionsPayload() {
         this.id = UUID.randomUUID().toString();
     }
 
-    public GetProcessDefinitionsPayload(String processDefinitionId,
-                                        Set<String> processDefinitionKeys) {
+    public GetProcessDefinitionsPayload(String processDefinitionId, Set<String> processDefinitionKeys) {
         this();
         this.processDefinitionId = processDefinitionId;
         this.processDefinitionKeys = processDefinitionKeys;
+    }
+
+    public GetProcessDefinitionsPayload(
+        String processDefinitionId,
+        Set<String> processDefinitionKeys,
+        String processCategoryToExclude
+    ) {
+        this();
+        this.processDefinitionId = processDefinitionId;
+        this.processDefinitionKeys = processDefinitionKeys;
+        this.processCategoryToExclude = processCategoryToExclude;
+    }
+
+    public GetProcessDefinitionsPayload(
+        String processDefinitionId,
+        Set<String> processDefinitionKeys,
+        String processCategoryToExclude,
+        boolean latestVersionOnly
+    ) {
+        this();
+        this.processDefinitionId = processDefinitionId;
+        this.processDefinitionKeys = processDefinitionKeys;
+        this.processCategoryToExclude = processCategoryToExclude;
+        this.latestVersionOnly = latestVersionOnly;
     }
 
     @Override
@@ -56,5 +80,17 @@ public class GetProcessDefinitionsPayload implements Payload {
 
     public void setProcessDefinitionKeys(Set<String> processDefinitionKeys) {
         this.processDefinitionKeys = processDefinitionKeys;
+    }
+
+    public String getProcessCategoryToExclude() {
+        return processCategoryToExclude;
+    }
+
+    public boolean isLatestVersionOnly() {
+        return latestVersionOnly;
+    }
+
+    public void setLatestVersionOnly(boolean latestVersionOnly) {
+        this.latestVersionOnly = latestVersionOnly;
     }
 }

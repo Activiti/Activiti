@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,6 +38,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 public class ConformanceBasicProcessInformationTest {
 
     private final String processKey = "processinf-4e42752c-cc4d-429b-9528-7d3df24a9537";
+
     @Autowired
     private ProcessRuntime processRuntime;
 
@@ -67,12 +68,13 @@ public class ConformanceBasicProcessInformationTest {
     public void shouldBeAbleToStartProcess() {
         securityUtil.logInAs("user1");
         //when
-        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder
-                .start()
+        ProcessInstance processInstance = processRuntime.start(
+            ProcessPayloadBuilder.start()
                 .withProcessDefinitionKey(processKey)
                 .withBusinessKey("my-business-key")
                 .withName("my-process-instance-name")
-                .build());
+                .build()
+        );
 
         //then
         assertThat(processInstance).isNotNull();
@@ -83,10 +85,11 @@ public class ConformanceBasicProcessInformationTest {
         // No Process Instance should be found
         Throwable throwable = catchThrowable(() -> processRuntime.processInstance(processInstance.getId()));
 
-        assertThat(throwable)
-                .isInstanceOf(NotFoundException.class);
+        assertThat(throwable).isInstanceOf(NotFoundException.class);
 
-        assertThat(RuntimeTestConfiguration.collectedEvents).extracting(RuntimeEvent::getEventType).containsExactly(
+        assertThat(RuntimeTestConfiguration.collectedEvents)
+            .extracting(RuntimeEvent::getEventType)
+            .containsExactly(
                 ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
                 ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
                 BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
@@ -94,8 +97,8 @@ public class ConformanceBasicProcessInformationTest {
                 BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
                 BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
                 BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
-                ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED);
-
+                ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED
+            );
     }
 
     /*
@@ -119,13 +122,14 @@ public class ConformanceBasicProcessInformationTest {
     public void shouldBeAbleToStartProcessWithVariables() {
         securityUtil.logInAs("user1");
         //when
-        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder
-                .start()
+        ProcessInstance processInstance = processRuntime.start(
+            ProcessPayloadBuilder.start()
                 .withProcessDefinitionKey(processKey)
                 .withBusinessKey("my-business-key")
                 .withName("my-process-instance-name")
                 .withVariable("var1", "value1")
-                .build());
+                .build()
+        );
 
         //then
         assertThat(processInstance).isNotNull();
@@ -136,19 +140,19 @@ public class ConformanceBasicProcessInformationTest {
         // No Process Instance should be found
         Throwable throwable = catchThrowable(() -> processRuntime.processInstance(processInstance.getId()));
 
-        assertThat(throwable)
-                .isInstanceOf(NotFoundException.class);
+        assertThat(throwable).isInstanceOf(NotFoundException.class);
 
         // No Variable Instance should be found
-        throwable = catchThrowable(() -> processRuntime.variables(
-                ProcessPayloadBuilder
-                        .variables()
-                        .withProcessInstanceId(processInstance.getId())
-                        .build()));
-        assertThat(throwable)
-                .isInstanceOf(NotFoundException.class);
+        throwable = catchThrowable(() ->
+            processRuntime.variables(
+                ProcessPayloadBuilder.variables().withProcessInstanceId(processInstance.getId()).build()
+            )
+        );
+        assertThat(throwable).isInstanceOf(NotFoundException.class);
 
-        assertThat(RuntimeTestConfiguration.collectedEvents).extracting(RuntimeEvent::getEventType).containsExactly(
+        assertThat(RuntimeTestConfiguration.collectedEvents)
+            .extracting(RuntimeEvent::getEventType)
+            .containsExactly(
                 ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
                 VariableEvent.VariableEvents.VARIABLE_CREATED,
                 ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
@@ -157,8 +161,7 @@ public class ConformanceBasicProcessInformationTest {
                 BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
                 BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
                 BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
-                ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED);
+                ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED
+            );
     }
-
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,11 @@ import org.activiti.api.process.model.BPMNTimer;
 import org.activiti.api.process.model.events.BPMNTimerEvent;
 import org.activiti.api.process.model.events.BPMNTimerExecutedEvent;
 
-public class BPMNTimerExecutedEventImpl extends RuntimeEventImpl<BPMNTimer, BPMNTimerEvent.TimerEvents> implements BPMNTimerExecutedEvent {
+public class BPMNTimerExecutedEventImpl
+    extends RuntimeEventImpl<BPMNTimer, BPMNTimerEvent.TimerEvents>
+    implements BPMNTimerExecutedEvent {
 
-    public BPMNTimerExecutedEventImpl() {
-    }
+    public BPMNTimerExecutedEventImpl() {}
 
     public BPMNTimerExecutedEventImpl(BPMNTimer entity) {
         super(entity);

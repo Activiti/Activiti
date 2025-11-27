@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,13 @@ package org.activiti.bpmn.model;
 
 public class ParallelGateway extends Gateway {
 
-  public ParallelGateway clone() {
-    ParallelGateway clone = new ParallelGateway();
-    clone.setValues(this);
-    return clone;
-  }
+    public ParallelGateway clone() {
+        ParallelGateway clone = new ParallelGateway();
+        clone.setValues(this);
+        return clone;
+    }
 
-  public void setValues(ParallelGateway otherElement) {
-    super.setValues(otherElement);
-  }
+    public void setValues(ParallelGateway otherElement) {
+        super.setValues(otherElement);
+    }
 }

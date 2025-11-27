@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.core.el.juel.tree.impl.ast;
 
 import jakarta.el.ELContext;
@@ -25,34 +24,16 @@ import org.activiti.core.el.juel.tree.Bindings;
 public class AstBinary extends AstRightValue {
 
     public interface Operator {
-        public Object eval(
-            Bindings bindings,
-            ELContext context,
-            AstNode left,
-            AstNode right
-        );
+        public Object eval(Bindings bindings, ELContext context, AstNode left, AstNode right);
     }
 
     public abstract static class SimpleOperator implements Operator {
 
-        public Object eval(
-            Bindings bindings,
-            ELContext context,
-            AstNode left,
-            AstNode right
-        ) {
-            return apply(
-                bindings,
-                left.eval(bindings, context),
-                right.eval(bindings, context)
-            );
+        public Object eval(Bindings bindings, ELContext context, AstNode left, AstNode right) {
+            return apply(bindings, left.eval(bindings, context), right.eval(bindings, context));
         }
 
-        protected abstract Object apply(
-            TypeConverter converter,
-            Object o1,
-            Object o2
-        );
+        protected abstract Object apply(TypeConverter converter, Object o1, Object o2);
     }
 
     public static final Operator ADD = new SimpleOperator() {
@@ -67,16 +48,8 @@ public class AstBinary extends AstRightValue {
         }
     };
     public static final Operator AND = new Operator() {
-        public Object eval(
-            Bindings bindings,
-            ELContext context,
-            AstNode left,
-            AstNode right
-        ) {
-            Boolean l = bindings.convert(
-                left.eval(bindings, context),
-                Boolean.class
-            );
+        public Object eval(Bindings bindings, ELContext context, AstNode left, AstNode right) {
+            Boolean l = bindings.convert(left.eval(bindings, context), Boolean.class);
             return Boolean.TRUE.equals(l)
                 ? bindings.convert(right.eval(bindings, context), Boolean.class)
                 : Boolean.FALSE;
@@ -187,22 +160,11 @@ public class AstBinary extends AstRightValue {
         }
     };
     public static final Operator OR = new Operator() {
-        public Object eval(
-            Bindings bindings,
-            ELContext context,
-            AstNode left,
-            AstNode right
-        ) {
-            Boolean l = bindings.convert(
-                left.eval(bindings, context),
-                Boolean.class
-            );
+        public Object eval(Bindings bindings, ELContext context, AstNode left, AstNode right) {
+            Boolean l = bindings.convert(left.eval(bindings, context), Boolean.class);
             return Boolean.TRUE.equals(l)
                 ? Boolean.TRUE
-                : bindings.convert(
-                    right.eval(bindings, context),
-                    Boolean.class
-                );
+                : bindings.convert(right.eval(bindings, context), Boolean.class);
         }
 
         @Override

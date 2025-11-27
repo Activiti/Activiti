@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,12 +35,12 @@ public class ProcessExtensionServiceIT {
     @Autowired
     private ProcessExtensionService processExtensionService;
 
-
     @Test
     public void canReadExtension() throws IOException {
-        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
-                .processDefinitionKey("Process_initialVarsProcess")
-                .singleResult();
+        ProcessDefinition processDefinition = repositoryService
+            .createProcessDefinitionQuery()
+            .processDefinitionKey("Process_initialVarsProcess")
+            .singleResult();
 
         boolean hasExtensionsFor = processExtensionService.hasExtensionsFor(processDefinition);
 

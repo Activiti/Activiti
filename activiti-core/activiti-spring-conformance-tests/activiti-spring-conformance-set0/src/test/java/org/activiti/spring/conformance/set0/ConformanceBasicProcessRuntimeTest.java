@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,9 @@
  */
 package org.activiti.spring.conformance.set0;
 
-import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.process.runtime.conf.ProcessRuntimeConfiguration;
@@ -31,11 +32,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ConformanceBasicProcessRuntimeTest {
-
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -56,7 +54,6 @@ public class ConformanceBasicProcessRuntimeTest {
         //then
         assertThat(processRuntimeEventListeners).isNotEmpty();
         assertThat(variableEventListeners).isNotEmpty();
-
     }
 
     @Test
@@ -66,12 +63,13 @@ public class ConformanceBasicProcessRuntimeTest {
         Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0, 50));
 
         List<ProcessDefinition> processDefinitions = processDefinitionPage.getContent();
-        assertThat(processDefinitions).extracting(ProcessDefinition::getName).containsOnly(
+        assertThat(processDefinitions)
+            .extracting(ProcessDefinition::getName)
+            .containsOnly(
                 "Process Information",
                 "Process with Generic  BPMN Task",
                 "UserTask with no User or Group Assignment"
-        );
-
+            );
     }
 
     @Test
@@ -81,19 +79,17 @@ public class ConformanceBasicProcessRuntimeTest {
         Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0, 50));
 
         List<ProcessDefinition> processDefinitions = processDefinitionPage.getContent();
-        assertThat(processDefinitions).extracting(ProcessDefinition::getName).containsOnly(
+        assertThat(processDefinitions)
+            .extracting(ProcessDefinition::getName)
+            .containsOnly(
                 "Process Information",
                 "Process with Generic  BPMN Task",
                 "UserTask with no User or Group Assignment"
-        );
-
+            );
     }
 
     @AfterEach
     public void cleanUp() {
         RuntimeTestConfiguration.collectedEvents.clear();
     }
-
-
-
 }

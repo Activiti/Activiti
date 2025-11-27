@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
-
 import org.junit.jupiter.api.Test;
 
 public class DateFormatterProviderTest {
@@ -34,7 +33,6 @@ public class DateFormatterProviderTest {
 
     @Test
     public void should_returnDate_when_stringRepresentsADate() {
-
         String dateStr = "1970-01-01";
 
         Date date = provider.toDate(dateStr);
@@ -44,9 +42,9 @@ public class DateFormatterProviderTest {
 
     @Test
     public void should_returnDate_when_stringRepresentsADateWithTimeInformation() {
-
         // Formats without milliseconds
-        long time = Duration.ofHours(1).toMillis() + Duration.ofMinutes(1).toMillis() + Duration.ofSeconds(1).toMillis() ;
+        long time =
+            Duration.ofHours(1).toMillis() + Duration.ofMinutes(1).toMillis() + Duration.ofSeconds(1).toMillis();
 
         String dateStr = "1970-01-01T01:01:01";
         Date date = provider.toDate(dateStr);
@@ -69,7 +67,7 @@ public class DateFormatterProviderTest {
         assertThat(date).hasTime(time);
 
         // Formats including milliseconds
-        time = time +1;
+        time = time + 1;
 
         dateStr = "1970-01-01T01:01:01.001";
         date = provider.toDate(dateStr);
@@ -94,16 +92,13 @@ public class DateFormatterProviderTest {
 
     @Test
     public void should_throwException_when_stringIsNotADate() {
-
         String dateStr = "this is not a date";
 
-        assertThatExceptionOfType(DateTimeParseException.class)
-                .isThrownBy(() -> provider.parse(dateStr));
+        assertThatExceptionOfType(DateTimeParseException.class).isThrownBy(() -> provider.parse(dateStr));
     }
 
     @Test
     public void should_returnDate_when_longIsProvided() {
-
         long time = 1000;
 
         Date date = provider.toDate(time);
@@ -113,7 +108,6 @@ public class DateFormatterProviderTest {
 
     @Test
     public void should_returnDate_when_dateIsProvided() {
-
         Date initialDate = new Date(1000);
 
         Date date = provider.toDate(initialDate);
@@ -123,7 +117,6 @@ public class DateFormatterProviderTest {
 
     @Test
     public void should_returnDate_when_localDateIsProvided() {
-
         LocalDate localDate = LocalDate.now();
 
         Date date = provider.toDate(localDate);
@@ -133,7 +126,6 @@ public class DateFormatterProviderTest {
 
     @Test
     public void should_returnDate_when_localDateTimeIsProvided() {
-
         LocalDateTime localDateTime = LocalDateTime.now();
 
         Date date = provider.toDate(localDateTime);
@@ -143,7 +135,6 @@ public class DateFormatterProviderTest {
 
     @Test
     public void should_returnDate_when_zonedDateTimeIsProvided() {
-
         ZonedDateTime zonedDateTime = ZonedDateTime.now();
 
         Date date = provider.toDate(zonedDateTime);
@@ -156,8 +147,7 @@ public class DateFormatterProviderTest {
         double value = 1.2;
 
         assertThatExceptionOfType(DateTimeException.class)
-                .isThrownBy(
-                        () -> provider.toDate(value))
-                .withMessageContaining("Error while parsing date");
+            .isThrownBy(() -> provider.toDate(value))
+            .withMessageContaining("Error while parsing date");
     }
 }

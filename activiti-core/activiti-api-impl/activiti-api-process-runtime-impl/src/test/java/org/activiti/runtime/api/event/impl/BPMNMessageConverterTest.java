@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,14 @@
  */
 package org.activiti.runtime.api.event.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+
 import org.activiti.api.process.model.payloads.MessageEventPayload;
 import org.activiti.api.runtime.model.impl.BPMNMessageImpl;
 import org.activiti.engine.delegate.event.ActivitiMessageEvent;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 
 public class BPMNMessageConverterTest {
 
@@ -30,7 +30,6 @@ public class BPMNMessageConverterTest {
 
     @Test
     public void convertShouldReturnBPMNMessage() {
-
         ActivitiMessageEvent internalEvent = mock(ActivitiMessageEvent.class);
         given(internalEvent.getMessageBusinessKey()).willReturn("businessKey");
         given(internalEvent.getMessageCorrelationKey()).willReturn("correlationKey");
@@ -45,13 +44,12 @@ public class BPMNMessageConverterTest {
         assertThat(bpmnMessage.getProcessInstanceId()).isEqualTo("procInstId");
         assertThat(bpmnMessage.getProcessDefinitionId()).isEqualTo("procDefId");
         assertThat(bpmnMessage.getMessagePayload())
-                .isNotNull()
-                .extracting(MessageEventPayload::getName,
-                            MessageEventPayload::getBusinessKey,
-                            MessageEventPayload::getCorrelationKey)
-                .contains("messageName",
-                          "businessKey",
-                          "correlationKey");
+            .isNotNull()
+            .extracting(
+                MessageEventPayload::getName,
+                MessageEventPayload::getBusinessKey,
+                MessageEventPayload::getCorrelationKey
+            )
+            .contains("messageName", "businessKey", "correlationKey");
     }
-
 }

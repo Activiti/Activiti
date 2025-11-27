@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,10 @@
  */
 package org.activiti.test.assertions;
 
+import static org.awaitility.Awaitility.await;
+
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.test.matchers.OperationScopeMatcher;
-
-import static org.awaitility.Awaitility.await;
 
 public class AwaitSignalAssertions implements SignalAssertions {
 
@@ -29,10 +29,11 @@ public class AwaitSignalAssertions implements SignalAssertions {
     }
 
     @Override
-    public SignalAssertions expectEventsOnProcessInstance(ProcessInstance processInstance,
-                                                          OperationScopeMatcher... matchers) {
-        await().untilAsserted(() -> signalAssertions.expectEventsOnProcessInstance(processInstance,
-                                                                                   matchers));
+    public SignalAssertions expectEventsOnProcessInstance(
+        ProcessInstance processInstance,
+        OperationScopeMatcher... matchers
+    ) {
+        await().untilAsserted(() -> signalAssertions.expectEventsOnProcessInstance(processInstance, matchers));
         return this;
     }
 }

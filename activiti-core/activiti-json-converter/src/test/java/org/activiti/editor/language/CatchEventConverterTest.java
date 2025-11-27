@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,43 +28,40 @@ import org.junit.jupiter.api.Test;
 
 public class CatchEventConverterTest extends AbstractConverterTest {
 
-  @Test
-  public void convertJsonToModel() throws Exception {
-    BpmnModel bpmnModel = readJsonFile();
-    validateModel(bpmnModel);
-  }
+    @Test
+    public void convertJsonToModel() throws Exception {
+        BpmnModel bpmnModel = readJsonFile();
+        validateModel(bpmnModel);
+    }
 
-  @Test
-  public void doubleConversionValidation() throws Exception {
-    BpmnModel bpmnModel = readJsonFile();
-    bpmnModel = convertToJsonAndBack(bpmnModel);
-    validateModel(bpmnModel);
-  }
+    @Test
+    public void doubleConversionValidation() throws Exception {
+        BpmnModel bpmnModel = readJsonFile();
+        bpmnModel = convertToJsonAndBack(bpmnModel);
+        validateModel(bpmnModel);
+    }
 
-  protected String getResource() {
-    return "test.catcheventmodel.json";
-  }
+    protected String getResource() {
+        return "test.catcheventmodel.json";
+    }
 
-  private void validateModel(BpmnModel model) {
+    private void validateModel(BpmnModel model) {
+        FlowElement timerElement = model.getMainProcess().getFlowElement("timer_evt", true);
+        EventDefinition timerEvent = extractEventDefinition(timerElement);
+        assertThat(timerEvent).isInstanceOf(TimerEventDefinition.class);
+        TimerEventDefinition ted = (TimerEventDefinition) timerEvent;
+        assertThat(ted.getTimeDuration()).isEqualTo("PT5M");
 
-    FlowElement timerElement = model.getMainProcess().getFlowElement("timer_evt", true);
-    EventDefinition timerEvent = extractEventDefinition(timerElement);
-    assertThat(timerEvent).isInstanceOf(TimerEventDefinition.class);
-    TimerEventDefinition ted = (TimerEventDefinition) timerEvent;
-    assertThat(ted.getTimeDuration()).isEqualTo("PT5M");
+        FlowElement signalElement = model.getMainProcess().getFlowElement("signal_evt", true);
+        EventDefinition signalEvent = extractEventDefinition(signalElement);
+        assertThat(signalEvent).isInstanceOf(SignalEventDefinition.class);
+        SignalEventDefinition sed = (SignalEventDefinition) signalEvent;
+        assertThat(sed.getSignalRef()).isEqualTo("signal_ref");
 
-    FlowElement signalElement = model.getMainProcess().getFlowElement("signal_evt", true);
-    EventDefinition signalEvent = extractEventDefinition(signalElement);
-    assertThat(signalEvent).isInstanceOf(SignalEventDefinition.class);
-    SignalEventDefinition sed = (SignalEventDefinition) signalEvent;
-    assertThat(sed.getSignalRef()).isEqualTo("signal_ref");
-
-    FlowElement messageElement = model.getMainProcess().getFlowElement("message_evt", true);
-    EventDefinition messageEvent = extractEventDefinition(messageElement);
-    assertThat(messageEvent).isInstanceOf(MessageEventDefinition.class);
-    MessageEventDefinition med = (MessageEventDefinition) messageEvent;
-    assertThat(med.getMessageRef()).isEqualTo("message_ref");
-
-  }
-
+        FlowElement messageElement = model.getMainProcess().getFlowElement("message_evt", true);
+        EventDefinition messageEvent = extractEventDefinition(messageElement);
+        assertThat(messageEvent).isInstanceOf(MessageEventDefinition.class);
+        MessageEventDefinition med = (MessageEventDefinition) messageEvent;
+        assertThat(med.getMessageRef()).isEqualTo("message_ref");
+    }
 }

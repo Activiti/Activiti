@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,15 +35,15 @@ public class ProcessCleanUpUtil {
 
     public void cleanUpWithAdmin() {
         securityUtil.logInAs("admin");
-        Page<ProcessInstance> processes = processAdminRuntime.processInstances(Pageable.of(0,
-                50));
+        Page<ProcessInstance> processes = processAdminRuntime.processInstances(Pageable.of(0, 50));
         for (ProcessInstance processInstance : processes.getContent()) {
             if (processInstance.getParentId() == null) {
-                processAdminRuntime.delete(ProcessPayloadBuilder
-                                                   .delete()
-                                                   .withProcessInstance(processInstance)
-                                                   .withReason("test clean up")
-                                                   .build());
+                processAdminRuntime.delete(
+                    ProcessPayloadBuilder.delete()
+                        .withProcessInstance(processInstance)
+                        .withReason("test clean up")
+                        .build()
+                );
             }
         }
     }

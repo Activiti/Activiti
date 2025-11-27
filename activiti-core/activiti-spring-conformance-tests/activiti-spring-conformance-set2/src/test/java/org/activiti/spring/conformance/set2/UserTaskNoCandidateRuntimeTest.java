@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,18 +59,17 @@ public class UserTaskNoCandidateRuntimeTest {
         RuntimeTestConfiguration.collectedEvents.clear();
     }
 
-
     @Test
     public void shouldNotSeeTaskWithoutCandidateOrAssignee() {
-
         securityUtil.logInAs("user1");
 
-        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder
-                .start()
+        ProcessInstance processInstance = processRuntime.start(
+            ProcessPayloadBuilder.start()
                 .withProcessDefinitionKey(processKey)
                 .withBusinessKey("my-business-key")
                 .withName("my-process-instance-name")
-                .build());
+                .build()
+        );
 
         //then
         assertThat(processInstance).isNotNull();
@@ -101,9 +100,7 @@ public class UserTaskNoCandidateRuntimeTest {
         tasks = taskAdminRuntime.tasks(Pageable.of(0, 50));
 
         assertThat(tasks.getTotalItems()).isEqualTo(1);
-
     }
-
 
     @AfterEach
     public void cleanup() {
@@ -114,6 +111,4 @@ public class UserTaskNoCandidateRuntimeTest {
         }
         RuntimeTestConfiguration.collectedEvents.clear();
     }
-
-
 }

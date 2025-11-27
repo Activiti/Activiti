@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.transformer;
 
 /**
@@ -23,24 +22,22 @@ package org.activiti.engine.impl.transformer;
  */
 public class Identity extends AbstractTransformer {
 
-  private static Identity instance = new Identity();
+    private static Identity instance = new Identity();
 
-  public static synchronized Identity getInstance() {
-    if (instance == null) {
-      instance = new Identity();
+    public static synchronized Identity getInstance() {
+        if (instance == null) {
+            instance = new Identity();
+        }
+        return instance;
     }
-    return instance;
-  }
 
-  private Identity() {
+    private Identity() {}
 
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected Object primTransform(Object anObject) throws Exception {
-    return anObject;
-  }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Object primTransform(Object anObject) throws Exception {
+        return anObject;
+    }
 }

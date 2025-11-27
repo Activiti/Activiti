@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.validation.validator.impl;
 
 import java.util.List;
-
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.CancelEventDefinition;
 import org.activiti.bpmn.model.EndEvent;
@@ -34,26 +32,21 @@ import org.activiti.validation.validator.ProcessLevelValidator;
  */
 public class EndEventValidator extends ProcessLevelValidator {
 
-  @Override
-  protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
-    List<EndEvent> endEvents = process.findFlowElementsOfType(EndEvent.class);
-    for (EndEvent endEvent : endEvents) {
-      if (endEvent.getEventDefinitions() != null && !endEvent.getEventDefinitions().isEmpty()) {
+    @Override
+    protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
+        List<EndEvent> endEvents = process.findFlowElementsOfType(EndEvent.class);
+        for (EndEvent endEvent : endEvents) {
+            if (endEvent.getEventDefinitions() != null && !endEvent.getEventDefinitions().isEmpty()) {
+                EventDefinition eventDefinition = endEvent.getEventDefinitions().get(0);
 
-        EventDefinition eventDefinition = endEvent.getEventDefinitions().get(0);
-
-        // Error end event
-        if (eventDefinition instanceof CancelEventDefinition) {
-
-          FlowElementsContainer parent = process.findParent(endEvent);
-          if (!(parent instanceof Transaction)) {
-            addError(errors, Problems.END_EVENT_CANCEL_ONLY_INSIDE_TRANSACTION, process, endEvent);
-          }
-
+                // Error end event
+                if (eventDefinition instanceof CancelEventDefinition) {
+                    FlowElementsContainer parent = process.findParent(endEvent);
+                    if (!(parent instanceof Transaction)) {
+                        addError(errors, Problems.END_EVENT_CANCEL_ONLY_INSIDE_TRANSACTION, process, endEvent);
+                    }
+                }
+            }
         }
-
-      }
     }
-  }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,6 @@ public class ConsoleLogger {
 
     public void log() {
         for (ProfileSession profileSession : profiler.getProfileSessions()) {
-
             System.out.println();
             System.out.println("#############################################");
             System.out.println("#############################################");
@@ -50,12 +49,21 @@ public class ConsoleLogger {
                 System.out.println("Command class: " + classFqn);
                 System.out.println("Number of times invoked: " + stats.getCount());
                 double commandPercentage = (double) stats.getTotalCommandTime / (double) profileSession.getTotalTime();
-                System.out.println((100.0 * Math.round(commandPercentage * 100.0) / 100.0) + "% of profile session was spent executing this command");
+                System.out.println(
+                    ((100.0 * Math.round(commandPercentage * 100.0)) / 100.0) +
+                    "% of profile session was spent executing this command"
+                );
 
                 System.out.println();
-                System.out.println("Average execution time: " + stats.getAverageExecutionTime()
-                        + " ms (Average database time: " + stats.getAverageDatabaseExecutionTime()
-                        + " ms (" + stats.getAverageDatabaseExecutionTimePercentage() + "%) )");
+                System.out.println(
+                    "Average execution time: " +
+                    stats.getAverageExecutionTime() +
+                    " ms (Average database time: " +
+                    stats.getAverageDatabaseExecutionTime() +
+                    " ms (" +
+                    stats.getAverageDatabaseExecutionTimePercentage() +
+                    "%) )"
+                );
 
                 System.out.println();
                 System.out.println("Database selects:");
@@ -81,12 +89,9 @@ public class ConsoleLogger {
                     System.out.println(delete + " : " + stats.getDbDeletes().get(delete));
                 }
 
-
                 System.out.println();
                 System.out.println();
             }
-
         }
     }
-
 }

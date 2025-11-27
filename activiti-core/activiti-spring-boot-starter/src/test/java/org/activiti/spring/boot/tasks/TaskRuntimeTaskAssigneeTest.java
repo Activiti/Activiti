@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ public class TaskRuntimeTaskAssigneeTest {
     private TaskCleanUpUtil taskCleanUpUtil;
 
     @AfterEach
-    public void taskCleanUp(){
+    public void taskCleanUp() {
         taskCleanUpUtil.cleanUpWithAdmin();
     }
 
@@ -56,14 +56,15 @@ public class TaskRuntimeTaskAssigneeTest {
     public void aCreateStandaloneTaskForAnotherAssignee() {
         securityUtil.logInAs("garth");
 
-        taskRuntime.create(TaskPayloadBuilder.create()
+        taskRuntime.create(
+            TaskPayloadBuilder.create()
                 .withName("task for dean")
                 .withAssignee("dean") //but he should still be assigned the task
-                .build());
+                .build()
+        );
 
         // the owner should be able to see the created task
-        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
-                50));
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
 
         assertThat(tasks.getContent()).hasSize(1);
         Task task = tasks.getContent().get(0);
@@ -71,13 +72,11 @@ public class TaskRuntimeTaskAssigneeTest {
         assertThat(task.getAssignee()).isEqualTo("dean");
         assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
 
-
         // Now the task should be visible for dean
         securityUtil.logInAs("dean");
 
         // the target user should be able to see the task as well
-        tasks = taskRuntime.tasks(Pageable.of(0,
-                50));
+        tasks = taskRuntime.tasks(Pageable.of(0, 50));
 
         assertThat(tasks.getContent()).hasSize(1);
         task = tasks.getContent().get(0);
@@ -85,35 +84,27 @@ public class TaskRuntimeTaskAssigneeTest {
         assertThat(task.getAssignee()).isEqualTo("dean");
         assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
 
-        Task deletedTask = taskRuntime.delete(TaskPayloadBuilder
-                .delete()
-                .withTaskId(task.getId())
-                .withReason("test clean up")
-                .build());
+        Task deletedTask = taskRuntime.delete(
+            TaskPayloadBuilder.delete().withTaskId(task.getId()).withReason("test clean up").build()
+        );
 
         assertThat(deletedTask).isNotNull();
         assertThat(deletedTask.getStatus()).isEqualTo(Task.TaskStatus.CANCELLED);
 
-        tasks = taskRuntime.tasks(Pageable.of(0,
-                50));
+        tasks = taskRuntime.tasks(Pageable.of(0, 50));
         assertThat(tasks.getContent()).hasSize(0);
-
     }
-
 
     @Test
     public void createStandaloneTaskForGroupAndClaim() {
-
         securityUtil.logInAs("garth");
 
-        Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create()
-                .withName("group task")
-                .withCandidateGroup("doctor")
-                .build());
+        Task standAloneTask = taskRuntime.create(
+            TaskPayloadBuilder.create().withName("group task").withCandidateGroup("doctor").build()
+        );
 
         // the owner should be able to see the created task
-        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
-                50));
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
 
         assertThat(tasks.getContent()).hasSize(1);
         Task task = tasks.getContent().get(0);
@@ -128,17 +119,12 @@ public class TaskRuntimeTaskAssigneeTest {
 
     @Test
     public void createStandaloneTaskForGroupAndAdminAssignUser() {
-
         securityUtil.logInAs("garth");
 
-        taskRuntime.create(TaskPayloadBuilder.create()
-                .withName("group task")
-                .withCandidateGroup("doctor")
-                .build());
+        taskRuntime.create(TaskPayloadBuilder.create().withName("group task").withCandidateGroup("doctor").build());
 
         // the owner should be able to see the created task
-        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
-                50));
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
 
         assertThat(tasks.getContent()).hasSize(1);
 
@@ -146,46 +132,38 @@ public class TaskRuntimeTaskAssigneeTest {
         assertThat(task.getAssignee()).isNull();
         assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
 
-
         securityUtil.logInAs("admin");
-        Task assignedTask = taskAdminRuntime.assign(TaskPayloadBuilder
-                                                  .assign()
-                                                  .withTaskId(task.getId())
-                                                  .withAssignee("garth")
-                                                  .build());
+        Task assignedTask = taskAdminRuntime.assign(
+            TaskPayloadBuilder.assign().withTaskId(task.getId()).withAssignee("garth").build()
+        );
         assertThat(assignedTask.getAssignee()).isEqualTo("garth");
         assertThat(assignedTask.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
 
         securityUtil.logInAs("garth");
-        tasks = taskRuntime.tasks(Pageable.of(0,
-                                              50));
+        tasks = taskRuntime.tasks(Pageable.of(0, 50));
 
         assertThat(tasks.getContent()).hasSize(1);
         task = tasks.getContent().get(0);
 
         assertThat(task.getAssignee()).isEqualTo("garth");
 
-        taskRuntime.delete(TaskPayloadBuilder
-                                              .delete()
-                                              .withTaskId(task.getId())
-                                              .withReason("test clean up")
-                                              .build());
+        taskRuntime.delete(TaskPayloadBuilder.delete().withTaskId(task.getId()).withReason("test clean up").build());
     }
 
     @Test
     public void createStandaloneTaskForUsersAndAdminReassignUser() {
-
         securityUtil.logInAs("garth");
 
-        taskRuntime.create(TaskPayloadBuilder.create()
+        taskRuntime.create(
+            TaskPayloadBuilder.create()
                 .withName("group task")
                 .withCandidateUsers("dean")
                 .withCandidateUsers("garth")
-                .build());
+                .build()
+        );
 
         // the owner should be able to see the created task
-        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
-                50));
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
 
         assertThat(tasks.getContent()).hasSize(1);
 
@@ -193,99 +171,84 @@ public class TaskRuntimeTaskAssigneeTest {
         assertThat(task.getAssignee()).isNull();
         assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
 
-
         //Check that admin may assign a user to the task without assignee
         securityUtil.logInAs("admin");
-        Task assignedTask = taskAdminRuntime.assign(TaskPayloadBuilder
-                                                  .assign()
-                                                  .withTaskId(task.getId())
-                                                  .withAssignee("garth")
-                                                  .build());
+        Task assignedTask = taskAdminRuntime.assign(
+            TaskPayloadBuilder.assign().withTaskId(task.getId()).withAssignee("garth").build()
+        );
         assertThat(assignedTask.getAssignee()).isEqualTo("garth");
         assertThat(assignedTask.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
 
         //Check that admin may reassign a user to the task when assignee is present
-        assignedTask = taskAdminRuntime.assign(TaskPayloadBuilder
-                                               .assign()
-                                               .withTaskId(task.getId())
-                                               .withAssignee("dean")
-                                               .build());
+        assignedTask = taskAdminRuntime.assign(
+            TaskPayloadBuilder.assign().withTaskId(task.getId()).withAssignee("dean").build()
+        );
         assertThat(assignedTask.getAssignee()).isEqualTo("dean");
         assertThat(assignedTask.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
 
-
         securityUtil.logInAs("dean");
-        tasks = taskRuntime.tasks(Pageable.of(0,
-                                              50));
+        tasks = taskRuntime.tasks(Pageable.of(0, 50));
 
         assertThat(tasks.getContent()).hasSize(1);
         task = tasks.getContent().get(0);
 
         assertThat(task.getAssignee()).isEqualTo("dean");
 
-        taskRuntime.delete(TaskPayloadBuilder
-                                              .delete()
-                                              .withTaskId(task.getId())
-                                              .withReason("test clean up")
-                                              .build());
+        taskRuntime.delete(TaskPayloadBuilder.delete().withTaskId(task.getId()).withReason("test clean up").build());
     }
 
     @Test
     public void userCanReassignClaimedTaskToCandidateUsers() {
         String taskId = createTask("garth");
-        claimTask(taskId,"garth");
+        claimTask(taskId, "garth");
         userAssignTask(taskId, "garth", "dean");
         userAssignTask(taskId, "dean", "john");
     }
 
     @Test
-    public void shouldReturnIllegalStateExceptionWhenTaskIsNotClaimed (){
+    public void shouldReturnIllegalStateExceptionWhenTaskIsNotClaimed() {
         String taskId = createTask("garth");
 
-        Throwable thrown = catchThrowable(() ->
-                userAssignTask(taskId, "dean", "dean"));
+        Throwable thrown = catchThrowable(() -> userAssignTask(taskId, "dean", "dean"));
 
         assertThat(thrown)
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessageStartingWith("You cannot release a task that is not claimed");
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessageStartingWith("You cannot release a task that is not claimed");
     }
 
     @Test
-    public void shouldReturnNotFoundExceptionWhenTaskIsNotVisible(){
+    public void shouldReturnNotFoundExceptionWhenTaskIsNotVisible() {
         String taskId = createTask("garth");
-        claimTask(taskId,"garth");
+        claimTask(taskId, "garth");
 
-        Throwable thrown = catchThrowable(() ->
-                userAssignTask(taskId, "dean", "john"));
+        Throwable thrown = catchThrowable(() -> userAssignTask(taskId, "dean", "john"));
 
         assertThat(thrown)
-                .isInstanceOf(NotFoundException.class)
-                .hasMessageStartingWith("Unable to find task for the given id");
+            .isInstanceOf(NotFoundException.class)
+            .hasMessageStartingWith("Unable to find task for the given id");
     }
 
-    private String createTask(String user){
+    private String createTask(String user) {
         securityUtil.logInAs(user);
 
-        Task task = taskRuntime.create(TaskPayloadBuilder.create()
+        Task task = taskRuntime.create(
+            TaskPayloadBuilder.create()
                 .withName("group task")
                 .withCandidateUsers("dean")
                 .withCandidateUsers("garth")
                 .withCandidateUsers("john")
-                .build());
+                .build()
+        );
 
         return task.getId();
     }
 
-    private void userAssignTask(String taskId, String user, String assignee){
+    private void userAssignTask(String taskId, String user, String assignee) {
         securityUtil.logInAs(user);
-        taskRuntime.assign(TaskPayloadBuilder
-                .assign()
-                .withTaskId(taskId)
-                .withAssignee(assignee)
-                .build());
+        taskRuntime.assign(TaskPayloadBuilder.assign().withTaskId(taskId).withAssignee(assignee).build());
     }
 
-    private void claimTask(String taskId, String user){
+    private void claimTask(String taskId, String user) {
         securityUtil.logInAs(user);
         taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(taskId).build());
     }

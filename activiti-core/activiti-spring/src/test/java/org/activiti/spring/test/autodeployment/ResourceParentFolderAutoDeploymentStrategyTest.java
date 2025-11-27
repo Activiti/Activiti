@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.spring.test.autodeployment;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.zip.ZipInputStream;
-
-import org.activiti.spring.autodeployment.ResourceParentFolderAutoDeploymentStrategy;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.springframework.core.io.Resource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -35,6 +23,16 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.zip.ZipInputStream;
+import org.activiti.spring.autodeployment.ResourceParentFolderAutoDeploymentStrategy;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.springframework.core.io.Resource;
 
 public class ResourceParentFolderAutoDeploymentStrategyTest extends AbstractAutoDeploymentStrategyTest {
 
@@ -70,7 +68,7 @@ public class ResourceParentFolderAutoDeploymentStrategyTest extends AbstractAuto
 
     @Test
     public void testDeployResources_Separate() throws Exception {
-        final Resource[] resources = new Resource[]{resourceMock1, resourceMock2};
+        final Resource[] resources = new Resource[] { resourceMock1, resourceMock2 };
 
         when(fileMock1.getParentFile()).thenReturn(parentFile1Mock);
         when(fileMock2.getParentFile()).thenReturn(parentFile2Mock);
@@ -91,7 +89,7 @@ public class ResourceParentFolderAutoDeploymentStrategyTest extends AbstractAuto
 
     @Test
     public void testDeployResources_Joined() throws Exception {
-        final Resource[] resources = new Resource[]{resourceMock1, resourceMock2};
+        final Resource[] resources = new Resource[] { resourceMock1, resourceMock2 };
 
         when(fileMock1.getParentFile()).thenReturn(parentFile1Mock);
         when(fileMock2.getParentFile()).thenReturn(parentFile1Mock);
@@ -111,7 +109,13 @@ public class ResourceParentFolderAutoDeploymentStrategyTest extends AbstractAuto
 
     @Test
     public void testDeployResources_AllInOne() throws Exception {
-        final Resource[] resources = new Resource[]{resourceMock1, resourceMock2, resourceMock3, resourceMock4, resourceMock5};
+        final Resource[] resources = new Resource[] {
+            resourceMock1,
+            resourceMock2,
+            resourceMock3,
+            resourceMock4,
+            resourceMock5,
+        };
 
         when(fileMock1.getParentFile()).thenReturn(parentFile1Mock);
         when(fileMock2.getParentFile()).thenReturn(parentFile1Mock);
@@ -137,7 +141,7 @@ public class ResourceParentFolderAutoDeploymentStrategyTest extends AbstractAuto
 
     @Test
     public void testDeployResources_Mixed() throws Exception {
-        final Resource[] resources = new Resource[]{resourceMock1, resourceMock2, resourceMock3};
+        final Resource[] resources = new Resource[] { resourceMock1, resourceMock2, resourceMock3 };
 
         when(fileMock1.getParentFile()).thenReturn(parentFile1Mock);
         when(fileMock2.getParentFile()).thenReturn(parentFile2Mock);
@@ -160,8 +164,7 @@ public class ResourceParentFolderAutoDeploymentStrategyTest extends AbstractAuto
 
     @Test
     public void testDeployResources_NoParent() {
-
-        final Resource[] resources = new Resource[]{resourceMock1, resourceMock2, resourceMock3};
+        final Resource[] resources = new Resource[] { resourceMock1, resourceMock2, resourceMock3 };
         deploymentStrategy.deployResources(deploymentNameHint, resources, repositoryServiceMock);
 
         verify(repositoryServiceMock, times(3)).createDeployment();
@@ -177,7 +180,7 @@ public class ResourceParentFolderAutoDeploymentStrategyTest extends AbstractAuto
 
     @Test
     public void testDeployResourcesNoResources() {
-        final Resource[] resources = new Resource[]{};
+        final Resource[] resources = new Resource[] {};
         deploymentStrategy.deployResources(deploymentNameHint, resources, repositoryServiceMock);
 
         verify(repositoryServiceMock, never()).createDeployment();
@@ -194,15 +197,13 @@ public class ResourceParentFolderAutoDeploymentStrategyTest extends AbstractAuto
         when(resourceMock3.getFile()).thenThrow(new IOException());
         when(resourceMock3.getFilename()).thenReturn(resourceName3);
 
-        final Resource[] resources = new Resource[]{resourceMock3};
+        final Resource[] resources = new Resource[] { resourceMock3 };
         deploymentStrategy.deployResources(deploymentNameHint, resources, repositoryServiceMock);
 
         verify(repositoryServiceMock).createDeployment();
         verify(deploymentBuilderMock).enableDuplicateFiltering();
         verify(deploymentBuilderMock).name(deploymentNameHint + "." + resourceName3);
-        verify(deploymentBuilderMock).addInputStream(eq(resourceName3),
-            any(Resource.class));
+        verify(deploymentBuilderMock).addInputStream(eq(resourceName3), any(Resource.class));
         verify(deploymentBuilderMock).deploy();
     }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package org.activiti.examples.bpmn.tasklistener;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
 
@@ -27,19 +26,19 @@ import org.activiti.engine.delegate.TaskListener;
 
 public class TaskSimpleCompleteListener implements TaskListener {
 
-  private static final long serialVersionUID = 1L;
-  private static List<String> messages = new ArrayList<String>();
+    private static final long serialVersionUID = 1L;
+    private static List<String> messages = new ArrayList<String>();
 
-  public static List<String> getCurrentMessages() {
-    return messages;
-  }
+    public static List<String> getCurrentMessages() {
+        return messages;
+    }
 
-  public static void clear() {
-    messages.clear();
-  }
+    public static void clear() {
+        messages.clear();
+    }
 
-  @Override
-  public void notify(DelegateTask delegateTask) {
-    messages.add("Complete Task Listener executed.");
-  }
+    @Override
+    public void notify(DelegateTask delegateTask) {
+        messages.add("Complete Task Listener executed.");
+    }
 }

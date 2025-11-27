@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,14 @@
  */
 package org.activiti.bpmn.converter.child;
 
+import static org.activiti.bpmn.converter.LinkEventDefinitionXMLConverter.ELEMENT_EVENT_LINK_DEFINITION;
+
+import javax.xml.stream.XMLStreamReader;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Event;
 import org.activiti.bpmn.model.LinkEventDefinition;
-
-import javax.xml.stream.XMLStreamReader;
-
-import static org.activiti.bpmn.converter.LinkEventDefinitionXMLConverter.ELEMENT_EVENT_LINK_DEFINITION;
 
 public class LinkEventDefinitionParser extends BaseChildElementParser {
 
@@ -34,19 +33,14 @@ public class LinkEventDefinitionParser extends BaseChildElementParser {
     public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
         if (parentElement instanceof Event event) {
             LinkEventDefinition eventDefinition = new LinkEventDefinition();
-            BpmnXMLUtil.addXMLLocation(eventDefinition,
-                xtr);
+            BpmnXMLUtil.addXMLLocation(eventDefinition, xtr);
 
             eventDefinition.setName(xtr.getAttributeValue(null, ATTRIBUTE_NAME));
             eventDefinition.setId(xtr.getAttributeValue(null, ATTRIBUTE_ID));
 
-            BpmnXMLUtil.parseChildElements(ELEMENT_EVENT_LINK_DEFINITION,
-                eventDefinition,
-                xtr,
-                model);
+            BpmnXMLUtil.parseChildElements(ELEMENT_EVENT_LINK_DEFINITION, eventDefinition, xtr, model);
 
             event.addEventDefinition(eventDefinition);
-
         }
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,25 +15,21 @@
  */
 package org.activiti.engine.impl.event.logger.handler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Date;
-
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
 
  */
 public interface EventLoggerEventHandler {
+    EventLogEntryEntity generateEventLogEntry(CommandContext commandContext);
 
-  EventLogEntryEntity generateEventLogEntry(CommandContext commandContext);
+    void setEvent(ActivitiEvent event);
 
-  void setEvent(ActivitiEvent event);
+    void setTimeStamp(Date timeStamp);
 
-  void setTimeStamp(Date timeStamp);
-
-  void setObjectMapper(ObjectMapper objectMapper);
-
+    void setObjectMapper(ObjectMapper objectMapper);
 }

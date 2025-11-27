@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.db;
 
 import org.apache.ibatis.session.SqlSession;
-
 
 /**
  * Use this to execute a dedicated delete statement. It
@@ -26,22 +24,22 @@ import org.apache.ibatis.session.SqlSession;
  *
 
  */
-public class BulkDeleteOperation  {
+public class BulkDeleteOperation {
 
-  protected String statement;
-  protected Object parameter;
+    protected String statement;
+    protected Object parameter;
 
-  public BulkDeleteOperation(String statement, Object parameter) {
-    this.statement = statement;
-    this.parameter = parameter;
-  }
+    public BulkDeleteOperation(String statement, Object parameter) {
+        this.statement = statement;
+        this.parameter = parameter;
+    }
 
-  public void execute(SqlSession sqlSession) {
-    sqlSession.delete(statement, parameter);
-  }
+    public void execute(SqlSession sqlSession) {
+        sqlSession.delete(statement, parameter);
+    }
 
-  @Override
-  public String toString() {
-    return "bulk delete: " + statement + "(" + parameter + ")";
-  }
+    @Override
+    public String toString() {
+        return "bulk delete: " + statement + "(" + parameter + ")";
+    }
 }

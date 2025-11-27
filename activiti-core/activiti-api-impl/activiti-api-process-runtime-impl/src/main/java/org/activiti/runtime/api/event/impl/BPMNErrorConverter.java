@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,10 +21,11 @@ import org.activiti.engine.delegate.event.ActivitiErrorEvent;
 public class BPMNErrorConverter {
 
     public BPMNErrorImpl convertToBPMNError(ActivitiErrorEvent internalEvent) {
-
-        BPMNErrorImpl bpmnError = new BPMNErrorImpl(internalEvent.getActivityId(),
-                                                    internalEvent.getActivityName(),
-                                                    internalEvent.getActivityType());
+        BPMNErrorImpl bpmnError = new BPMNErrorImpl(
+            internalEvent.getActivityId(),
+            internalEvent.getActivityName(),
+            internalEvent.getActivityType()
+        );
 
         bpmnError.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
         bpmnError.setProcessInstanceId(internalEvent.getProcessInstanceId());
@@ -35,5 +36,4 @@ public class BPMNErrorConverter {
 
         return bpmnError;
     }
-
 }

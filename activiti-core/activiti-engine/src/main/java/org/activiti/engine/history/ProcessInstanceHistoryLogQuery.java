@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,38 +29,36 @@ import org.activiti.engine.task.Comment;
  */
 @Internal
 public interface ProcessInstanceHistoryLogQuery {
+    /**
+     * The {@link ProcessInstanceHistoryLog} will contain the {@link HistoricTaskInstance} instances.
+     */
+    ProcessInstanceHistoryLogQuery includeTasks();
 
-  /**
-   * The {@link ProcessInstanceHistoryLog} will contain the {@link HistoricTaskInstance} instances.
-   */
-  ProcessInstanceHistoryLogQuery includeTasks();
+    /**
+     * The {@link ProcessInstanceHistoryLog} will contain the {@link HistoricActivityInstance} instances.
+     */
+    ProcessInstanceHistoryLogQuery includeActivities();
 
-  /**
-   * The {@link ProcessInstanceHistoryLog} will contain the {@link HistoricActivityInstance} instances.
-   */
-  ProcessInstanceHistoryLogQuery includeActivities();
+    /**
+     * The {@link ProcessInstanceHistoryLog} will contain the {@link HistoricVariableInstance} instances.
+     */
+    ProcessInstanceHistoryLogQuery includeVariables();
 
-  /**
-   * The {@link ProcessInstanceHistoryLog} will contain the {@link HistoricVariableInstance} instances.
-   */
-  ProcessInstanceHistoryLogQuery includeVariables();
+    /**
+     * The {@link ProcessInstanceHistoryLog} will contain the {@link Comment} instances.
+     */
+    ProcessInstanceHistoryLogQuery includeComments();
 
-  /**
-   * The {@link ProcessInstanceHistoryLog} will contain the {@link Comment} instances.
-   */
-  ProcessInstanceHistoryLogQuery includeComments();
+    /**
+     * The {@link ProcessInstanceHistoryLog} will contain the {@link HistoricVariableUpdate} instances.
+     */
+    ProcessInstanceHistoryLogQuery includeVariableUpdates();
 
-  /**
-   * The {@link ProcessInstanceHistoryLog} will contain the {@link HistoricVariableUpdate} instances.
-   */
-  ProcessInstanceHistoryLogQuery includeVariableUpdates();
+    /**
+     * The {@link ProcessInstanceHistoryLog} will contain the {@link HistoricFormProperty} instances.
+     */
+    ProcessInstanceHistoryLogQuery includeFormProperties();
 
-  /**
-   * The {@link ProcessInstanceHistoryLog} will contain the {@link HistoricFormProperty} instances.
-   */
-  ProcessInstanceHistoryLogQuery includeFormProperties();
-
-  /** Executes the query. */
-  ProcessInstanceHistoryLog singleResult();
-
+    /** Executes the query. */
+    ProcessInstanceHistoryLog singleResult();
 }

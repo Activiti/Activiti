@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,8 +29,7 @@ public abstract class AbstractActivitiSmartLifeCycle implements SmartLifecycle, 
     private int phase = DEFAULT_PHASE;
     private volatile boolean running = false;
 
-    public AbstractActivitiSmartLifeCycle() {
-    }
+    public AbstractActivitiSmartLifeCycle() {}
 
     public abstract void doStart();
 
@@ -118,5 +117,4 @@ public abstract class AbstractActivitiSmartLifeCycle implements SmartLifecycle, 
     public void destroy() {
         stop();
     }
-
 }

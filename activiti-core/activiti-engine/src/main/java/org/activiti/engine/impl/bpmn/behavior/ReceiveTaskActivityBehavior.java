@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.bpmn.behavior;
 
 import org.activiti.engine.RuntimeService;
@@ -29,14 +27,13 @@ import org.activiti.engine.delegate.DelegateExecution;
  */
 public class ReceiveTaskActivityBehavior extends TaskActivityBehavior {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  public void execute(DelegateExecution execution) {
-    // Do nothing: waitstate behavior
-  }
+    public void execute(DelegateExecution execution) {
+        // Do nothing: waitstate behavior
+    }
 
-  public void trigger(DelegateExecution execution, String signalName, Object data) {
-    leave(execution);
-  }
-
+    public void trigger(DelegateExecution execution, String signalName, Object data) {
+        leave(execution);
+    }
 }

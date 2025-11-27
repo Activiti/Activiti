@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 import java.util.Optional;
-
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
@@ -40,14 +38,12 @@ public class NewTaskCmd implements Command<Task>, Serializable {
         TaskEntity task = commandContext.getTaskEntityManager().create();
         task.setId(taskId);
         task.setRevision(0);
-        findAppVersionFromDeployment(commandContext.getDeploymentEntityManager())
-                .ifPresent(task::setAppVersion);
+        findAppVersionFromDeployment(commandContext.getDeploymentEntityManager()).ifPresent(task::setAppVersion);
         return task;
     }
 
     private Optional<Integer> findAppVersionFromDeployment(DeploymentEntityManager deploymentEntityManager) {
         DeploymentEntity deployment = deploymentEntityManager.findLatestDeploymentByName("SpringAutoDeployment");
-        return Optional.ofNullable(deployment)
-                .map(DeploymentEntity::getVersion);
+        return Optional.ofNullable(deployment).map(DeploymentEntity::getVersion);
     }
 }

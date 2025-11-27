@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.test.bpmn.event.error.mapError;
 
 import org.activiti.engine.ActivitiException;
@@ -26,24 +25,22 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class ThrowCustomExceptionDelegate implements JavaDelegate {
 
-  @Override
-  public void execute(DelegateExecution execution) {
-    Object exceptionClassVar = execution.getVariable("exceptionClass");
-    if (exceptionClassVar == null)
-      return;
+    @Override
+    public void execute(DelegateExecution execution) {
+        Object exceptionClassVar = execution.getVariable("exceptionClass");
+        if (exceptionClassVar == null) return;
 
-    String exceptionClassName = exceptionClassVar.toString();
+        String exceptionClassName = exceptionClassVar.toString();
 
-    if (StringUtils.isNotEmpty(exceptionClassName)) {
-      RuntimeException exception = null;
-      try {
-        Class<?> clazz = Class.forName(exceptionClassName);
-        exception = (RuntimeException) clazz.getDeclaredConstructor().newInstance();
-
-      } catch (Exception e) {
-        throw new ActivitiException("Class not found", e);
-      }
-      throw exception;
+        if (StringUtils.isNotEmpty(exceptionClassName)) {
+            RuntimeException exception = null;
+            try {
+                Class<?> clazz = Class.forName(exceptionClassName);
+                exception = (RuntimeException) clazz.getDeclaredConstructor().newInstance();
+            } catch (Exception e) {
+                throw new ActivitiException("Class not found", e);
+            }
+            throw exception;
+        }
     }
-  }
 }

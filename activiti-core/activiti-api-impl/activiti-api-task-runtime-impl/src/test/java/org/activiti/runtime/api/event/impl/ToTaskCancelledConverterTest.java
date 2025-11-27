@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 import java.util.Optional;
-
 import org.activiti.api.task.model.events.TaskRuntimeEvent;
 import org.activiti.api.task.model.impl.TaskImpl;
 import org.activiti.api.task.runtime.events.TaskCancelledEvent;
@@ -48,16 +47,16 @@ public class ToTaskCancelledConverterTest {
     @Test
     public void should_returnConvertedTask_when_entityIsACancelledTask() {
         //given
-        Task internalTask = taskEntityBuilder()
-                .withCancelled(true)
-                .build();
-        ActivitiEntityEventImpl internalEvent = new ActivitiEntityEventImpl(internalTask,
-                                                                            ActivitiEventType.ENTITY_DELETED);
+        Task internalTask = taskEntityBuilder().withCancelled(true).build();
+        ActivitiEntityEventImpl internalEvent = new ActivitiEntityEventImpl(
+            internalTask,
+            ActivitiEventType.ENTITY_DELETED
+        );
 
-        TaskImpl apiTask = new TaskImpl("id",
-                                        "myTask",
-                                        org.activiti.api.task.model.Task.TaskStatus.CANCELLED);
-        given(taskConverter.from(internalTask, org.activiti.api.task.model.Task.TaskStatus.CANCELLED)).willReturn(apiTask);
+        TaskImpl apiTask = new TaskImpl("id", "myTask", org.activiti.api.task.model.Task.TaskStatus.CANCELLED);
+        given(taskConverter.from(internalTask, org.activiti.api.task.model.Task.TaskStatus.CANCELLED)).willReturn(
+            apiTask
+        );
 
         //when
         TaskCancelledEvent convertedTaskCancelledEvent = eventConverter.from(internalEvent).orElse(null);
@@ -66,37 +65,36 @@ public class ToTaskCancelledConverterTest {
         assertThat(convertedTaskCancelledEvent).isNotNull();
         assertThat(convertedTaskCancelledEvent.getEntity()).isEqualTo(apiTask);
         assertThat(convertedTaskCancelledEvent.getEventType()).isEqualTo(TaskRuntimeEvent.TaskEvents.TASK_CANCELLED);
-
     }
 
     @Test
     public void should_ReturnEmpty_when_entityIsANonCancelledTask() {
         //given
-        Task internalTask = taskEntityBuilder()
-                .withCancelled(false)
-                .build();
-        ActivitiEntityEventImpl internalEvent = new ActivitiEntityEventImpl(internalTask,
-                                                                            ActivitiEventType.ENTITY_DELETED);
+        Task internalTask = taskEntityBuilder().withCancelled(false).build();
+        ActivitiEntityEventImpl internalEvent = new ActivitiEntityEventImpl(
+            internalTask,
+            ActivitiEventType.ENTITY_DELETED
+        );
 
         //when
         Optional<TaskCancelledEvent> convertedTaskCancelledEvent = eventConverter.from(internalEvent);
 
         //then
         assertThat(convertedTaskCancelledEvent).isEmpty();
-
     }
 
     @Test
     public void should_returnEmpty_when_entityIsNotTask() {
         //given
-        ActivitiEntityEventImpl internalEvent = new ActivitiEntityEventImpl(mock(ProcessInstance.class),
-                                                                            ActivitiEventType.ENTITY_DELETED);
+        ActivitiEntityEventImpl internalEvent = new ActivitiEntityEventImpl(
+            mock(ProcessInstance.class),
+            ActivitiEventType.ENTITY_DELETED
+        );
 
         //when
         Optional<TaskCancelledEvent> convertedTaskCancelledEvent = eventConverter.from(internalEvent);
 
         //then
         assertThat(convertedTaskCancelledEvent).isEmpty();
-
     }
 }

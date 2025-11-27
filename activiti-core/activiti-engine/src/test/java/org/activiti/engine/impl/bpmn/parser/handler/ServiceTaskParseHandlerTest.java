@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,10 @@
  */
 package org.activiti.engine.impl.bpmn.parser.handler;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
+
 import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.engine.impl.bpmn.behavior.ServiceTaskDelegateExpressionActivityBehavior;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
@@ -25,10 +29,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ServiceTaskParseHandlerTest {
@@ -51,12 +51,13 @@ public class ServiceTaskParseHandlerTest {
     public void executeParseShouldUseDefaultBehaviorWhenNoInformationIsProvided() throws Exception {
         //given
         ServiceTask serviceTask = new ServiceTask();
-        ServiceTaskDelegateExpressionActivityBehavior defaultBehavior = mock(ServiceTaskDelegateExpressionActivityBehavior.class);
+        ServiceTaskDelegateExpressionActivityBehavior defaultBehavior = mock(
+            ServiceTaskDelegateExpressionActivityBehavior.class
+        );
         given(activityBehaviorFactory.createDefaultServiceTaskBehavior(serviceTask)).willReturn(defaultBehavior);
 
         //when
-        serviceTaskParseHandler.executeParse(bpmnParse,
-                                             serviceTask);
+        serviceTaskParseHandler.executeParse(bpmnParse, serviceTask);
 
         //then
         assertThat(serviceTask.getBehavior()).isEqualTo(defaultBehavior);

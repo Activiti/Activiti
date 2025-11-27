@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,13 @@
  */
 package org.activiti.runtime.api.event.impl;
 
+import static org.activiti.runtime.api.event.impl.ActivitiEntityEventHelper.isProcessInstanceEntity;
+
+import java.util.Optional;
 import org.activiti.api.process.runtime.events.ProcessSuspendedEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
-
-import java.util.Optional;
-
-import static org.activiti.runtime.api.event.impl.ActivitiEntityEventHelper.isProcessInstanceEntity;
 
 public class ToProcessSuspendedConverter implements EventConverter<ProcessSuspendedEvent, ActivitiEntityEvent> {
 
@@ -36,8 +35,9 @@ public class ToProcessSuspendedConverter implements EventConverter<ProcessSuspen
     public Optional<ProcessSuspendedEvent> from(ActivitiEntityEvent internalEvent) {
         ProcessSuspendedEvent event = null;
         if (isProcessInstanceEntity(internalEvent.getEntity())) {
-            event = new ProcessSuspendedEventImpl(processInstanceConverter.from(((ExecutionEntity)
-                    internalEvent.getEntity()).getProcessInstance()));
+            event = new ProcessSuspendedEventImpl(
+                processInstanceConverter.from(((ExecutionEntity) internalEvent.getEntity()).getProcessInstance())
+            );
         }
         return Optional.ofNullable(event);
     }

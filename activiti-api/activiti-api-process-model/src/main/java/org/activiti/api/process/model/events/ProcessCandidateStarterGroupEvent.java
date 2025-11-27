@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,15 @@ package org.activiti.api.process.model.events;
 import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.process.model.ProcessCandidateStarterGroup;
 
-public interface ProcessCandidateStarterGroupEvent extends RuntimeEvent<ProcessCandidateStarterGroup, ProcessCandidateStarterGroupEvent.ProcessCandidateStarterGroupEvents> {
-
+public interface ProcessCandidateStarterGroupEvent
+    extends
+        RuntimeEvent<
+            ProcessCandidateStarterGroup,
+            ProcessCandidateStarterGroupEvent.ProcessCandidateStarterGroupEvents
+        > {
     enum ProcessCandidateStarterGroupEvents {
-
         PROCESS_CANDIDATE_STARTER_GROUP_ADDED,
 
-        PROCESS_CANDIDATE_STARTER_GROUP_REMOVED
+        PROCESS_CANDIDATE_STARTER_GROUP_REMOVED,
     }
 }

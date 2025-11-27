@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  */
 package org.activiti.spring.boot.tasks;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.runtime.shared.query.Pageable;
@@ -27,8 +29,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class TaskRuntimeBusinessKeyOnTaskTest {
@@ -54,15 +54,13 @@ public class TaskRuntimeBusinessKeyOnTaskTest {
 
     @Test
     public void should_returnBusinessKeyInTasks_when_StartNewProcessWithBusinessKey() {
-
         securityUtil.logInAs("user");
 
         //when
         String businesskey = "businesskey";
-        processRuntime.start(ProcessPayloadBuilder.start()
-                                     .withProcessDefinitionKey(TWOTASK_PROCESS)
-                                     .withBusinessKey(businesskey)
-                                     .build());
+        processRuntime.start(
+            ProcessPayloadBuilder.start().withProcessDefinitionKey(TWOTASK_PROCESS).withBusinessKey(businesskey).build()
+        );
 
         securityUtil.logInAs("dean");
 
@@ -72,5 +70,4 @@ public class TaskRuntimeBusinessKeyOnTaskTest {
         assertThat(task.getBusinessKey()).isNotBlank();
         assertThat(task.getBusinessKey()).isEqualTo(businesskey);
     }
-
 }

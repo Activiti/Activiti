@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.delegate.event.impl;
 
 import java.util.Map;
-
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityWithVariablesEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -28,25 +26,31 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 
  */
 @SuppressWarnings("rawtypes")
-public class ActivitiEntityWithVariablesEventImpl extends ActivitiEntityEventImpl implements ActivitiEntityWithVariablesEvent {
+public class ActivitiEntityWithVariablesEventImpl
+    extends ActivitiEntityEventImpl
+    implements ActivitiEntityWithVariablesEvent {
 
-  protected Map variables;
-  protected boolean localScope;
+    protected Map variables;
+    protected boolean localScope;
 
-  public ActivitiEntityWithVariablesEventImpl(Object entity, Map variables, boolean localScope, ActivitiEventType type) {
-    super(entity, type);
+    public ActivitiEntityWithVariablesEventImpl(
+        Object entity,
+        Map variables,
+        boolean localScope,
+        ActivitiEventType type
+    ) {
+        super(entity, type);
+        this.variables = variables;
+        this.localScope = localScope;
+    }
 
-    this.variables = variables;
-    this.localScope = localScope;
-  }
+    @Override
+    public Map getVariables() {
+        return variables;
+    }
 
-  @Override
-  public Map getVariables() {
-    return variables;
-  }
-
-  @Override
-  public boolean isLocalScope() {
-    return localScope;
-  }
+    @Override
+    public boolean isLocalScope() {
+        return localScope;
+    }
 }

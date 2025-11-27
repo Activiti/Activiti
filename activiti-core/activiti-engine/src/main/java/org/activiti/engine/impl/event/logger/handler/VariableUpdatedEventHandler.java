@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package org.activiti.engine.impl.event.logger.handler;
 
 import java.util.Map;
-
 import org.activiti.engine.delegate.event.ActivitiVariableEvent;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;
@@ -26,12 +25,17 @@ import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;
  */
 public class VariableUpdatedEventHandler extends VariableEventHandler {
 
-  @Override
-  public EventLogEntryEntity generateEventLogEntry(CommandContext commandContext) {
-    ActivitiVariableEvent variableEvent = (ActivitiVariableEvent) event;
-    Map<String, Object> data = createData(variableEvent);
+    @Override
+    public EventLogEntryEntity generateEventLogEntry(CommandContext commandContext) {
+        ActivitiVariableEvent variableEvent = (ActivitiVariableEvent) event;
+        Map<String, Object> data = createData(variableEvent);
 
-    return createEventLogEntry(variableEvent.getProcessDefinitionId(), variableEvent.getProcessInstanceId(), variableEvent.getExecutionId(), variableEvent.getTaskId(), data);
-  }
-
+        return createEventLogEntry(
+            variableEvent.getProcessDefinitionId(),
+            variableEvent.getProcessInstanceId(),
+            variableEvent.getExecutionId(),
+            variableEvent.getTaskId(),
+            data
+        );
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,26 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.test.json;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class JsonTest extends PluggableActivitiTestCase {
 
@@ -97,8 +93,12 @@ public class JsonTest extends PluggableActivitiTestCase {
         assertThat(task.getTaskDefinitionKey()).isEqualTo("userTaskSuccess");
 
         if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
-            List<HistoricVariableInstance> historicVariableInstances = historyService.createHistoricVariableInstanceQuery()
-                .processInstanceId(processInstance.getProcessInstanceId()).orderByVariableName().asc().list();
+            List<HistoricVariableInstance> historicVariableInstances = historyService
+                .createHistoricVariableInstanceQuery()
+                .processInstanceId(processInstance.getProcessInstanceId())
+                .orderByVariableName()
+                .asc()
+                .list();
             assertThat(historicVariableInstances).hasSize(2);
 
             assertThat(historicVariableInstances.get(0).getVariableName()).isEqualTo(BIG_JSON_OBJ);
@@ -215,8 +215,10 @@ public class JsonTest extends PluggableActivitiTestCase {
         assertThat(task.getTaskDefinitionKey()).isEqualTo("userTaskSuccess");
 
         if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
-            HistoricVariableInstance historicVariableInstance = historyService.createHistoricVariableInstanceQuery()
-                .processInstanceId(processInstance.getProcessInstanceId()).singleResult();
+            HistoricVariableInstance historicVariableInstance = historyService
+                .createHistoricVariableInstanceQuery()
+                .processInstanceId(processInstance.getProcessInstanceId())
+                .singleResult();
             value = (ArrayNode) historicVariableInstance.getValue();
             assertThat(value).isNotNull();
             assertThat(value.get(0).get("var").asText()).isEqualTo("myValue");
@@ -237,5 +239,4 @@ public class JsonTest extends PluggableActivitiTestCase {
         }
         return valueNode;
     }
-
 }

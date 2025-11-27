@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.examples.bpmn.servicetask;
 
 import org.activiti.engine.delegate.DelegateExecution;
@@ -26,14 +24,14 @@ import org.activiti.engine.delegate.JavaDelegate;
  */
 public class BackwardsCompatibleExpressionDelegate implements JavaDelegate {
 
-  private Expression expression;
+    private Expression expression;
 
-  public void execute(DelegateExecution execution) {
-    Object result = expression.getValue(execution);
-    execution.setVariable("result", result);
-  }
+    public void execute(DelegateExecution execution) {
+        Object result = expression.getValue(execution);
+        execution.setVariable("result", result);
+    }
 
-  public void setExpression(Expression expression) {
-    this.expression = expression;
-  }
+    public void setExpression(Expression expression) {
+        this.expression = expression;
+    }
 }

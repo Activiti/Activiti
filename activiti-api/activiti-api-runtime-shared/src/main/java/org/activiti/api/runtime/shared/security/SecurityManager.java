@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.activiti.api.runtime.shared.security;
 import java.util.List;
 
 public interface SecurityManager {
-
     /**
      * Get currently authenticated user id from application security context
      *
@@ -44,5 +43,4 @@ public interface SecurityManager {
      * @throws SecurityException if principal security context is not valid
      */
     List<String> getAuthenticatedUserRoles() throws SecurityException;
-
 }

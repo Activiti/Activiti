@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.bpmn.parser;
 
 import org.activiti.engine.delegate.BpmnError;
@@ -25,23 +24,22 @@ import org.activiti.engine.delegate.BpmnError;
  */
 public class Error {
 
-  protected String id;
-  protected String errorCode;
+    protected String id;
+    protected String errorCode;
 
-  public String getId() {
-    return id;
-  }
+    public String getId() {
+        return id;
+    }
 
-  public void setId(String id) {
-    this.id = id;
-  }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-  public String getErrorCode() {
-    return errorCode;
-  }
+    public String getErrorCode() {
+        return errorCode;
+    }
 
-  public void setErrorCode(String errorCode) {
-    this.errorCode = errorCode;
-  }
-
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
+    }
 }

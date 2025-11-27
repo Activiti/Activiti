@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,15 @@
  */
 package org.activiti.runtime.api.impl;
 
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+
+import java.util.Collections;
+import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
+import org.activiti.api.process.model.payloads.GetProcessDefinitionsPayload;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.core.common.spring.security.policies.ProcessSecurityPoliciesManager;
 import org.activiti.engine.RuntimeService;
@@ -29,13 +38,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Collections;
-
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class ProcessAdminRuntimeImplTest {
@@ -60,7 +62,6 @@ class ProcessAdminRuntimeImplTest {
     @Mock
     private APIProcessDefinitionConverter processDefinitionConverter;
 
-
     private RepositoryServiceImpl repositoryService;
 
     @BeforeEach
@@ -68,19 +69,21 @@ class ProcessAdminRuntimeImplTest {
         repositoryService = spy(new RepositoryServiceImpl());
         repositoryService.setCommandExecutor(commandExecutor);
 
-        processAdminRuntime = spy(new ProcessAdminRuntimeImpl(repositoryService,
-            processDefinitionConverter,
-            runtimeService,
-            processInstanceConverter,
-            null,
-            null,
-            processVariableValidator));
-
+        processAdminRuntime = spy(
+            new ProcessAdminRuntimeImpl(
+                repositoryService,
+                processDefinitionConverter,
+                runtimeService,
+                processInstanceConverter,
+                null,
+                null,
+                processVariableValidator
+            )
+        );
     }
 
     @Test
     void should_applyPaginationParams_whenSearchingProcessDefinitions() {
-
         ProcessDefinitionQuery processDefinitionQuery = mock(ProcessDefinitionQuery.class, Answers.RETURNS_SELF);
         given(repositoryService.createProcessDefinitionQuery()).willReturn(processDefinitionQuery);
         given(processDefinitionQuery.listPage(0, 2)).willReturn(Collections.emptyList());
@@ -90,4 +93,22 @@ class ProcessAdminRuntimeImplTest {
         verify(processDefinitionQuery).listPage(0, 2);
     }
 
+    @Test
+    void should_setCategoryNotEquals_when_excludedCategoryIsSet() {
+        String processCategory = "#triggerableByForm";
+
+        ProcessDefinitionQuery processDefinitionQuery = mock(ProcessDefinitionQuery.class, Answers.RETURNS_SELF);
+        given(repositoryService.createProcessDefinitionQuery()).willReturn(processDefinitionQuery);
+        given(processDefinitionQuery.listPage(anyInt(), anyInt())).willReturn(Collections.emptyList());
+        given(processDefinitionQuery.count()).willReturn(0L);
+
+        Pageable pageable = Pageable.of(0, 10);
+        GetProcessDefinitionsPayload payload = ProcessPayloadBuilder.processDefinitions()
+            .withProcessCategoryToExclude(processCategory)
+            .build();
+
+        processAdminRuntime.processDefinitions(pageable, payload);
+
+        verify(processDefinitionQuery).processDefinitionCategoryNotEquals(processCategory);
+    }
 }

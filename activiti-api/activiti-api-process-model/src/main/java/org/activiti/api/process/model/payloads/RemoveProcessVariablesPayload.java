@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.activiti.api.process.model.payloads;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
 import org.activiti.api.model.shared.Payload;
 
 public class RemoveProcessVariablesPayload implements Payload {
@@ -31,8 +30,7 @@ public class RemoveProcessVariablesPayload implements Payload {
         this.id = UUID.randomUUID().toString();
     }
 
-    public RemoveProcessVariablesPayload(String processInstanceId,
-                                         List<String> variableNames) {
+    public RemoveProcessVariablesPayload(String processInstanceId, List<String> variableNames) {
         this();
         this.processInstanceId = processInstanceId;
         this.variableNames = variableNames;

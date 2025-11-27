@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.examples.bpmn.mail;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -48,7 +46,8 @@ public class EmailSendTaskTest extends PluggableActivitiTestCase {
             try {
                 wiser.start();
                 serverUpAndRunning = true;
-            } catch (RuntimeException e) { // Fix for slow port-closing Jenkins
+            } catch (RuntimeException e) {
+                // Fix for slow port-closing Jenkins
                 if (e.getMessage().toLowerCase().contains("BindException")) {
                     Thread.sleep(250L);
                 }
@@ -64,7 +63,6 @@ public class EmailSendTaskTest extends PluggableActivitiTestCase {
 
     @Deployment
     public void testSendEmail() throws Exception {
-
         String from = "ordershipping@activiti.org";
         boolean male = true;
         String recipientName = "John Doe";
@@ -92,5 +90,4 @@ public class EmailSendTaskTest extends PluggableActivitiTestCase {
         assertThat(mimeMessage.getHeader("From", null)).isEqualTo(from);
         assertThat(mimeMessage.getHeader("To", null)).contains(recipient);
     }
-
 }

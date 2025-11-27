@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,14 @@ import org.activiti.api.process.model.ProcessCandidateStarterGroup;
 import org.activiti.api.process.model.events.ProcessCandidateStarterGroupEvent;
 import org.activiti.api.process.runtime.events.ProcessCandidateStarterGroupRemovedEvent;
 
-public class ProcessCandidateStarterGroupRemovedEventImpl extends RuntimeEventImpl<ProcessCandidateStarterGroup, ProcessCandidateStarterGroupEvent.ProcessCandidateStarterGroupEvents> implements ProcessCandidateStarterGroupRemovedEvent {
+public class ProcessCandidateStarterGroupRemovedEventImpl
+    extends RuntimeEventImpl<
+        ProcessCandidateStarterGroup,
+        ProcessCandidateStarterGroupEvent.ProcessCandidateStarterGroupEvents
+    >
+    implements ProcessCandidateStarterGroupRemovedEvent {
 
-    public ProcessCandidateStarterGroupRemovedEventImpl() {
-    }
+    public ProcessCandidateStarterGroupRemovedEventImpl() {}
 
     public ProcessCandidateStarterGroupRemovedEventImpl(ProcessCandidateStarterGroup entity) {
         super(entity);

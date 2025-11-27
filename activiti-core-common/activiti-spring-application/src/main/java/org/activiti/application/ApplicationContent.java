@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,13 +27,11 @@ public class ApplicationContent {
     private Map<String, List<FileContent>> entries = new HashMap<>();
 
     public void add(ApplicationEntry entry) {
-        List<FileContent> fileContents = entries.computeIfAbsent(entry.getType(),
-                                                                 k -> new ArrayList<>());
+        List<FileContent> fileContents = entries.computeIfAbsent(entry.getType(), k -> new ArrayList<>());
         fileContents.add(entry.getFileContent());
     }
 
     public List<FileContent> getFileContents(String entryType) {
         return entries.getOrDefault(entryType, emptyList());
     }
-
 }

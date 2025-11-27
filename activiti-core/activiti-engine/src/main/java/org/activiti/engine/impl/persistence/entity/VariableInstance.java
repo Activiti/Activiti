@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.persistence.entity;
 
 import org.activiti.engine.api.internal.Internal;
@@ -27,27 +26,25 @@ import org.activiti.engine.impl.variable.ValueFields;
  */
 @Internal
 public interface VariableInstance extends ValueFields, Entity, HasRevision {
+    void setName(String name);
 
-  void setName(String name);
+    void setProcessInstanceId(String processInstanceId);
 
-  void setProcessInstanceId(String processInstanceId);
+    void setExecutionId(String executionId);
 
-  void setExecutionId(String executionId);
+    Object getValue();
 
-  Object getValue();
+    void setValue(Object value);
 
-  void setValue(Object value);
+    String getTypeName();
 
-  String getTypeName();
+    void setTypeName(String typeName);
 
-  void setTypeName(String typeName);
+    String getProcessInstanceId();
 
-  String getProcessInstanceId();
+    String getTaskId();
 
-  String getTaskId();
+    void setTaskId(String taskId);
 
-  void setTaskId(String taskId);
-
-  String getExecutionId();
-
+    String getExecutionId();
 }

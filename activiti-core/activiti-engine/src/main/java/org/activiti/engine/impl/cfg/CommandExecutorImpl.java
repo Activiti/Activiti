@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,35 +28,34 @@ import org.activiti.engine.impl.interceptor.CommandInterceptor;
  */
 public class CommandExecutorImpl implements CommandExecutor {
 
-  protected CommandConfig defaultConfig;
-  protected CommandInterceptor first;
+    protected CommandConfig defaultConfig;
+    protected CommandInterceptor first;
 
-  public CommandExecutorImpl(CommandConfig defaultConfig, CommandInterceptor first) {
-    this.defaultConfig = defaultConfig;
-    this.first = first;
-  }
+    public CommandExecutorImpl(CommandConfig defaultConfig, CommandInterceptor first) {
+        this.defaultConfig = defaultConfig;
+        this.first = first;
+    }
 
-  public CommandInterceptor getFirst() {
-    return first;
-  }
+    public CommandInterceptor getFirst() {
+        return first;
+    }
 
-  public void setFirst(CommandInterceptor commandInterceptor) {
-    this.first = commandInterceptor;
-  }
+    public void setFirst(CommandInterceptor commandInterceptor) {
+        this.first = commandInterceptor;
+    }
 
-  @Override
-  public CommandConfig getDefaultConfig() {
-    return defaultConfig;
-  }
+    @Override
+    public CommandConfig getDefaultConfig() {
+        return defaultConfig;
+    }
 
-  @Override
-  public <T> T execute(Command<T> command) {
-    return execute(defaultConfig, command);
-  }
+    @Override
+    public <T> T execute(Command<T> command) {
+        return execute(defaultConfig, command);
+    }
 
-  @Override
-  public <T> T execute(CommandConfig config, Command<T> command) {
-    return first.execute(config, command);
-  }
-
+    @Override
+    public <T> T execute(CommandConfig config, Command<T> command) {
+        return first.execute(config, command);
+    }
 }

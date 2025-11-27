@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,19 +17,20 @@ package org.activiti.runtime.api.conf.impl;
 
 import static java.util.Collections.unmodifiableList;
 
+import java.util.List;
 import org.activiti.api.runtime.shared.events.VariableEventListener;
 import org.activiti.api.task.runtime.conf.TaskRuntimeConfiguration;
 import org.activiti.api.task.runtime.events.listener.TaskRuntimeEventListener;
-
-import java.util.List;
 
 public class TaskRuntimeConfigurationImpl implements TaskRuntimeConfiguration {
 
     private List<TaskRuntimeEventListener<?>> taskRuntimeEventListeners;
     private final List<VariableEventListener<?>> variableEventListeners;
 
-    public TaskRuntimeConfigurationImpl(List<TaskRuntimeEventListener<?>> taskRuntimeEventListeners,
-                                        List<VariableEventListener<?>> variableEventListeners) {
+    public TaskRuntimeConfigurationImpl(
+        List<TaskRuntimeEventListener<?>> taskRuntimeEventListeners,
+        List<VariableEventListener<?>> variableEventListeners
+    ) {
         this.taskRuntimeEventListeners = taskRuntimeEventListeners;
         this.variableEventListeners = variableEventListeners;
     }
@@ -43,5 +44,4 @@ public class TaskRuntimeConfigurationImpl implements TaskRuntimeConfiguration {
     public List<VariableEventListener<?>> variableEventListeners() {
         return unmodifiableList(variableEventListeners);
     }
-
 }

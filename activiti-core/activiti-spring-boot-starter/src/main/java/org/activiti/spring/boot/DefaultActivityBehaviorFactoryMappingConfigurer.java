@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@ package org.activiti.spring.boot;
 
 import org.activiti.engine.impl.bpmn.behavior.VariablesPropagator;
 import org.activiti.engine.impl.event.EventSubscriptionPayloadMappingProvider;
-import org.activiti.runtime.api.impl.MappingAwareActivityBehaviorFactory;
 import org.activiti.runtime.api.impl.ExtensionsVariablesMappingProvider;
+import org.activiti.runtime.api.impl.MappingAwareActivityBehaviorFactory;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.activiti.spring.process.ProcessVariablesInitiator;
 
@@ -36,7 +36,8 @@ public class DefaultActivityBehaviorFactoryMappingConfigurer implements ProcessE
         ExtensionsVariablesMappingProvider variablesMappingProvider,
         ProcessVariablesInitiator processVariablesInitiator,
         EventSubscriptionPayloadMappingProvider eventSubscriptionPayloadMappingProvider,
-        VariablesPropagator variablesPropagator) {
+        VariablesPropagator variablesPropagator
+    ) {
         this.variablesMappingProvider = variablesMappingProvider;
         this.processVariablesInitiator = processVariablesInitiator;
         this.eventSubscriptionPayloadMappingProvider = eventSubscriptionPayloadMappingProvider;
@@ -47,7 +48,12 @@ public class DefaultActivityBehaviorFactoryMappingConfigurer implements ProcessE
     public void configure(SpringProcessEngineConfiguration processEngineConfiguration) {
         processEngineConfiguration.setEventSubscriptionPayloadMappingProvider(eventSubscriptionPayloadMappingProvider);
 
-        processEngineConfiguration.setActivityBehaviorFactory(new MappingAwareActivityBehaviorFactory(variablesMappingProvider,
-                                                                                                      processVariablesInitiator, variablesPropagator));
+        processEngineConfiguration.setActivityBehaviorFactory(
+            new MappingAwareActivityBehaviorFactory(
+                variablesMappingProvider,
+                processVariablesInitiator,
+                variablesPropagator
+            )
+        );
     }
 }

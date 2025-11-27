@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.delegate;
 
-import org.activiti.bpmn.model.Task;
-
 import java.util.Map;
+import org.activiti.bpmn.model.Task;
 
 /**
  * Callback interface to be notified of transaction events.
@@ -27,11 +24,15 @@ import java.util.Map;
 
  */
 public interface TransactionDependentTaskListener extends BaseTaskListener {
+    String ON_TRANSACTION_COMMITTING = "before-commit";
+    String ON_TRANSACTION_COMMITTED = "committed";
+    String ON_TRANSACTION_ROLLED_BACK = "rolled-back";
 
-  String ON_TRANSACTION_COMMITTING = "before-commit";
-  String ON_TRANSACTION_COMMITTED = "committed";
-  String ON_TRANSACTION_ROLLED_BACK = "rolled-back";
-
-  void notify(String processInstanceId, String executionId, Task task,
-          Map<String, Object> executionVariables, Map<String, Object> customPropertiesMap);
+    void notify(
+        String processInstanceId,
+        String executionId,
+        Task task,
+        Map<String, Object> executionVariables,
+        Map<String, Object> customPropertiesMap
+    );
 }

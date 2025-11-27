@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.bpmn.helper;
 
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
@@ -27,26 +26,25 @@ import org.activiti.engine.delegate.event.ActivitiEventListener;
  */
 public abstract class BaseDelegateEventListener implements ActivitiEventListener {
 
-  protected Class<?> entityClass;
+    protected Class<?> entityClass;
 
-  public void setEntityClass(Class<?> entityClass) {
-    this.entityClass = entityClass;
-  }
-
-  protected boolean isValidEvent(ActivitiEvent event) {
-    boolean valid = false;
-    if (entityClass != null) {
-      if (event instanceof ActivitiEntityEvent) {
-        Object entity = ((ActivitiEntityEvent) event).getEntity();
-        if (entity != null) {
-          valid = entityClass.isAssignableFrom(entity.getClass());
-        }
-      }
-    } else {
-      // If no class is specified, all events are valid
-      valid = true;
+    public void setEntityClass(Class<?> entityClass) {
+        this.entityClass = entityClass;
     }
-    return valid;
-  }
 
+    protected boolean isValidEvent(ActivitiEvent event) {
+        boolean valid = false;
+        if (entityClass != null) {
+            if (event instanceof ActivitiEntityEvent) {
+                Object entity = ((ActivitiEntityEvent) event).getEntity();
+                if (entity != null) {
+                    valid = entityClass.isAssignableFrom(entity.getClass());
+                }
+            }
+        } else {
+            // If no class is specified, all events are valid
+            valid = true;
+        }
+        return valid;
+    }
 }

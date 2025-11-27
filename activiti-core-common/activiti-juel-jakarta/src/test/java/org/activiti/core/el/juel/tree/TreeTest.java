@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.core.el.juel.tree;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -45,29 +44,15 @@ public class TreeTest extends TestCase {
 
         // functions ns:f0(), ns:f1(int)
         context.setFunction("ns", "f0", TreeTest.class.getMethod("foo"));
-        context.setFunction(
-            "ns",
-            "f1",
-            TreeTest.class.getMethod("bar", new Class[] { int.class })
-        );
+        context.setFunction("ns", "f1", TreeTest.class.getMethod("bar", new Class[] { int.class }));
 
         // functions g0(), g1(int)
         context.setFunction("", "g0", TreeTest.class.getMethod("foo"));
-        context.setFunction(
-            "",
-            "g1",
-            TreeTest.class.getMethod("bar", new Class[] { int.class })
-        );
+        context.setFunction("", "g1", TreeTest.class.getMethod("bar", new Class[] { int.class }));
 
         // variables v0, v1
-        context.setVariable(
-            "v0",
-            new ObjectValueExpression(TypeConverter.DEFAULT, 0, long.class)
-        );
-        context.setVariable(
-            "v1",
-            new ObjectValueExpression(TypeConverter.DEFAULT, 1, long.class)
-        );
+        context.setVariable("v0", new ObjectValueExpression(TypeConverter.DEFAULT, 0, long.class));
+        context.setVariable("v1", new ObjectValueExpression(TypeConverter.DEFAULT, 1, long.class));
     }
 
     @Test
@@ -75,36 +60,22 @@ public class TreeTest extends TestCase {
         Bindings bindings = null;
 
         bindings = parse("${ns:f0()}").bind(context.getFunctionMapper(), null);
-        assertSame(
-            context.getFunctionMapper().resolveFunction("ns", "f0"),
-            bindings.getFunction(0)
-        );
+        assertSame(context.getFunctionMapper().resolveFunction("ns", "f0"), bindings.getFunction(0));
         try {
             bindings.getFunction(1);
             fail();
         } catch (Exception e) {}
 
         bindings = parse("${ns:f1(1)}").bind(context.getFunctionMapper(), null);
-        assertSame(
-            context.getFunctionMapper().resolveFunction("ns", "f1"),
-            bindings.getFunction(0)
-        );
+        assertSame(context.getFunctionMapper().resolveFunction("ns", "f1"), bindings.getFunction(0));
         try {
             bindings.getFunction(1);
             fail();
         } catch (Exception e) {}
 
-        bindings =
-            parse("${ns:f0()+ns:f1(1)}")
-                .bind(context.getFunctionMapper(), null);
-        assertSame(
-            context.getFunctionMapper().resolveFunction("ns", "f0"),
-            bindings.getFunction(0)
-        );
-        assertSame(
-            context.getFunctionMapper().resolveFunction("ns", "f1"),
-            bindings.getFunction(1)
-        );
+        bindings = parse("${ns:f0()+ns:f1(1)}").bind(context.getFunctionMapper(), null);
+        assertSame(context.getFunctionMapper().resolveFunction("ns", "f0"), bindings.getFunction(0));
+        assertSame(context.getFunctionMapper().resolveFunction("ns", "f1"), bindings.getFunction(1));
         try {
             bindings.getFunction(2);
             fail();
@@ -112,35 +83,22 @@ public class TreeTest extends TestCase {
 
         // the same for default namespace functions g0(), g1()
         bindings = parse("${g0()}").bind(context.getFunctionMapper(), null);
-        assertSame(
-            context.getFunctionMapper().resolveFunction("", "g0"),
-            bindings.getFunction(0)
-        );
+        assertSame(context.getFunctionMapper().resolveFunction("", "g0"), bindings.getFunction(0));
         try {
             bindings.getFunction(1);
             fail();
         } catch (Exception e) {}
 
         bindings = parse("${g1(1)}").bind(context.getFunctionMapper(), null);
-        assertSame(
-            context.getFunctionMapper().resolveFunction("", "g1"),
-            bindings.getFunction(0)
-        );
+        assertSame(context.getFunctionMapper().resolveFunction("", "g1"), bindings.getFunction(0));
         try {
             bindings.getFunction(1);
             fail();
         } catch (Exception e) {}
 
-        bindings =
-            parse("${g0()+g1(1)}").bind(context.getFunctionMapper(), null);
-        assertSame(
-            context.getFunctionMapper().resolveFunction("", "g0"),
-            bindings.getFunction(0)
-        );
-        assertSame(
-            context.getFunctionMapper().resolveFunction("", "g1"),
-            bindings.getFunction(1)
-        );
+        bindings = parse("${g0()+g1(1)}").bind(context.getFunctionMapper(), null);
+        assertSame(context.getFunctionMapper().resolveFunction("", "g0"), bindings.getFunction(0));
+        assertSame(context.getFunctionMapper().resolveFunction("", "g1"), bindings.getFunction(1));
         try {
             bindings.getFunction(2);
             fail();
@@ -165,34 +123,22 @@ public class TreeTest extends TestCase {
         Bindings bindings = null;
 
         bindings = parse("${v0}").bind(null, context.getVariableMapper());
-        assertSame(
-            context.getVariableMapper().resolveVariable("v0"),
-            bindings.getVariable(0)
-        );
+        assertSame(context.getVariableMapper().resolveVariable("v0"), bindings.getVariable(0));
         try {
             bindings.getVariable(1);
             fail();
         } catch (Exception e) {}
 
         bindings = parse("${v1}").bind(null, context.getVariableMapper());
-        assertSame(
-            context.getVariableMapper().resolveVariable("v1"),
-            bindings.getVariable(0)
-        );
+        assertSame(context.getVariableMapper().resolveVariable("v1"), bindings.getVariable(0));
         try {
             bindings.getVariable(1);
             fail();
         } catch (Exception e) {}
 
         bindings = parse("${v0+v1}").bind(null, context.getVariableMapper());
-        assertSame(
-            context.getVariableMapper().resolveVariable("v0"),
-            bindings.getVariable(0)
-        );
-        assertSame(
-            context.getVariableMapper().resolveVariable("v1"),
-            bindings.getVariable(1)
-        );
+        assertSame(context.getVariableMapper().resolveVariable("v0"), bindings.getVariable(0));
+        assertSame(context.getVariableMapper().resolveVariable("v1"), bindings.getVariable(1));
         try {
             bindings.getVariable(2);
             fail();
@@ -208,28 +154,18 @@ public class TreeTest extends TestCase {
 
     @Test
     public void testBindFunctionsAndVariables() throws Exception {
-        Bindings bindings = parse("${ns:f0()+v0+g1(1)+v1+foo}")
-            .bind(context.getFunctionMapper(), context.getVariableMapper());
-        assertSame(
-            context.getFunctionMapper().resolveFunction("ns", "f0"),
-            bindings.getFunction(0)
+        Bindings bindings = parse("${ns:f0()+v0+g1(1)+v1+foo}").bind(
+            context.getFunctionMapper(),
+            context.getVariableMapper()
         );
-        assertSame(
-            context.getFunctionMapper().resolveFunction("", "g1"),
-            bindings.getFunction(1)
-        );
+        assertSame(context.getFunctionMapper().resolveFunction("ns", "f0"), bindings.getFunction(0));
+        assertSame(context.getFunctionMapper().resolveFunction("", "g1"), bindings.getFunction(1));
         try {
             bindings.getFunction(2);
             fail();
         } catch (Exception e) {}
-        assertSame(
-            context.getVariableMapper().resolveVariable("v0"),
-            bindings.getVariable(0)
-        );
-        assertSame(
-            context.getVariableMapper().resolveVariable("v1"),
-            bindings.getVariable(1)
-        );
+        assertSame(context.getVariableMapper().resolveVariable("v0"), bindings.getVariable(0));
+        assertSame(context.getVariableMapper().resolveVariable("v1"), bindings.getVariable(1));
         assertNull(bindings.getVariable(2));
         try {
             bindings.getVariable(3);

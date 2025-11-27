@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import static java.util.Arrays.asList;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
@@ -29,8 +28,7 @@ public class ApplicationDiscovery {
     private ResourcePatternResolver resourceLoader;
     private String applicationsLocation;
 
-    public ApplicationDiscovery(ResourcePatternResolver resourceLoader,
-                                String applicationsLocation) {
+    public ApplicationDiscovery(ResourcePatternResolver resourceLoader, String applicationsLocation) {
         this.resourceLoader = resourceLoader;
         this.applicationsLocation = applicationsLocation;
     }

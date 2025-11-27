@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,7 @@ public abstract class ProcessCandidateStarterImpl implements ProcessCandidateSta
 
     private String processDefinitionId;
 
-    public ProcessCandidateStarterImpl() {
-    }
+    public ProcessCandidateStarterImpl() {}
 
     public ProcessCandidateStarterImpl(String processDefinitionId) {
         this.processDefinitionId = processDefinitionId;
@@ -32,5 +31,4 @@ public abstract class ProcessCandidateStarterImpl implements ProcessCandidateSta
     public String getProcessDefinitionId() {
         return processDefinitionId;
     }
-
 }

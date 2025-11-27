@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.examples.bpmn.servicetask;
 
 import org.activiti.engine.delegate.DelegateExecution;
@@ -26,25 +24,24 @@ import org.activiti.engine.impl.delegate.ActivityBehavior;
  */
 public class ThrowsExceptionBehavior implements ActivityBehavior {
 
-  public void execute(DelegateExecution execution) {
-    String var = (String) execution.getVariable("var");
+    public void execute(DelegateExecution execution) {
+        String var = (String) execution.getVariable("var");
 
-    String sequenceFlowToTake = null;
+        String sequenceFlowToTake = null;
 
-    try {
-      executeLogic(var);
-      sequenceFlowToTake = "no-exception";
-    } catch (Exception e) {
-      sequenceFlowToTake = "exception";
+        try {
+            executeLogic(var);
+            sequenceFlowToTake = "no-exception";
+        } catch (Exception e) {
+            sequenceFlowToTake = "exception";
+        }
+
+        DelegateHelper.leaveDelegate(execution, sequenceFlowToTake);
     }
 
-    DelegateHelper.leaveDelegate(execution, sequenceFlowToTake);
-  }
-
-  protected void executeLogic(String value) {
-    if (value.equals("throw-exception")) {
-      throw new RuntimeException();
+    protected void executeLogic(String value) {
+        if (value.equals("throw-exception")) {
+            throw new RuntimeException();
+        }
     }
-  }
-
 }

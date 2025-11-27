@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.core.el.juel.tree.impl.ast;
 
 import jakarta.el.ELContext;
@@ -85,8 +84,7 @@ public class AstUnary extends AstRightValue {
     }
 
     @Override
-    public Object eval(Bindings bindings, ELContext context)
-        throws ELException {
+    public Object eval(Bindings bindings, ELContext context) throws ELException {
         return operator.eval(bindings, context, child);
     }
 

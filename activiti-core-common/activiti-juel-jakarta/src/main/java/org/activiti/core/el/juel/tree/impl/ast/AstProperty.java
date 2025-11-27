@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.core.el.juel.tree.impl.ast;
 
 import jakarta.el.ELContext;
@@ -38,44 +37,27 @@ public abstract class AstProperty extends AstNode {
         this(prefix, lvalue, strict, false);
     }
 
-    public AstProperty(
-        AstNode prefix,
-        boolean lvalue,
-        boolean strict,
-        boolean ignoreReturnType
-    ) {
+    public AstProperty(AstNode prefix, boolean lvalue, boolean strict, boolean ignoreReturnType) {
         this.prefix = prefix;
         this.lvalue = lvalue;
         this.strict = strict;
         this.ignoreReturnType = ignoreReturnType;
     }
 
-    protected abstract Object getProperty(Bindings bindings, ELContext context)
-        throws ELException;
+    protected abstract Object getProperty(Bindings bindings, ELContext context) throws ELException;
 
     protected AstNode getPrefix() {
         return prefix;
     }
 
-    public ValueReference getValueReference(
-        Bindings bindings,
-        ELContext context
-    ) {
+    public ValueReference getValueReference(Bindings bindings, ELContext context) {
         Object base = prefix.eval(bindings, context);
         if (base == null) {
-            throw new PropertyNotFoundException(
-                LocalMessages.get("error.property.base.null", prefix)
-            );
+            throw new PropertyNotFoundException(LocalMessages.get("error.property.base.null", prefix));
         }
         Object property = getProperty(bindings, context);
         if (property == null && strict) {
-            throw new PropertyNotFoundException(
-                LocalMessages.get(
-                    "error.property.property.notfound",
-                    "null",
-                    base
-                )
-            );
+            throw new PropertyNotFoundException(LocalMessages.get("error.property.property.notfound", "null", base));
         }
         return new ValueReference(base, property);
     }
@@ -91,17 +73,9 @@ public abstract class AstProperty extends AstNode {
             return null;
         }
         context.setPropertyResolved(false);
-        Object result = context
-            .getELResolver()
-            .getValue(context, base, property);
+        Object result = context.getELResolver().getValue(context, base, property);
         if (!context.isPropertyResolved()) {
-            throw new PropertyNotFoundException(
-                LocalMessages.get(
-                    "error.property.property.notfound",
-                    property,
-                    base
-                )
-            );
+            throw new PropertyNotFoundException(LocalMessages.get("error.property.property.notfound", property, base));
         }
         return result;
     }
@@ -124,103 +98,54 @@ public abstract class AstProperty extends AstNode {
         }
         Object base = prefix.eval(bindings, context);
         if (base == null) {
-            throw new PropertyNotFoundException(
-                LocalMessages.get("error.property.base.null", prefix)
-            );
+            throw new PropertyNotFoundException(LocalMessages.get("error.property.base.null", prefix));
         }
         Object property = getProperty(bindings, context);
         if (property == null && strict) {
-            throw new PropertyNotFoundException(
-                LocalMessages.get(
-                    "error.property.property.notfound",
-                    "null",
-                    base
-                )
-            );
+            throw new PropertyNotFoundException(LocalMessages.get("error.property.property.notfound", "null", base));
         }
         context.setPropertyResolved(false);
-        Class<?> result = context
-            .getELResolver()
-            .getType(context, base, property);
+        Class<?> result = context.getELResolver().getType(context, base, property);
         if (!context.isPropertyResolved()) {
-            throw new PropertyNotFoundException(
-                LocalMessages.get(
-                    "error.property.property.notfound",
-                    property,
-                    base
-                )
-            );
+            throw new PropertyNotFoundException(LocalMessages.get("error.property.property.notfound", property, base));
         }
         return result;
     }
 
-    public boolean isReadOnly(Bindings bindings, ELContext context)
-        throws ELException {
+    public boolean isReadOnly(Bindings bindings, ELContext context) throws ELException {
         if (!lvalue) {
             return true;
         }
         Object base = prefix.eval(bindings, context);
         if (base == null) {
-            throw new PropertyNotFoundException(
-                LocalMessages.get("error.property.base.null", prefix)
-            );
+            throw new PropertyNotFoundException(LocalMessages.get("error.property.base.null", prefix));
         }
         Object property = getProperty(bindings, context);
         if (property == null && strict) {
-            throw new PropertyNotFoundException(
-                LocalMessages.get(
-                    "error.property.property.notfound",
-                    "null",
-                    base
-                )
-            );
+            throw new PropertyNotFoundException(LocalMessages.get("error.property.property.notfound", "null", base));
         }
         context.setPropertyResolved(false);
-        boolean result = context
-            .getELResolver()
-            .isReadOnly(context, base, property);
+        boolean result = context.getELResolver().isReadOnly(context, base, property);
         if (!context.isPropertyResolved()) {
-            throw new PropertyNotFoundException(
-                LocalMessages.get(
-                    "error.property.property.notfound",
-                    property,
-                    base
-                )
-            );
+            throw new PropertyNotFoundException(LocalMessages.get("error.property.property.notfound", property, base));
         }
         return result;
     }
 
-    public void setValue(Bindings bindings, ELContext context, Object value)
-        throws ELException {
+    public void setValue(Bindings bindings, ELContext context, Object value) throws ELException {
         if (!lvalue) {
-            throw new ELException(
-                LocalMessages.get(
-                    "error.value.set.rvalue",
-                    getStructuralId(bindings)
-                )
-            );
+            throw new ELException(LocalMessages.get("error.value.set.rvalue", getStructuralId(bindings)));
         }
         Object base = prefix.eval(bindings, context);
         if (base == null) {
-            throw new PropertyNotFoundException(
-                LocalMessages.get("error.property.base.null", prefix)
-            );
+            throw new PropertyNotFoundException(LocalMessages.get("error.property.base.null", prefix));
         }
         Object property = getProperty(bindings, context);
         if (property == null && strict) {
-            throw new PropertyNotFoundException(
-                LocalMessages.get(
-                    "error.property.property.notfound",
-                    "null",
-                    base
-                )
-            );
+            throw new PropertyNotFoundException(LocalMessages.get("error.property.property.notfound", "null", base));
         }
         context.setPropertyResolved(false);
-        Class<?> type = context
-            .getELResolver()
-            .getType(context, base, property);
+        Class<?> type = context.getELResolver().getType(context, base, property);
         if (context.isPropertyResolved()) {
             if (type != null && (value != null || type.isPrimitive())) {
                 value = bindings.convert(value, type);
@@ -229,88 +154,41 @@ public abstract class AstProperty extends AstNode {
         }
         context.getELResolver().setValue(context, base, property, value);
         if (!context.isPropertyResolved()) {
-            throw new PropertyNotFoundException(
-                LocalMessages.get(
-                    "error.property.property.notfound",
-                    property,
-                    base
-                )
-            );
+            throw new PropertyNotFoundException(LocalMessages.get("error.property.property.notfound", property, base));
         }
     }
 
-    protected Method findMethod(
-        String name,
-        Class<?> clazz,
-        Class<?> returnType,
-        Class<?>[] paramTypes
-    ) {
+    protected Method findMethod(String name, Class<?> clazz, Class<?> returnType, Class<?>[] paramTypes) {
         Method method = null;
         try {
             method = clazz.getMethod(name, paramTypes);
         } catch (NoSuchMethodException e) {
-            throw new MethodNotFoundException(
-                LocalMessages.get("error.property.method.notfound", name, clazz)
-            );
+            throw new MethodNotFoundException(LocalMessages.get("error.property.method.notfound", name, clazz));
         }
         method = findAccessibleMethod(method);
         if (method == null) {
-            throw new MethodNotFoundException(
-                LocalMessages.get("error.property.method.notfound", name, clazz)
-            );
+            throw new MethodNotFoundException(LocalMessages.get("error.property.method.notfound", name, clazz));
         }
-        if (
-            !ignoreReturnType &&
-            returnType != null &&
-            !returnType.isAssignableFrom(method.getReturnType())
-        ) {
+        if (!ignoreReturnType && returnType != null && !returnType.isAssignableFrom(method.getReturnType())) {
             throw new MethodNotFoundException(
-                LocalMessages.get(
-                    "error.property.method.returntype",
-                    method.getReturnType(),
-                    name,
-                    clazz,
-                    returnType
-                )
+                LocalMessages.get("error.property.method.returntype", method.getReturnType(), name, clazz, returnType)
             );
         }
         return method;
     }
 
-    public MethodInfo getMethodInfo(
-        Bindings bindings,
-        ELContext context,
-        Class<?> returnType,
-        Class<?>[] paramTypes
-    ) {
+    public MethodInfo getMethodInfo(Bindings bindings, ELContext context, Class<?> returnType, Class<?>[] paramTypes) {
         Object base = prefix.eval(bindings, context);
         if (base == null) {
-            throw new PropertyNotFoundException(
-                LocalMessages.get("error.property.base.null", prefix)
-            );
+            throw new PropertyNotFoundException(LocalMessages.get("error.property.base.null", prefix));
         }
         Object property = getProperty(bindings, context);
         if (property == null && strict) {
-            throw new PropertyNotFoundException(
-                LocalMessages.get(
-                    "error.property.method.notfound",
-                    "null",
-                    base
-                )
-            );
+            throw new PropertyNotFoundException(LocalMessages.get("error.property.method.notfound", "null", base));
         }
         String name = bindings.convert(property, String.class);
-        Method method = findMethod(
-            name,
-            base.getClass(),
-            returnType,
-            paramTypes
-        );
-        return new MethodInfo(
-            method.getName(),
-            method.getReturnType(),
-            paramTypes
-        );
+        Method method = findMethod(name, base.getClass(), returnType, paramTypes);
+        return new MethodInfo(method.getName(), method.getReturnType(), paramTypes);
     }
 
     public Object invoke(
@@ -322,53 +200,23 @@ public abstract class AstProperty extends AstNode {
     ) {
         Object base = prefix.eval(bindings, context);
         if (base == null) {
-            throw new PropertyNotFoundException(
-                LocalMessages.get("error.property.base.null", prefix)
-            );
+            throw new PropertyNotFoundException(LocalMessages.get("error.property.base.null", prefix));
         }
         Object property = getProperty(bindings, context);
         if (property == null && strict) {
-            throw new PropertyNotFoundException(
-                LocalMessages.get(
-                    "error.property.method.notfound",
-                    "null",
-                    base
-                )
-            );
+            throw new PropertyNotFoundException(LocalMessages.get("error.property.method.notfound", "null", base));
         }
         String name = bindings.convert(property, String.class);
-        Method method = findMethod(
-            name,
-            base.getClass(),
-            returnType,
-            paramTypes
-        );
+        Method method = findMethod(name, base.getClass(), returnType, paramTypes);
         try {
             return method.invoke(base, paramValues);
         } catch (IllegalAccessException e) {
-            throw new ELException(
-                LocalMessages.get(
-                    "error.property.method.access",
-                    name,
-                    base.getClass()
-                )
-            );
+            throw new ELException(LocalMessages.get("error.property.method.access", name, base.getClass()));
         } catch (IllegalArgumentException e) {
-            throw new ELException(
-                LocalMessages.get(
-                    "error.property.method.invocation",
-                    name,
-                    base.getClass()
-                ),
-                e
-            );
+            throw new ELException(LocalMessages.get("error.property.method.invocation", name, base.getClass()), e);
         } catch (InvocationTargetException e) {
             throw new ELException(
-                LocalMessages.get(
-                    "error.property.method.invocation",
-                    name,
-                    base.getClass()
-                ),
+                LocalMessages.get("error.property.method.invocation", name, base.getClass()),
                 e.getCause()
             );
         }

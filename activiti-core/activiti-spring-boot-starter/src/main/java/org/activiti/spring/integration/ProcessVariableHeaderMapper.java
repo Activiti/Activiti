@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.spring.integration;
-
-import org.springframework.integration.mapping.HeaderMapper;
-import org.springframework.messaging.MessageHeaders;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
+import org.springframework.integration.mapping.HeaderMapper;
+import org.springframework.messaging.MessageHeaders;
 
 /**
 
@@ -43,20 +41,12 @@ public class ProcessVariableHeaderMapper implements HeaderMapper<Map<String, Obj
 
     @Override
     public Map<String, Object> toHeaders(Map<String, Object> source) {
-        Map<String, Object> matches = sync(
-                this.keysToPreserve,
-                source,
-                new HashMap<String, Object>());
+        Map<String, Object> matches = sync(this.keysToPreserve, source, new HashMap<String, Object>());
         return matches;
     }
 
-    private static Map<String, Object> sync(
-            Set<String> keys,
-            Map<String, Object> in,
-            Map<String, Object> out) {
-        for (String k : keys)
-            if (in.containsKey(k))
-                out.put(k, in.get(k));
+    private static Map<String, Object> sync(Set<String> keys, Map<String, Object> in, Map<String, Object> out) {
+        for (String k : keys) if (in.containsKey(k)) out.put(k, in.get(k));
         return out;
     }
 }

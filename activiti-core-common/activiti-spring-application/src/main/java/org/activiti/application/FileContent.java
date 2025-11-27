@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,9 @@ public class FileContent {
 
     private String name;
 
-    private byte [] content;
+    private byte[] content;
 
-    public FileContent(String name,
-                       byte[] content) {
+    public FileContent(String name, byte[] content) {
         this.name = name;
         this.content = content;
     }
@@ -34,5 +33,4 @@ public class FileContent {
     public byte[] getContent() {
         return content;
     }
-
 }

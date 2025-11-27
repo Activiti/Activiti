@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,40 +44,39 @@ public class AsyncPropertyValidatorTest {
         //given
         BpmnXMLConverter converter = new BpmnXMLConverter();
         BpmnModel bpmnModel = converter.convertToBpmnModel(
-                new InputStreamSource(
-                        ClassLoader.getSystemResourceAsStream("processes-validation/async-property-process.bpmn")),
-                true,
-                false);
-
+            new InputStreamSource(
+                ClassLoader.getSystemResourceAsStream("processes-validation/async-property-process.bpmn")
+            ),
+            true,
+            false
+        );
 
         //when
         var validationErrors = validator.validate(bpmnModel);
 
         //then
         assertThat(validationErrors)
-                .extracting(ValidationError::getProblem,
-                            ValidationError::getProcessDefinitionId,
-                            ValidationError::getActivityId)
-                .contains(tuple("activiti-flow-element-async-not-available",
-                                "async-property-root-process",
-                                "usertask1"),
-                          tuple("activiti-flow-element-async-not-available",
-                                "async-property-root-process",
-                                "usertask2"),
-                          tuple("activiti-flow-element-async-not-available",
-                                "async-property-root-process",
-                                "usertask3"),
-                          tuple("activiti-signal-async-not-available",
-                                "async-property-root-process",
-                                "signalintermediatethrowevent1"),
-                          tuple("activiti-event-timer-async-not-available",
-                                "async-property-root-process",
-                                "boundarytimer1"),
-                          tuple("activiti-event-timer-async-not-available",
-                                "async-property-root-process",
-                                "timerintermediatecatchevent1"),
-                          tuple("activiti-event-timer-async-not-available",
-                                "async-property-pool-process",
-                                "timerstartevent1"));
+            .extracting(
+                ValidationError::getProblem,
+                ValidationError::getProcessDefinitionId,
+                ValidationError::getActivityId
+            )
+            .contains(
+                tuple("activiti-flow-element-async-not-available", "async-property-root-process", "usertask1"),
+                tuple("activiti-flow-element-async-not-available", "async-property-root-process", "usertask2"),
+                tuple("activiti-flow-element-async-not-available", "async-property-root-process", "usertask3"),
+                tuple(
+                    "activiti-signal-async-not-available",
+                    "async-property-root-process",
+                    "signalintermediatethrowevent1"
+                ),
+                tuple("activiti-event-timer-async-not-available", "async-property-root-process", "boundarytimer1"),
+                tuple(
+                    "activiti-event-timer-async-not-available",
+                    "async-property-root-process",
+                    "timerintermediatecatchevent1"
+                ),
+                tuple("activiti-event-timer-async-not-available", "async-property-pool-process", "timerstartevent1")
+            );
     }
 }

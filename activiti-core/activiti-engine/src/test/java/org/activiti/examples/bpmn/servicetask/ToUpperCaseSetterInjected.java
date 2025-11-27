@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.examples.bpmn.servicetask;
 
 import org.activiti.engine.delegate.DelegateExecution;
@@ -25,20 +24,18 @@ import org.activiti.engine.delegate.JavaDelegate;
  */
 public class ToUpperCaseSetterInjected implements JavaDelegate {
 
-  private Expression text;
-  private boolean setterInvoked;
+    private Expression text;
+    private boolean setterInvoked;
 
-  public void execute(DelegateExecution execution) {
-
-    if (!setterInvoked) {
-      throw new RuntimeException("Setter was not invoked");
+    public void execute(DelegateExecution execution) {
+        if (!setterInvoked) {
+            throw new RuntimeException("Setter was not invoked");
+        }
+        execution.setVariable("setterVar", ((String) text.getValue(execution)).toUpperCase());
     }
-    execution.setVariable("setterVar", ((String) text.getValue(execution)).toUpperCase());
-  }
 
-  public void setText(Expression text) {
-    setterInvoked = true;
-    this.text = text;
-  }
-
+    public void setText(Expression text) {
+        setterInvoked = true;
+        this.text = text;
+    }
 }

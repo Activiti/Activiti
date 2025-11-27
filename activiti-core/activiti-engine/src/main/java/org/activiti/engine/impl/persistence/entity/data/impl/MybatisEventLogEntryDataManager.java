@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.persistence.entity.data.impl;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.event.EventLogEntry;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;
@@ -30,51 +28,51 @@ import org.activiti.engine.impl.persistence.entity.data.EventLogEntryDataManager
 /**
 
  */
-public class MybatisEventLogEntryDataManager extends AbstractDataManager<EventLogEntryEntity> implements EventLogEntryDataManager {
+public class MybatisEventLogEntryDataManager
+    extends AbstractDataManager<EventLogEntryEntity>
+    implements EventLogEntryDataManager {
 
-  public MybatisEventLogEntryDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
-    super(processEngineConfiguration);
-  }
-
-  @Override
-  public Class<? extends EventLogEntryEntity> getManagedEntityClass() {
-    return EventLogEntryEntityImpl.class;
-  }
-
-  @Override
-  public EventLogEntryEntity create() {
-    return new EventLogEntryEntityImpl();
-  }
-
-  @Override
-  @SuppressWarnings("unchecked")
-  public List<EventLogEntry> findAllEventLogEntries() {
-    return getDbSqlSession().selectList("selectAllEventLogEntries");
-  }
-
-  @Override
-  @SuppressWarnings("unchecked")
-  public List<EventLogEntry> findEventLogEntries(long startLogNr, long pageSize) {
-    Map<String, Object> params = new HashMap<String, Object>(2);
-    params.put("startLogNr", startLogNr);
-    if (pageSize > 0) {
-      params.put("endLogNr", startLogNr + pageSize + 1);
+    public MybatisEventLogEntryDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
+        super(processEngineConfiguration);
     }
-    return getDbSqlSession().selectList("selectEventLogEntries", params);
-  }
 
-  @Override
-  @SuppressWarnings("unchecked")
-  public List<EventLogEntry> findEventLogEntriesByProcessInstanceId(String processInstanceId) {
-    Map<String, Object> params = new HashMap<String, Object>(2);
-    params.put("processInstanceId", processInstanceId);
-    return getDbSqlSession().selectList("selectEventLogEntriesByProcessInstanceId", params);
-  }
+    @Override
+    public Class<? extends EventLogEntryEntity> getManagedEntityClass() {
+        return EventLogEntryEntityImpl.class;
+    }
 
-  @Override
-  public void deleteEventLogEntry(long logNr) {
-    getDbSqlSession().getSqlSession().delete("deleteEventLogEntry", logNr);
-  }
+    @Override
+    public EventLogEntryEntity create() {
+        return new EventLogEntryEntityImpl();
+    }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<EventLogEntry> findAllEventLogEntries() {
+        return getDbSqlSession().selectList("selectAllEventLogEntries");
+    }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<EventLogEntry> findEventLogEntries(long startLogNr, long pageSize) {
+        Map<String, Object> params = new HashMap<String, Object>(2);
+        params.put("startLogNr", startLogNr);
+        if (pageSize > 0) {
+            params.put("endLogNr", startLogNr + pageSize + 1);
+        }
+        return getDbSqlSession().selectList("selectEventLogEntries", params);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<EventLogEntry> findEventLogEntriesByProcessInstanceId(String processInstanceId) {
+        Map<String, Object> params = new HashMap<String, Object>(2);
+        params.put("processInstanceId", processInstanceId);
+        return getDbSqlSession().selectList("selectEventLogEntriesByProcessInstanceId", params);
+    }
+
+    @Override
+    public void deleteEventLogEntry(long logNr) {
+        getDbSqlSession().getSqlSession().delete("deleteEventLogEntry", logNr);
+    }
 }

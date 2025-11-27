@@ -7,11 +7,18 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    groups:
+      maven-plugins:
+        patterns:
+          - "org.apache.maven.plugins:*"
+        update-types:
+          - "minor"
+          - "patch"
 
   - package-ecosystem: "github-actions"
     directories:
-      - "/"
-      - "/.github/actions/*"
+    - "/"
+    - "/.github/actions/echo-longest-run"
     schedule:
       interval: "weekly"
     groups:

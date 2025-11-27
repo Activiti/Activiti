@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.repository;
 
-import org.activiti.engine.api.internal.Internal;
-
 import java.util.Date;
+import org.activiti.engine.api.internal.Internal;
 
 /**
  * Represents a deployment that is already present in the process repository.
@@ -35,21 +33,19 @@ import java.util.Date;
 
 @Internal
 public interface Deployment {
+    String getId();
 
-  String getId();
+    String getName();
 
-  String getName();
+    Date getDeploymentTime();
 
-  Date getDeploymentTime();
+    String getCategory();
 
-  String getCategory();
+    String getKey();
 
-  String getKey();
+    String getTenantId();
 
-  String getTenantId();
+    Integer getVersion();
 
-  Integer getVersion();
-
-  String getProjectReleaseVersion();
-
+    String getProjectReleaseVersion();
 }

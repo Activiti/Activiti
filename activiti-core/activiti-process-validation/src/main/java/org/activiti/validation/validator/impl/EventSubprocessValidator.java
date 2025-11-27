@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.validation.validator.impl;
 
 import java.util.List;
-
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.EventSubProcess;
@@ -34,22 +32,31 @@ import org.activiti.validation.validator.ProcessLevelValidator;
  */
 public class EventSubprocessValidator extends ProcessLevelValidator {
 
-  @Override
-  protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
-    List<EventSubProcess> eventSubprocesses = process.findFlowElementsOfType(EventSubProcess.class);
-    for (EventSubProcess eventSubprocess : eventSubprocesses) {
-
-      List<StartEvent> startEvents = process.findFlowElementsInSubProcessOfType(eventSubprocess, StartEvent.class);
-      for (StartEvent startEvent : startEvents) {
-        if (startEvent.getEventDefinitions() != null && !startEvent.getEventDefinitions().isEmpty()) {
-          EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
-          if (!(eventDefinition instanceof org.activiti.bpmn.model.ErrorEventDefinition) && !(eventDefinition instanceof MessageEventDefinition) && !(eventDefinition instanceof SignalEventDefinition)) {
-            addError(errors, Problems.EVENT_SUBPROCESS_INVALID_START_EVENT_DEFINITION, process, eventSubprocess);
-          }
+    @Override
+    protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
+        List<EventSubProcess> eventSubprocesses = process.findFlowElementsOfType(EventSubProcess.class);
+        for (EventSubProcess eventSubprocess : eventSubprocesses) {
+            List<StartEvent> startEvents = process.findFlowElementsInSubProcessOfType(
+                eventSubprocess,
+                StartEvent.class
+            );
+            for (StartEvent startEvent : startEvents) {
+                if (startEvent.getEventDefinitions() != null && !startEvent.getEventDefinitions().isEmpty()) {
+                    EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
+                    if (
+                        !(eventDefinition instanceof org.activiti.bpmn.model.ErrorEventDefinition) &&
+                        !(eventDefinition instanceof MessageEventDefinition) &&
+                        !(eventDefinition instanceof SignalEventDefinition)
+                    ) {
+                        addError(
+                            errors,
+                            Problems.EVENT_SUBPROCESS_INVALID_START_EVENT_DEFINITION,
+                            process,
+                            eventSubprocess
+                        );
+                    }
+                }
+            }
         }
-      }
-
     }
-  }
-
 }

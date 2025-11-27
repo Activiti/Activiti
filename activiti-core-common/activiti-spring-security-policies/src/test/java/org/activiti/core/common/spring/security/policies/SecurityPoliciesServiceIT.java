@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,9 @@ package org.activiti.core.common.spring.security.policies;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.core.common.spring.security.policies.conf.SecurityPoliciesProperties;
 import org.junit.jupiter.api.Test;
@@ -24,10 +27,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ContextConfiguration;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ContextConfiguration
@@ -44,8 +43,7 @@ public class SecurityPoliciesServiceIT {
 
     @Test
     public void basicParsingTest() {
-        List<SecurityPolicy> policies =
-                securityPoliciesProperties.getPolicies();
+        List<SecurityPolicy> policies = securityPoliciesProperties.getPolicies();
 
         assertThat(policies).isNotNull();
         assertThat(policies).hasSize(3);
@@ -78,7 +76,6 @@ public class SecurityPoliciesServiceIT {
 
         assertThat(policies.get(1).getKeys()).contains("SampleProcess2", "SampleProcess3");
 
-
         assertThat(policies.get(2).getName()).isEqualTo("Policy with Wildcard");
 
         assertThat(policies.get(2).getServiceName()).isEqualTo("default");
@@ -92,10 +89,7 @@ public class SecurityPoliciesServiceIT {
         assertThat(policies.get(2).getKeys()).hasSize(1);
 
         assertThat(policies.get(2).getKeys()).contains(securityPoliciesProperties.getWildcard());
-
-
     }
-
 
     @Test
     public void shouldBePoliciesDefined() {
@@ -107,7 +101,6 @@ public class SecurityPoliciesServiceIT {
     @Test
     @WithUserDetails(value = "bob", userDetailsServiceBeanName = "myUserDetailsService")
     public void shouldGetPoliciesForUser() {
-
         String authenticatedUserId = securityManager.getAuthenticatedUserId();
         assertThat(authenticatedUserId).isEqualTo("bob");
 
@@ -115,8 +108,10 @@ public class SecurityPoliciesServiceIT {
         assertThat(userGroups).hasSize(2);
         assertThat(userGroups).contains("developers", "activitiTeam");
 
-        Map<String, Set<String>> keys = processSecurityPoliciesManager.getAllowedKeys(SecurityPolicyAccess.WRITE,
-                SecurityPolicyAccess.READ);
+        Map<String, Set<String>> keys = processSecurityPoliciesManager.getAllowedKeys(
+            SecurityPolicyAccess.WRITE,
+            SecurityPolicyAccess.READ
+        );
         assertThat(keys.keySet()).hasSize(3);
 
         assertThat(keys.get("runtime-bundle")).hasSize(2);
@@ -126,11 +121,9 @@ public class SecurityPoliciesServiceIT {
         assertThat(keys.get("default")).contains(securityPoliciesProperties.getWildcard());
     }
 
-
     @Test
     @WithUserDetails(value = "garth", userDetailsServiceBeanName = "myUserDetailsService")
     public void shouldNotGetKeysForWrite() {
-
         String authenticatedUserId = securityManager.getAuthenticatedUserId();
         assertThat(authenticatedUserId).isEqualTo("garth");
 
@@ -148,7 +141,6 @@ public class SecurityPoliciesServiceIT {
     @Test
     @WithUserDetails(value = "garth", userDetailsServiceBeanName = "myUserDetailsService")
     public void shouldGetKeysForRead() {
-
         String authenticatedUserId = securityManager.getAuthenticatedUserId();
         assertThat(authenticatedUserId).isEqualTo("garth");
 
@@ -163,13 +155,11 @@ public class SecurityPoliciesServiceIT {
         assertThat(keys.get("application")).contains("SampleProcess2", "SampleProcess3");
         assertThat(keys.get("runtime-bundle")).hasSize(0);
         assertThat(keys.get("default")).hasSize(0);
-
     }
 
     @Test
     @WithUserDetails(value = "garth", userDetailsServiceBeanName = "myUserDetailsService")
     public void shouldNotGetAnyKey() {
-
         String authenticatedUserId = securityManager.getAuthenticatedUserId();
         assertThat(authenticatedUserId).isEqualTo("garth");
 
@@ -183,7 +173,5 @@ public class SecurityPoliciesServiceIT {
         assertThat(keys.get("application")).hasSize(0);
         assertThat(keys.get("runtime-bundle")).hasSize(0);
         assertThat(keys.get("default")).hasSize(0);
-
     }
-
 }

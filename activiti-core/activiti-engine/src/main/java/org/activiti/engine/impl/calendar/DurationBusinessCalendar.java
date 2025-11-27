@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.calendar;
 
 import java.util.Date;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.runtime.ClockReader;
@@ -25,19 +23,18 @@ import org.activiti.engine.runtime.ClockReader;
 @Internal
 public class DurationBusinessCalendar extends BusinessCalendarImpl {
 
-  public static String NAME = "duration";
+    public static String NAME = "duration";
 
-  public DurationBusinessCalendar(ClockReader clockReader) {
-    super(clockReader);
-  }
-
-  public Date resolveDuedate(String duedate, int maxIterations) {
-    try {
-      DurationHelper dh = new DurationHelper(duedate, clockReader);
-      return dh.getDateAfter();
-    } catch (Exception e) {
-      throw new ActivitiException("couldn't resolve duedate: " + e.getMessage(), e);
+    public DurationBusinessCalendar(ClockReader clockReader) {
+        super(clockReader);
     }
-  }
 
+    public Date resolveDuedate(String duedate, int maxIterations) {
+        try {
+            DurationHelper dh = new DurationHelper(duedate, clockReader);
+            return dh.getDateAfter();
+        } catch (Exception e) {
+            throw new ActivitiException("couldn't resolve duedate: " + e.getMessage(), e);
+        }
+    }
 }

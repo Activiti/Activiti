@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package org.activiti.spring.boot.process;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
@@ -30,8 +32,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ProcessRuntimeTasksIT {
@@ -63,15 +63,14 @@ public class ProcessRuntimeTasksIT {
     public void should_taskAlwaysHaveAppVersion() {
         securityUtil.logInAs("garth");
 
-        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder.start()
-                                                                       .withProcessDefinitionKey(SINGLE_TASK_PROCESS)
-                                                                       .build());
+        ProcessInstance processInstance = processRuntime.start(
+            ProcessPayloadBuilder.start().withProcessDefinitionKey(SINGLE_TASK_PROCESS).build()
+        );
 
-        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50),
-                                             TaskPayloadBuilder
-                                                     .tasks()
-                                                     .withProcessInstanceId(processInstance.getId())
-                                                     .build());
+        Page<Task> tasks = taskRuntime.tasks(
+            Pageable.of(0, 50),
+            TaskPayloadBuilder.tasks().withProcessInstanceId(processInstance.getId()).build()
+        );
 
         assertThat(tasks.getContent()).hasSize(1);
 

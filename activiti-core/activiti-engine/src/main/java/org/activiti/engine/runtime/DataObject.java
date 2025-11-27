@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.runtime;
 
 import org.activiti.engine.api.internal.Internal;
@@ -24,34 +22,33 @@ import org.activiti.engine.api.internal.Internal;
  */
 @Internal
 public interface DataObject {
+    /**
+     * Name of the DataObject.
+     */
+    String getName();
 
-  /**
-   * Name of the DataObject.
-   */
-  String getName();
+    /**
+     * Localized Name of the DataObject.
+     */
+    String getLocalizedName();
 
-  /**
-   * Localized Name of the DataObject.
-   */
-  String getLocalizedName();
+    /**
+     * Description of the DataObject.
+     */
+    String getDescription();
 
-  /**
-   * Description of the DataObject.
-   */
-  String getDescription();
+    /**
+     * Value of the DataObject.
+     */
+    Object getValue();
 
-  /**
-   * Value of the DataObject.
-   */
-  Object getValue();
+    /**
+     * Type of the DataObject.
+     */
+    String getType();
 
-  /**
-   * Type of the DataObject.
-   */
-  String getType();
-
-  /**
-   * The id of the flow element in the process defining this data object.
-   */
-  String getDataObjectDefinitionKey();
+    /**
+     * The id of the flow element in the process defining this data object.
+     */
+    String getDataObjectDefinitionKey();
 }

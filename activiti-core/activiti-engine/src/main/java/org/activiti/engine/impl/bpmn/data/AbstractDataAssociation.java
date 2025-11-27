@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.bpmn.data;
 
 import java.io.Serializable;
-
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 
@@ -28,35 +26,35 @@ import org.activiti.engine.delegate.Expression;
  */
 public abstract class AbstractDataAssociation implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected String source;
+    protected String source;
 
-  protected Expression sourceExpression;
+    protected Expression sourceExpression;
 
-  protected String target;
+    protected String target;
 
-  protected AbstractDataAssociation(String source, String target) {
-    this.source = source;
-    this.target = target;
-  }
+    protected AbstractDataAssociation(String source, String target) {
+        this.source = source;
+        this.target = target;
+    }
 
-  protected AbstractDataAssociation(Expression sourceExpression, String target) {
-    this.sourceExpression = sourceExpression;
-    this.target = target;
-  }
+    protected AbstractDataAssociation(Expression sourceExpression, String target) {
+        this.sourceExpression = sourceExpression;
+        this.target = target;
+    }
 
-  public abstract void evaluate(DelegateExecution execution);
+    public abstract void evaluate(DelegateExecution execution);
 
-  public String getSource() {
-    return source;
-  }
+    public String getSource() {
+        return source;
+    }
 
-  public String getTarget() {
-    return target;
-  }
+    public String getTarget() {
+        return target;
+    }
 
-  public Expression getSourceExpression() {
-    return sourceExpression;
-  }
+    public Expression getSourceExpression() {
+        return sourceExpression;
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,21 +23,21 @@ import java.util.Map;
  *
  */
 public interface HasExtensionAttributes {
-  /** get element's attributes */
-  Map<String, List<ExtensionAttribute>> getAttributes();
+    /** get element's attributes */
+    Map<String, List<ExtensionAttribute>> getAttributes();
 
-  /**
-   * return value of the attribute from given namespace with given name.
-   *
-   * @param namespace
-   * @param name
-   * @return attribute value or null in case when attribute was not found
-   */
-  String getAttributeValue(String namespace, String name);
+    /**
+     * return value of the attribute from given namespace with given name.
+     *
+     * @param namespace
+     * @param name
+     * @return attribute value or null in case when attribute was not found
+     */
+    String getAttributeValue(String namespace, String name);
 
-  /** add attribute to the object */
-  void addAttribute(ExtensionAttribute attribute);
+    /** add attribute to the object */
+    void addAttribute(ExtensionAttribute attribute);
 
-  /** set all object's attributes */
-  void setAttributes(Map<String, List<ExtensionAttribute>> attributes);
+    /** set all object's attributes */
+    void setAttributes(Map<String, List<ExtensionAttribute>> attributes);
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ public class ProcessDefinitionRetriever {
     private String tenantId;
     private DeploymentManager deploymentCache;
 
-    public ProcessDefinitionRetriever(String tenantId, DeploymentManager deploymentCache){
+    public ProcessDefinitionRetriever(String tenantId, DeploymentManager deploymentCache) {
         this.tenantId = tenantId;
         this.deploymentCache = deploymentCache;
     }
@@ -36,20 +36,36 @@ public class ProcessDefinitionRetriever {
             throw new ActivitiIllegalArgumentException("processDefinitionKey and processDefinitionId are null");
         }
 
-        ProcessDefinition processDefinition = this.getProcessDefinitionByProcessDefinitionId(processDefinitionId, deploymentCache);
-        if(processDefinition == null) {
-            processDefinition = (processDefinitionKey != null && hasNoTenant(tenantId)) ?
-                this.getProcessDefinitionByProcessDefinitionKey(processDefinitionKey, deploymentCache):
-                this.getProcessDefinitionByProcessDefinitionKeyAndTenantId(processDefinitionKey, tenantId, deploymentCache);
+        ProcessDefinition processDefinition = this.getProcessDefinitionByProcessDefinitionId(
+            processDefinitionId,
+            deploymentCache
+        );
+        if (processDefinition == null) {
+            processDefinition = (processDefinitionKey != null && hasNoTenant(tenantId))
+                ? this.getProcessDefinitionByProcessDefinitionKey(processDefinitionKey, deploymentCache)
+                : this.getProcessDefinitionByProcessDefinitionKeyAndTenantId(
+                    processDefinitionKey,
+                    tenantId,
+                    deploymentCache
+                );
             if (processDefinition == null) {
-                throw new ActivitiObjectNotFoundException("No process definition found for key '" + processDefinitionKey + "' for tenant identifier " + tenantId, ProcessDefinition.class);
+                throw new ActivitiObjectNotFoundException(
+                    "No process definition found for key '" +
+                    processDefinitionKey +
+                    "' for tenant identifier " +
+                    tenantId,
+                    ProcessDefinition.class
+                );
             }
         }
 
         return processDefinition;
     }
 
-    private ProcessDefinition getProcessDefinitionByProcessDefinitionId(String processDefinitionId, DeploymentManager deploymentCache){
+    private ProcessDefinition getProcessDefinitionByProcessDefinitionId(
+        String processDefinitionId,
+        DeploymentManager deploymentCache
+    ) {
         ProcessDefinition processDefinition = null;
         if (processDefinitionId != null) {
             processDefinition = deploymentCache.findDeployedProcessDefinitionById(processDefinitionId);
@@ -57,25 +73,41 @@ public class ProcessDefinitionRetriever {
         return processDefinition;
     }
 
-    private ProcessDefinition getProcessDefinitionByProcessDefinitionKey(String processDefinitionKey, DeploymentManager deploymentCache) {
+    private ProcessDefinition getProcessDefinitionByProcessDefinitionKey(
+        String processDefinitionKey,
+        DeploymentManager deploymentCache
+    ) {
         ProcessDefinition processDefinition = null;
         processDefinition = deploymentCache.findDeployedLatestProcessDefinitionByKey(processDefinitionKey);
         if (processDefinition == null) {
-            throw new ActivitiObjectNotFoundException("No process definition found for key '" + processDefinitionKey + "'", ProcessDefinition.class);
+            throw new ActivitiObjectNotFoundException(
+                "No process definition found for key '" + processDefinitionKey + "'",
+                ProcessDefinition.class
+            );
         }
         return processDefinition;
     }
 
-    private ProcessDefinition getProcessDefinitionByProcessDefinitionKeyAndTenantId(String processDefinitionKey, String tenantId, DeploymentManager deploymentCache) {
+    private ProcessDefinition getProcessDefinitionByProcessDefinitionKeyAndTenantId(
+        String processDefinitionKey,
+        String tenantId,
+        DeploymentManager deploymentCache
+    ) {
         ProcessDefinition processDefinition = null;
-        if (processDefinitionKey != null && tenantId != null && !ProcessEngineConfiguration.NO_TENANT_ID.equals(tenantId)) {
-            processDefinition = deploymentCache.findDeployedLatestProcessDefinitionByKeyAndTenantId(processDefinitionKey, tenantId);
+        if (
+            processDefinitionKey != null &&
+            tenantId != null &&
+            !ProcessEngineConfiguration.NO_TENANT_ID.equals(tenantId)
+        ) {
+            processDefinition = deploymentCache.findDeployedLatestProcessDefinitionByKeyAndTenantId(
+                processDefinitionKey,
+                tenantId
+            );
         }
         return processDefinition;
     }
 
-    private boolean hasNoTenant(String tenantId){
+    private boolean hasNoTenant(String tenantId) {
         return tenantId == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(tenantId);
     }
-
 }

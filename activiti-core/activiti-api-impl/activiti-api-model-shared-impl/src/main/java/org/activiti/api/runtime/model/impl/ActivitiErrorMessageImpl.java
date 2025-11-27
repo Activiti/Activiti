@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,33 +22,28 @@ public class ActivitiErrorMessageImpl implements ActivitiErrorMessage {
     private int code;
     private String message;
 
-    public ActivitiErrorMessageImpl() {
-    }
+    public ActivitiErrorMessageImpl() {}
 
-    public ActivitiErrorMessageImpl(int status,
-                                    String message){
+    public ActivitiErrorMessageImpl(int status, String message) {
         this.code = status;
         this.message = message;
     }
 
     @Override
-    public int getCode(){
+    public int getCode() {
         return code;
     }
 
-    public void setCode(int status){
+    public void setCode(int status) {
         this.code = status;
     }
 
     @Override
-    public String getMessage(){
+    public String getMessage() {
         return message;
     }
 
-    public void setMessage(String message){
+    public void setMessage(String message) {
         this.message = message;
     }
-
-
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,9 +23,10 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.Date;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.common.util.DateFormatterProvider;
 import org.activiti.engine.impl.delegate.invocation.DefaultDelegateInterceptor;
@@ -50,16 +51,20 @@ public class ProcessVariablesPayloadValidatorTest {
     @Mock
     private ProcessExtensionService processExtensionService;
 
-    private DateFormatterProvider dateFormatterProvider = new DateFormatterProvider("yyyy-MM-dd[['T']HH:mm:ss[.SSS'Z']]");
+    private DateFormatterProvider dateFormatterProvider = new DateFormatterProvider(
+        "yyyy-MM-dd[['T']HH:mm:ss[.SSS'Z']]"
+    );
     private ObjectMapper objectMapper = new ObjectMapper();
     private VariableNameValidator variableNameValidator = new VariableNameValidator();
 
     private ProcessVariablesPayloadValidator processVariablesValidator;
     private VariableValidationService variableValidationService;
 
-    private ExpressionResolver expressionResolver = new ExpressionResolver(new ExpressionManager(),
+    private ExpressionResolver expressionResolver = new ExpressionResolver(
+        new ExpressionManager(),
         objectMapper,
-        new DefaultDelegateInterceptor());
+        new DefaultDelegateInterceptor()
+    );
 
     @BeforeEach
     public void setUp() {
@@ -83,97 +88,121 @@ public class ProcessVariablesPayloadValidatorTest {
         variableDefinitionDatetime.setName("mydatetime");
         variableDefinitionDatetime.setType("datetime");
 
-        variableValidationService = new VariableValidationService(mapOfClass(VariableType.class,
-            "boolean", new JavaObjectVariableType(Boolean.class),
-            "string", new JavaObjectVariableType(String.class),
-            "integer", new JavaObjectVariableType(Integer.class),
-            "json", new JsonObjectVariableType(objectMapper),
-            "file", new JsonObjectVariableType(objectMapper),
-            "date", new DateVariableType(Date.class, dateFormatterProvider),
-            "datetime", new DateVariableType(Date.class, dateFormatterProvider)));
+        variableValidationService = new VariableValidationService(
+            mapOfClass(
+                VariableType.class,
+                "boolean",
+                new JavaObjectVariableType(Boolean.class),
+                "string",
+                new JavaObjectVariableType(String.class),
+                "integer",
+                new JavaObjectVariableType(Integer.class),
+                "json",
+                new JsonObjectVariableType(objectMapper),
+                "file",
+                new JsonObjectVariableType(objectMapper),
+                "date",
+                new DateVariableType(Date.class, dateFormatterProvider),
+                "datetime",
+                new DateVariableType(Date.class, dateFormatterProvider)
+            )
+        );
 
-        processVariablesValidator = new ProcessVariablesPayloadValidator(dateFormatterProvider,
-                                                                         processExtensionService,
-                                                                         variableValidationService,
-                                                                         variableNameValidator,
-                                                                         expressionResolver);
+        processVariablesValidator = new ProcessVariablesPayloadValidator(
+            dateFormatterProvider,
+            processExtensionService,
+            variableValidationService,
+            variableNameValidator,
+            expressionResolver
+        );
         Extension extension = new Extension();
-        extension.setProperties(mapOfClass(VariableDefinition.class,
-            "name", variableDefinitionName,
-            "age", variableDefinitionAge,
-            "subscribe", variableDefinitionSubscribe,
-            "mydate", variableDefinitionDate,
-            "mydatetime", variableDefinitionDatetime
-        ));
+        extension.setProperties(
+            mapOfClass(
+                VariableDefinition.class,
+                "name",
+                variableDefinitionName,
+                "age",
+                variableDefinitionAge,
+                "subscribe",
+                variableDefinitionSubscribe,
+                "mydate",
+                variableDefinitionDate,
+                "mydatetime",
+                variableDefinitionDatetime
+            )
+        );
         given(processExtensionService.getExtensionsForId(any())).willReturn(extension);
     }
 
     @Test
     public void should_returnErrorList_when_setVariablesWithWrongType() {
+        Throwable throwable = catchThrowable(() ->
+            processVariablesValidator.checkPayloadVariables(
+                ProcessPayloadBuilder.setVariables()
+                    .withVariables(map("name", "Alice", "age", "24", "subscribe", "false"))
+                    .build(),
+                "10"
+            )
+        );
 
-        Throwable throwable = catchThrowable(() -> processVariablesValidator.checkPayloadVariables(
-                                                                            ProcessPayloadBuilder
-                                                                                .setVariables()
-                                                                                .withVariables(map(
-                                                                                    "name", "Alice",
-                                                                                    "age", "24",
-                                                                                    "subscribe", "false"
-                                                                                ))
-                                                                                .build(),
-                                                                            "10"));
-
-        assertThat(throwable)
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessageContaining("subscribe, age");
+        assertThat(throwable).isInstanceOf(IllegalStateException.class).hasMessageContaining("subscribe, age");
     }
 
     @Test
     public void should_returnErrorList_when_setVariablesWithNameWrongType() {
         String expectedTypeErrorMessage = "age";
 
-        Throwable throwable = catchThrowable(() -> processVariablesValidator.checkPayloadVariables(
-                                                                            ProcessPayloadBuilder
-                                                                                .setVariables()
-                                                                                .withVariables(map(
-                                                                                    "name", "Alice",
-                                                                                    "gender", "female",
-                                                                                    "age", "24",
-                                                                                    "subs", true,
-                                                                                    "subscribe", true,
-                                                                                    "mydate", "2019-08-26T10:20:30.000Z"
-                                                                                ))
-                                                                                .build(),
-                                                                            "10"));
+        Throwable throwable = catchThrowable(() ->
+            processVariablesValidator.checkPayloadVariables(
+                ProcessPayloadBuilder.setVariables()
+                    .withVariables(
+                        map(
+                            "name",
+                            "Alice",
+                            "gender",
+                            "female",
+                            "age",
+                            "24",
+                            "subs",
+                            true,
+                            "subscribe",
+                            true,
+                            "mydate",
+                            "2019-08-26T10:20:30.000Z"
+                        )
+                    )
+                    .build(),
+                "10"
+            )
+        );
 
-        assertThat(throwable)
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessageContaining(expectedTypeErrorMessage);
+        assertThat(throwable).isInstanceOf(IllegalStateException.class).hasMessageContaining(expectedTypeErrorMessage);
     }
 
     @Test
     public void should_returnError_when_setVariablesWithWrongDateFormat() {
-        Throwable throwable = catchThrowable(() -> processVariablesValidator.checkPayloadVariables(
-                                                                            ProcessPayloadBuilder
-                                                                                .setVariables()
-                                                                                .withVariables(singletonMap(
-                                                                                    "mydate", "2019-08-26TT10:20:30.000Z"
-                                                                                ))
-                                                                                .build(),
-                                                                            "10"));
+        Throwable throwable = catchThrowable(() ->
+            processVariablesValidator.checkPayloadVariables(
+                ProcessPayloadBuilder.setVariables()
+                    .withVariables(singletonMap("mydate", "2019-08-26TT10:20:30.000Z"))
+                    .build(),
+                "10"
+            )
+        );
 
         assertThat(throwable).isInstanceOf(IllegalStateException.class);
     }
 
     @Test
     public void should_returnError_when_setVariablesWithWrongDatetimeFormat() {
-        Throwable throwable = catchThrowable(() -> processVariablesValidator.checkPayloadVariables(
-                                                                            ProcessPayloadBuilder
-                                                                                .setVariables()
-                                                                                .withVariables(singletonMap(
-                                                                                    "mydatetime", "2019-08-26TT10:20:30.000Z"
-                                                                                ))
-                                                                                .build(),
-                                                                            "10"));
+        Throwable throwable = catchThrowable(() ->
+            processVariablesValidator.checkPayloadVariables(
+                ProcessPayloadBuilder.setVariables()
+                    .withVariables(singletonMap("mydatetime", "2019-08-26TT10:20:30.000Z"))
+                    .build(),
+                "10"
+            )
+        );
 
         assertThat(throwable).isInstanceOf(IllegalStateException.class);
     }
@@ -182,95 +211,99 @@ public class ProcessVariablesPayloadValidatorTest {
     public void should_returnErrorList_when_setVariableWithWrongCharactersInName() {
         String expectedTypeErrorMessage = "gen-der";
 
-        Throwable throwable = catchThrowable(() -> processVariablesValidator.checkPayloadVariables(
-                                                                            ProcessPayloadBuilder
-                                                                                .setVariables()
-                                                                                .withVariables(map(
-                                                                                    "name", "Alice",
-                                                                                    "gen-der", "female"
-                                                                                ))
-                                                                                .build(),
-                                                                            "10"));
+        Throwable throwable = catchThrowable(() ->
+            processVariablesValidator.checkPayloadVariables(
+                ProcessPayloadBuilder.setVariables().withVariables(map("name", "Alice", "gen-der", "female")).build(),
+                "10"
+            )
+        );
 
-        assertThat(throwable)
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessageContaining(expectedTypeErrorMessage);
+        assertThat(throwable).isInstanceOf(IllegalStateException.class).hasMessageContaining(expectedTypeErrorMessage);
     }
 
     @Test
     public void should_throwIllegalStateException_when_payloadVariableWithExpressionInStringVariable() {
-        Throwable throwable = catchThrowable(() -> processVariablesValidator.checkPayloadVariables(
-            ProcessPayloadBuilder.setVariables().withVariables(map(
-                "expression_string", "${variable}",
-                "variable", "no-expression"
-            )).build(),
-            "10"));
+        Throwable throwable = catchThrowable(() ->
+            processVariablesValidator.checkPayloadVariables(
+                ProcessPayloadBuilder.setVariables()
+                    .withVariables(map("expression_string", "${variable}", "variable", "no-expression"))
+                    .build(),
+                "10"
+            )
+        );
 
-        assertThat(throwable)
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessageContaining("expression");
+        assertThat(throwable).isInstanceOf(IllegalStateException.class).hasMessageContaining("expression");
     }
 
     @Test
-    public void should_throwIllegalStateException_when_payloadVariableWithExpressionInObjectVariable() throws IOException {
-        Throwable throwable = catchThrowable(() -> processVariablesValidator.checkPayloadVariables(
-            ProcessPayloadBuilder.setVariables().withVariables(map(
-                "expression_object", objectMapper.createObjectNode()
-                    .put("attr1", "value1")
-                    .put("attr2", "${variable}"),
-                "variable", "no-expression"
-            )).build(),
-            "10"));
+    public void should_throwIllegalStateException_when_payloadVariableWithExpressionInObjectVariable()
+        throws IOException {
+        Throwable throwable = catchThrowable(() ->
+            processVariablesValidator.checkPayloadVariables(
+                ProcessPayloadBuilder.setVariables()
+                    .withVariables(
+                        map(
+                            "expression_object",
+                            objectMapper.createObjectNode().put("attr1", "value1").put("attr2", "${variable}"),
+                            "variable",
+                            "no-expression"
+                        )
+                    )
+                    .build(),
+                "10"
+            )
+        );
 
-        assertThat(throwable)
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessageContaining("expression");
+        assertThat(throwable).isInstanceOf(IllegalStateException.class).hasMessageContaining("expression");
     }
 
     @Test
     public void should_throwIllegalStateException_when_payloadVariableWithExpressionInList() throws IOException {
-        Throwable throwable = catchThrowable(() -> processVariablesValidator.checkPayloadVariables(
-            ProcessPayloadBuilder.setVariables().withVariables(map(
-                "expression_list", objectMapper.createObjectNode()
-                    .put("attr1", "value1")
-                    .set("attr2", objectMapper.createArrayNode()
-                        .add("1")
-                        .add("${variable}")
-                        .add("2")
+        Throwable throwable = catchThrowable(() ->
+            processVariablesValidator.checkPayloadVariables(
+                ProcessPayloadBuilder.setVariables()
+                    .withVariables(
+                        map(
+                            "expression_list",
+                            objectMapper
+                                .createObjectNode()
+                                .put("attr1", "value1")
+                                .set("attr2", objectMapper.createArrayNode().add("1").add("${variable}").add("2")),
+                            "variable",
+                            "no-expression"
+                        )
                     )
-                ,
-                "variable", "no-expression"
-            )).build(), "10"));
+                    .build(),
+                "10"
+            )
+        );
 
-        assertThat(throwable)
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessageContaining("expression");
+        assertThat(throwable).isInstanceOf(IllegalStateException.class).hasMessageContaining("expression");
     }
 
     @Test
     public void should_throwIllegalStateException_when_payloadVariableWithExpressionInMap() {
-        Throwable throwable = catchThrowable(() -> processVariablesValidator.checkPayloadVariables(
-            ProcessPayloadBuilder.setVariables().withVariables(
-                singletonMap("expression_map", singletonMap("expression_string", "${variable}")))
-                .build(), "10"));
+        Throwable throwable = catchThrowable(() ->
+            processVariablesValidator.checkPayloadVariables(
+                ProcessPayloadBuilder.setVariables()
+                    .withVariables(singletonMap("expression_map", singletonMap("expression_string", "${variable}")))
+                    .build(),
+                "10"
+            )
+        );
 
-        assertThat(throwable)
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessageContaining("expression");
+        assertThat(throwable).isInstanceOf(IllegalStateException.class).hasMessageContaining("expression");
     }
 
     @Test
     public void should_success_when_valueForJavaObjectIsNull() {
         assertDoesNotThrow(() ->
             processVariablesValidator.checkPayloadVariables(
-                ProcessPayloadBuilder
-                    .setVariables()
-                    .withVariables(map(
-                        "name", null,
-                        "age", null,
-                        "subscribe", null
-                    ))
+                ProcessPayloadBuilder.setVariables()
+                    .withVariables(map("name", null, "age", null, "subscribe", null))
                     .build(),
-                "10"));
+                "10"
+            )
+        );
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,12 +32,11 @@ import org.springframework.test.context.support.AbstractTestExecutionListener;
  */
 public class CleanTestExecutionListener extends AbstractTestExecutionListener {
 
-  @Override
-  public void afterTestClass(TestContext testContext) throws Exception {
-    RepositoryService repositoryService = testContext.getApplicationContext().getBean(RepositoryService.class);
-    for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
-      repositoryService.deleteDeployment(deployment.getId(), true);
+    @Override
+    public void afterTestClass(TestContext testContext) throws Exception {
+        RepositoryService repositoryService = testContext.getApplicationContext().getBean(RepositoryService.class);
+        for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
+            repositoryService.deleteDeployment(deployment.getId(), true);
+        }
     }
-  }
-
 }

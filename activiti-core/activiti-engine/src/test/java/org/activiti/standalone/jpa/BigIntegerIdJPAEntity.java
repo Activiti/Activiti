@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.standalone.jpa;
-
-import java.math.BigInteger;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import java.math.BigInteger;
 
 /**
 
@@ -29,16 +26,15 @@ import jakarta.persistence.Id;
 @Entity(name = "BIGINT_ID_ENTITY")
 public class BigIntegerIdJPAEntity {
 
-  @Id
-  @Column(name = "ID_")
-  private BigInteger bigIntegerId;
+    @Id
+    @Column(name = "ID_")
+    private BigInteger bigIntegerId;
 
-  public BigInteger getBigIntegerId() {
-    return bigIntegerId;
-  }
+    public BigInteger getBigIntegerId() {
+        return bigIntegerId;
+    }
 
-  public void setBigIntegerId(BigInteger bigIntegerId) {
-    this.bigIntegerId = bigIntegerId;
-  }
-
+    public void setBigIntegerId(BigInteger bigIntegerId) {
+        this.bigIntegerId = bigIntegerId;
+    }
 }

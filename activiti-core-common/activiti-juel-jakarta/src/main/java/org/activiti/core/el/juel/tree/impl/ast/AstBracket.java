@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.core.el.juel.tree.impl.ast;
 
 import jakarta.el.ELContext;
@@ -24,29 +23,17 @@ public class AstBracket extends AstProperty {
 
     protected final AstNode property;
 
-    public AstBracket(
-        AstNode base,
-        AstNode property,
-        boolean lvalue,
-        boolean strict
-    ) {
+    public AstBracket(AstNode base, AstNode property, boolean lvalue, boolean strict) {
         this(base, property, lvalue, strict, false);
     }
 
-    public AstBracket(
-        AstNode base,
-        AstNode property,
-        boolean lvalue,
-        boolean strict,
-        boolean ignoreReturnType
-    ) {
+    public AstBracket(AstNode base, AstNode property, boolean lvalue, boolean strict, boolean ignoreReturnType) {
         super(base, lvalue, strict, ignoreReturnType);
         this.property = property;
     }
 
     @Override
-    protected Object getProperty(Bindings bindings, ELContext context)
-        throws ELException {
+    protected Object getProperty(Bindings bindings, ELContext context) throws ELException {
         return property.eval(bindings, context);
     }
 

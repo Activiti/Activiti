@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,26 +19,26 @@ import org.activiti.bpmn.model.BaseElement;
 
 public class Warning {
 
-  protected String warningMessage;
-  protected String resource;
-  protected int line;
-  protected int column;
+    protected String warningMessage;
+    protected String resource;
+    protected int line;
+    protected int column;
 
-  public Warning(String warningMessage, String localName, int lineNumber, int columnNumber) {
-    this.warningMessage = warningMessage;
-    this.resource = localName;
-    this.line = lineNumber;
-    this.column = columnNumber;
-  }
+    public Warning(String warningMessage, String localName, int lineNumber, int columnNumber) {
+        this.warningMessage = warningMessage;
+        this.resource = localName;
+        this.line = lineNumber;
+        this.column = columnNumber;
+    }
 
-  public Warning(String warningMessage, BaseElement element) {
-    this.warningMessage = warningMessage;
-    this.resource = element.getId();
-    line = element.getXmlRowNumber();
-    column = element.getXmlColumnNumber();
-  }
+    public Warning(String warningMessage, BaseElement element) {
+        this.warningMessage = warningMessage;
+        this.resource = element.getId();
+        line = element.getXmlRowNumber();
+        column = element.getXmlColumnNumber();
+    }
 
-  public String toString() {
-    return warningMessage + (resource != null ? " | " + resource : "") + " | line " + line + " | column " + column;
-  }
+    public String toString() {
+        return warningMessage + (resource != null ? " | " + resource : "") + " | line " + line + " | column " + column;
+    }
 }

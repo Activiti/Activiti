@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,13 +63,12 @@ public class VariableScopeElResolverTest {
     @Mock
     private VariableScopeItemELResolver thirdItemResolver;
 
-
     @Before
     public void setUp() throws Exception {
-        doReturn(Arrays.asList(firstItemResolver, secondItemResolver, thirdItemResolver)).when(
-            variableScopeElResolver).getVariableScopeItemELResolvers();
+        doReturn(Arrays.asList(firstItemResolver, secondItemResolver, thirdItemResolver))
+            .when(variableScopeElResolver)
+            .getVariableScopeItemELResolvers();
     }
-
 
     @Test
     public void getValue_should_returnResolvedValueAndMarkContextAsResolved() {
@@ -108,7 +107,6 @@ public class VariableScopeElResolverTest {
         verifyNoInteractions(elContext);
     }
 
-
     @Test
     public void getVariableScopeItemELResolvers_should_return_defaultItemResolvers() {
         //given
@@ -118,8 +116,8 @@ public class VariableScopeElResolverTest {
         doCallRealMethod().when(variableScopeElResolver).getVariableScopeItemELResolvers();
 
         //when
-        List<VariableScopeItemELResolver> variableScopeItemELResolvers = variableScopeElResolver
-            .getVariableScopeItemELResolvers();
+        List<VariableScopeItemELResolver> variableScopeItemELResolvers =
+            variableScopeElResolver.getVariableScopeItemELResolvers();
         //then
         assertThat(variableScopeItemELResolvers)
             .extracting(itemResolver -> itemResolver.getClass().getName())
@@ -130,6 +128,5 @@ public class VariableScopeElResolverTest {
                 ProcessInitiatorELResolver.class.getName(),
                 VariableElResolver.class.getName()
             );
-
     }
 }

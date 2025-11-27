@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,13 @@ package org.activiti.bpmn.model;
 
 public class StringDataObject extends ValuedDataObject {
 
-  public void setValue(Object value) {
-    this.value = value.toString();
-  }
+    public void setValue(Object value) {
+        this.value = value.toString();
+    }
 
-  public StringDataObject clone() {
-    StringDataObject clone = new StringDataObject();
-    clone.setValues(this);
-    return clone;
-  }
+    public StringDataObject clone() {
+        StringDataObject clone = new StringDataObject();
+        clone.setValues(this);
+        return clone;
+    }
 }
