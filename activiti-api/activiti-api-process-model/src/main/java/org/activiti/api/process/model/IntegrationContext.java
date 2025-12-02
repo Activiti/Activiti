@@ -59,4 +59,6 @@ public interface IntegrationContext {
     <T> T getOutBoundVariable(String name);
 
     <T> T getOutBoundVariable(String name, Class<T> type);
+
+    boolean hasEphemeralVariables();
 }

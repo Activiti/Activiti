@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.activiti.api.process.model.IntegrationContext;
 
 public class IntegrationContextImpl implements IntegrationContext {
@@ -42,9 +43,30 @@ public class IntegrationContextImpl implements IntegrationContext {
     private String clientType;
     private String appVersion;
     private String connectorType;
+    private Boolean ephemeralVariables;
 
     public IntegrationContextImpl() {
         this.id = UUID.randomUUID().toString();
+    }
+
+    public IntegrationContextImpl(IntegrationContext other) {
+        this.id = other.getId();
+        this.inBoundVariables.putAll(other.getInBoundVariables());
+        this.outBoundVariables.putAll(other.getOutBoundVariables());
+        this.processInstanceId = other.getProcessInstanceId();
+        this.parentProcessInstanceId = other.getParentProcessInstanceId();
+        this.rootProcessInstanceId = other.getRootProcessInstanceId();
+        this.processDefinitionId = other.getProcessDefinitionId();
+        this.executionId = other.getExecutionId();
+        this.processDefinitionKey = other.getProcessDefinitionKey();
+        this.processDefinitionVersion = other.getProcessDefinitionVersion();
+        this.businessKey = other.getBusinessKey();
+        this.clientId = other.getClientId();
+        this.clientName = other.getClientName();
+        this.clientType = other.getClientType();
+        this.appVersion = other.getAppVersion();
+        this.connectorType = other.getConnectorType();
+        this.ephemeralVariables = other.hasEphemeralVariables();
     }
 
     @Override
@@ -201,6 +223,10 @@ public class IntegrationContextImpl implements IntegrationContext {
         this.executionId = executionId;
     }
 
+    public void setEphemeralVariables(Boolean ephemeralVariables) {
+        this.ephemeralVariables = ephemeralVariables;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(
@@ -219,7 +245,8 @@ public class IntegrationContextImpl implements IntegrationContext {
             processDefinitionKey,
             processDefinitionVersion,
             processInstanceId,
-            rootProcessInstanceId
+            rootProcessInstanceId,
+            ephemeralVariables
         );
     }
 
@@ -251,7 +278,8 @@ public class IntegrationContextImpl implements IntegrationContext {
             Objects.equals(processDefinitionKey, other.processDefinitionKey) &&
             Objects.equals(processDefinitionVersion, other.processDefinitionVersion) &&
             Objects.equals(processInstanceId, other.processInstanceId) &&
-            Objects.equals(rootProcessInstanceId, other.rootProcessInstanceId)
+            Objects.equals(rootProcessInstanceId, other.rootProcessInstanceId) &&
+            Objects.equals(ephemeralVariables, other.ephemeralVariables)
         );
     }
 
@@ -290,6 +318,8 @@ public class IntegrationContextImpl implements IntegrationContext {
             .append(appVersion)
             .append(", connectorType=")
             .append(connectorType)
+            .append(", ephemeralVariables=")
+            .append(ephemeralVariables)
             .append("]");
         return builder.toString();
     }
@@ -328,5 +358,19 @@ public class IntegrationContextImpl implements IntegrationContext {
         return Optional.ofNullable(outBoundVariables)
             .map(it -> (T) it.get(name))
             .orElse(null);
+    }
+
+    @Override
+    @JsonProperty("ephemeralVariables")
+    public boolean hasEphemeralVariables() {
+        return Boolean.TRUE.equals(this.ephemeralVariables);
+    }
+
+    public void clearOutBoundVariables() {
+        this.outBoundVariables.clear();
+    }
+
+    public void clearInBoundVariables() {
+        this.inBoundVariables.clear();
     }
 }
