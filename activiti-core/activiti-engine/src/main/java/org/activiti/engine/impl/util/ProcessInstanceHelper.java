@@ -253,7 +253,7 @@ public class ProcessInstanceHelper {
         boolean startProcessInstance
     ) {
         return this.createAndStartProcessInstanceWithInitialFlowElement(processDefinition, businessKey, processInstanceName,
-            initialFlowElement, process, variables, transientVariables, startProcessInstance);
+            initialFlowElement, process, variables, transientVariables, startProcessInstance, null, null);
     }
 
     public ProcessInstance createAndStartProcessInstanceWithInitialFlowElement(
