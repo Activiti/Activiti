@@ -38,6 +38,9 @@ public class NoneAutoDeploymentStrategy extends AbstractAutoDeploymentStrategy {
 
     @Override
     public void deployResources(String deploymentNameHint, Resource[] resources, RepositoryService repositoryService) {
-        LOGGER.info("Auto-deployment strategy is set to 'none'. No resources will be deployed for deployment '{}'.", deploymentNameHint);
+        LOGGER.info(
+            "Auto-deployment strategy is set to 'none'. No resources will be deployed for deployment '{}'.",
+            deploymentNameHint
+        );
     }
 }

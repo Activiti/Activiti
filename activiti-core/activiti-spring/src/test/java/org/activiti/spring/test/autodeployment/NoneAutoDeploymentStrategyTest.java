@@ -26,6 +26,7 @@ import org.junit.Test;
 import org.springframework.core.io.Resource;
 
 public class NoneAutoDeploymentStrategyTest {
+
     private NoneAutoDeploymentStrategy deploymentStrategy;
 
     @Before
@@ -42,12 +43,11 @@ public class NoneAutoDeploymentStrategyTest {
 
     @Test
     public void testDeployResourcesDoesNotInteractWithRepositoryService() {
-        final Resource[] resources  = new Resource[] { };
+        final Resource[] resources = new Resource[] {};
         RepositoryService repositoryService = mock();
 
         deploymentStrategy.deployResources("deploymentNameHint", resources, repositoryService);
-        
+
         verifyNoInteractions(repositoryService);
     }
 }
-

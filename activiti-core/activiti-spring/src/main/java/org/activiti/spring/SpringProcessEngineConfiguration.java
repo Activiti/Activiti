@@ -108,10 +108,8 @@ public class SpringProcessEngineConfiguration
     @Override
     public void initTransactionContextFactory() {
         if (transactionContextFactory == null && transactionManager != null) {
-            transactionContextFactory = new SpringTransactionContextFactory(
-                transactionManager,
-                transactionSynchronizationAdapterOrder
-            );
+            transactionContextFactory =
+                new SpringTransactionContextFactory(transactionManager, transactionSynchronizationAdapterOrder);
         }
     }
 
