@@ -42,6 +42,7 @@ import javax.script.ScriptEngineFactory;
 import javax.script.ScriptException;
 import javax.script.SimpleBindings;
 import org.activiti.core.el.ELResolverReflectionBlockerDecorator;
+import org.activiti.core.el.juel.ExpressionFactoryImpl;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.data.ItemInstance;
 import org.activiti.engine.impl.el.CustomMapperJsonNodeELResolver;
@@ -63,7 +64,7 @@ public class JuelScriptEngine extends AbstractScriptEngine implements Compilable
     public JuelScriptEngine(ScriptEngineFactory scriptEngineFactory) {
         this.scriptEngineFactory = scriptEngineFactory;
         // Resolve the ExpressionFactory
-        expressionFactory = ExpressionFactory.newInstance();
+        expressionFactory = new ExpressionFactoryImpl();
     }
 
     public JuelScriptEngine() {
