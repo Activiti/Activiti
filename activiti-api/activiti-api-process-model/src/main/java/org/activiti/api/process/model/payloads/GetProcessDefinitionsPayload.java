@@ -24,7 +24,6 @@ public class GetProcessDefinitionsPayload implements Payload {
     private String id;
     private String processDefinitionId;
     private Set<String> processDefinitionKeys;
-    private String processCategoryToExclude;
     private boolean latestVersionOnly;
 
     public GetProcessDefinitionsPayload() {
@@ -40,24 +39,11 @@ public class GetProcessDefinitionsPayload implements Payload {
     public GetProcessDefinitionsPayload(
         String processDefinitionId,
         Set<String> processDefinitionKeys,
-        String processCategoryToExclude
-    ) {
-        this();
-        this.processDefinitionId = processDefinitionId;
-        this.processDefinitionKeys = processDefinitionKeys;
-        this.processCategoryToExclude = processCategoryToExclude;
-    }
-
-    public GetProcessDefinitionsPayload(
-        String processDefinitionId,
-        Set<String> processDefinitionKeys,
-        String processCategoryToExclude,
         boolean latestVersionOnly
     ) {
         this();
         this.processDefinitionId = processDefinitionId;
         this.processDefinitionKeys = processDefinitionKeys;
-        this.processCategoryToExclude = processCategoryToExclude;
         this.latestVersionOnly = latestVersionOnly;
     }
 
@@ -80,10 +66,6 @@ public class GetProcessDefinitionsPayload implements Payload {
 
     public void setProcessDefinitionKeys(Set<String> processDefinitionKeys) {
         this.processDefinitionKeys = processDefinitionKeys;
-    }
-
-    public String getProcessCategoryToExclude() {
-        return processCategoryToExclude;
     }
 
     public boolean isLatestVersionOnly() {

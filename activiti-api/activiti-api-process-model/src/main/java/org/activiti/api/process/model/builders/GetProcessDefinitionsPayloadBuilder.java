@@ -23,7 +23,6 @@ public class GetProcessDefinitionsPayloadBuilder {
 
     private String processDefinitionId;
     private Set<String> processDefinitionKeys = new HashSet<>();
-    private String processCategoryToExclude;
     private boolean latestVersionOnly;
 
     public GetProcessDefinitionsPayloadBuilder withProcessDefinitionKeys(Set<String> processDefinitionKeys) {
@@ -44,11 +43,6 @@ public class GetProcessDefinitionsPayloadBuilder {
         return this;
     }
 
-    public GetProcessDefinitionsPayloadBuilder withProcessCategoryToExclude(String processCategoryToExclude) {
-        this.processCategoryToExclude = processCategoryToExclude;
-        return this;
-    }
-
     public GetProcessDefinitionsPayloadBuilder withLatestVersionOnly(boolean latestVersionOnly) {
         this.latestVersionOnly = latestVersionOnly;
         return this;
@@ -58,7 +52,6 @@ public class GetProcessDefinitionsPayloadBuilder {
         return new GetProcessDefinitionsPayload(
             processDefinitionId,
             processDefinitionKeys,
-            processCategoryToExclude,
             latestVersionOnly
         );
     }
