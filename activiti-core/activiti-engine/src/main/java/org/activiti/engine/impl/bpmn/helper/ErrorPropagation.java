@@ -311,6 +311,9 @@ public class ErrorPropagation {
         }
 
         List<BoundaryEvent> boundaryEvents = process.findFlowElementsOfType(BoundaryEvent.class, true);
+        List<BoundaryEvent> boundaryEventsWithoutErrorCode = new ArrayList<>();
+
+        // First pass: Add boundary events WITH error codes
         for (BoundaryEvent boundaryEvent : boundaryEvents) {
             if (
                 boundaryEvent.getAttachedToRefId() != null &&
@@ -321,17 +324,35 @@ public class ErrorPropagation {
                 String eventErrorCode = retrieveErrorCode(bpmnModel, errorEventDef.getErrorRef());
 
                 if (eventErrorCode == null || compareErrorCode == null || eventErrorCode.equals(compareErrorCode)) {
-                    List<Event> elementBoundaryEvents = null;
-                    if (!eventMap.containsKey(boundaryEvent.getAttachedToRefId())) {
-                        elementBoundaryEvents = new ArrayList<Event>();
-                        eventMap.put(boundaryEvent.getAttachedToRefId(), elementBoundaryEvents);
+                    // Separate boundary events with no error code (catch-all) to be processed last
+                    if (eventErrorCode == null) {
+                        boundaryEventsWithoutErrorCode.add(boundaryEvent);
                     } else {
-                        elementBoundaryEvents = eventMap.get(boundaryEvent.getAttachedToRefId());
+                        List<Event> elementBoundaryEvents = null;
+                        if (!eventMap.containsKey(boundaryEvent.getAttachedToRefId())) {
+                            elementBoundaryEvents = new ArrayList<Event>();
+                            eventMap.put(boundaryEvent.getAttachedToRefId(), elementBoundaryEvents);
+                        } else {
+                            elementBoundaryEvents = eventMap.get(boundaryEvent.getAttachedToRefId());
+                        }
+                        elementBoundaryEvents.add(boundaryEvent);
                     }
-                    elementBoundaryEvents.add(boundaryEvent);
                 }
             }
         }
+
+        // Second pass: Add boundary events WITHOUT error codes (catch-all) at the end
+        for (BoundaryEvent boundaryEvent : boundaryEventsWithoutErrorCode) {
+            List<Event> elementBoundaryEvents = null;
+            if (!eventMap.containsKey(boundaryEvent.getAttachedToRefId())) {
+                elementBoundaryEvents = new ArrayList<Event>();
+                eventMap.put(boundaryEvent.getAttachedToRefId(), elementBoundaryEvents);
+            } else {
+                elementBoundaryEvents = eventMap.get(boundaryEvent.getAttachedToRefId());
+            }
+            elementBoundaryEvents.add(boundaryEvent);
+        }
+
         return eventMap;
     }
 
