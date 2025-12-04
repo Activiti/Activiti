@@ -27,7 +27,6 @@ import jakarta.el.ValueExpression;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.activiti.core.el.juel.ExpressionFactoryImpl;
 
 public class JuelExpressionResolver implements ExpressionResolver {
 
@@ -35,7 +34,7 @@ public class JuelExpressionResolver implements ExpressionResolver {
     private final List<CustomFunctionProvider> customFunctionProviders;
 
     public JuelExpressionResolver() {
-        this(new ExpressionFactoryImpl());
+        this(ExpressionFactory.newInstance());
     }
 
     public JuelExpressionResolver(ExpressionFactory expressionFactory) {
