@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import org.activiti.core.el.juel.tree.Bindings;
 import org.activiti.core.el.juel.tree.ExpressionNode;
+import org.activiti.core.el.juel.util.Java25ReflectionCompat;
 
 public abstract class AstNode implements ExpressionNode {
 
@@ -54,7 +55,7 @@ public abstract class AstNode implements ExpressionNode {
         if (method == null || !Modifier.isPublic(method.getModifiers())) {
             return null;
         }
-        if (method.isAccessible() || Modifier.isPublic(method.getDeclaringClass().getModifiers())) {
+        if (method.canAccess(null) || Modifier.isPublic(method.getDeclaringClass().getModifiers())) {
             return method;
         }
         for (Class<?> cls : method.getDeclaringClass().getInterfaces()) {
@@ -87,9 +88,8 @@ public abstract class AstNode implements ExpressionNode {
         Method result = findPublicAccessibleMethod(method);
         if (result == null && method != null && Modifier.isPublic(method.getModifiers())) {
             result = method;
-            try {
-                method.setAccessible(true);
-            } catch (SecurityException e) {
+            // Use Java 25+ compatible reflection access
+            if (!Java25ReflectionCompat.makeAccessible(method)) {
                 result = null;
             }
         }
