@@ -276,66 +276,48 @@ public class ErrorPropagation {
         String processDefinitionId,
         String errorRef
     ) {
-        Map<String, List<Event>> eventMap = new HashMap<String, List<Event>>();
+        Map<String, List<Event>> eventMap = new HashMap<>();
         Process process = ProcessDefinitionUtil.getProcess(processDefinitionId);
         BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(processDefinitionId);
 
         String compareErrorCode = retrieveErrorCode(bpmnModel, errorRef);
 
+        // Process event sub-processes
         List<EventSubProcess> subProcesses = process.findFlowElementsOfType(EventSubProcess.class, true);
         for (EventSubProcess eventSubProcess : subProcesses) {
             for (FlowElement flowElement : eventSubProcess.getFlowElements()) {
                 if (flowElement instanceof StartEvent) {
                     StartEvent startEvent = (StartEvent) flowElement;
-                    if (
-                        CollectionUtil.isNotEmpty(startEvent.getEventDefinitions()) &&
-                        startEvent.getEventDefinitions().get(0) instanceof ErrorEventDefinition
-                    ) {
-                        ErrorEventDefinition errorEventDef = (ErrorEventDefinition) startEvent
-                            .getEventDefinitions()
-                            .get(0);
+                    ErrorEventDefinition errorEventDef = getErrorEventDefinition(startEvent);
+                    if (errorEventDef != null) {
                         String eventErrorCode = retrieveErrorCode(bpmnModel, errorEventDef.getErrorRef());
 
-                        if (
-                            eventErrorCode == null ||
-                            compareErrorCode == null ||
-                            eventErrorCode.equals(compareErrorCode)
-                        ) {
-                            List<Event> startEvents = new ArrayList<Event>();
-                            startEvents.add(startEvent);
-                            eventMap.put(eventSubProcess.getId(), startEvents);
+                        if (isErrorCodeMatching(eventErrorCode, compareErrorCode)) {
+                            eventMap.put(eventSubProcess.getId(), Collections.singletonList(startEvent));
                         }
                     }
                 }
             }
         }
 
+        // Process boundary events
         List<BoundaryEvent> boundaryEvents = process.findFlowElementsOfType(BoundaryEvent.class, true);
         List<BoundaryEvent> boundaryEventsWithoutErrorCode = new ArrayList<>();
 
         // First pass: Add boundary events WITH error codes
         for (BoundaryEvent boundaryEvent : boundaryEvents) {
-            if (
-                boundaryEvent.getAttachedToRefId() != null &&
-                CollectionUtil.isNotEmpty(boundaryEvent.getEventDefinitions()) &&
-                boundaryEvent.getEventDefinitions().get(0) instanceof ErrorEventDefinition
-            ) {
-                ErrorEventDefinition errorEventDef = (ErrorEventDefinition) boundaryEvent.getEventDefinitions().get(0);
-                String eventErrorCode = retrieveErrorCode(bpmnModel, errorEventDef.getErrorRef());
+            if (boundaryEvent.getAttachedToRefId() != null) {
+                ErrorEventDefinition errorEventDef = getErrorEventDefinition(boundaryEvent);
+                if (errorEventDef != null) {
+                    String eventErrorCode = retrieveErrorCode(bpmnModel, errorEventDef.getErrorRef());
 
-                if (eventErrorCode == null || compareErrorCode == null || eventErrorCode.equals(compareErrorCode)) {
-                    // Separate boundary events with no error code (catch-all) to be processed last
-                    if (eventErrorCode == null) {
-                        boundaryEventsWithoutErrorCode.add(boundaryEvent);
-                    } else {
-                        List<Event> elementBoundaryEvents = null;
-                        if (!eventMap.containsKey(boundaryEvent.getAttachedToRefId())) {
-                            elementBoundaryEvents = new ArrayList<Event>();
-                            eventMap.put(boundaryEvent.getAttachedToRefId(), elementBoundaryEvents);
+                    if (isErrorCodeMatching(eventErrorCode, compareErrorCode)) {
+                        // Separate boundary events with no error code (catch-all) to be processed last
+                        if (eventErrorCode == null) {
+                            boundaryEventsWithoutErrorCode.add(boundaryEvent);
                         } else {
-                            elementBoundaryEvents = eventMap.get(boundaryEvent.getAttachedToRefId());
+                            addBoundaryEventToMap(eventMap, boundaryEvent);
                         }
-                        elementBoundaryEvents.add(boundaryEvent);
                     }
                 }
             }
@@ -343,17 +325,47 @@ public class ErrorPropagation {
 
         // Second pass: Add boundary events WITHOUT error codes (catch-all) at the end
         for (BoundaryEvent boundaryEvent : boundaryEventsWithoutErrorCode) {
-            List<Event> elementBoundaryEvents = null;
-            if (!eventMap.containsKey(boundaryEvent.getAttachedToRefId())) {
-                elementBoundaryEvents = new ArrayList<Event>();
-                eventMap.put(boundaryEvent.getAttachedToRefId(), elementBoundaryEvents);
-            } else {
-                elementBoundaryEvents = eventMap.get(boundaryEvent.getAttachedToRefId());
-            }
-            elementBoundaryEvents.add(boundaryEvent);
+            addBoundaryEventToMap(eventMap, boundaryEvent);
         }
 
         return eventMap;
+    }
+
+    /**
+     * Helper method to add a boundary event to the event map.
+     * Uses computeIfAbsent for cleaner code (Java 8+).
+     *
+     * @param eventMap the map to add the event to
+     * @param boundaryEvent the boundary event to add
+     */
+    private static void addBoundaryEventToMap(Map<String, List<Event>> eventMap, BoundaryEvent boundaryEvent) {
+        eventMap.computeIfAbsent(boundaryEvent.getAttachedToRefId(), k -> new ArrayList<>()).add(boundaryEvent);
+    }
+
+    /**
+     * Extracts the ErrorEventDefinition from an event's event definitions list.
+     *
+     * @param event the event to extract from
+     * @return the ErrorEventDefinition if found, null otherwise
+     */
+    private static ErrorEventDefinition getErrorEventDefinition(Event event) {
+        if (CollectionUtil.isNotEmpty(event.getEventDefinitions()) &&
+            event.getEventDefinitions().get(0) instanceof ErrorEventDefinition) {
+            return (ErrorEventDefinition) event.getEventDefinitions().get(0);
+        }
+        return null;
+    }
+
+    /**
+     * Checks if two error codes match according to BPMN error matching rules.
+     * Null error codes match any error (catch-all).
+     *
+     * @param eventErrorCode the error code from the catching event
+     * @param compareErrorCode the error code to match against
+     * @return true if the error codes match or either is null
+     */
+    private static boolean isErrorCodeMatching(String eventErrorCode, String compareErrorCode) {
+        return eventErrorCode == null || compareErrorCode == null || eventErrorCode.equals(compareErrorCode);
     }
 
     public static boolean mapException(Exception e, ExecutionEntity execution, List<MapExceptionEntry> exceptionMap) {
