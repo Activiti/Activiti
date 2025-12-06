@@ -8,21 +8,21 @@
 
   <insert id="insertProcessDefinition" parameterType="org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityImpl">
     insert into ${prefix}ACT_RE_PROCDEF(ID_, REV_, CATEGORY_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_, RESOURCE_NAME_, DGRM_RESOURCE_NAME_, DESCRIPTION_, HAS_START_FORM_KEY_, HAS_GRAPHICAL_NOTATION_ , SUSPENSION_STATE_, TENANT_ID_, ENGINE_VERSION_, APP_VERSION_)
-    values (#{id, jdbcType=VARCHAR},
+    values (#{id, jdbcType=${stringType}},
     		1,
-            #{category, jdbcType=VARCHAR},
-            #{name, jdbcType=VARCHAR},
-            #{key, jdbcType=VARCHAR},
+            #{category, jdbcType=${stringType}},
+            #{name, jdbcType=${stringType}},
+            #{key, jdbcType=${stringType}},
             #{version, jdbcType=INTEGER},
-            #{deploymentId, jdbcType=VARCHAR},
-            #{resourceName, jdbcType=VARCHAR},
-            #{diagramResourceName, jdbcType=VARCHAR},
-            #{description, jdbcType=VARCHAR},
+            #{deploymentId, jdbcType=${stringType}},
+            #{resourceName, jdbcType=${stringType}},
+            #{diagramResourceName, jdbcType=${stringType}},
+            #{description, jdbcType=${stringType}},
             #{hasStartFormKey, jdbcType=BOOLEAN},
             #{isGraphicalNotationDefined, jdbcType=BOOLEAN},
             #{suspensionState, jdbcType=INTEGER},
-            #{tenantId, jdbcType=VARCHAR},
-            #{engineVersion, jdbcType=VARCHAR},
+            #{tenantId, jdbcType=${stringType}},
+            #{engineVersion, jdbcType=${stringType}},
             #{appVersion, jdbcType=INTEGER})
   </insert>
 
@@ -30,21 +30,21 @@
     INSERT INTO ${prefix}ACT_RE_PROCDEF(ID_, REV_, CATEGORY_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_, RESOURCE_NAME_, DGRM_RESOURCE_NAME_, DESCRIPTION_, HAS_START_FORM_KEY_, HAS_GRAPHICAL_NOTATION_ , SUSPENSION_STATE_, TENANT_ID_, ENGINE_VERSION_, APP_VERSION_)
     VALUES
       <foreach collection="list" item="processDefinition" index="index" separator=",">
-        (#{processDefinition.id, jdbcType=VARCHAR},
+        (#{processDefinition.id, jdbcType=${stringType}},
          1,
-         #{processDefinition.category, jdbcType=VARCHAR},
-         #{processDefinition.name, jdbcType=VARCHAR},
-         #{processDefinition.key, jdbcType=VARCHAR},
+         #{processDefinition.category, jdbcType=${stringType}},
+         #{processDefinition.name, jdbcType=${stringType}},
+         #{processDefinition.key, jdbcType=${stringType}},
          #{processDefinition.version, jdbcType=INTEGER},
-         #{processDefinition.deploymentId, jdbcType=VARCHAR},
-         #{processDefinition.resourceName, jdbcType=VARCHAR},
-         #{processDefinition.diagramResourceName, jdbcType=VARCHAR},
-         #{processDefinition.description, jdbcType=VARCHAR},
+         #{processDefinition.deploymentId, jdbcType=${stringType}},
+         #{processDefinition.resourceName, jdbcType=${stringType}},
+         #{processDefinition.diagramResourceName, jdbcType=${stringType}},
+         #{processDefinition.description, jdbcType=${stringType}},
          #{processDefinition.hasStartFormKey, jdbcType=BOOLEAN},
          #{processDefinition.isGraphicalNotationDefined, jdbcType=BOOLEAN},
          #{processDefinition.suspensionState, jdbcType=INTEGER},
-         #{processDefinition.tenantId, jdbcType=VARCHAR},
-         #{processDefinition.engineVersion, jdbcType=VARCHAR},
+         #{processDefinition.tenantId, jdbcType=${stringType}},
+         #{processDefinition.engineVersion, jdbcType=${stringType}},
          #{processDefinition.appVersion, jdbcType=INTEGER})
     </foreach>
   </insert>
@@ -54,21 +54,21 @@
     <foreach collection="list" item="processDefinition" index="index">
       INTO ${prefix}ACT_RE_PROCDEF(ID_, REV_, CATEGORY_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_, RESOURCE_NAME_,
       DGRM_RESOURCE_NAME_, DESCRIPTION_, HAS_START_FORM_KEY_, HAS_GRAPHICAL_NOTATION_ , SUSPENSION_STATE_, TENANT_ID_, ENGINE_VERSION_, APP_VERSION_) VALUES
-        (#{processDefinition.id, jdbcType=VARCHAR},
+        (#{processDefinition.id, jdbcType=${stringType}},
          1,
-         #{processDefinition.category, jdbcType=VARCHAR},
-         #{processDefinition.name, jdbcType=VARCHAR},
-         #{processDefinition.key, jdbcType=VARCHAR},
+         #{processDefinition.category, jdbcType=${stringType}},
+         #{processDefinition.name, jdbcType=${stringType}},
+         #{processDefinition.key, jdbcType=${stringType}},
          #{processDefinition.version, jdbcType=INTEGER},
-         #{processDefinition.deploymentId, jdbcType=VARCHAR},
-         #{processDefinition.resourceName, jdbcType=VARCHAR},
-         #{processDefinition.diagramResourceName, jdbcType=VARCHAR},
-         #{processDefinition.description, jdbcType=VARCHAR},
+         #{processDefinition.deploymentId, jdbcType=${stringType}},
+         #{processDefinition.resourceName, jdbcType=${stringType}},
+         #{processDefinition.diagramResourceName, jdbcType=${stringType}},
+         #{processDefinition.description, jdbcType=${stringType}},
          #{processDefinition.hasStartFormKey, jdbcType=BOOLEAN},
          #{processDefinition.isGraphicalNotationDefined, jdbcType=BOOLEAN},
          #{processDefinition.suspensionState, jdbcType=INTEGER},
-         #{processDefinition.tenantId, jdbcType=VARCHAR},
-         #{processDefinition.engineVersion, jdbcType=VARCHAR},
+         #{processDefinition.tenantId, jdbcType=${stringType}},
+         #{processDefinition.engineVersion, jdbcType=${stringType}},
          #{processDefinition.appVersion, jdbcType=INTEGER})
     </foreach>
     SELECT * FROM dual
@@ -80,16 +80,16 @@
     update ${prefix}ACT_RE_PROCDEF set
       REV_ = #{revisionNext, jdbcType=INTEGER},
       SUSPENSION_STATE_ = #{suspensionState, jdbcType=INTEGER},
-      CATEGORY_ = #{category, jdbcType=VARCHAR}
-    where ID_ = #{id, jdbcType=VARCHAR}
+      CATEGORY_ = #{category, jdbcType=${stringType}}
+    where ID_ = #{id, jdbcType=${stringType}}
       and REV_ = #{revision, jdbcType=INTEGER}
   </update>
 
   <update id="updateProcessDefinitionTenantIdForDeploymentId" parameterType="java.util.Map">
     update ${prefix}ACT_RE_PROCDEF set
-      TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
+      TENANT_ID_ = #{tenantId, jdbcType=${stringType}}
     where
-      DEPLOYMENT_ID_ = #{deploymentId, jdbcType=VARCHAR}
+      DEPLOYMENT_ID_ = #{deploymentId, jdbcType=${stringType}}
   </update>
 
   <!-- PROCESSDEFINITION DELETE -->
@@ -105,28 +105,28 @@
   <!-- PROCESSDEFINITION RESULTMAP -->
 
   <resultMap id="processDefinitionResultMap" type="org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityImpl">
-    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <id property="id" column="ID_" jdbcType="${stringType}" />
     <result property="revision" column="REV_" />
     <result property="category" column="CATEGORY_" />
     <result property="name" column="NAME_" />
-    <result property="key" column="KEY_" jdbcType="VARCHAR" />
+    <result property="key" column="KEY_" jdbcType="${stringType}" />
     <result property="version" column="VERSION_" jdbcType="INTEGER"/>
-    <result property="deploymentId" column="DEPLOYMENT_ID_" jdbcType="VARCHAR"/>
-    <result property="resourceName" column="RESOURCE_NAME_" jdbcType="VARCHAR"/>
-    <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
-    <result property="diagramResourceName" column="DGRM_RESOURCE_NAME_" jdbcType="VARCHAR"/>
-    <result property="description" column="DESCRIPTION_" jdbcType="VARCHAR" />
+    <result property="deploymentId" column="DEPLOYMENT_ID_" jdbcType="${stringType}"/>
+    <result property="resourceName" column="RESOURCE_NAME_" jdbcType="${stringType}"/>
+    <result property="tenantId" column="TENANT_ID_" jdbcType="${stringType}" />
+    <result property="diagramResourceName" column="DGRM_RESOURCE_NAME_" jdbcType="${stringType}"/>
+    <result property="description" column="DESCRIPTION_" jdbcType="${stringType}" />
     <result property="hasStartFormKey" column="HAS_START_FORM_KEY_" jdbcType="BOOLEAN"/>
     <result property="isGraphicalNotationDefined" column="HAS_GRAPHICAL_NOTATION_" jdbcType="BOOLEAN" />
     <result property="suspensionState" column="SUSPENSION_STATE_" jdbcType="INTEGER"/>
-    <result property="engineVersion" column="ENGINE_VERSION_" jdbcType="VARCHAR" />
+    <result property="engineVersion" column="ENGINE_VERSION_" jdbcType="${stringType}" />
     <result property="appVersion" column="APP_VERSION_" jdbcType="INTEGER" />
   </resultMap>
 
   <!-- PROCESSDEFINITION SELECT -->
 
   <select id="selectProcessDefinition" parameterType="string" resultMap="processDefinitionResultMap">
-    select * from ${prefix}ACT_RE_PROCDEF where ID_ = #{processDefinitionId, jdbcType=VARCHAR}
+    select * from ${prefix}ACT_RE_PROCDEF where ID_ = #{processDefinitionId, jdbcType=${stringType}}
   </select>
 
   <select id="selectProcessDefinitionById" parameterType="string" resultMap="processDefinitionResultMap">

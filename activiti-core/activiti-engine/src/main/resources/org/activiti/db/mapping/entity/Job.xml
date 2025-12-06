@@ -7,29 +7,29 @@
 	<!-- JOB RESULTMAP -->
 
 	<resultMap id="jobResultMap" type="org.activiti.engine.impl.persistence.entity.JobEntityImpl">
-		<id property="id" column="ID_" jdbcType="VARCHAR" />
+		<id property="id" column="ID_" jdbcType="${stringType}" />
 		<result property="revision" column="REV_" jdbcType="INTEGER" />
-		<result property="jobType" column="TYPE_" jdbcType="VARCHAR" />
-		<result property="lockOwner" column="LOCK_OWNER_" jdbcType="VARCHAR" />
+		<result property="jobType" column="TYPE_" jdbcType="${stringType}" />
+		<result property="lockOwner" column="LOCK_OWNER_" jdbcType="${stringType}" />
 		<result property="lockExpirationTime" column="LOCK_EXP_TIME_" jdbcType="TIMESTAMP" />
 		<result property="exclusive" column="EXCLUSIVE_" jdbcType="BOOLEAN" />
-		<result property="executionId" column="EXECUTION_ID_" jdbcType="VARCHAR" />
-		<result property="processInstanceId" column="PROCESS_INSTANCE_ID_" jdbcType="VARCHAR" />
-		<result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
+		<result property="executionId" column="EXECUTION_ID_" jdbcType="${stringType}" />
+		<result property="processInstanceId" column="PROCESS_INSTANCE_ID_" jdbcType="${stringType}" />
+		<result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="${stringType}" />
 		<result property="retries" column="RETRIES_" jdbcType="INTEGER" />
 		<result property="exceptionByteArrayRef" column="EXCEPTION_STACK_ID_" typeHandler="ByteArrayRefTypeHandler" />
-		<result property="exceptionMessage" column="EXCEPTION_MSG_" jdbcType="VARCHAR" />
-		<result property="jobHandlerType" column="HANDLER_TYPE_" jdbcType="VARCHAR" />
-		<result property="jobHandlerConfiguration" column="HANDLER_CFG_" jdbcType="VARCHAR" />
-		<result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
+		<result property="exceptionMessage" column="EXCEPTION_MSG_" jdbcType="${stringType}" />
+		<result property="jobHandlerType" column="HANDLER_TYPE_" jdbcType="${stringType}" />
+		<result property="jobHandlerConfiguration" column="HANDLER_CFG_" jdbcType="${stringType}" />
+		<result property="tenantId" column="TENANT_ID_" jdbcType="${stringType}" />
 		<result property="duedate" column="DUEDATE_" jdbcType="TIMESTAMP" />
-		<result property="repeat" column="REPEAT_" jdbcType="VARCHAR" />
+		<result property="repeat" column="REPEAT_" jdbcType="${stringType}" />
 	</resultMap>
 
 	<!-- JOB SELECT -->
 
 	<select id="selectJob" parameterType="string" resultMap="jobResultMap">
-		select * from ${prefix}ACT_RU_JOB where ID_ = #{id, jdbcType=VARCHAR}
+		select * from ${prefix}ACT_RU_JOB where ID_ = #{id, jdbcType=${stringType}}
 	</select>
 
 	<select id="selectJobsToExecute" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
@@ -170,20 +170,20 @@
 	<delete id="bulkDeleteJob" parameterType="java.util.Collection">
 		delete from ${prefix}ACT_RU_JOB where
 		<foreach item="job" collection="list" index="index" separator=" or ">
-			ID_ = #{job.id, jdbcType=VARCHAR}
+			ID_ = #{job.id, jdbcType=${stringType}}
 		</foreach>
 	</delete>
 
 	<!-- JOB UPDATE STATEMENTS -->
 	<update id="updateJobTenantIdForDeployment" parameterType="java.util.Map">
 		update ${prefix}ACT_RU_JOB set
-		TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
+		TENANT_ID_ = #{tenantId, jdbcType=${stringType}}
 		where
 		ID_ in (
 			SELECT J.ID_ from ${prefix}ACT_RU_JOB J
 			inner join ${prefix}ACT_RE_PROCDEF P on J.PROC_DEF_ID_ = P.ID_
 			inner join ${prefix}ACT_RE_DEPLOYMENT D on P.DEPLOYMENT_ID_ = D.ID_
-			where D.ID_ = #{deploymentId, jdbcType=VARCHAR}
+			where D.ID_ = #{deploymentId, jdbcType=${stringType}}
 		)
 	</update>
 
@@ -192,7 +192,7 @@
 	<update id="updateJobTenantIdForDeployment" databaseId="mysql"
 			parameterType="java.util.Map">
 		update ${prefix}ACT_RU_JOB set
-		TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
+		TENANT_ID_ = #{tenantId, jdbcType=${stringType}}
 		where
 		ID_ in (
 
@@ -202,7 +202,7 @@
 				FROM ${prefix}ACT_RU_JOB J
 				inner join ${prefix}ACT_RE_PROCDEF P on J.PROC_DEF_ID_ = P.ID_
 				inner join ${prefix}ACT_RE_DEPLOYMENT D on P.DEPLOYMENT_ID_ = D.ID_
-				where D.ID_ = #{deploymentId, jdbcType=VARCHAR}
+				where D.ID_ = #{deploymentId, jdbcType=${stringType}}
 
 			) AS tempTask
 
@@ -231,23 +231,23 @@
 		HANDLER_TYPE_,
 		HANDLER_CFG_,
 		TENANT_ID_)
-		values (#{id, jdbcType=VARCHAR},
+		values (#{id, jdbcType=${stringType}},
 		#{revision, jdbcType=INTEGER},
-		#{jobType, jdbcType=VARCHAR},
-		#{lockOwner, jdbcType=VARCHAR},
+		#{jobType, jdbcType=${stringType}},
+		#{lockOwner, jdbcType=${stringType}},
         #{lockExpirationTime, jdbcType=TIMESTAMP},
 		#{exclusive, jdbcType=BOOLEAN},
-		#{executionId, jdbcType=VARCHAR},
-		#{processInstanceId, jdbcType=VARCHAR},
-		#{processDefinitionId, jdbcType=VARCHAR},
+		#{executionId, jdbcType=${stringType}},
+		#{processInstanceId, jdbcType=${stringType}},
+		#{processDefinitionId, jdbcType=${stringType}},
 		#{retries, jdbcType=INTEGER},
 		#{exceptionByteArrayRef, typeHandler=ByteArrayRefTypeHandler},
-		#{exceptionMessage, jdbcType=VARCHAR},
+		#{exceptionMessage, jdbcType=${stringType}},
 		#{duedate, jdbcType=TIMESTAMP},
-		#{repeat, jdbcType=VARCHAR},
-		#{jobHandlerType, jdbcType=VARCHAR},
-		#{jobHandlerConfiguration, jdbcType=VARCHAR},
-		#{tenantId, jdbcType=VARCHAR}
+		#{repeat, jdbcType=${stringType}},
+		#{jobHandlerType, jdbcType=${stringType}},
+		#{jobHandlerConfiguration, jdbcType=${stringType}},
+		#{tenantId, jdbcType=${stringType}}
 		)
 	</insert>
 
@@ -271,23 +271,23 @@
 		HANDLER_CFG_,
 		TENANT_ID_) VALUES
 		<foreach collection="list" item="job" index="index" separator=",">
-			(#{job.id, jdbcType=VARCHAR},
+			(#{job.id, jdbcType=${stringType}},
 			#{job.revision, jdbcType=INTEGER},
-			#{job.jobType, jdbcType=VARCHAR},
-			#{job.lockOwner, jdbcType=VARCHAR},
+			#{job.jobType, jdbcType=${stringType}},
+			#{job.lockOwner, jdbcType=${stringType}},
 			#{job.lockExpirationTime, jdbcType=TIMESTAMP},
 			#{job.exclusive, jdbcType=BOOLEAN},
-			#{job.executionId, jdbcType=VARCHAR},
-			#{job.processInstanceId, jdbcType=VARCHAR},
-			#{job.processDefinitionId, jdbcType=VARCHAR},
+			#{job.executionId, jdbcType=${stringType}},
+			#{job.processInstanceId, jdbcType=${stringType}},
+			#{job.processDefinitionId, jdbcType=${stringType}},
 			#{job.retries, jdbcType=INTEGER},
 			#{job.exceptionByteArrayRef, typeHandler=ByteArrayRefTypeHandler},
-			#{job.exceptionMessage, jdbcType=VARCHAR},
+			#{job.exceptionMessage, jdbcType=${stringType}},
 			#{job.duedate, jdbcType=TIMESTAMP},
-			#{job.repeat, jdbcType=VARCHAR},
-			#{job.jobHandlerType, jdbcType=VARCHAR},
-			#{job.jobHandlerConfiguration, jdbcType=VARCHAR},
-			#{job.tenantId, jdbcType=VARCHAR})
+			#{job.repeat, jdbcType=${stringType}},
+			#{job.jobHandlerType, jdbcType=${stringType}},
+			#{job.jobHandlerConfiguration, jdbcType=${stringType}},
+			#{job.tenantId, jdbcType=${stringType}})
 		</foreach>
 	</insert>
 
@@ -312,22 +312,22 @@
 			HANDLER_TYPE_,
 			HANDLER_CFG_,
 			TENANT_ID_) VALUES
-			(#{job.id, jdbcType=VARCHAR},
+			(#{job.id, jdbcType=${stringType}},
 			#{job.revision, jdbcType=INTEGER},
-			#{job.jobType, jdbcType=VARCHAR},
-			#{job.lockOwner, jdbcType=VARCHAR},
+			#{job.jobType, jdbcType=${stringType}},
+			#{job.lockOwner, jdbcType=${stringType}},
 			#{job.lockExpirationTime, jdbcType=TIMESTAMP},
 			#{job.exclusive, jdbcType=BOOLEAN},
-			#{job.executionId, jdbcType=VARCHAR},
-			#{job.processInstanceId, jdbcType=VARCHAR},
-			#{job.processDefinitionId, jdbcType=VARCHAR},
+			#{job.executionId, jdbcType=${stringType}},
+			#{job.processInstanceId, jdbcType=${stringType}},
+			#{job.processDefinitionId, jdbcType=${stringType}},
 			#{job.duedate, jdbcType=TIMESTAMP},
 			#{job.retries, jdbcType=INTEGER},
 			#{job.exceptionByteArrayRef, typeHandler=ByteArrayRefTypeHandler},
-			#{job.exceptionMessage, jdbcType=VARCHAR},
-			#{job.jobHandlerType, jdbcType=VARCHAR},
-			#{job.jobHandlerConfiguration, jdbcType=VARCHAR},
-			#{job.tenantId, jdbcType=VARCHAR})
+			#{job.exceptionMessage, jdbcType=${stringType}},
+			#{job.jobHandlerType, jdbcType=${stringType}},
+			#{job.jobHandlerConfiguration, jdbcType=${stringType}},
+			#{job.tenantId, jdbcType=${stringType}})
 		</foreach>
 		SELECT * FROM dual
 	</insert>
@@ -339,19 +339,19 @@
 		<set>
 			REV_ = #{revisionNext, jdbcType=INTEGER},
 			LOCK_EXP_TIME_ = #{lockExpirationTime, jdbcType=TIMESTAMP},
-			LOCK_OWNER_ = #{lockOwner, jdbcType=VARCHAR},
+			LOCK_OWNER_ = #{lockOwner, jdbcType=${stringType}},
 			RETRIES_ = #{retries, jdbcType=INTEGER},
 			EXCEPTION_STACK_ID_ = #{exceptionByteArrayRef, typeHandler=ByteArrayRefTypeHandler},
-			EXCEPTION_MSG_ = #{exceptionMessage, jdbcType=VARCHAR}
+			EXCEPTION_MSG_ = #{exceptionMessage, jdbcType=${stringType}}
 		</set>
-		where ID_= #{id, jdbcType=VARCHAR}
+		where ID_= #{id, jdbcType=${stringType}}
 		and REV_ = #{revision, jdbcType=INTEGER}
 	</update>
 
 	<update id="resetExpiredJob" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">
     update ${prefix}ACT_RU_JOB
     set LOCK_OWNER_ = null, LOCK_EXP_TIME_ = null
-    where ID_ = #{id,jdbcType=VARCHAR}
+    where ID_ = #{id,jdbcType=${stringType}}
   </update>
 
 	<select id="selectTimersByExecutionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">

@@ -12,8 +12,8 @@
         VALUE_,
         REV_
       ) values (
-        #{name ,jdbcType=VARCHAR},
-        #{value, jdbcType=VARCHAR},
+        #{name ,jdbcType=${stringType}},
+        #{value, jdbcType=${stringType}},
         1
       )
   </insert>
@@ -21,8 +21,8 @@
   <insert id="bulkInsertProperty" parameterType="java.util.List">
       INSERT INTO ${prefix}ACT_GE_PROPERTY (NAME_, VALUE_, REV_) VALUES
       <foreach collection="list" item="property" index="index" separator=",">
-        (#{property.name ,jdbcType=VARCHAR},
-         #{property.value, jdbcType=VARCHAR},
+        (#{property.name ,jdbcType=${stringType}},
+         #{property.value, jdbcType=${stringType}},
          1)
       </foreach>
   </insert>
@@ -31,8 +31,8 @@
     INSERT ALL
     <foreach collection="list" item="property" index="index">
       INTO ${prefix}ACT_GE_PROPERTY (NAME_, VALUE_, REV_) VALUES
-      (#{property.name ,jdbcType=VARCHAR},
-       #{property.value, jdbcType=VARCHAR},
+      (#{property.name ,jdbcType=${stringType}},
+       #{property.value, jdbcType=${stringType}},
        1)
     </foreach>
     SELECT * FROM dual
@@ -44,9 +44,9 @@
     update ${prefix}ACT_GE_PROPERTY
     <set>
       REV_ = #{revisionNext, jdbcType=INTEGER},
-      VALUE_ = #{value, jdbcType=VARCHAR}
+      VALUE_ = #{value, jdbcType=${stringType}}
     </set>
-    where NAME_ = #{name, jdbcType=VARCHAR}
+    where NAME_ = #{name, jdbcType=${stringType}}
       and REV_ = #{revision, jdbcType=INTEGER}
   </update>
 
@@ -60,8 +60,8 @@
   <!-- PROPERTY SELECT -->
 
   <resultMap id="propertyResultMap" type="org.activiti.engine.impl.persistence.entity.PropertyEntityImpl">
-    <id property="name" column="NAME_" jdbcType="VARCHAR" />
-    <result property="value" column="VALUE_" jdbcType="VARCHAR" />
+    <id property="name" column="NAME_" jdbcType="${stringType}" />
+    <result property="value" column="VALUE_" jdbcType="${stringType}" />
     <result property="revision" column="REV_" jdbcType="INTEGER" />
   </resultMap>
 
@@ -70,7 +70,7 @@
   </select>
 
   <select id="selectProperty" parameterType="string" resultMap="propertyResultMap">
-    select * from ${prefix}ACT_GE_PROPERTY where NAME_ = #{name, jdbcType=VARCHAR}
+    select * from ${prefix}ACT_GE_PROPERTY where NAME_ = #{name, jdbcType=${stringType}}
   </select>
 
   <select id="selectProperties" resultMap="propertyResultMap">

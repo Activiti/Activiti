@@ -132,6 +132,7 @@ import org.activiti.engine.impl.cfg.standalone.StandaloneMybatisTransactionConte
 import org.activiti.engine.impl.cmd.ValidateExecutionRelatedEntityCountCfgCmd;
 import org.activiti.engine.impl.db.DbIdGenerator;
 import org.activiti.engine.impl.db.DbSqlSessionFactory;
+import org.activiti.engine.impl.db.IbatisNVariableTypeHandler;
 import org.activiti.engine.impl.db.IbatisVariableTypeHandler;
 import org.activiti.engine.impl.delegate.invocation.DefaultDelegateInterceptor;
 import org.activiti.engine.impl.el.ExpressionManager;
@@ -1233,6 +1234,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
                 properties.put("orderBy", "order by ${orderByColumns}");
                 properties.put("blobType", "BLOB");
                 properties.put("boolValue", "TRUE");
+                properties.put("stringType", "VARCHAR");
 
                 if (databaseType != null) {
                     properties.load(getResourceAsStream("org/activiti/db/properties/" + databaseType + ".properties"));
@@ -1269,6 +1271,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         configuration
             .getTypeHandlerRegistry()
             .register(VariableType.class, JdbcType.VARCHAR, new IbatisVariableTypeHandler());
+        configuration
+            .getTypeHandlerRegistry()
+            .register(VariableType.class, JdbcType.NVARCHAR, new IbatisNVariableTypeHandler());
     }
 
     public void initCustomMybatisMappers(Configuration configuration) {

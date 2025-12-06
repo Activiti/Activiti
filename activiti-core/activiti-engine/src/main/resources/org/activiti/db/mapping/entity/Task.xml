@@ -24,26 +24,26 @@
   <insert id="insertTask" parameterType="org.activiti.engine.impl.persistence.entity.TaskEntityImpl">
     insert into ${prefix}ACT_RU_TASK (ID_, REV_, NAME_, BUSINESS_KEY_, PARENT_TASK_ID_, DESCRIPTION_, PRIORITY_, CREATE_TIME_, OWNER_,
     ASSIGNEE_, DELEGATION_, EXECUTION_ID_, PROC_INST_ID_, PROC_DEF_ID_, TASK_DEF_KEY_, DUE_DATE_, CATEGORY_, SUSPENSION_STATE_, TENANT_ID_, FORM_KEY_, CLAIM_TIME_, APP_VERSION_)
-    values (#{id, jdbcType=VARCHAR},
+    values (#{id, jdbcType=${stringType}},
     1,
-    #{name, jdbcType=VARCHAR},
-    #{businessKey, jdbcType=VARCHAR},
-    #{parentTaskId, jdbcType=VARCHAR},
-    #{description, jdbcType=VARCHAR},
+    #{name, jdbcType=${stringType}},
+    #{businessKey, jdbcType=${stringType}},
+    #{parentTaskId, jdbcType=${stringType}},
+    #{description, jdbcType=${stringType}},
     #{priority, jdbcType=INTEGER},
     #{createTime, jdbcType=TIMESTAMP},
-    #{owner, jdbcType=VARCHAR},
-    #{assignee, jdbcType=VARCHAR},
-    #{delegationStateString, jdbcType=VARCHAR},
-    #{executionId, jdbcType=VARCHAR},
-    #{processInstanceId, jdbcType=VARCHAR},
-    #{processDefinitionId, jdbcType=VARCHAR},
-    #{taskDefinitionKey, jdbcType=VARCHAR},
+    #{owner, jdbcType=${stringType}},
+    #{assignee, jdbcType=${stringType}},
+    #{delegationStateString, jdbcType=${stringType}},
+    #{executionId, jdbcType=${stringType}},
+    #{processInstanceId, jdbcType=${stringType}},
+    #{processDefinitionId, jdbcType=${stringType}},
+    #{taskDefinitionKey, jdbcType=${stringType}},
     #{dueDate, jdbcType=TIMESTAMP},
-    #{category, jdbcType=VARCHAR},
+    #{category, jdbcType=${stringType}},
     #{suspensionState, jdbcType=INTEGER},
-    #{tenantId, jdbcType=VARCHAR},
-    #{formKey, jdbcType=VARCHAR},
+    #{tenantId, jdbcType=${stringType}},
+    #{formKey, jdbcType=${stringType}},
     #{claimTime, jdbcType=TIMESTAMP},
     #{appVersion, jdbcType=INTEGER}
     )
@@ -54,26 +54,26 @@
     ASSIGNEE_, DELEGATION_, EXECUTION_ID_, PROC_INST_ID_, PROC_DEF_ID_, TASK_DEF_KEY_, DUE_DATE_, CATEGORY_, SUSPENSION_STATE_, TENANT_ID_, FORM_KEY_, CLAIM_TIME_, APP_VERSION_)
     VALUES
     <foreach collection="list" item="task" index="index" separator=",">
-      (#{task.id, jdbcType=VARCHAR},
+      (#{task.id, jdbcType=${stringType}},
       1,
-      #{task.name, jdbcType=VARCHAR},
-      #{task.businessKey, jdbcType=VARCHAR},
-      #{task.parentTaskId, jdbcType=VARCHAR},
-      #{task.description, jdbcType=VARCHAR},
+      #{task.name, jdbcType=${stringType}},
+      #{task.businessKey, jdbcType=${stringType}},
+      #{task.parentTaskId, jdbcType=${stringType}},
+      #{task.description, jdbcType=${stringType}},
       #{task.priority, jdbcType=INTEGER},
       #{task.createTime, jdbcType=TIMESTAMP},
-      #{task.owner, jdbcType=VARCHAR},
-      #{task.assignee, jdbcType=VARCHAR},
-      #{task.delegationStateString, jdbcType=VARCHAR},
-      #{task.executionId, jdbcType=VARCHAR},
-      #{task.processInstanceId, jdbcType=VARCHAR},
-      #{task.processDefinitionId, jdbcType=VARCHAR},
-      #{task.taskDefinitionKey, jdbcType=VARCHAR},
+      #{task.owner, jdbcType=${stringType}},
+      #{task.assignee, jdbcType=${stringType}},
+      #{task.delegationStateString, jdbcType=${stringType}},
+      #{task.executionId, jdbcType=${stringType}},
+      #{task.processInstanceId, jdbcType=${stringType}},
+      #{task.processDefinitionId, jdbcType=${stringType}},
+      #{task.taskDefinitionKey, jdbcType=${stringType}},
       #{task.dueDate, jdbcType=TIMESTAMP},
-      #{task.category, jdbcType=VARCHAR},
+      #{task.category, jdbcType=${stringType}},
       #{task.suspensionState, jdbcType=INTEGER},
-      #{task.tenantId, jdbcType=VARCHAR},
-      #{task.formKey, jdbcType=VARCHAR},
+      #{task.tenantId, jdbcType=${stringType}},
+      #{task.formKey, jdbcType=${stringType}},
       #{task.claimTime, jdbcType=TIMESTAMP},
       #{task.appVersion, jdbcType=INTEGER})
     </foreach>
@@ -85,26 +85,26 @@
       INTO ${prefix}ACT_RU_TASK (ID_, REV_, NAME_, BUSINESS_KEY_, PARENT_TASK_ID_, DESCRIPTION_, PRIORITY_, CREATE_TIME_, OWNER_,
       ASSIGNEE_, DELEGATION_, EXECUTION_ID_, PROC_INST_ID_, PROC_DEF_ID_, TASK_DEF_KEY_, DUE_DATE_, CATEGORY_,
       SUSPENSION_STATE_, TENANT_ID_, FORM_KEY_, CLAIM_TIME_, APP_VERSION_) VALUES
-      (#{task.id, jdbcType=VARCHAR},
+      (#{task.id, jdbcType=${stringType}},
       1,
-      #{task.name, jdbcType=VARCHAR},
-      #{task.businessKey, jdbcType=VARCHAR},
-      #{task.parentTaskId, jdbcType=VARCHAR},
-      #{task.description, jdbcType=VARCHAR},
+      #{task.name, jdbcType=${stringType}},
+      #{task.businessKey, jdbcType=${stringType}},
+      #{task.parentTaskId, jdbcType=${stringType}},
+      #{task.description, jdbcType=${stringType}},
       #{task.priority, jdbcType=INTEGER},
       #{task.createTime, jdbcType=TIMESTAMP},
-      #{task.owner, jdbcType=VARCHAR},
-      #{task.assignee, jdbcType=VARCHAR},
-      #{task.delegationStateString, jdbcType=VARCHAR},
-      #{task.executionId, jdbcType=VARCHAR},
-      #{task.processInstanceId, jdbcType=VARCHAR},
-      #{task.processDefinitionId, jdbcType=VARCHAR},
-      #{task.taskDefinitionKey, jdbcType=VARCHAR},
+      #{task.owner, jdbcType=${stringType}},
+      #{task.assignee, jdbcType=${stringType}},
+      #{task.delegationStateString, jdbcType=${stringType}},
+      #{task.executionId, jdbcType=${stringType}},
+      #{task.processInstanceId, jdbcType=${stringType}},
+      #{task.processDefinitionId, jdbcType=${stringType}},
+      #{task.taskDefinitionKey, jdbcType=${stringType}},
       #{task.dueDate, jdbcType=TIMESTAMP},
-      #{task.category, jdbcType=VARCHAR},
+      #{task.category, jdbcType=${stringType}},
       #{task.suspensionState, jdbcType=INTEGER},
-      #{task.tenantId, jdbcType=VARCHAR},
-      #{task.formKey, jdbcType=VARCHAR},
+      #{task.tenantId, jdbcType=${stringType}},
+      #{task.formKey, jdbcType=${stringType}},
       #{task.claimTime, jdbcType=TIMESTAMP},
       #{task.appVersion, jdbcType=INTEGER})
     </foreach>
@@ -117,36 +117,36 @@
     update ${prefix}ACT_RU_TASK
     <set>
       REV_ = #{revisionNext, jdbcType=INTEGER},
-      NAME_ = #{name, jdbcType=VARCHAR},
-      BUSINESS_KEY_ = #{businessKey, jdbcType=VARCHAR},
-      PARENT_TASK_ID_ = #{parentTaskId, jdbcType=VARCHAR},
+      NAME_ = #{name, jdbcType=${stringType}},
+      BUSINESS_KEY_ = #{businessKey, jdbcType=${stringType}},
+      PARENT_TASK_ID_ = #{parentTaskId, jdbcType=${stringType}},
       PRIORITY_ = #{priority, jdbcType=INTEGER},
       CREATE_TIME_ = #{createTime, jdbcType=TIMESTAMP},
-      OWNER_ = #{owner, jdbcType=VARCHAR},
-      ASSIGNEE_ = #{assignee, jdbcType=VARCHAR},
-      DELEGATION_ = #{delegationStateString, jdbcType=VARCHAR},
-      EXECUTION_ID_ = #{executionId, jdbcType=VARCHAR},
-      PROC_DEF_ID_ = #{processDefinitionId, jdbcType=VARCHAR},
-      DESCRIPTION_ = #{description, jdbcType=VARCHAR},
+      OWNER_ = #{owner, jdbcType=${stringType}},
+      ASSIGNEE_ = #{assignee, jdbcType=${stringType}},
+      DELEGATION_ = #{delegationStateString, jdbcType=${stringType}},
+      EXECUTION_ID_ = #{executionId, jdbcType=${stringType}},
+      PROC_DEF_ID_ = #{processDefinitionId, jdbcType=${stringType}},
+      DESCRIPTION_ = #{description, jdbcType=${stringType}},
       DUE_DATE_ = #{dueDate, jdbcType=TIMESTAMP},
-      CATEGORY_ = #{category, jdbcType=VARCHAR},
+      CATEGORY_ = #{category, jdbcType=${stringType}},
       SUSPENSION_STATE_ = #{suspensionState, jdbcType=INTEGER},
       FORM_KEY_ = #{formKey, jdbcType=INTEGER},
       CLAIM_TIME_ = #{claimTime, jdbcType=TIMESTAMP}
     </set>
-    where ID_= #{id, jdbcType=VARCHAR}
+    where ID_= #{id, jdbcType=${stringType}}
     and REV_ = #{revision, jdbcType=INTEGER}
   </update>
 
   <update id="updateTaskTenantIdForDeployment" parameterType="java.util.Map">
     update ${prefix}ACT_RU_TASK set
-    TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
+    TENANT_ID_ = #{tenantId, jdbcType=${stringType}}
     where
     ID_ in (
     SELECT T.ID_ from ${prefix}ACT_RU_TASK T
     inner join ${prefix}ACT_RE_PROCDEF P on T.PROC_DEF_ID_  = P.ID_
     inner join ${prefix}ACT_RE_DEPLOYMENT D on P.DEPLOYMENT_ID_ = D.ID_
-    where D.ID_ = #{deploymentId, jdbcType=VARCHAR}
+    where D.ID_ = #{deploymentId, jdbcType=${stringType}}
     )
   </update>
 
@@ -154,7 +154,7 @@
      Tested this on MySQL 5.6: does NOT use a temporary table (so good, performance0 -->
   <update id="updateTaskTenantIdForDeployment" databaseId="mysql" parameterType="java.util.Map">
     update ${prefix}ACT_RU_TASK set
-    TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
+    TENANT_ID_ = #{tenantId, jdbcType=${stringType}}
     where
     ID_ in (
 
@@ -164,7 +164,7 @@
     FROM  ${prefix}ACT_RU_TASK T
     inner join ${prefix}ACT_RE_PROCDEF P on T.PROC_DEF_ID_  = P.ID_
     inner join ${prefix}ACT_RE_DEPLOYMENT D on P.DEPLOYMENT_ID_ = D.ID_
-    where D.ID_ = #{deploymentId, jdbcType=VARCHAR}
+    where D.ID_ = #{deploymentId, jdbcType=${stringType}}
 
     ) AS tempTask
 
@@ -179,72 +179,72 @@
   <delete id="bulkDeleteTask" parameterType="java.util.Collection">
     delete from ${prefix}ACT_RU_TASK where
     <foreach item="task" collection="list" index="index" separator=" or ">
-      ID_ = #{task.id, jdbcType=VARCHAR}
+      ID_ = #{task.id, jdbcType=${stringType}}
     </foreach>
   </delete>
 
   <!-- TASK RESULTMAP -->
 
   <resultMap id="taskResultMap" type="org.activiti.engine.impl.persistence.entity.TaskEntityImpl">
-    <id property="id" column="ID_" jdbcType="VARCHAR"/>
+    <id property="id" column="ID_" jdbcType="${stringType}"/>
     <result property="revision" column="REV_" jdbcType="INTEGER"/>
-    <result property="name" column="NAME_" jdbcType="VARCHAR"/>
-    <result property="businessKey" column="BUSINESS_KEY_" jdbcType="VARCHAR"/>
-    <result property="parentTaskId" column="PARENT_TASK_ID_" jdbcType="VARCHAR"/>
-    <result property="description" column="DESCRIPTION_" jdbcType="VARCHAR"/>
+    <result property="name" column="NAME_" jdbcType="${stringType}"/>
+    <result property="businessKey" column="BUSINESS_KEY_" jdbcType="${stringType}"/>
+    <result property="parentTaskId" column="PARENT_TASK_ID_" jdbcType="${stringType}"/>
+    <result property="description" column="DESCRIPTION_" jdbcType="${stringType}"/>
     <result property="priority" column="PRIORITY_" jdbcType="INTEGER"/>
     <result property="createTime" column="CREATE_TIME_" jdbcType="TIMESTAMP" />
-    <result property="owner" column="OWNER_" jdbcType="VARCHAR"/>
-    <result property="assignee" column="ASSIGNEE_" jdbcType="VARCHAR"/>
-    <result property="delegationStateString" column="DELEGATION_" jdbcType="VARCHAR"/>
-    <result property="executionId" column="EXECUTION_ID_" jdbcType="VARCHAR" />
-    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
-    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR"/>
-    <result property="taskDefinitionKey" column="TASK_DEF_KEY_" jdbcType="VARCHAR"/>
+    <result property="owner" column="OWNER_" jdbcType="${stringType}"/>
+    <result property="assignee" column="ASSIGNEE_" jdbcType="${stringType}"/>
+    <result property="delegationStateString" column="DELEGATION_" jdbcType="${stringType}"/>
+    <result property="executionId" column="EXECUTION_ID_" jdbcType="${stringType}" />
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="${stringType}" />
+    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="${stringType}"/>
+    <result property="taskDefinitionKey" column="TASK_DEF_KEY_" jdbcType="${stringType}"/>
     <result property="dueDate" column="DUE_DATE_" jdbcType="TIMESTAMP"/>
-    <result property="category" column="CATEGORY_" jdbcType="VARCHAR" />
+    <result property="category" column="CATEGORY_" jdbcType="${stringType}" />
     <result property="suspensionState" column="SUSPENSION_STATE_" jdbcType="INTEGER" />
-    <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
-    <result property="formKey" column="FORM_KEY_" jdbcType="VARCHAR" />
+    <result property="tenantId" column="TENANT_ID_" jdbcType="${stringType}" />
+    <result property="formKey" column="FORM_KEY_" jdbcType="${stringType}" />
     <result property="claimTime" column="CLAIM_TIME_" jdbcType="TIMESTAMP" />
     <result property="appVersion" column="APP_VERSION_" jdbcType="INTEGER" />
   </resultMap>
 
   <resultMap id="taskAndVariablesResultMap" type="org.activiti.engine.impl.persistence.entity.TaskEntityImpl">
-    <id property="id" column="ID_" jdbcType="VARCHAR"/>
+    <id property="id" column="ID_" jdbcType="${stringType}"/>
     <result property="revision" column="REV_" jdbcType="INTEGER"/>
-    <result property="name" column="NAME_" jdbcType="VARCHAR"/>
-    <result property="businessKey" column="BUSINESS_KEY_" jdbcType="VARCHAR"/>
-    <result property="parentTaskId" column="PARENT_TASK_ID_" jdbcType="VARCHAR"/>
-    <result property="description" column="DESCRIPTION_" jdbcType="VARCHAR"/>
+    <result property="name" column="NAME_" jdbcType="${stringType}"/>
+    <result property="businessKey" column="BUSINESS_KEY_" jdbcType="${stringType}"/>
+    <result property="parentTaskId" column="PARENT_TASK_ID_" jdbcType="${stringType}"/>
+    <result property="description" column="DESCRIPTION_" jdbcType="${stringType}"/>
     <result property="priority" column="PRIORITY_" jdbcType="INTEGER"/>
     <result property="createTime" column="CREATE_TIME_" jdbcType="TIMESTAMP" />
-    <result property="owner" column="OWNER_" jdbcType="VARCHAR"/>
-    <result property="assignee" column="ASSIGNEE_" jdbcType="VARCHAR"/>
-    <result property="delegationStateString" column="DELEGATION_" jdbcType="VARCHAR"/>
-    <result property="executionId" column="EXECUTION_ID_" jdbcType="VARCHAR" />
-    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
-    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR"/>
-    <result property="taskDefinitionKey" column="TASK_DEF_KEY_" jdbcType="VARCHAR"/>
+    <result property="owner" column="OWNER_" jdbcType="${stringType}"/>
+    <result property="assignee" column="ASSIGNEE_" jdbcType="${stringType}"/>
+    <result property="delegationStateString" column="DELEGATION_" jdbcType="${stringType}"/>
+    <result property="executionId" column="EXECUTION_ID_" jdbcType="${stringType}" />
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="${stringType}" />
+    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="${stringType}"/>
+    <result property="taskDefinitionKey" column="TASK_DEF_KEY_" jdbcType="${stringType}"/>
     <result property="dueDate" column="DUE_DATE_" jdbcType="TIMESTAMP"/>
-    <result property="category" column="CATEGORY_" jdbcType="VARCHAR" />
+    <result property="category" column="CATEGORY_" jdbcType="${stringType}" />
     <result property="suspensionState" column="SUSPENSION_STATE_" jdbcType="INTEGER" />
-    <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
-    <result property="formKey" column="FORM_KEY_" jdbcType="VARCHAR" />
+    <result property="tenantId" column="TENANT_ID_" jdbcType="${stringType}" />
+    <result property="formKey" column="FORM_KEY_" jdbcType="${stringType}" />
     <result property="claimTime" column="CLAIM_TIME_" jdbcType="TIMESTAMP" />
     <result property="appVersion" column="APP_VERSION_" jdbcType="INTEGER" />
     <collection property="queryVariables" column="TASK_ID_" javaType="ArrayList" ofType="org.activiti.engine.impl.persistence.entity.VariableInstanceEntityImpl">
       <id property="id" column="VAR_ID_"/>
-      <result property="name" column="VAR_NAME_" javaType="String" jdbcType="VARCHAR" />
-      <result property="type" column="VAR_TYPE_" javaType="org.activiti.engine.impl.variable.VariableType" jdbcType="VARCHAR" />
+      <result property="name" column="VAR_NAME_" javaType="String" jdbcType="${stringType}" />
+      <result property="type" column="VAR_TYPE_" javaType="org.activiti.engine.impl.variable.VariableType" jdbcType="${stringType}" />
       <result property="revision" column="VAR_REV_" jdbcType="INTEGER" />
-      <result property="processInstanceId" column="VAR_PROC_INST_ID_" jdbcType="VARCHAR" />
-      <result property="executionId" column="VAR_EXECUTION_ID_" jdbcType="VARCHAR" />
-      <result property="taskId" column="VAR_TASK_ID_" jdbcType="VARCHAR" />
+      <result property="processInstanceId" column="VAR_PROC_INST_ID_" jdbcType="${stringType}" />
+      <result property="executionId" column="VAR_EXECUTION_ID_" jdbcType="${stringType}" />
+      <result property="taskId" column="VAR_TASK_ID_" jdbcType="${stringType}" />
       <result property="byteArrayRef" column="VAR_BYTEARRAY_ID_" typeHandler="ByteArrayRefTypeHandler"/>
       <result property="doubleValue" column="VAR_DOUBLE_" jdbcType="DOUBLE" />
-      <result property="textValue" column="VAR_TEXT_" jdbcType="VARCHAR" />
-      <result property="textValue2" column="VAR_TEXT2_" jdbcType="VARCHAR" />
+      <result property="textValue" column="VAR_TEXT_" jdbcType="${stringType}" />
+      <result property="textValue2" column="VAR_TEXT2_" jdbcType="${stringType}" />
       <result property="longValue" column="VAR_LONG_" jdbcType="BIGINT" />
     </collection>
   </resultMap>
@@ -252,7 +252,7 @@
   <!-- TASK SELECT -->
 
   <select id="selectTask" parameterType="string" resultMap="taskResultMap">
-    select * from ${prefix}ACT_RU_TASK where ID_ = #{id, jdbcType=VARCHAR}
+    select * from ${prefix}ACT_RU_TASK where ID_ = #{id, jdbcType=${stringType}}
   </select>
 
   <select id="selectTasksByParentTaskId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="taskResultMap">

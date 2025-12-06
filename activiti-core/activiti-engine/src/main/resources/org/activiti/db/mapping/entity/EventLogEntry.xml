@@ -9,15 +9,15 @@
   <insert id="insertEventLogEntry" parameterType="org.activiti.engine.impl.persistence.entity.EventLogEntryEntityImpl">
     insert into ${prefix}ACT_EVT_LOG(TYPE_, PROC_DEF_ID_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_, TIME_STAMP_, USER_ID_, DATA_, LOCK_OWNER_, LOCK_TIME_, IS_PROCESSED_)
     values (
-      #{type, jdbcType=VARCHAR},
-      #{processDefinitionId, jdbcType=VARCHAR},
-      #{processInstanceId, jdbcType=VARCHAR},
-      #{executionId, jdbcType=VARCHAR},
-      #{taskId, jdbcType=VARCHAR},
+      #{type, jdbcType=${stringType}},
+      #{processDefinitionId, jdbcType=${stringType}},
+      #{processInstanceId, jdbcType=${stringType}},
+      #{executionId, jdbcType=${stringType}},
+      #{taskId, jdbcType=${stringType}},
       #{timeStamp, jdbcType=TIMESTAMP},
-      #{userId, jdbcType=VARCHAR},
+      #{userId, jdbcType=${stringType}},
       #{data, jdbcType=${blobType}},
-      #{lockOwner, jdbcType=VARCHAR},
+      #{lockOwner, jdbcType=${stringType}},
       #{lockTime, jdbcType=TIMESTAMP},
       #{isProcessed, jdbcType=INTEGER}
     )
@@ -27,15 +27,15 @@
     insert into ${prefix}ACT_EVT_LOG(TYPE_, PROC_DEF_ID_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_, TIME_STAMP_, USER_ID_, DATA_, LOCK_OWNER_, LOCK_TIME_, IS_PROCESSED_)
     values
       <foreach collection="list" item="eventLogEntry" index="index" separator=",">
-        (#{eventLogEntry.type, jdbcType=VARCHAR},
-         #{eventLogEntry.processDefinitionId, jdbcType=VARCHAR},
-         #{eventLogEntry.processInstanceId, jdbcType=VARCHAR},
-         #{eventLogEntry.executionId, jdbcType=VARCHAR},
-         #{eventLogEntry.taskId, jdbcType=VARCHAR},
+        (#{eventLogEntry.type, jdbcType=${stringType}},
+         #{eventLogEntry.processDefinitionId, jdbcType=${stringType}},
+         #{eventLogEntry.processInstanceId, jdbcType=${stringType}},
+         #{eventLogEntry.executionId, jdbcType=${stringType}},
+         #{eventLogEntry.taskId, jdbcType=${stringType}},
          #{eventLogEntry.timeStamp, jdbcType=TIMESTAMP},
-         #{eventLogEntry.userId, jdbcType=VARCHAR},
+         #{eventLogEntry.userId, jdbcType=${stringType}},
          #{eventLogEntry.data, jdbcType=${blobType}},
-         #{eventLogEntry.lockOwner, jdbcType=VARCHAR},
+         #{eventLogEntry.lockOwner, jdbcType=${stringType}},
          #{eventLogEntry.lockTime, jdbcType=TIMESTAMP},
          #{eventLogEntry.isProcessed, jdbcType=INTEGER})
       </foreach>
@@ -45,15 +45,15 @@
     insert into ${prefix}ACT_EVT_LOG(LOG_NR_, TYPE_, PROC_DEF_ID_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_, TIME_STAMP_, USER_ID_, DATA_, LOCK_OWNER_, LOCK_TIME_, IS_PROCESSED_)
     values (
       ${prefix}ACT_EVT_LOG_seq.nextVal,
-      #{type, jdbcType=VARCHAR},
-      #{processDefinitionId, jdbcType=VARCHAR},
-      #{processInstanceId, jdbcType=VARCHAR},
-      #{executionId, jdbcType=VARCHAR},
-      #{taskId, jdbcType=VARCHAR},
+      #{type, jdbcType=${stringType}},
+      #{processDefinitionId, jdbcType=${stringType}},
+      #{processInstanceId, jdbcType=${stringType}},
+      #{executionId, jdbcType=${stringType}},
+      #{taskId, jdbcType=${stringType}},
       #{timeStamp, jdbcType=TIMESTAMP},
-      #{userId, jdbcType=VARCHAR},
+      #{userId, jdbcType=${stringType}},
       #{data, jdbcType=${blobType}},
-      #{lockOwner, jdbcType=VARCHAR},
+      #{lockOwner, jdbcType=${stringType}},
       #{lockTime, jdbcType=TIMESTAMP},
       #{isProcessed, jdbcType=INTEGER}
     )
@@ -65,15 +65,15 @@
         into ${prefix}ACT_EVT_LOG(LOG_NR_, TYPE_, PROC_DEF_ID_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_,
         TIME_STAMP_, USER_ID_, DATA_, LOCK_OWNER_, LOCK_TIME_, IS_PROCESSED_) VALUES
             (${prefix}ACT_EVT_LOG_seq.nextVal,
-             #{eventLogEntry.type, jdbcType=VARCHAR},
-             #{eventLogEntry.processDefinitionId, jdbcType=VARCHAR},
-             #{eventLogEntry.processInstanceId, jdbcType=VARCHAR},
-             #{eventLogEntry.executionId, jdbcType=VARCHAR},
-             #{eventLogEntry.taskId, jdbcType=VARCHAR},
+             #{eventLogEntry.type, jdbcType=${stringType}},
+             #{eventLogEntry.processDefinitionId, jdbcType=${stringType}},
+             #{eventLogEntry.processInstanceId, jdbcType=${stringType}},
+             #{eventLogEntry.executionId, jdbcType=${stringType}},
+             #{eventLogEntry.taskId, jdbcType=${stringType}},
              #{eventLogEntry.timeStamp, jdbcType=TIMESTAMP},
-             #{eventLogEntry.userId, jdbcType=VARCHAR},
+             #{eventLogEntry.userId, jdbcType=${stringType}},
              #{eventLogEntry.data, jdbcType=${blobType}},
-             #{eventLogEntry.lockOwner, jdbcType=VARCHAR},
+             #{eventLogEntry.lockOwner, jdbcType=${stringType}},
              #{eventLogEntry.lockTime, jdbcType=TIMESTAMP},
              #{eventLogEntry.isProcessed, jdbcType=INTEGER})
       </foreach>
@@ -85,15 +85,15 @@
   <resultMap id="eventLogEntryResultMap" type="org.activiti.engine.impl.persistence.entity.EventLogEntryEntityImpl">
     <id property="logNumber" column="LOG_NR_" jdbcType="BIGINT" />
     <result property="id" column="LOG_NR_" jdbcType="BIGINT" />
-    <result property="type" column="TYPE_" jdbcType="VARCHAR"/>
-    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR"/>
-    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR"/>
-    <result property="executionId" column="EXECUTION_ID_" jdbcType="VARCHAR"/>
-    <result property="taskId" column="TASK_ID_" jdbcType="VARCHAR"/>
+    <result property="type" column="TYPE_" jdbcType="${stringType}"/>
+    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="${stringType}"/>
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="${stringType}"/>
+    <result property="executionId" column="EXECUTION_ID_" jdbcType="${stringType}"/>
+    <result property="taskId" column="TASK_ID_" jdbcType="${stringType}"/>
     <result property="timeStamp" column="TIME_STAMP_" jdbcType="TIMESTAMP"/>
-    <result property="userId" column="USER_ID_" jdbcType="VARCHAR" />
+    <result property="userId" column="USER_ID_" jdbcType="${stringType}" />
     <result property="data" column="DATA_" jdbcType="${blobType}"/>
-    <result property="lockOwner" column="LOCK_OWNER_" jdbcType="VARCHAR"/>
+    <result property="lockOwner" column="LOCK_OWNER_" jdbcType="${stringType}"/>
     <result property="lockTime" column="LOCK_TIME_" jdbcType="TIMESTAMP"/>
     <result property="isProcessed" column="IS_PROCESSED_" jdbcType="INTEGER"/>
   </resultMap>

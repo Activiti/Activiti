@@ -8,21 +8,21 @@
 
   <insert id="insertDeployment" parameterType="org.activiti.engine.impl.persistence.entity.DeploymentEntityImpl">
     insert into ${prefix}ACT_RE_DEPLOYMENT(ID_, NAME_, CATEGORY_, KEY_, TENANT_ID_, DEPLOY_TIME_, ENGINE_VERSION_, VERSION_, PROJECT_RELEASE_VERSION_)
-    values(#{id, jdbcType=VARCHAR}, #{name, jdbcType=VARCHAR}, #{category, jdbcType=VARCHAR}, #{key, jdbcType=VARCHAR}, #{tenantId, jdbcType=VARCHAR}, #{deploymentTime, jdbcType=TIMESTAMP}, #{engineVersion, jdbcType=VARCHAR}, #{version, jdbcType=INTEGER}, #{projectReleaseVersion, jdbcType=VARCHAR})
+    values(#{id, jdbcType=${stringType}}, #{name, jdbcType=${stringType}}, #{category, jdbcType=${stringType}}, #{key, jdbcType=${stringType}}, #{tenantId, jdbcType=${stringType}}, #{deploymentTime, jdbcType=TIMESTAMP}, #{engineVersion, jdbcType=${stringType}}, #{version, jdbcType=INTEGER}, #{projectReleaseVersion, jdbcType=${stringType}})
   </insert>
 
   <insert id="bulkInsertDeployment" parameterType="java.util.List">
     insert into ${prefix}ACT_RE_DEPLOYMENT(ID_, NAME_, CATEGORY_, KEY_, TENANT_ID_, DEPLOY_TIME_, VERSION_, PROJECT_RELEASE_VERSION_)
     values
       <foreach collection="list" item="deployment" index="index" separator=",">
-        (#{deployment.id, jdbcType=VARCHAR},
-         #{deployment.name, jdbcType=VARCHAR},
-         #{deployment.category, jdbcType=VARCHAR},
-         #{deployment.key, jdbcType=VARCHAR},
-         #{deployment.tenantId, jdbcType=VARCHAR},
+        (#{deployment.id, jdbcType=${stringType}},
+         #{deployment.name, jdbcType=${stringType}},
+         #{deployment.category, jdbcType=${stringType}},
+         #{deployment.key, jdbcType=${stringType}},
+         #{deployment.tenantId, jdbcType=${stringType}},
          #{deployment.deploymentTime, jdbcType=TIMESTAMP},
          #{deployment.version, jdbcType=INTEGER},
-         #{deployment.projectReleaseVersion, jdbcType=VARCHAR})
+         #{deployment.projectReleaseVersion, jdbcType=${stringType}})
       </foreach>
   </insert>
 
@@ -30,14 +30,14 @@
     INSERT ALL
       <foreach collection="list" item="deployment" index="index">
         into ${prefix}ACT_RE_DEPLOYMENT(ID_, NAME_, CATEGORY_, KEY_, TENANT_ID_, DEPLOY_TIME_, VERSION_, PROJECT_RELEASE_VERSION_) VALUES
-          (#{deployment.id, jdbcType=VARCHAR},
-           #{deployment.name, jdbcType=VARCHAR},
-           #{deployment.category, jdbcType=VARCHAR},
-           #{deployment.key, jdbcType=VARCHAR},
-           #{deployment.tenantId, jdbcType=VARCHAR},
+          (#{deployment.id, jdbcType=${stringType}},
+           #{deployment.name, jdbcType=${stringType}},
+           #{deployment.category, jdbcType=${stringType}},
+           #{deployment.key, jdbcType=${stringType}},
+           #{deployment.tenantId, jdbcType=${stringType}},
            #{deployment.deploymentTime, jdbcType=TIMESTAMP},
            #{deployment.version, jdbcType=INTEGER},
-           #{deployment.projectReleaseVersion, jdbcType=VARCHAR})
+           #{deployment.projectReleaseVersion, jdbcType=${stringType}})
       </foreach>
     SELECT * FROM dual
   </insert>
@@ -46,11 +46,11 @@
 
   <update id="updateDeployment" parameterType="org.activiti.engine.impl.persistence.entity.DeploymentEntityImpl">
     update ${prefix}ACT_RE_DEPLOYMENT set
-      CATEGORY_ = #{category, jdbcType=VARCHAR},
-      KEY_ = #{key, jdbcType=VARCHAR},
-      TENANT_ID_ = #{tenantId, jdbcType=VARCHAR},
+      CATEGORY_ = #{category, jdbcType=${stringType}},
+      KEY_ = #{key, jdbcType=${stringType}},
+      TENANT_ID_ = #{tenantId, jdbcType=${stringType}},
       VERSION_ = #{version, jdbcType=INTEGER}
-    where ID_ = #{id, jdbcType=VARCHAR}
+    where ID_ = #{id, jdbcType=${stringType}}
   </update>
 
   <!-- DEPLOYMENT DELETE -->
@@ -62,15 +62,15 @@
   <!-- DEPLOYMENT RESULTMAP -->
 
   <resultMap id="deploymentResultMap" type="org.activiti.engine.impl.persistence.entity.DeploymentEntityImpl">
-    <id property="id" column="ID_" jdbcType="VARCHAR" />
-    <result property="name" column="NAME_" jdbcType="VARCHAR" />
-    <result property="category" column="CATEGORY_" jdbcType="VARCHAR" />
-    <result property="key" column="KEY_" jdbcType="VARCHAR" />
-    <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
+    <id property="id" column="ID_" jdbcType="${stringType}" />
+    <result property="name" column="NAME_" jdbcType="${stringType}" />
+    <result property="category" column="CATEGORY_" jdbcType="${stringType}" />
+    <result property="key" column="KEY_" jdbcType="${stringType}" />
+    <result property="tenantId" column="TENANT_ID_" jdbcType="${stringType}" />
     <result property="deploymentTime" column="DEPLOY_TIME_" jdbcType="TIMESTAMP"/>
-    <result property="engineVersion" column="ENGINE_VERSION_" jdbcType="VARCHAR" />
+    <result property="engineVersion" column="ENGINE_VERSION_" jdbcType="${stringType}" />
     <result property="version" column="VERSION_" jdbcType="INTEGER" />
-    <result property="projectReleaseVersion" column="PROJECT_RELEASE_VERSION_" jdbcType="VARCHAR" />
+    <result property="projectReleaseVersion" column="PROJECT_RELEASE_VERSION_" jdbcType="${stringType}" />
   </resultMap>
 
   <!-- DEPLOYMENT SELECT -->
@@ -165,13 +165,13 @@
   </select>
 
   <select id="selectDeployment" parameterType="string" resultMap="deploymentResultMap">
-    select * from ${prefix}ACT_RE_DEPLOYMENT where ID_ = #{id, jdbcType=VARCHAR}
+    select * from ${prefix}ACT_RE_DEPLOYMENT where ID_ = #{id, jdbcType=${stringType}}
   </select>
 
   <select id="selectLatestDeployment" parameterType="string" resultMap="deploymentResultMap">
     select * from ${prefix}ACT_RE_DEPLOYMENT RES
     where VERSION_ = (select max(VERSION_) from ${prefix}ACT_RE_DEPLOYMENT and NAME_ = RES.NAME_)
-    and RES.NAME_ = #{name, jdbcType=VARCHAR}
+    and RES.NAME_ = #{name, jdbcType=${stringType}}
   </select>
 
   <!-- mysql specific -->

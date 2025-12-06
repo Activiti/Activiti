@@ -37,20 +37,20 @@
         TENANT_ID_,
         NAME_
       ) values (
-        #{id ,jdbcType=VARCHAR},
-        #{processInstanceId, jdbcType=VARCHAR},
-        #{businessKey, jdbcType=VARCHAR},
-        #{processDefinitionId, jdbcType=VARCHAR},
+        #{id ,jdbcType=${stringType}},
+        #{processInstanceId, jdbcType=${stringType}},
+        #{businessKey, jdbcType=${stringType}},
+        #{processDefinitionId, jdbcType=${stringType}},
         #{startTime, jdbcType=TIMESTAMP},
         #{endTime, jdbcType=TIMESTAMP},
         #{durationInMillis ,jdbcType=BIGINT},
-        #{startUserId, jdbcType=VARCHAR},
-        #{startActivityId, jdbcType=VARCHAR},
-        #{endActivityId, jdbcType=VARCHAR},
-        #{superProcessInstanceId, jdbcType=VARCHAR},
-        #{deleteReason, jdbcType=VARCHAR},
-        #{tenantId, jdbcType=VARCHAR},
-        #{name, jdbcType=VARCHAR}
+        #{startUserId, jdbcType=${stringType}},
+        #{startActivityId, jdbcType=${stringType}},
+        #{endActivityId, jdbcType=${stringType}},
+        #{superProcessInstanceId, jdbcType=${stringType}},
+        #{deleteReason, jdbcType=${stringType}},
+        #{tenantId, jdbcType=${stringType}},
+        #{name, jdbcType=${stringType}}
       )
   </insert>
 
@@ -72,20 +72,20 @@
         NAME_
       ) values
         <foreach collection="list" item="historicProcessInstance" index="index" separator=",">
-          (#{historicProcessInstance.id ,jdbcType=VARCHAR},
-           #{historicProcessInstance.processInstanceId, jdbcType=VARCHAR},
-           #{historicProcessInstance.businessKey, jdbcType=VARCHAR},
-           #{historicProcessInstance.processDefinitionId, jdbcType=VARCHAR},
+          (#{historicProcessInstance.id ,jdbcType=${stringType}},
+           #{historicProcessInstance.processInstanceId, jdbcType=${stringType}},
+           #{historicProcessInstance.businessKey, jdbcType=${stringType}},
+           #{historicProcessInstance.processDefinitionId, jdbcType=${stringType}},
            #{historicProcessInstance.startTime, jdbcType=TIMESTAMP},
            #{historicProcessInstance.endTime, jdbcType=TIMESTAMP},
            #{historicProcessInstance.durationInMillis ,jdbcType=BIGINT},
-           #{historicProcessInstance.startUserId, jdbcType=VARCHAR},
-           #{historicProcessInstance.startActivityId, jdbcType=VARCHAR},
-           #{historicProcessInstance.endActivityId, jdbcType=VARCHAR},
-           #{historicProcessInstance.superProcessInstanceId, jdbcType=VARCHAR},
-           #{historicProcessInstance.deleteReason, jdbcType=VARCHAR},
-           #{historicProcessInstance.tenantId, jdbcType=VARCHAR},
-           #{historicProcessInstance.name, jdbcType=VARCHAR})
+           #{historicProcessInstance.startUserId, jdbcType=${stringType}},
+           #{historicProcessInstance.startActivityId, jdbcType=${stringType}},
+           #{historicProcessInstance.endActivityId, jdbcType=${stringType}},
+           #{historicProcessInstance.superProcessInstanceId, jdbcType=${stringType}},
+           #{historicProcessInstance.deleteReason, jdbcType=${stringType}},
+           #{historicProcessInstance.tenantId, jdbcType=${stringType}},
+           #{historicProcessInstance.name, jdbcType=${stringType}})
          </foreach>
   </insert>
 
@@ -108,20 +108,20 @@
             TENANT_ID_,
             NAME_
           ) VALUES
-              (#{historicProcessInstance.id ,jdbcType=VARCHAR},
-               #{historicProcessInstance.processInstanceId, jdbcType=VARCHAR},
-               #{historicProcessInstance.businessKey, jdbcType=VARCHAR},
-               #{historicProcessInstance.processDefinitionId, jdbcType=VARCHAR},
+              (#{historicProcessInstance.id ,jdbcType=${stringType}},
+               #{historicProcessInstance.processInstanceId, jdbcType=${stringType}},
+               #{historicProcessInstance.businessKey, jdbcType=${stringType}},
+               #{historicProcessInstance.processDefinitionId, jdbcType=${stringType}},
                #{historicProcessInstance.startTime, jdbcType=TIMESTAMP},
                #{historicProcessInstance.endTime, jdbcType=TIMESTAMP},
                #{historicProcessInstance.durationInMillis ,jdbcType=BIGINT},
-               #{historicProcessInstance.startUserId, jdbcType=VARCHAR},
-               #{historicProcessInstance.startActivityId, jdbcType=VARCHAR},
-               #{historicProcessInstance.endActivityId, jdbcType=VARCHAR},
-               #{historicProcessInstance.superProcessInstanceId, jdbcType=VARCHAR},
-               #{historicProcessInstance.deleteReason, jdbcType=VARCHAR},
-               #{historicProcessInstance.tenantId, jdbcType=VARCHAR},
-               #{historicProcessInstance.name, jdbcType=VARCHAR})
+               #{historicProcessInstance.startUserId, jdbcType=${stringType}},
+               #{historicProcessInstance.startActivityId, jdbcType=${stringType}},
+               #{historicProcessInstance.endActivityId, jdbcType=${stringType}},
+               #{historicProcessInstance.superProcessInstanceId, jdbcType=${stringType}},
+               #{historicProcessInstance.deleteReason, jdbcType=${stringType}},
+               #{historicProcessInstance.tenantId, jdbcType=${stringType}},
+               #{historicProcessInstance.name, jdbcType=${stringType}})
        </foreach>
     SELECT * FROM dual
   </insert>
@@ -130,14 +130,14 @@
 
   <update id="updateHistoricProcessInstance" parameterType="org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntityImpl">
     update ${prefix}ACT_HI_PROCINST set
-      PROC_DEF_ID_ = #{processDefinitionId, jdbcType=VARCHAR},
-      BUSINESS_KEY_ = #{businessKey, jdbcType=VARCHAR},
+      PROC_DEF_ID_ = #{processDefinitionId, jdbcType=${stringType}},
+      BUSINESS_KEY_ = #{businessKey, jdbcType=${stringType}},
       START_TIME_ = #{startTime, jdbcType=TIMESTAMP},
       END_TIME_ = #{endTime, jdbcType=TIMESTAMP},
       DURATION_ = #{durationInMillis ,jdbcType=BIGINT},
-      END_ACT_ID_ = #{endActivityId, jdbcType=VARCHAR},
-      DELETE_REASON_ = #{deleteReason, jdbcType=VARCHAR},
-      NAME_ = #{name, jdbcType=VARCHAR}
+      END_ACT_ID_ = #{endActivityId, jdbcType=${stringType}},
+      DELETE_REASON_ = #{deleteReason, jdbcType=${stringType}},
+      NAME_ = #{name, jdbcType=${stringType}}
     where ID_ = #{id}
   </update>
 
@@ -150,64 +150,64 @@
   <delete id="bulkDeleteHistoricProcessInstance" parameterType="java.util.Collection">
     delete from ${prefix}ACT_HI_PROCINST where
      <foreach item="procInst" collection="list" index="index" separator=" or ">
-        ID_ = #{procInst.id, jdbcType=VARCHAR}
+        ID_ = #{procInst.id, jdbcType=${stringType}}
     </foreach>
   </delete>
 
   <!-- HISTORIC PROCESS INSTANCE RESULT MAP -->
 
   <resultMap id="historicProcessInstanceResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntityImpl">
-    <id property="id" column="ID_" jdbcType="VARCHAR" />
-    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
-    <result property="businessKey" column="BUSINESS_KEY_" jdbcType="VARCHAR"/>
-    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
-    <result property="processDefinitionName" column="PROC_DEF_NAME_" jdbcType="VARCHAR" />
-    <result property="processDefinitionKey" column="PROC_DEF_KEY_" jdbcType="VARCHAR" />
+    <id property="id" column="ID_" jdbcType="${stringType}" />
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="${stringType}" />
+    <result property="businessKey" column="BUSINESS_KEY_" jdbcType="${stringType}"/>
+    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="${stringType}" />
+    <result property="processDefinitionName" column="PROC_DEF_NAME_" jdbcType="${stringType}" />
+    <result property="processDefinitionKey" column="PROC_DEF_KEY_" jdbcType="${stringType}" />
     <result property="processDefinitionVersion" column="PROC_DEF_VERSION_" jdbcType="INTEGER" />
-    <result property="deploymentId" column="DEPLOYMENT_ID_" jdbcType="VARCHAR" />
+    <result property="deploymentId" column="DEPLOYMENT_ID_" jdbcType="${stringType}" />
     <result property="startTime" column="START_TIME_" jdbcType="TIMESTAMP" />
     <result property="endTime" column="END_TIME_" jdbcType="TIMESTAMP" />
     <result property="durationInMillis" column="DURATION_" jdbcType="BIGINT" />
-    <result property="startUserId" column="START_USER_ID_" jdbcType="VARCHAR" />
-    <result property="startActivityId" column="START_ACT_ID_" jdbcType="VARCHAR" />
-    <result property="endActivityId" column="END_ACT_ID_" jdbcType="VARCHAR" />
-    <result property="superProcessInstanceId" column="SUPER_PROCESS_INSTANCE_ID_" jdbcType="VARCHAR" />
-    <result property="deleteReason" column="DELETE_REASON_" jdbcType="VARCHAR" />
-    <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
-    <result property="name" column="NAME_" jdbcType="VARCHAR" />
+    <result property="startUserId" column="START_USER_ID_" jdbcType="${stringType}" />
+    <result property="startActivityId" column="START_ACT_ID_" jdbcType="${stringType}" />
+    <result property="endActivityId" column="END_ACT_ID_" jdbcType="${stringType}" />
+    <result property="superProcessInstanceId" column="SUPER_PROCESS_INSTANCE_ID_" jdbcType="${stringType}" />
+    <result property="deleteReason" column="DELETE_REASON_" jdbcType="${stringType}" />
+    <result property="tenantId" column="TENANT_ID_" jdbcType="${stringType}" />
+    <result property="name" column="NAME_" jdbcType="${stringType}" />
   </resultMap>
 
   <resultMap id="historicProcessInstanceAndVariablesResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntityImpl">
-    <id property="id" column="ID_" jdbcType="VARCHAR" />
-    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
-    <result property="businessKey" column="BUSINESS_KEY_" jdbcType="VARCHAR"/>
-    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
-    <result property="processDefinitionName" column="PROC_DEF_NAME_" jdbcType="VARCHAR" />
-    <result property="processDefinitionKey" column="PROC_DEF_KEY_" jdbcType="VARCHAR" />
+    <id property="id" column="ID_" jdbcType="${stringType}" />
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="${stringType}" />
+    <result property="businessKey" column="BUSINESS_KEY_" jdbcType="${stringType}"/>
+    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="${stringType}" />
+    <result property="processDefinitionName" column="PROC_DEF_NAME_" jdbcType="${stringType}" />
+    <result property="processDefinitionKey" column="PROC_DEF_KEY_" jdbcType="${stringType}" />
     <result property="processDefinitionVersion" column="PROC_DEF_VERSION_" jdbcType="INTEGER" />
-    <result property="deploymentId" column="DEPLOYMENT_ID_" jdbcType="VARCHAR" />
+    <result property="deploymentId" column="DEPLOYMENT_ID_" jdbcType="${stringType}" />
     <result property="startTime" column="START_TIME_" jdbcType="TIMESTAMP" />
     <result property="endTime" column="END_TIME_" jdbcType="TIMESTAMP" />
     <result property="durationInMillis" column="DURATION_" jdbcType="BIGINT" />
-    <result property="startUserId" column="START_USER_ID_" jdbcType="VARCHAR" />
-    <result property="startActivityId" column="START_ACT_ID_" jdbcType="VARCHAR" />
-    <result property="endActivityId" column="END_ACT_ID_" jdbcType="VARCHAR" />
-    <result property="superProcessInstanceId" column="SUPER_PROCESS_INSTANCE_ID_" jdbcType="VARCHAR" />
-    <result property="deleteReason" column="DELETE_REASON_" jdbcType="VARCHAR" />
-    <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
-    <result property="name" column="NAME_" jdbcType="VARCHAR" />
+    <result property="startUserId" column="START_USER_ID_" jdbcType="${stringType}" />
+    <result property="startActivityId" column="START_ACT_ID_" jdbcType="${stringType}" />
+    <result property="endActivityId" column="END_ACT_ID_" jdbcType="${stringType}" />
+    <result property="superProcessInstanceId" column="SUPER_PROCESS_INSTANCE_ID_" jdbcType="${stringType}" />
+    <result property="deleteReason" column="DELETE_REASON_" jdbcType="${stringType}" />
+    <result property="tenantId" column="TENANT_ID_" jdbcType="${stringType}" />
+    <result property="name" column="NAME_" jdbcType="${stringType}" />
     <collection property="queryVariables" column="EXECUTION_ID_" javaType="ArrayList" ofType="org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntityImpl">
       <id property="id" column="VAR_ID_"/>
-      <result property="name" column="VAR_NAME_" javaType="String" jdbcType="VARCHAR" />
-      <result property="variableType" column="VAR_TYPE_" javaType="org.activiti.engine.impl.variable.VariableType" jdbcType="VARCHAR" />
+      <result property="name" column="VAR_NAME_" javaType="String" jdbcType="${stringType}" />
+      <result property="variableType" column="VAR_TYPE_" javaType="org.activiti.engine.impl.variable.VariableType" jdbcType="${stringType}" />
       <result property="revision" column="VAR_REV_" jdbcType="INTEGER" />
-      <result property="processInstanceId" column="VAR_PROC_INST_ID_" jdbcType="VARCHAR" />
-      <result property="executionId" column="VAR_EXECUTION_ID_" jdbcType="VARCHAR" />
-      <result property="taskId" column="VAR_TASK_ID_" jdbcType="VARCHAR" />
+      <result property="processInstanceId" column="VAR_PROC_INST_ID_" jdbcType="${stringType}" />
+      <result property="executionId" column="VAR_EXECUTION_ID_" jdbcType="${stringType}" />
+      <result property="taskId" column="VAR_TASK_ID_" jdbcType="${stringType}" />
       <result property="byteArrayRef" column="VAR_BYTEARRAY_ID_" typeHandler="ByteArrayRefTypeHandler"/>
       <result property="doubleValue" column="VAR_DOUBLE_" jdbcType="DOUBLE" />
-      <result property="textValue" column="VAR_TEXT_" jdbcType="VARCHAR" />
-      <result property="textValue2" column="VAR_TEXT2_" jdbcType="VARCHAR" />
+      <result property="textValue" column="VAR_TEXT_" jdbcType="${stringType}" />
+      <result property="textValue2" column="VAR_TEXT2_" jdbcType="${stringType}" />
       <result property="longValue" column="VAR_LONG_" jdbcType="BIGINT" />
     </collection>
   </resultMap>
@@ -215,7 +215,7 @@
   <!-- HISTORIC PROCESS INSTANCE SELECT -->
 
   <select id="selectHistoricProcessInstance" resultMap="historicProcessInstanceResultMap">
-    select * from ${prefix}ACT_HI_PROCINST where PROC_INST_ID_ = #{processInstanceId, jdbcType=VARCHAR}
+    select * from ${prefix}ACT_HI_PROCINST where PROC_INST_ID_ = #{processInstanceId, jdbcType=${stringType}}
   </select>
 
   <select id="selectHistoricProcessInstanceIdsByProcessDefinitionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultType="string">
