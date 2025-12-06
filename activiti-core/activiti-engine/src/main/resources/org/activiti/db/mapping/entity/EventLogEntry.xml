@@ -85,15 +85,15 @@
   <resultMap id="eventLogEntryResultMap" type="org.activiti.engine.impl.persistence.entity.EventLogEntryEntityImpl">
     <id property="logNumber" column="LOG_NR_" jdbcType="BIGINT" />
     <result property="id" column="LOG_NR_" jdbcType="BIGINT" />
-    <result property="type" column="TYPE_" jdbcType="${stringJdbcType}"/>
-    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="${stringJdbcType}"/>
-    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="${stringJdbcType}"/>
-    <result property="executionId" column="EXECUTION_ID_" jdbcType="${stringJdbcType}"/>
-    <result property="taskId" column="TASK_ID_" jdbcType="${stringJdbcType}"/>
+    <result property="type" column="TYPE_" jdbcType="${stringType}"/>
+    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="${stringType}"/>
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="${stringType}"/>
+    <result property="executionId" column="EXECUTION_ID_" jdbcType="${stringType}"/>
+    <result property="taskId" column="TASK_ID_" jdbcType="${stringType}"/>
     <result property="timeStamp" column="TIME_STAMP_" jdbcType="TIMESTAMP"/>
-    <result property="userId" column="USER_ID_" jdbcType="${stringJdbcType}" />
+    <result property="userId" column="USER_ID_" jdbcType="${stringType}" />
     <result property="data" column="DATA_" jdbcType="${blobType}"/>
-    <result property="lockOwner" column="LOCK_OWNER_" jdbcType="${stringJdbcType}"/>
+    <result property="lockOwner" column="LOCK_OWNER_" jdbcType="${stringType}"/>
     <result property="lockTime" column="LOCK_TIME_" jdbcType="TIMESTAMP"/>
     <result property="isProcessed" column="IS_PROCESSED_" jdbcType="INTEGER"/>
   </resultMap>

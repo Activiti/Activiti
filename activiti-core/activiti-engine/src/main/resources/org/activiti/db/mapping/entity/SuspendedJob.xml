@@ -5,21 +5,21 @@
 <mapper namespace="org.activiti.engine.impl.persistence.entity.SuspendedJobEntityImpl">
 
     <resultMap id="jobResultMap" type="org.activiti.engine.impl.persistence.entity.SuspendedJobEntityImpl">
-        <id property="id" column="ID_" jdbcType="${stringJdbcType}" />
+        <id property="id" column="ID_" jdbcType="${stringType}" />
         <result property="revision" column="REV_" jdbcType="INTEGER" />
-        <result property="jobType" column="TYPE_" jdbcType="${stringJdbcType}" />
+        <result property="jobType" column="TYPE_" jdbcType="${stringType}" />
         <result property="exclusive" column="EXCLUSIVE_" jdbcType="BOOLEAN" />
-        <result property="executionId" column="EXECUTION_ID_" jdbcType="${stringJdbcType}" />
-        <result property="processInstanceId" column="PROCESS_INSTANCE_ID_" jdbcType="${stringJdbcType}" />
-        <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="${stringJdbcType}" />
+        <result property="executionId" column="EXECUTION_ID_" jdbcType="${stringType}" />
+        <result property="processInstanceId" column="PROCESS_INSTANCE_ID_" jdbcType="${stringType}" />
+        <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="${stringType}" />
         <result property="retries" column="RETRIES_" jdbcType="INTEGER" />
         <result property="exceptionByteArrayRef" column="EXCEPTION_STACK_ID_" typeHandler="ByteArrayRefTypeHandler" />
-		<result property="exceptionMessage" column="EXCEPTION_MSG_" jdbcType="${stringJdbcType}" />
-        <result property="jobHandlerType" column="HANDLER_TYPE_" jdbcType="${stringJdbcType}" />
-        <result property="jobHandlerConfiguration" column="HANDLER_CFG_" jdbcType="${stringJdbcType}" />
-        <result property="tenantId" column="TENANT_ID_" jdbcType="${stringJdbcType}" />
+		<result property="exceptionMessage" column="EXCEPTION_MSG_" jdbcType="${stringType}" />
+        <result property="jobHandlerType" column="HANDLER_TYPE_" jdbcType="${stringType}" />
+        <result property="jobHandlerConfiguration" column="HANDLER_CFG_" jdbcType="${stringType}" />
+        <result property="tenantId" column="TENANT_ID_" jdbcType="${stringType}" />
         <result property="duedate" column="DUEDATE_" jdbcType="TIMESTAMP" />
-        <result property="repeat" column="REPEAT_" jdbcType="${stringJdbcType}" />
+        <result property="repeat" column="REPEAT_" jdbcType="${stringType}" />
     </resultMap>
 
     <delete id="deleteSuspendedJob" parameterType="org.activiti.engine.impl.persistence.entity.SuspendedJobEntityImpl">

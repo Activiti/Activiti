@@ -55,10 +55,10 @@
   <!-- MODEL RESULTMAP -->
 
   <resultMap id="processDefinitionInfoResultMap" type="org.activiti.engine.impl.persistence.entity.ProcessDefinitionInfoEntityImpl">
-    <id property="id" column="ID_" jdbcType="${stringJdbcType}" />
-    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="${stringJdbcType}" />
+    <id property="id" column="ID_" jdbcType="${stringType}" />
+    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="${stringType}" />
     <result property="revision" column="REV_" jdbcType="INTEGER"/>
-    <result property="infoJsonId" column="INFO_JSON_ID_" jdbcType="${stringJdbcType}" />
+    <result property="infoJsonId" column="INFO_JSON_ID_" jdbcType="${stringType}" />
   </resultMap>
 
   <!-- ProcessDefinitionInfo SELECT -->

@@ -92,19 +92,19 @@
   <!-- MODEL RESULTMAP -->
 
   <resultMap id="modelResultMap" type="org.activiti.engine.impl.persistence.entity.ModelEntityImpl">
-    <id property="id" column="ID_" jdbcType="${stringJdbcType}" />
+    <id property="id" column="ID_" jdbcType="${stringType}" />
     <result property="revision" column="REV_" jdbcType="INTEGER"/>
-    <result property="name" column="NAME_" jdbcType="${stringJdbcType}" />
-    <result property="key" column="KEY_" jdbcType="${stringJdbcType}" />
-    <result property="category" column="CATEGORY_" jdbcType="${stringJdbcType}" />
+    <result property="name" column="NAME_" jdbcType="${stringType}" />
+    <result property="key" column="KEY_" jdbcType="${stringType}" />
+    <result property="category" column="CATEGORY_" jdbcType="${stringType}" />
     <result property="createTime" column="CREATE_TIME_" jdbcType="TIMESTAMP"/>
     <result property="lastUpdateTime" column="LAST_UPDATE_TIME_" jdbcType="TIMESTAMP"/>
     <result property="version" column="VERSION_" jdbcType="INTEGER" />
-    <result property="metaInfo" column="META_INFO_" jdbcType="${stringJdbcType}" />
-    <result property="deploymentId" column="DEPLOYMENT_ID_" jdbcType="${stringJdbcType}" />
-    <result property="editorSourceValueId" column="EDITOR_SOURCE_VALUE_ID_" jdbcType="${stringJdbcType}" />
-    <result property="editorSourceExtraValueId" column="EDITOR_SOURCE_EXTRA_VALUE_ID_" jdbcType="${stringJdbcType}" />
-    <result property="tenantId" column="TENANT_ID_" jdbcType="${stringJdbcType}" />
+    <result property="metaInfo" column="META_INFO_" jdbcType="${stringType}" />
+    <result property="deploymentId" column="DEPLOYMENT_ID_" jdbcType="${stringType}" />
+    <result property="editorSourceValueId" column="EDITOR_SOURCE_VALUE_ID_" jdbcType="${stringType}" />
+    <result property="editorSourceExtraValueId" column="EDITOR_SOURCE_EXTRA_VALUE_ID_" jdbcType="${stringType}" />
+    <result property="tenantId" column="TENANT_ID_" jdbcType="${stringType}" />
   </resultMap>
 
   <!-- MODEL SELECT -->

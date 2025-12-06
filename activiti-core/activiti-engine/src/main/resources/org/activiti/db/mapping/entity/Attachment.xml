@@ -96,16 +96,16 @@
   <!-- ATTACHMENT RESULTMAP -->
 
   <resultMap id="attachmentResultMap" type="org.activiti.engine.impl.persistence.entity.AttachmentEntityImpl">
-    <id property="id" column="ID_" jdbcType="${stringJdbcType}" />
+    <id property="id" column="ID_" jdbcType="${stringType}" />
     <result property="revision" column="REV_" jdbcType="INTEGER" />
-    <result property="name" column="NAME_" jdbcType="${stringJdbcType}" />
-    <result property="description" column="DESCRIPTION_" jdbcType="${stringJdbcType}" />
-    <result property="type" column="TYPE_" jdbcType="${stringJdbcType}" />
-    <result property="taskId" column="TASK_ID_" jdbcType="${stringJdbcType}" />
-    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="${stringJdbcType}" />
-    <result property="url" column="URL_" jdbcType="${stringJdbcType}" />
-    <result property="contentId" column="CONTENT_ID_" jdbcType="${stringJdbcType}" />
-    <result property="userId" column="USER_ID_" jdbcType="${stringJdbcType}" />
+    <result property="name" column="NAME_" jdbcType="${stringType}" />
+    <result property="description" column="DESCRIPTION_" jdbcType="${stringType}" />
+    <result property="type" column="TYPE_" jdbcType="${stringType}" />
+    <result property="taskId" column="TASK_ID_" jdbcType="${stringType}" />
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="${stringType}" />
+    <result property="url" column="URL_" jdbcType="${stringType}" />
+    <result property="contentId" column="CONTENT_ID_" jdbcType="${stringType}" />
+    <result property="userId" column="USER_ID_" jdbcType="${stringType}" />
     <result property="time" column="TIME_" jdbcType="TIMESTAMP" />
   </resultMap>
 

@@ -7,12 +7,12 @@
   <!-- CUSTOM TASK RESULTMAP -->
 
   <resultMap id="customTaskResultMap" type="org.activiti.standalone.cfg.CustomTask">
-    <id property="id" column="ID_" jdbcType="${stringJdbcType}"/>
-    <result property="name" column="NAME_" jdbcType="${stringJdbcType}"/>
+    <id property="id" column="ID_" jdbcType="${stringType}"/>
+    <result property="name" column="NAME_" jdbcType="${stringType}"/>
     <result property="priority" column="PRIORITY_" jdbcType="INTEGER"/>
     <result property="createTime" column="CREATE_TIME_" jdbcType="TIMESTAMP" />
-    <result property="owner" column="OWNER_" jdbcType="${stringJdbcType}"/>
-    <result property="assignee" column="ASSIGNEE_" jdbcType="${stringJdbcType}"/>
+    <result property="owner" column="OWNER_" jdbcType="${stringType}"/>
+    <result property="assignee" column="ASSIGNEE_" jdbcType="${stringType}"/>
   </resultMap>
 
   <sql id="selectCustomTaskColumns">

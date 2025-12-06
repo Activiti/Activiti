@@ -157,57 +157,57 @@
   <!-- HISTORIC PROCESS INSTANCE RESULT MAP -->
 
   <resultMap id="historicProcessInstanceResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntityImpl">
-    <id property="id" column="ID_" jdbcType="${stringJdbcType}" />
-    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="${stringJdbcType}" />
-    <result property="businessKey" column="BUSINESS_KEY_" jdbcType="${stringJdbcType}"/>
-    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="${stringJdbcType}" />
-    <result property="processDefinitionName" column="PROC_DEF_NAME_" jdbcType="${stringJdbcType}" />
-    <result property="processDefinitionKey" column="PROC_DEF_KEY_" jdbcType="${stringJdbcType}" />
+    <id property="id" column="ID_" jdbcType="${stringType}" />
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="${stringType}" />
+    <result property="businessKey" column="BUSINESS_KEY_" jdbcType="${stringType}"/>
+    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="${stringType}" />
+    <result property="processDefinitionName" column="PROC_DEF_NAME_" jdbcType="${stringType}" />
+    <result property="processDefinitionKey" column="PROC_DEF_KEY_" jdbcType="${stringType}" />
     <result property="processDefinitionVersion" column="PROC_DEF_VERSION_" jdbcType="INTEGER" />
-    <result property="deploymentId" column="DEPLOYMENT_ID_" jdbcType="${stringJdbcType}" />
+    <result property="deploymentId" column="DEPLOYMENT_ID_" jdbcType="${stringType}" />
     <result property="startTime" column="START_TIME_" jdbcType="TIMESTAMP" />
     <result property="endTime" column="END_TIME_" jdbcType="TIMESTAMP" />
     <result property="durationInMillis" column="DURATION_" jdbcType="BIGINT" />
-    <result property="startUserId" column="START_USER_ID_" jdbcType="${stringJdbcType}" />
-    <result property="startActivityId" column="START_ACT_ID_" jdbcType="${stringJdbcType}" />
-    <result property="endActivityId" column="END_ACT_ID_" jdbcType="${stringJdbcType}" />
-    <result property="superProcessInstanceId" column="SUPER_PROCESS_INSTANCE_ID_" jdbcType="${stringJdbcType}" />
-    <result property="deleteReason" column="DELETE_REASON_" jdbcType="${stringJdbcType}" />
-    <result property="tenantId" column="TENANT_ID_" jdbcType="${stringJdbcType}" />
-    <result property="name" column="NAME_" jdbcType="${stringJdbcType}" />
+    <result property="startUserId" column="START_USER_ID_" jdbcType="${stringType}" />
+    <result property="startActivityId" column="START_ACT_ID_" jdbcType="${stringType}" />
+    <result property="endActivityId" column="END_ACT_ID_" jdbcType="${stringType}" />
+    <result property="superProcessInstanceId" column="SUPER_PROCESS_INSTANCE_ID_" jdbcType="${stringType}" />
+    <result property="deleteReason" column="DELETE_REASON_" jdbcType="${stringType}" />
+    <result property="tenantId" column="TENANT_ID_" jdbcType="${stringType}" />
+    <result property="name" column="NAME_" jdbcType="${stringType}" />
   </resultMap>
 
   <resultMap id="historicProcessInstanceAndVariablesResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntityImpl">
-    <id property="id" column="ID_" jdbcType="${stringJdbcType}" />
-    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="${stringJdbcType}" />
-    <result property="businessKey" column="BUSINESS_KEY_" jdbcType="${stringJdbcType}"/>
-    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="${stringJdbcType}" />
-    <result property="processDefinitionName" column="PROC_DEF_NAME_" jdbcType="${stringJdbcType}" />
-    <result property="processDefinitionKey" column="PROC_DEF_KEY_" jdbcType="${stringJdbcType}" />
+    <id property="id" column="ID_" jdbcType="${stringType}" />
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="${stringType}" />
+    <result property="businessKey" column="BUSINESS_KEY_" jdbcType="${stringType}"/>
+    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="${stringType}" />
+    <result property="processDefinitionName" column="PROC_DEF_NAME_" jdbcType="${stringType}" />
+    <result property="processDefinitionKey" column="PROC_DEF_KEY_" jdbcType="${stringType}" />
     <result property="processDefinitionVersion" column="PROC_DEF_VERSION_" jdbcType="INTEGER" />
-    <result property="deploymentId" column="DEPLOYMENT_ID_" jdbcType="${stringJdbcType}" />
+    <result property="deploymentId" column="DEPLOYMENT_ID_" jdbcType="${stringType}" />
     <result property="startTime" column="START_TIME_" jdbcType="TIMESTAMP" />
     <result property="endTime" column="END_TIME_" jdbcType="TIMESTAMP" />
     <result property="durationInMillis" column="DURATION_" jdbcType="BIGINT" />
-    <result property="startUserId" column="START_USER_ID_" jdbcType="${stringJdbcType}" />
-    <result property="startActivityId" column="START_ACT_ID_" jdbcType="${stringJdbcType}" />
-    <result property="endActivityId" column="END_ACT_ID_" jdbcType="${stringJdbcType}" />
-    <result property="superProcessInstanceId" column="SUPER_PROCESS_INSTANCE_ID_" jdbcType="${stringJdbcType}" />
-    <result property="deleteReason" column="DELETE_REASON_" jdbcType="${stringJdbcType}" />
-    <result property="tenantId" column="TENANT_ID_" jdbcType="${stringJdbcType}" />
-    <result property="name" column="NAME_" jdbcType="${stringJdbcType}" />
+    <result property="startUserId" column="START_USER_ID_" jdbcType="${stringType}" />
+    <result property="startActivityId" column="START_ACT_ID_" jdbcType="${stringType}" />
+    <result property="endActivityId" column="END_ACT_ID_" jdbcType="${stringType}" />
+    <result property="superProcessInstanceId" column="SUPER_PROCESS_INSTANCE_ID_" jdbcType="${stringType}" />
+    <result property="deleteReason" column="DELETE_REASON_" jdbcType="${stringType}" />
+    <result property="tenantId" column="TENANT_ID_" jdbcType="${stringType}" />
+    <result property="name" column="NAME_" jdbcType="${stringType}" />
     <collection property="queryVariables" column="EXECUTION_ID_" javaType="ArrayList" ofType="org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntityImpl">
       <id property="id" column="VAR_ID_"/>
-      <result property="name" column="VAR_NAME_" javaType="String" jdbcType="${stringJdbcType}" />
-      <result property="variableType" column="VAR_TYPE_" javaType="org.activiti.engine.impl.variable.VariableType" jdbcType="${stringJdbcType}" />
+      <result property="name" column="VAR_NAME_" javaType="String" jdbcType="${stringType}" />
+      <result property="variableType" column="VAR_TYPE_" javaType="org.activiti.engine.impl.variable.VariableType" jdbcType="${stringType}" />
       <result property="revision" column="VAR_REV_" jdbcType="INTEGER" />
-      <result property="processInstanceId" column="VAR_PROC_INST_ID_" jdbcType="${stringJdbcType}" />
-      <result property="executionId" column="VAR_EXECUTION_ID_" jdbcType="${stringJdbcType}" />
-      <result property="taskId" column="VAR_TASK_ID_" jdbcType="${stringJdbcType}" />
+      <result property="processInstanceId" column="VAR_PROC_INST_ID_" jdbcType="${stringType}" />
+      <result property="executionId" column="VAR_EXECUTION_ID_" jdbcType="${stringType}" />
+      <result property="taskId" column="VAR_TASK_ID_" jdbcType="${stringType}" />
       <result property="byteArrayRef" column="VAR_BYTEARRAY_ID_" typeHandler="ByteArrayRefTypeHandler"/>
       <result property="doubleValue" column="VAR_DOUBLE_" jdbcType="DOUBLE" />
-      <result property="textValue" column="VAR_TEXT_" jdbcType="${stringJdbcType}" />
-      <result property="textValue2" column="VAR_TEXT2_" jdbcType="${stringJdbcType}" />
+      <result property="textValue" column="VAR_TEXT_" jdbcType="${stringType}" />
+      <result property="textValue2" column="VAR_TEXT2_" jdbcType="${stringType}" />
       <result property="longValue" column="VAR_LONG_" jdbcType="BIGINT" />
     </collection>
   </resultMap>

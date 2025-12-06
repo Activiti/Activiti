@@ -155,11 +155,11 @@
 
   <!-- HISTORIC DETAILS RESULTMAP -->
   <resultMap id="historicDetailResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricDetailEntityImpl">
-    <id property="id" column="ID_" jdbcType="${stringJdbcType}" />
-    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="${stringJdbcType}" />
-    <result property="activityInstanceId" column="ACT_INST_ID_" jdbcType="${stringJdbcType}" />
-    <result property="executionId" column="EXECUTION_ID_" jdbcType="${stringJdbcType}" />
-    <result property="taskId" column="TASK_ID_" jdbcType="${stringJdbcType}" />
+    <id property="id" column="ID_" jdbcType="${stringType}" />
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="${stringType}" />
+    <result property="activityInstanceId" column="ACT_INST_ID_" jdbcType="${stringType}" />
+    <result property="executionId" column="EXECUTION_ID_" jdbcType="${stringType}" />
+    <result property="taskId" column="TASK_ID_" jdbcType="${stringType}" />
     <result property="time" column="TIME_" jdbcType="TIMESTAMP" />
     <discriminator javaType="string" column="TYPE_">
       <case value="VariableUpdate" resultMap="historicVariableUpdateResultMap"/>
@@ -168,20 +168,20 @@
   </resultMap>
 
   <resultMap id="historicVariableUpdateResultMap" extends="historicDetailResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntityImpl">
-    <result property="name" column="NAME_" javaType="String" jdbcType="${stringJdbcType}" />
+    <result property="name" column="NAME_" javaType="String" jdbcType="${stringType}" />
     <result property="revision" column="REV_" jdbcType="INTEGER" />
-    <result property="variableType" column="VAR_TYPE_" javaType="org.activiti.engine.impl.variable.VariableType" jdbcType="${stringJdbcType}"/>
-    <result property="activityId" column="ACTIVITY_ID_" jdbcType="${stringJdbcType}" />
+    <result property="variableType" column="VAR_TYPE_" javaType="org.activiti.engine.impl.variable.VariableType" jdbcType="${stringType}"/>
+    <result property="activityId" column="ACTIVITY_ID_" jdbcType="${stringType}" />
     <result property="byteArrayRef" column="BYTEARRAY_ID_" typeHandler="ByteArrayRefTypeHandler" />
     <result property="doubleValue" column="DOUBLE_" jdbcType="DOUBLE" />
-    <result property="textValue" column="TEXT_" jdbcType="${stringJdbcType}" />
-    <result property="textValue2" column="TEXT2_" jdbcType="${stringJdbcType}" />
+    <result property="textValue" column="TEXT_" jdbcType="${stringType}" />
+    <result property="textValue2" column="TEXT2_" jdbcType="${stringType}" />
     <result property="longValue" column="LONG_" jdbcType="BIGINT" />
   </resultMap>
 
   <resultMap id="historicFormPropertyResultMap" extends="historicDetailResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricFormPropertyEntityImpl">
-    <result property="propertyId" column="NAME_" javaType="String" jdbcType="${stringJdbcType}" />
-    <result property="propertyValue" column="TEXT_" javaType="String" jdbcType="${stringJdbcType}"/>
+    <result property="propertyId" column="NAME_" javaType="String" jdbcType="${stringType}" />
+    <result property="propertyValue" column="TEXT_" javaType="String" jdbcType="${stringType}"/>
   </resultMap>
 
   <!-- HISTORIC VARIABLE SELECT -->

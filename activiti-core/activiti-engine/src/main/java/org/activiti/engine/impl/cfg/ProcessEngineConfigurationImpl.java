@@ -1224,11 +1224,11 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         properties.put("orderBy" , "order by ${orderByColumns}");
         properties.put("blobType" , "BLOB");
         properties.put("boolValue" , "TRUE");
-        properties.put("stringJdbcType", "VARCHAR");
+        properties.put("stringType", "VARCHAR");
 
         if (databaseType != null) {
             if(databaseType.equals(DATABASE_TYPE_MSSQL)) {
-                properties.put("stringJdbcType", "NVARCHAR");
+                properties.put("stringType", "NVARCHAR");
             }
             properties.load(getResourceAsStream("org/activiti/db/properties/"+databaseType+".properties"));
         }
