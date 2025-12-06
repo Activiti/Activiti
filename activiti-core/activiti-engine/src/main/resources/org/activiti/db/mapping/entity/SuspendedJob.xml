@@ -27,7 +27,7 @@
     </delete>
 
     <select id="selectSuspendedJob" parameterType="string" resultMap="jobResultMap">
-        select * from ${prefix}ACT_RU_SUSPENDED_JOB where ID_ = #{id, jdbcType=VARCHAR}
+        select * from ${prefix}ACT_RU_SUSPENDED_JOB where ID_ = #{id, jdbcType=${stringType}}
     </select>
 
     <select id="selectSuspendedJobsByExecutionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
@@ -61,21 +61,21 @@
             HANDLER_TYPE_,
             HANDLER_CFG_,
             TENANT_ID_)
-    values (#{id, jdbcType=VARCHAR},
+    values (#{id, jdbcType=${stringType}},
     		#{revision, jdbcType=INTEGER},
-            #{jobType, jdbcType=VARCHAR},
+            #{jobType, jdbcType=${stringType}},
             #{exclusive, jdbcType=BOOLEAN},
-            #{executionId, jdbcType=VARCHAR},
-            #{processInstanceId, jdbcType=VARCHAR},
-            #{processDefinitionId, jdbcType=VARCHAR},
+            #{executionId, jdbcType=${stringType}},
+            #{processInstanceId, jdbcType=${stringType}},
+            #{processDefinitionId, jdbcType=${stringType}},
             #{retries, jdbcType=INTEGER},
             #{exceptionByteArrayRef, typeHandler=ByteArrayRefTypeHandler},
-			#{exceptionMessage, jdbcType=VARCHAR},
+			#{exceptionMessage, jdbcType=${stringType}},
             #{duedate, jdbcType=TIMESTAMP},
-            #{repeat, jdbcType=VARCHAR},
-            #{jobHandlerType, jdbcType=VARCHAR},
-            #{jobHandlerConfiguration, jdbcType=VARCHAR},
-            #{tenantId, jdbcType=VARCHAR}
+            #{repeat, jdbcType=${stringType}},
+            #{jobHandlerType, jdbcType=${stringType}},
+            #{jobHandlerConfiguration, jdbcType=${stringType}},
+            #{tenantId, jdbcType=${stringType}}
     )
   	</insert>
 
@@ -97,21 +97,21 @@
             HANDLER_CFG_,
             TENANT_ID_) VALUES
 	    <foreach collection="list" item="job" index="index" separator=",">
-	        (#{job.id, jdbcType=VARCHAR},
+	        (#{job.id, jdbcType=${stringType}},
 	         #{job.revision, jdbcType=INTEGER},
-	         #{job.jobType, jdbcType=VARCHAR},
+	         #{job.jobType, jdbcType=${stringType}},
 	         #{job.exclusive, jdbcType=BOOLEAN},
-	         #{job.executionId, jdbcType=VARCHAR},
-	         #{job.processInstanceId, jdbcType=VARCHAR},
-	         #{job.processDefinitionId, jdbcType=VARCHAR},
+	         #{job.executionId, jdbcType=${stringType}},
+	         #{job.processInstanceId, jdbcType=${stringType}},
+	         #{job.processDefinitionId, jdbcType=${stringType}},
 	         #{job.retries, jdbcType=INTEGER},
 	         #{job.exceptionByteArrayRef, typeHandler=ByteArrayRefTypeHandler},
-			     #{job.exceptionMessage, jdbcType=VARCHAR},
+			     #{job.exceptionMessage, jdbcType=${stringType}},
 	         #{job.duedate, jdbcType=TIMESTAMP},
-	         #{job.repeat, jdbcType=VARCHAR},
-	         #{job.jobHandlerType, jdbcType=VARCHAR},
-	         #{job.jobHandlerConfiguration, jdbcType=VARCHAR},
-	         #{job.tenantId, jdbcType=VARCHAR})
+	         #{job.repeat, jdbcType=${stringType}},
+	         #{job.jobHandlerType, jdbcType=${stringType}},
+	         #{job.jobHandlerConfiguration, jdbcType=${stringType}},
+	         #{job.tenantId, jdbcType=${stringType}})
 	    </foreach>
   	</insert>
 
@@ -134,21 +134,21 @@
             HANDLER_TYPE_,
             HANDLER_CFG_,
             TENANT_ID_) VALUES
-          (#{job.id, jdbcType=VARCHAR},
+          (#{job.id, jdbcType=${stringType}},
            #{job.revision, jdbcType=INTEGER},
-           #{job.jobType, jdbcType=VARCHAR},
+           #{job.jobType, jdbcType=${stringType}},
            #{job.exclusive, jdbcType=BOOLEAN},
-           #{job.executionId, jdbcType=VARCHAR},
-           #{job.processInstanceId, jdbcType=VARCHAR},
-           #{job.processDefinitionId, jdbcType=VARCHAR},
+           #{job.executionId, jdbcType=${stringType}},
+           #{job.processInstanceId, jdbcType=${stringType}},
+           #{job.processDefinitionId, jdbcType=${stringType}},
            #{job.retries, jdbcType=INTEGER},
            #{job.exceptionByteArrayRef, typeHandler=ByteArrayRefTypeHandler},
-           #{job.exceptionMessage, jdbcType=VARCHAR},
+           #{job.exceptionMessage, jdbcType=${stringType}},
            #{job.duedate, jdbcType=TIMESTAMP},
-           #{job.repeat, jdbcType=VARCHAR},
-           #{job.jobHandlerType, jdbcType=VARCHAR},
-           #{job.jobHandlerConfiguration, jdbcType=VARCHAR},
-           #{job.tenantId, jdbcType=VARCHAR})
+           #{job.repeat, jdbcType=${stringType}},
+           #{job.jobHandlerType, jdbcType=${stringType}},
+           #{job.jobHandlerConfiguration, jdbcType=${stringType}},
+           #{job.tenantId, jdbcType=${stringType}})
     </foreach>
     SELECT * FROM dual
     </insert>
@@ -226,13 +226,13 @@
     <!-- JOB UPDATE STATEMENTS -->
     <update id="updateSuspendedJobTenantIdForDeployment" parameterType="java.util.Map">
         update ${prefix}ACT_RU_SUSPENDED_JOB set
-        TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
+        TENANT_ID_ = #{tenantId, jdbcType=${stringType}}
         where
         ID_ in (
         SELECT J.ID_ from ${prefix}ACT_RU_SUSPENDED_JOB J
         inner join ${prefix}ACT_RE_PROCDEF P on J.PROC_DEF_ID_  = P.ID_
         inner join ${prefix}ACT_RE_DEPLOYMENT D on P.DEPLOYMENT_ID_ = D.ID_
-        where D.ID_ = #{deploymentId, jdbcType=VARCHAR}
+        where D.ID_ = #{deploymentId, jdbcType=${stringType}}
         )
     </update>
 
@@ -240,7 +240,7 @@
      Tested this on MySQL 5.6: does NOT use a temporary table (so good performance) -->
     <update id="updateSuspendedJobTenantIdForDeployment" databaseId="mysql" parameterType="java.util.Map">
         update ${prefix}ACT_RU_SUSPENDED_JOB set
-        TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
+        TENANT_ID_ = #{tenantId, jdbcType=${stringType}}
         where
         ID_ in (
 
@@ -250,7 +250,7 @@
 		        FROM  ${prefix}ACT_RU_SUSPENDED_JOB J
 		        inner join ${prefix}ACT_RE_PROCDEF P on J.PROC_DEF_ID_  = P.ID_
 		        inner join ${prefix}ACT_RE_DEPLOYMENT D on P.DEPLOYMENT_ID_ = D.ID_
-		        where D.ID_ = #{deploymentId, jdbcType=VARCHAR}
+		        where D.ID_ = #{deploymentId, jdbcType=${stringType}}
 
 	        ) AS tempTask
 

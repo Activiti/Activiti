@@ -8,17 +8,17 @@
 
   <insert id="insertResource" parameterType="org.activiti.engine.impl.persistence.entity.ResourceEntityImpl">
     insert into ${prefix}ACT_GE_BYTEARRAY(ID_, REV_, NAME_, BYTES_, DEPLOYMENT_ID_, GENERATED_)
-    values (#{id, jdbcType=VARCHAR}, 1, #{name, jdbcType=VARCHAR}, #{bytes, jdbcType=${blobType}}, #{deploymentId, jdbcType=VARCHAR}, #{generated, jdbcType=BOOLEAN})
+    values (#{id, jdbcType=${stringType}}, 1, #{name, jdbcType=${stringType}}, #{bytes, jdbcType=${blobType}}, #{deploymentId, jdbcType=${stringType}}, #{generated, jdbcType=BOOLEAN})
   </insert>
 
   <insert id="bulkInsertResource" parameterType="java.util.List">
     INSERT INTO ${prefix}ACT_GE_BYTEARRAY(ID_, REV_, NAME_, BYTES_, DEPLOYMENT_ID_, GENERATED_) VALUES
       <foreach collection="list" item="byteArr" index="index" separator=",">
-        (#{byteArr.id, jdbcType=VARCHAR},
+        (#{byteArr.id, jdbcType=${stringType}},
          1,
-         #{byteArr.name, jdbcType=VARCHAR},
+         #{byteArr.name, jdbcType=${stringType}},
          #{byteArr.bytes, jdbcType=BLOB},
-         #{byteArr.deploymentId, jdbcType=VARCHAR},
+         #{byteArr.deploymentId, jdbcType=${stringType}},
          #{byteArr.generated, jdbcType=BOOLEAN})
       </foreach>
   </insert>
@@ -27,11 +27,11 @@
     INSERT ALL
       <foreach collection="list" item="resource" index="index">
         INTO ${prefix}ACT_GE_BYTEARRAY(ID_, REV_, NAME_, BYTES_, DEPLOYMENT_ID_, GENERATED_) VALUES
-        (#{resource.id, jdbcType=VARCHAR},
+        (#{resource.id, jdbcType=${stringType}},
          1,
-         #{resource.name, jdbcType=VARCHAR},
+         #{resource.name, jdbcType=${stringType}},
          #{resource.bytes, jdbcType=${blobType}},
-         #{resource.deploymentId, jdbcType=VARCHAR},
+         #{resource.deploymentId, jdbcType=${stringType}},
          #{resource.generated, jdbcType=BOOLEAN})
       </foreach>
     SELECT * FROM dual

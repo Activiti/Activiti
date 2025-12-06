@@ -8,38 +8,38 @@
 
   <insert id="insertModel" parameterType="org.activiti.engine.impl.persistence.entity.ModelEntityImpl">
     insert into ${prefix}ACT_RE_MODEL(ID_, REV_, NAME_, KEY_, CATEGORY_, CREATE_TIME_, LAST_UPDATE_TIME_, VERSION_, META_INFO_, DEPLOYMENT_ID_, EDITOR_SOURCE_VALUE_ID_, EDITOR_SOURCE_EXTRA_VALUE_ID_, TENANT_ID_)
-    values(#{id, jdbcType=VARCHAR},
+    values(#{id, jdbcType=${stringType}},
            1,
-           #{name, jdbcType=VARCHAR},
-           #{key, jdbcType=VARCHAR},
-           #{category, jdbcType=VARCHAR},
+           #{name, jdbcType=${stringType}},
+           #{key, jdbcType=${stringType}},
+           #{category, jdbcType=${stringType}},
            #{createTime, jdbcType=TIMESTAMP},
            #{lastUpdateTime, jdbcType=TIMESTAMP},
            #{version, jdbcType=INTEGER},
-           #{metaInfo, jdbcType=VARCHAR},
-           #{deploymentId, jdbcType=VARCHAR},
-           #{editorSourceValueId, jdbcType=VARCHAR},
-           #{editorSourceExtraValueId, jdbcType=VARCHAR},
-           #{tenantId, jdbcType=VARCHAR})
+           #{metaInfo, jdbcType=${stringType}},
+           #{deploymentId, jdbcType=${stringType}},
+           #{editorSourceValueId, jdbcType=${stringType}},
+           #{editorSourceExtraValueId, jdbcType=${stringType}},
+           #{tenantId, jdbcType=${stringType}})
   </insert>
 
   <insert id="bulkInsertModel" parameterType="java.util.List">
     INSERT INTO ${prefix}ACT_RE_MODEL(ID_, REV_, NAME_, KEY_, CATEGORY_, CREATE_TIME_, LAST_UPDATE_TIME_, VERSION_, META_INFO_, DEPLOYMENT_ID_, EDITOR_SOURCE_VALUE_ID_, EDITOR_SOURCE_EXTRA_VALUE_ID_, TENANT_ID_)
     VALUES
       <foreach collection="list" item="model" index="index" separator=",">
-        (#{model.id, jdbcType=VARCHAR},
+        (#{model.id, jdbcType=${stringType}},
          1,
-         #{model.name, jdbcType=VARCHAR},
-         #{model.key, jdbcType=VARCHAR},
-         #{model.category, jdbcType=VARCHAR},
+         #{model.name, jdbcType=${stringType}},
+         #{model.key, jdbcType=${stringType}},
+         #{model.category, jdbcType=${stringType}},
          #{model.createTime, jdbcType=TIMESTAMP},
          #{model.lastUpdateTime, jdbcType=TIMESTAMP},
          #{model.version, jdbcType=INTEGER},
-         #{model.metaInfo, jdbcType=VARCHAR},
-         #{model.deploymentId, jdbcType=VARCHAR},
-         #{model.editorSourceValueId, jdbcType=VARCHAR},
-         #{model.editorSourceExtraValueId, jdbcType=VARCHAR},
-         #{model.tenantId, jdbcType=VARCHAR})
+         #{model.metaInfo, jdbcType=${stringType}},
+         #{model.deploymentId, jdbcType=${stringType}},
+         #{model.editorSourceValueId, jdbcType=${stringType}},
+         #{model.editorSourceExtraValueId, jdbcType=${stringType}},
+         #{model.tenantId, jdbcType=${stringType}})
      </foreach>
   </insert>
 
@@ -48,19 +48,19 @@
       <foreach collection="list" item="model" index="index">
         INTO ${prefix}ACT_RE_MODEL(ID_, REV_, NAME_, KEY_, CATEGORY_, CREATE_TIME_, LAST_UPDATE_TIME_,
         VERSION_, META_INFO_, DEPLOYMENT_ID_, EDITOR_SOURCE_VALUE_ID_, EDITOR_SOURCE_EXTRA_VALUE_ID_, TENANT_ID_) VALUES
-          (#{model.id, jdbcType=VARCHAR},
+          (#{model.id, jdbcType=${stringType}},
            1,
-           #{model.name, jdbcType=VARCHAR},
-           #{model.key, jdbcType=VARCHAR},
-           #{model.category, jdbcType=VARCHAR},
+           #{model.name, jdbcType=${stringType}},
+           #{model.key, jdbcType=${stringType}},
+           #{model.category, jdbcType=${stringType}},
            #{model.createTime, jdbcType=TIMESTAMP},
            #{model.lastUpdateTime, jdbcType=TIMESTAMP},
            #{model.version, jdbcType=INTEGER},
-           #{model.metaInfo, jdbcType=VARCHAR},
-           #{model.deploymentId, jdbcType=VARCHAR},
-           #{model.editorSourceValueId, jdbcType=VARCHAR},
-           #{model.editorSourceExtraValueId, jdbcType=VARCHAR},
-           #{model.tenantId, jdbcType=VARCHAR})
+           #{model.metaInfo, jdbcType=${stringType}},
+           #{model.deploymentId, jdbcType=${stringType}},
+           #{model.editorSourceValueId, jdbcType=${stringType}},
+           #{model.editorSourceExtraValueId, jdbcType=${stringType}},
+           #{model.tenantId, jdbcType=${stringType}})
      </foreach>
     SELECT * FROM dual
   </insert>
@@ -69,17 +69,17 @@
   <update id="updateModel" parameterType="org.activiti.engine.impl.persistence.entity.ModelEntityImpl">
     update ${prefix}ACT_RE_MODEL set
       REV_ = #{revisionNext, jdbcType=INTEGER},
-      NAME_ = #{name, jdbcType=VARCHAR},
-      KEY_ = #{key, jdbcType=VARCHAR},
-      CATEGORY_ = #{category, jdbcType=VARCHAR},
-      LAST_UPDATE_TIME_ = #{lastUpdateTime, jdbcType=VARCHAR},
+      NAME_ = #{name, jdbcType=${stringType}},
+      KEY_ = #{key, jdbcType=${stringType}},
+      CATEGORY_ = #{category, jdbcType=${stringType}},
+      LAST_UPDATE_TIME_ = #{lastUpdateTime, jdbcType=${stringType}},
       VERSION_ = #{version, jdbcType=INTEGER},
-      META_INFO_ = #{metaInfo, jdbcType=VARCHAR},
-      DEPLOYMENT_ID_ = #{deploymentId, jdbcType=VARCHAR},
-      EDITOR_SOURCE_VALUE_ID_ = #{editorSourceValueId, jdbcType=VARCHAR},
-      EDITOR_SOURCE_EXTRA_VALUE_ID_ = #{editorSourceExtraValueId, jdbcType=VARCHAR},
-      TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
-    where ID_ = #{id, jdbcType=VARCHAR} and REV_ = #{revision, jdbcType=INTEGER}
+      META_INFO_ = #{metaInfo, jdbcType=${stringType}},
+      DEPLOYMENT_ID_ = #{deploymentId, jdbcType=${stringType}},
+      EDITOR_SOURCE_VALUE_ID_ = #{editorSourceValueId, jdbcType=${stringType}},
+      EDITOR_SOURCE_EXTRA_VALUE_ID_ = #{editorSourceExtraValueId, jdbcType=${stringType}},
+      TENANT_ID_ = #{tenantId, jdbcType=${stringType}}
+    where ID_ = #{id, jdbcType=${stringType}} and REV_ = #{revision, jdbcType=INTEGER}
   </update>
 
 
@@ -174,7 +174,7 @@
   </sql>
 
   <select id="selectModel" parameterType="string" resultMap="modelResultMap">
-    select * from ${prefix}ACT_RE_MODEL where ID_ = #{id, jdbcType=VARCHAR}
+    select * from ${prefix}ACT_RE_MODEL where ID_ = #{id, jdbcType=${stringType}}
   </select>
 
   <!-- mysql specific -->

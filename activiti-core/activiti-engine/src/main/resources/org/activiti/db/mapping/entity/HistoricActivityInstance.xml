@@ -38,21 +38,21 @@
         DELETE_REASON_,
         TENANT_ID_
       ) values (
-        #{id ,jdbcType=VARCHAR},
-        #{processDefinitionId, jdbcType=VARCHAR},
-        #{processInstanceId, jdbcType=VARCHAR},
-        #{executionId, jdbcType=VARCHAR},
-        #{activityId ,jdbcType=VARCHAR},
-        #{taskId ,jdbcType=VARCHAR},
-        #{calledProcessInstanceId ,jdbcType=VARCHAR},
-        #{activityName ,jdbcType=VARCHAR},
-        #{activityType ,jdbcType=VARCHAR},
-        #{assignee ,jdbcType=VARCHAR},
+        #{id ,jdbcType=${stringType}},
+        #{processDefinitionId, jdbcType=${stringType}},
+        #{processInstanceId, jdbcType=${stringType}},
+        #{executionId, jdbcType=${stringType}},
+        #{activityId ,jdbcType=${stringType}},
+        #{taskId ,jdbcType=${stringType}},
+        #{calledProcessInstanceId ,jdbcType=${stringType}},
+        #{activityName ,jdbcType=${stringType}},
+        #{activityType ,jdbcType=${stringType}},
+        #{assignee ,jdbcType=${stringType}},
         #{startTime, jdbcType=TIMESTAMP},
         #{endTime, jdbcType=TIMESTAMP},
         #{durationInMillis ,jdbcType=BIGINT},
-        #{deleteReason, jdbcType=VARCHAR},
-        #{tenantId, jdbcType=VARCHAR}
+        #{deleteReason, jdbcType=${stringType}},
+        #{tenantId, jdbcType=${stringType}}
       )
   </insert>
 
@@ -75,21 +75,21 @@
         TENANT_ID_
       ) values
       <foreach collection="list" item="historicActivityInstance" index="index" separator=",">
-         (#{historicActivityInstance.id ,jdbcType=VARCHAR},
-          #{historicActivityInstance.processDefinitionId, jdbcType=VARCHAR},
-          #{historicActivityInstance.processInstanceId, jdbcType=VARCHAR},
-          #{historicActivityInstance.executionId, jdbcType=VARCHAR},
-          #{historicActivityInstance.activityId ,jdbcType=VARCHAR},
-          #{historicActivityInstance.taskId ,jdbcType=VARCHAR},
-          #{historicActivityInstance.calledProcessInstanceId ,jdbcType=VARCHAR},
-          #{historicActivityInstance.activityName ,jdbcType=VARCHAR},
-          #{historicActivityInstance.activityType ,jdbcType=VARCHAR},
-          #{historicActivityInstance.assignee ,jdbcType=VARCHAR},
+         (#{historicActivityInstance.id ,jdbcType=${stringType}},
+          #{historicActivityInstance.processDefinitionId, jdbcType=${stringType}},
+          #{historicActivityInstance.processInstanceId, jdbcType=${stringType}},
+          #{historicActivityInstance.executionId, jdbcType=${stringType}},
+          #{historicActivityInstance.activityId ,jdbcType=${stringType}},
+          #{historicActivityInstance.taskId ,jdbcType=${stringType}},
+          #{historicActivityInstance.calledProcessInstanceId ,jdbcType=${stringType}},
+          #{historicActivityInstance.activityName ,jdbcType=${stringType}},
+          #{historicActivityInstance.activityType ,jdbcType=${stringType}},
+          #{historicActivityInstance.assignee ,jdbcType=${stringType}},
           #{historicActivityInstance.startTime, jdbcType=TIMESTAMP},
           #{historicActivityInstance.endTime, jdbcType=TIMESTAMP},
           #{historicActivityInstance.durationInMillis ,jdbcType=BIGINT},
-          #{historicActivityInstance.deleteReason ,jdbcType=VARCHAR},
-          #{historicActivityInstance.tenantId, jdbcType=VARCHAR})
+          #{historicActivityInstance.deleteReason ,jdbcType=${stringType}},
+          #{historicActivityInstance.tenantId, jdbcType=${stringType}})
       </foreach>
   </insert>
 
@@ -113,21 +113,21 @@
           DELETE_REASON_,
           TENANT_ID_
         ) VALUES
-           (#{historicActivityInstance.id ,jdbcType=VARCHAR},
-            #{historicActivityInstance.processDefinitionId, jdbcType=VARCHAR},
-            #{historicActivityInstance.processInstanceId, jdbcType=VARCHAR},
-            #{historicActivityInstance.executionId, jdbcType=VARCHAR},
-            #{historicActivityInstance.activityId ,jdbcType=VARCHAR},
-            #{historicActivityInstance.taskId ,jdbcType=VARCHAR},
-            #{historicActivityInstance.calledProcessInstanceId ,jdbcType=VARCHAR},
-            #{historicActivityInstance.activityName ,jdbcType=VARCHAR},
-            #{historicActivityInstance.activityType ,jdbcType=VARCHAR},
-            #{historicActivityInstance.assignee ,jdbcType=VARCHAR},
+           (#{historicActivityInstance.id ,jdbcType=${stringType}},
+            #{historicActivityInstance.processDefinitionId, jdbcType=${stringType}},
+            #{historicActivityInstance.processInstanceId, jdbcType=${stringType}},
+            #{historicActivityInstance.executionId, jdbcType=${stringType}},
+            #{historicActivityInstance.activityId ,jdbcType=${stringType}},
+            #{historicActivityInstance.taskId ,jdbcType=${stringType}},
+            #{historicActivityInstance.calledProcessInstanceId ,jdbcType=${stringType}},
+            #{historicActivityInstance.activityName ,jdbcType=${stringType}},
+            #{historicActivityInstance.activityType ,jdbcType=${stringType}},
+            #{historicActivityInstance.assignee ,jdbcType=${stringType}},
             #{historicActivityInstance.startTime, jdbcType=TIMESTAMP},
             #{historicActivityInstance.endTime, jdbcType=TIMESTAMP},
             #{historicActivityInstance.durationInMillis ,jdbcType=BIGINT},
-            #{historicActivityInstance.deleteReason ,jdbcType=VARCHAR},
-            #{historicActivityInstance.tenantId, jdbcType=VARCHAR})
+            #{historicActivityInstance.deleteReason ,jdbcType=${stringType}},
+            #{historicActivityInstance.tenantId, jdbcType=${stringType}})
       </foreach>
     SELECT * FROM dual
   </insert>
@@ -136,11 +136,11 @@
 
   <update id="updateHistoricActivityInstance" parameterType="org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntityImpl">
     update ${prefix}ACT_HI_ACTINST set
-      EXECUTION_ID_ = #{executionId, jdbcType=VARCHAR},
-      ASSIGNEE_ = #{assignee, jdbcType=VARCHAR},
+      EXECUTION_ID_ = #{executionId, jdbcType=${stringType}},
+      ASSIGNEE_ = #{assignee, jdbcType=${stringType}},
       END_TIME_ = #{endTime, jdbcType=TIMESTAMP},
       DURATION_ = #{durationInMillis ,jdbcType=BIGINT},
-      DELETE_REASON_ = #{deleteReason, jdbcType=VARCHAR}
+      DELETE_REASON_ = #{deleteReason, jdbcType=${stringType}}
     where ID_ = #{id}
   </update>
 
@@ -250,12 +250,12 @@
 
   <select id="selectUnfinishedHistoricActivityInstanceExecutionIdAndActivityId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="historicActivityInstanceResultMap">
     select * from ${prefix}ACT_HI_ACTINST RES
-    where EXECUTION_ID_ = #{parameter.executionId, jdbcType=VARCHAR} and ACT_ID_ = #{parameter.activityId, jdbcType=VARCHAR} and END_TIME_ is null
+    where EXECUTION_ID_ = #{parameter.executionId, jdbcType=${stringType}} and ACT_ID_ = #{parameter.activityId, jdbcType=${stringType}} and END_TIME_ is null
   </select>
 
    <select id="selectUnfinishedHistoricActivityInstanceByProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="historicActivityInstanceResultMap">
     select * from ${prefix}ACT_HI_ACTINST RES
-    where PROC_INST_ID_ = #{parameter.processInstanceId, jdbcType=VARCHAR} and END_TIME_ is null
+    where PROC_INST_ID_ = #{parameter.processInstanceId, jdbcType=${stringType}} and END_TIME_ is null
   </select>
 
 </mapper>

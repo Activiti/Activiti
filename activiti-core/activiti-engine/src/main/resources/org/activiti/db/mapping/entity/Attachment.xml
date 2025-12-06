@@ -23,16 +23,16 @@
   <insert id="insertAttachment" parameterType="org.activiti.engine.impl.persistence.entity.AttachmentEntityImpl">
     insert into ${prefix}ACT_HI_ATTACHMENT (ID_, REV_, USER_ID_, NAME_, DESCRIPTION_, TYPE_, TASK_ID_, PROC_INST_ID_, URL_, CONTENT_ID_, TIME_)
     values (
-      #{id ,jdbcType=VARCHAR},
+      #{id ,jdbcType=${stringType}},
       1,
-      #{userId ,jdbcType=VARCHAR},
-      #{name ,jdbcType=VARCHAR},
-      #{description ,jdbcType=VARCHAR},
-      #{type ,jdbcType=VARCHAR},
-      #{taskId ,jdbcType=VARCHAR},
-      #{processInstanceId ,jdbcType=VARCHAR},
-      #{url ,jdbcType=VARCHAR},
-      #{contentId ,jdbcType=VARCHAR},
+      #{userId ,jdbcType=${stringType}},
+      #{name ,jdbcType=${stringType}},
+      #{description ,jdbcType=${stringType}},
+      #{type ,jdbcType=${stringType}},
+      #{taskId ,jdbcType=${stringType}},
+      #{processInstanceId ,jdbcType=${stringType}},
+      #{url ,jdbcType=${stringType}},
+      #{contentId ,jdbcType=${stringType}},
       #{time ,jdbcType=TIMESTAMP}
     )
   </insert>
@@ -41,16 +41,16 @@
     insert into ${prefix}ACT_HI_ATTACHMENT (ID_, REV_, USER_ID_, NAME_, DESCRIPTION_, TYPE_, TASK_ID_, PROC_INST_ID_, URL_, CONTENT_ID_, TIME_)
     values
       <foreach collection="list" item="attachment" index="index" separator=",">
-        (#{attachment.id ,jdbcType=VARCHAR},
+        (#{attachment.id ,jdbcType=${stringType}},
          1,
-         #{attachment.userId ,jdbcType=VARCHAR},
-         #{attachment.name ,jdbcType=VARCHAR},
-         #{attachment.description ,jdbcType=VARCHAR},
-         #{attachment.type ,jdbcType=VARCHAR},
-         #{attachment.taskId ,jdbcType=VARCHAR},
-         #{attachment.processInstanceId ,jdbcType=VARCHAR},
-         #{attachment.url ,jdbcType=VARCHAR},
-         #{attachment.contentId ,jdbcType=VARCHAR},
+         #{attachment.userId ,jdbcType=${stringType}},
+         #{attachment.name ,jdbcType=${stringType}},
+         #{attachment.description ,jdbcType=${stringType}},
+         #{attachment.type ,jdbcType=${stringType}},
+         #{attachment.taskId ,jdbcType=${stringType}},
+         #{attachment.processInstanceId ,jdbcType=${stringType}},
+         #{attachment.url ,jdbcType=${stringType}},
+         #{attachment.contentId ,jdbcType=${stringType}},
          #{attachment.time ,jdbcType=TIMESTAMP})
       </foreach>
   </insert>
@@ -59,16 +59,16 @@
     INSERT ALL
       <foreach collection="list" item="attachment" index="index">
         INTO ${prefix}ACT_HI_ATTACHMENT (ID_, REV_, USER_ID_, NAME_, DESCRIPTION_, TYPE_, TASK_ID_, PROC_INST_ID_, URL_, CONTENT_ID_, TIME_) VALUES
-          (#{attachment.id ,jdbcType=VARCHAR},
+          (#{attachment.id ,jdbcType=${stringType}},
            1,
-           #{attachment.userId ,jdbcType=VARCHAR},
-           #{attachment.name ,jdbcType=VARCHAR},
-           #{attachment.description ,jdbcType=VARCHAR},
-           #{attachment.type ,jdbcType=VARCHAR},
-           #{attachment.taskId ,jdbcType=VARCHAR},
-           #{attachment.processInstanceId ,jdbcType=VARCHAR},
-           #{attachment.url ,jdbcType=VARCHAR},
-           #{attachment.contentId ,jdbcType=VARCHAR},
+           #{attachment.userId ,jdbcType=${stringType}},
+           #{attachment.name ,jdbcType=${stringType}},
+           #{attachment.description ,jdbcType=${stringType}},
+           #{attachment.type ,jdbcType=${stringType}},
+           #{attachment.taskId ,jdbcType=${stringType}},
+           #{attachment.processInstanceId ,jdbcType=${stringType}},
+           #{attachment.url ,jdbcType=${stringType}},
+           #{attachment.contentId ,jdbcType=${stringType}},
            #{attachment.time ,jdbcType=TIMESTAMP})
       </foreach>
     SELECT * FROM dual
@@ -80,7 +80,7 @@
     update ${prefix}ACT_HI_ATTACHMENT
     set
       REV_ = #{revisionNext, jdbcType=INTEGER},
-      NAME_ = #{name, jdbcType=VARCHAR},
+      NAME_ = #{name, jdbcType=${stringType}},
       DESCRIPTION_ = #{description, jdbcType=TIMESTAMP}
     where ID_ = #{id}
       and REV_ = #{revision, jdbcType=INTEGER}
@@ -114,20 +114,20 @@
   <select id="selectAttachment" parameterType="string" resultMap="attachmentResultMap">
     select *
     from ${prefix}ACT_HI_ATTACHMENT
-    where ID_ = #{id,jdbcType=VARCHAR}
+    where ID_ = #{id,jdbcType=${stringType}}
   </select>
 
   <select id="selectAttachmentsByTaskId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="attachmentResultMap">
     select *
     from ${prefix}ACT_HI_ATTACHMENT
-    where TASK_ID_ = #{parameter,jdbcType=VARCHAR}
+    where TASK_ID_ = #{parameter,jdbcType=${stringType}}
     order by TIME_ desc
   </select>
 
   <select id="selectAttachmentsByProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="attachmentResultMap">
     select *
     from ${prefix}ACT_HI_ATTACHMENT
-    where PROC_INST_ID_ = #{parameter,jdbcType=VARCHAR}
+    where PROC_INST_ID_ = #{parameter,jdbcType=${stringType}}
     order by TIME_ desc
   </select>
 

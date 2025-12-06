@@ -8,14 +8,14 @@
 
   <insert id="insertIdentityLink" parameterType="org.activiti.engine.impl.persistence.entity.IdentityLinkEntityImpl">
     insert into ${prefix}ACT_RU_IDENTITYLINK (ID_, REV_, TYPE_, USER_ID_, GROUP_ID_, TASK_ID_, PROC_INST_ID_, PROC_DEF_ID_, DETAILS_)
-    values (#{id, jdbcType=VARCHAR},
+    values (#{id, jdbcType=${stringType}},
             1,
-            #{type, jdbcType=VARCHAR},
-            #{userId, jdbcType=VARCHAR},
-            #{groupId, jdbcType=VARCHAR},
-            #{taskId, jdbcType=VARCHAR},
-            #{processInstanceId, jdbcType=VARCHAR},
-            #{processDefId, jdbcType=VARCHAR},
+            #{type, jdbcType=${stringType}},
+            #{userId, jdbcType=${stringType}},
+            #{groupId, jdbcType=${stringType}},
+            #{taskId, jdbcType=${stringType}},
+            #{processInstanceId, jdbcType=${stringType}},
+            #{processDefId, jdbcType=${stringType}},
             #{details, jdbcType=${blobType}})
   </insert>
 
@@ -23,14 +23,14 @@
     insert into ${prefix}ACT_RU_IDENTITYLINK (ID_, REV_, TYPE_, USER_ID_, GROUP_ID_, TASK_ID_, PROC_INST_ID_, PROC_DEF_ID_, DETAILS_)
     values
     <foreach collection="list" item="identityLink" index="index" separator=",">
-      (#{identityLink.id, jdbcType=VARCHAR},
+      (#{identityLink.id, jdbcType=${stringType}},
         1,
-        #{identityLink.type, jdbcType=VARCHAR},
-        #{identityLink.userId, jdbcType=VARCHAR},
-        #{identityLink.groupId, jdbcType=VARCHAR},
-        #{identityLink.taskId, jdbcType=VARCHAR},
-        #{identityLink.processInstanceId, jdbcType=VARCHAR},
-        #{identityLink.processDefId, jdbcType=VARCHAR},
+        #{identityLink.type, jdbcType=${stringType}},
+        #{identityLink.userId, jdbcType=${stringType}},
+        #{identityLink.groupId, jdbcType=${stringType}},
+        #{identityLink.taskId, jdbcType=${stringType}},
+        #{identityLink.processInstanceId, jdbcType=${stringType}},
+        #{identityLink.processDefId, jdbcType=${stringType}},
         #{identityLink.details, jdbcType=${blobType}})
     </foreach>
   </insert>
@@ -39,14 +39,14 @@
     INSERT ALL
       <foreach collection="list" item="identityLink" index="index">
         into ${prefix}ACT_RU_IDENTITYLINK (ID_, REV_, TYPE_, USER_ID_, GROUP_ID_, TASK_ID_, PROC_INST_ID_, PROC_DEF_ID_, DETAILS_) VALUES
-           (#{identityLink.id, jdbcType=VARCHAR},
+           (#{identityLink.id, jdbcType=${stringType}},
             1,
-            #{identityLink.type, jdbcType=VARCHAR},
-            #{identityLink.userId, jdbcType=VARCHAR},
-            #{identityLink.groupId, jdbcType=VARCHAR},
-            #{identityLink.taskId, jdbcType=VARCHAR},
-            #{identityLink.processInstanceId, jdbcType=VARCHAR},
-            #{identityLink.processDefId, jdbcType=VARCHAR},
+            #{identityLink.type, jdbcType=${stringType}},
+            #{identityLink.userId, jdbcType=${stringType}},
+            #{identityLink.groupId, jdbcType=${stringType}},
+            #{identityLink.taskId, jdbcType=${stringType}},
+            #{identityLink.processInstanceId, jdbcType=${stringType}},
+            #{identityLink.processDefId, jdbcType=${stringType}},
             #{identityLink.details, jdbcType=${blobType}})
       </foreach>
     SELECT * FROM dual
@@ -61,7 +61,7 @@
   <delete id="bulkDeleteIdentityLink" parameterType="java.util.Collection">
     delete from ${prefix}ACT_RU_IDENTITYLINK where
     <foreach item="identityLink" collection="list" index="index" separator=" or ">
-        ID_ = #{identityLink.id, jdbcType=VARCHAR}
+        ID_ = #{identityLink.id, jdbcType=${stringType}}
     </foreach>
   </delete>
 
@@ -86,7 +86,7 @@
   <!-- IDENTITY LINK SELECT -->
 
   <select id="selectIdentityLink" parameterType="string" resultMap="identityLinkResultMap">
-    select * from ${prefix}ACT_RU_IDENTITYLINK where ID_ = #{id, jdbcType=VARCHAR}
+    select * from ${prefix}ACT_RU_IDENTITYLINK where ID_ = #{id, jdbcType=${stringType}}
   </select>
 
   <select id="selectIdentityLinksByTask" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="identityLinkResultMap">

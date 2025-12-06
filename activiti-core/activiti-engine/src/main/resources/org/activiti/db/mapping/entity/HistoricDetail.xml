@@ -23,15 +23,15 @@
   <insert id="insertHistoricFormProperty" parameterType="org.activiti.engine.impl.persistence.entity.HistoricFormPropertyEntityImpl">
     insert into ${prefix}ACT_HI_DETAIL (ID_, TYPE_, PROC_INST_ID_, ACT_INST_ID_, EXECUTION_ID_, TASK_ID_, TIME_, NAME_, TEXT_)
     values (
-      #{id, jdbcType=VARCHAR},
+      #{id, jdbcType=${stringType}},
       'FormProperty',
-      #{processInstanceId, jdbcType=VARCHAR},
-      #{activityInstanceId, jdbcType=VARCHAR},
-      #{executionId, jdbcType=VARCHAR},
-      #{taskId, jdbcType=VARCHAR},
+      #{processInstanceId, jdbcType=${stringType}},
+      #{activityInstanceId, jdbcType=${stringType}},
+      #{executionId, jdbcType=${stringType}},
+      #{taskId, jdbcType=${stringType}},
       #{time, jdbcType=TIMESTAMP},
-      #{propertyId, jdbcType=VARCHAR},
-      #{propertyValue, jdbcType=VARCHAR}
+      #{propertyId, jdbcType=${stringType}},
+      #{propertyValue, jdbcType=${stringType}}
     )
   </insert>
 
@@ -39,15 +39,15 @@
     insert into ${prefix}ACT_HI_DETAIL (ID_, TYPE_, PROC_INST_ID_, ACT_INST_ID_, EXECUTION_ID_, TASK_ID_, TIME_, NAME_, TEXT_)
     values
     <foreach collection="list" item="historicFormProperty" index="index" separator=",">
-      (#{historicFormProperty.id, jdbcType=VARCHAR},
-       #{historicFormProperty.detailType, jdbcType=VARCHAR},
-       #{historicFormProperty.processInstanceId, jdbcType=VARCHAR},
-       #{historicFormProperty.activityInstanceId, jdbcType=VARCHAR},
-       #{historicFormProperty.executionId, jdbcType=VARCHAR},
-       #{historicFormProperty.taskId, jdbcType=VARCHAR},
+      (#{historicFormProperty.id, jdbcType=${stringType}},
+       #{historicFormProperty.detailType, jdbcType=${stringType}},
+       #{historicFormProperty.processInstanceId, jdbcType=${stringType}},
+       #{historicFormProperty.activityInstanceId, jdbcType=${stringType}},
+       #{historicFormProperty.executionId, jdbcType=${stringType}},
+       #{historicFormProperty.taskId, jdbcType=${stringType}},
        #{historicFormProperty.time, jdbcType=TIMESTAMP},
-       #{historicFormProperty.propertyId, jdbcType=VARCHAR},
-       #{historicFormProperty.propertyValue, jdbcType=VARCHAR})
+       #{historicFormProperty.propertyId, jdbcType=${stringType}},
+       #{historicFormProperty.propertyValue, jdbcType=${stringType}})
     </foreach>
   </insert>
 
@@ -55,15 +55,15 @@
     INSERT ALL
     <foreach collection="list" item="historicFormProperty" index="index">
       INTO ${prefix}ACT_HI_DETAIL (ID_, TYPE_, PROC_INST_ID_, ACT_INST_ID_, EXECUTION_ID_, TASK_ID_, TIME_, NAME_, TEXT_) VALUES
-        (#{historicFormProperty.id, jdbcType=VARCHAR},
-         #{historicFormProperty.detailType, jdbcType=VARCHAR},
-         #{historicFormProperty.processInstanceId, jdbcType=VARCHAR},
-         #{historicFormProperty.activityInstanceId, jdbcType=VARCHAR},
-         #{historicFormProperty.executionId, jdbcType=VARCHAR},
-         #{historicFormProperty.taskId, jdbcType=VARCHAR},
+        (#{historicFormProperty.id, jdbcType=${stringType}},
+         #{historicFormProperty.detailType, jdbcType=${stringType}},
+         #{historicFormProperty.processInstanceId, jdbcType=${stringType}},
+         #{historicFormProperty.activityInstanceId, jdbcType=${stringType}},
+         #{historicFormProperty.executionId, jdbcType=${stringType}},
+         #{historicFormProperty.taskId, jdbcType=${stringType}},
          #{historicFormProperty.time, jdbcType=TIMESTAMP},
-         #{historicFormProperty.propertyId, jdbcType=VARCHAR},
-         #{historicFormProperty.propertyValue, jdbcType=VARCHAR})
+         #{historicFormProperty.propertyId, jdbcType=${stringType}},
+         #{historicFormProperty.propertyValue, jdbcType=${stringType}})
     </foreach>
     SELECT * FROM dual
   </insert>
@@ -71,21 +71,21 @@
   <insert id="insertHistoricDetailVariableInstanceUpdate" parameterType="org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntityImpl">
     insert into ${prefix}ACT_HI_DETAIL (ID_, TYPE_, PROC_INST_ID_, EXECUTION_ID_, ACT_INST_ID_, TASK_ID_, NAME_, REV_, VAR_TYPE_, TIME_, BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT_, TEXT2_)
     values (
-      #{id, jdbcType=VARCHAR},
+      #{id, jdbcType=${stringType}},
       'VariableUpdate',
-      #{processInstanceId, jdbcType=VARCHAR},
-      #{executionId, jdbcType=VARCHAR},
-      #{activityInstanceId, jdbcType=VARCHAR},
-      #{taskId, jdbcType=VARCHAR},
-      #{variableName, jdbcType=VARCHAR},
-      #{revision, jdbcType=VARCHAR},
-      #{variableType, jdbcType=VARCHAR},
+      #{processInstanceId, jdbcType=${stringType}},
+      #{executionId, jdbcType=${stringType}},
+      #{activityInstanceId, jdbcType=${stringType}},
+      #{taskId, jdbcType=${stringType}},
+      #{variableName, jdbcType=${stringType}},
+      #{revision, jdbcType=${stringType}},
+      #{variableType, jdbcType=${stringType}},
       #{time, jdbcType=TIMESTAMP},
       #{byteArrayRef, typeHandler=ByteArrayRefTypeHandler},
       #{doubleValue, jdbcType=DOUBLE},
       #{longValue, jdbcType=BIGINT},
-      #{textValue, jdbcType=VARCHAR},
-      #{textValue2, jdbcType=VARCHAR}
+      #{textValue, jdbcType=${stringType}},
+      #{textValue2, jdbcType=${stringType}}
     )
   </insert>
 
@@ -93,21 +93,21 @@
     insert into ${prefix}ACT_HI_DETAIL (ID_, TYPE_, PROC_INST_ID_, EXECUTION_ID_, ACT_INST_ID_, TASK_ID_, NAME_, REV_, VAR_TYPE_, TIME_, BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT_, TEXT2_)
     values
       <foreach collection="list" item="historicDetailVariableInstance" index="index" separator=",">
-        (#{historicDetailVariableInstance.id, jdbcType=VARCHAR},
-         #{historicDetailVariableInstance.detailType, jdbcType=VARCHAR},
-         #{historicDetailVariableInstance.processInstanceId, jdbcType=VARCHAR},
-         #{historicDetailVariableInstance.executionId, jdbcType=VARCHAR},
-         #{historicDetailVariableInstance.activityInstanceId, jdbcType=VARCHAR},
-         #{historicDetailVariableInstance.taskId, jdbcType=VARCHAR},
-         #{historicDetailVariableInstance.variableName, jdbcType=VARCHAR},
-         #{historicDetailVariableInstance.revision, jdbcType=VARCHAR},
-         #{historicDetailVariableInstance.variableType, jdbcType=VARCHAR},
+        (#{historicDetailVariableInstance.id, jdbcType=${stringType}},
+         #{historicDetailVariableInstance.detailType, jdbcType=${stringType}},
+         #{historicDetailVariableInstance.processInstanceId, jdbcType=${stringType}},
+         #{historicDetailVariableInstance.executionId, jdbcType=${stringType}},
+         #{historicDetailVariableInstance.activityInstanceId, jdbcType=${stringType}},
+         #{historicDetailVariableInstance.taskId, jdbcType=${stringType}},
+         #{historicDetailVariableInstance.variableName, jdbcType=${stringType}},
+         #{historicDetailVariableInstance.revision, jdbcType=${stringType}},
+         #{historicDetailVariableInstance.variableType, jdbcType=${stringType}},
          #{historicDetailVariableInstance.time, jdbcType=TIMESTAMP},
          #{historicDetailVariableInstance.byteArrayRef, typeHandler=ByteArrayRefTypeHandler},
          #{historicDetailVariableInstance.doubleValue, jdbcType=DOUBLE},
          #{historicDetailVariableInstance.longValue, jdbcType=BIGINT},
-         #{historicDetailVariableInstance.textValue, jdbcType=VARCHAR},
-         #{historicDetailVariableInstance.textValue2, jdbcType=VARCHAR})
+         #{historicDetailVariableInstance.textValue, jdbcType=${stringType}},
+         #{historicDetailVariableInstance.textValue2, jdbcType=${stringType}})
       </foreach>
   </insert>
 
@@ -116,21 +116,21 @@
       <foreach collection="list" item="historicDetailVariableInstance" index="index">
         INTO ${prefix}ACT_HI_DETAIL (ID_, TYPE_, PROC_INST_ID_, EXECUTION_ID_, ACT_INST_ID_, TASK_ID_,
         NAME_, REV_, VAR_TYPE_, TIME_, BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT_, TEXT2_) VALUES
-            (#{historicDetailVariableInstance.id, jdbcType=VARCHAR},
-             #{historicDetailVariableInstance.detailType, jdbcType=VARCHAR},
-             #{historicDetailVariableInstance.processInstanceId, jdbcType=VARCHAR},
-             #{historicDetailVariableInstance.executionId, jdbcType=VARCHAR},
-             #{historicDetailVariableInstance.activityInstanceId, jdbcType=VARCHAR},
-             #{historicDetailVariableInstance.taskId, jdbcType=VARCHAR},
-             #{historicDetailVariableInstance.variableName, jdbcType=VARCHAR},
-             #{historicDetailVariableInstance.revision, jdbcType=VARCHAR},
-             #{historicDetailVariableInstance.variableType, jdbcType=VARCHAR},
+            (#{historicDetailVariableInstance.id, jdbcType=${stringType}},
+             #{historicDetailVariableInstance.detailType, jdbcType=${stringType}},
+             #{historicDetailVariableInstance.processInstanceId, jdbcType=${stringType}},
+             #{historicDetailVariableInstance.executionId, jdbcType=${stringType}},
+             #{historicDetailVariableInstance.activityInstanceId, jdbcType=${stringType}},
+             #{historicDetailVariableInstance.taskId, jdbcType=${stringType}},
+             #{historicDetailVariableInstance.variableName, jdbcType=${stringType}},
+             #{historicDetailVariableInstance.revision, jdbcType=${stringType}},
+             #{historicDetailVariableInstance.variableType, jdbcType=${stringType}},
              #{historicDetailVariableInstance.time, jdbcType=TIMESTAMP},
              #{historicDetailVariableInstance.byteArrayRef, typeHandler=ByteArrayRefTypeHandler},
              #{historicDetailVariableInstance.doubleValue, jdbcType=DOUBLE},
              #{historicDetailVariableInstance.longValue, jdbcType=BIGINT},
-             #{historicDetailVariableInstance.textValue, jdbcType=VARCHAR},
-             #{historicDetailVariableInstance.textValue2, jdbcType=VARCHAR})
+             #{historicDetailVariableInstance.textValue, jdbcType=${stringType}},
+             #{historicDetailVariableInstance.textValue2, jdbcType=${stringType}})
       </foreach>
     SELECT * FROM dual
   </insert>

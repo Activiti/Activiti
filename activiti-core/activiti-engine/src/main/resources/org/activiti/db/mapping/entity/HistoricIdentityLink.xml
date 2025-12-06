@@ -22,12 +22,12 @@
 
   <insert id="insertHistoricIdentityLink" parameterType="org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntityImpl">
     insert into ${prefix}ACT_HI_IDENTITYLINK (ID_, TYPE_, USER_ID_, GROUP_ID_, TASK_ID_, PROC_INST_ID_, DETAILS_)
-    values (#{id, jdbcType=VARCHAR},
-            #{type, jdbcType=VARCHAR},
-            #{userId, jdbcType=VARCHAR},
-            #{groupId, jdbcType=VARCHAR},
-            #{taskId, jdbcType=VARCHAR},
-            #{processInstanceId, jdbcType=VARCHAR},
+    values (#{id, jdbcType=${stringType}},
+            #{type, jdbcType=${stringType}},
+            #{userId, jdbcType=${stringType}},
+            #{groupId, jdbcType=${stringType}},
+            #{taskId, jdbcType=${stringType}},
+            #{processInstanceId, jdbcType=${stringType}},
             #{details, jdbcType=${blobType}})
   </insert>
 
@@ -35,12 +35,12 @@
     insert into ${prefix}ACT_HI_IDENTITYLINK (ID_, TYPE_, USER_ID_, GROUP_ID_, TASK_ID_, PROC_INST_ID_, DETAILS_)
     values
       <foreach collection="list" item="historicIdentityLink" index="index" separator=",">
-        (#{historicIdentityLink.id, jdbcType=VARCHAR},
-         #{historicIdentityLink.type, jdbcType=VARCHAR},
-         #{historicIdentityLink.userId, jdbcType=VARCHAR},
-         #{historicIdentityLink.groupId, jdbcType=VARCHAR},
-         #{historicIdentityLink.taskId, jdbcType=VARCHAR},
-         #{historicIdentityLink.processInstanceId, jdbcType=VARCHAR},
+        (#{historicIdentityLink.id, jdbcType=${stringType}},
+         #{historicIdentityLink.type, jdbcType=${stringType}},
+         #{historicIdentityLink.userId, jdbcType=${stringType}},
+         #{historicIdentityLink.groupId, jdbcType=${stringType}},
+         #{historicIdentityLink.taskId, jdbcType=${stringType}},
+         #{historicIdentityLink.processInstanceId, jdbcType=${stringType}},
          #{historicIdentityLink.details, jdbcType=${blobType}})
       </foreach>
   </insert>
@@ -49,12 +49,12 @@
     INSERT ALL
       <foreach collection="list" item="historicIdentityLink" index="index">
         INTO ${prefix}ACT_HI_IDENTITYLINK (ID_, TYPE_, USER_ID_, GROUP_ID_, TASK_ID_, PROC_INST_ID_, DETAILS_) VALUES
-          (#{historicIdentityLink.id, jdbcType=VARCHAR},
-           #{historicIdentityLink.type, jdbcType=VARCHAR},
-           #{historicIdentityLink.userId, jdbcType=VARCHAR},
-           #{historicIdentityLink.groupId, jdbcType=VARCHAR},
-           #{historicIdentityLink.taskId, jdbcType=VARCHAR},
-           #{historicIdentityLink.processInstanceId, jdbcType=VARCHAR},
+          (#{historicIdentityLink.id, jdbcType=${stringType}},
+           #{historicIdentityLink.type, jdbcType=${stringType}},
+           #{historicIdentityLink.userId, jdbcType=${stringType}},
+           #{historicIdentityLink.groupId, jdbcType=${stringType}},
+           #{historicIdentityLink.taskId, jdbcType=${stringType}},
+           #{historicIdentityLink.processInstanceId, jdbcType=${stringType}},
            #{historicIdentityLink.details, jdbcType=${blobType}})
       </foreach>
     SELECT * FROM dual
@@ -69,7 +69,7 @@
   <delete id="bulkDeleteHistoricIdentityLink" parameterType="java.util.Collection">
     delete from ${prefix}ACT_HI_IDENTITYLINK where
     <foreach item="identityLink" collection="list" index="index" separator=" or ">
-        ID_ = #{identityLink.id, jdbcType=VARCHAR}
+        ID_ = #{identityLink.id, jdbcType=${stringType}}
     </foreach>
   </delete>
 
@@ -88,7 +88,7 @@
   <!-- HISTORIC IDENTITY LINK SELECT -->
 
   <select id="selectHistoricIdentityLink" parameterType="string" resultMap="historicIdentityLinkResultMap">
-    select * from ${prefix}ACT_HI_IDENTITYLINK where ID_ = #{id, jdbcType=VARCHAR}
+    select * from ${prefix}ACT_HI_IDENTITYLINK where ID_ = #{id, jdbcType=${stringType}}
   </select>
 
   <select id="selectHistoricIdentityLinksByTask" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="historicIdentityLinkResultMap">

@@ -8,20 +8,20 @@
 
   <insert id="insertProcessDefinitionInfo" parameterType="org.activiti.engine.impl.persistence.entity.ProcessDefinitionInfoEntityImpl">
     insert into ${prefix}ACT_PROCDEF_INFO(ID_, PROC_DEF_ID_, REV_, INFO_JSON_ID_)
-    values(#{id, jdbcType=VARCHAR},
-           #{processDefinitionId, jdbcType=VARCHAR},
+    values(#{id, jdbcType=${stringType}},
+           #{processDefinitionId, jdbcType=${stringType}},
            1,
-           #{infoJsonId, jdbcType=VARCHAR})
+           #{infoJsonId, jdbcType=${stringType}})
   </insert>
 
   <insert id="bulkInsertProcessDefinitionInfo" parameterType="java.util.List">
     INSERT INTO ${prefix}ACT_PROCDEF_INFO(ID_, PROC_DEF_ID_, REV_, INFO_JSON_ID_)
     VALUES
       <foreach collection="list" item="processDefinitionInfo" index="index" separator=",">
-        (#{processDefinitionInfo.id, jdbcType=VARCHAR},
-         #{processDefinitionInfo.processDefinitionId, jdbcType=VARCHAR},
+        (#{processDefinitionInfo.id, jdbcType=${stringType}},
+         #{processDefinitionInfo.processDefinitionId, jdbcType=${stringType}},
          1,
-         #{processDefinitionInfo.infoJsonId, jdbcType=VARCHAR})
+         #{processDefinitionInfo.infoJsonId, jdbcType=${stringType}})
      </foreach>
   </insert>
 
@@ -29,10 +29,10 @@
     INSERT ALL
       <foreach collection="list" item="processDefinitionInfo" index="index">
         INTO ${prefix}ACT_PROCDEF_INFO(ID_, PROC_DEF_ID_, REV_, INFO_JSON_ID_) VALUES
-          (#{processDefinitionInfo.id, jdbcType=VARCHAR},
-           #{processDefinitionInfo.processDefinitionId, jdbcType=VARCHAR},
+          (#{processDefinitionInfo.id, jdbcType=${stringType}},
+           #{processDefinitionInfo.processDefinitionId, jdbcType=${stringType}},
            1,
-           #{processDefinitionInfo.infoJsonId, jdbcType=VARCHAR})
+           #{processDefinitionInfo.infoJsonId, jdbcType=${stringType}})
      </foreach>
     SELECT * FROM dual
   </insert>
@@ -41,8 +41,8 @@
   <update id="updateProcessDefinitionInfo" parameterType="org.activiti.engine.impl.persistence.entity.ProcessDefinitionInfoEntityImpl">
     update ${prefix}ACT_PROCDEF_INFO set
       REV_ = #{revisionNext, jdbcType=INTEGER},
-      INFO_JSON_ID_ = #{infoJsonId, jdbcType=VARCHAR}
-    where ID_ = #{id, jdbcType=VARCHAR} and REV_ = #{revision, jdbcType=INTEGER}
+      INFO_JSON_ID_ = #{infoJsonId, jdbcType=${stringType}}
+    where ID_ = #{id, jdbcType=${stringType}} and REV_ = #{revision, jdbcType=INTEGER}
   </update>
 
 

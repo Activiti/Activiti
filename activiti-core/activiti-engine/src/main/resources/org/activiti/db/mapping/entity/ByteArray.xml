@@ -9,11 +9,11 @@
   <insert id="insertByteArray" parameterType="org.activiti.engine.impl.persistence.entity.ByteArrayEntityImpl">
     insert into ${prefix}ACT_GE_BYTEARRAY(ID_, REV_, NAME_, BYTES_, DEPLOYMENT_ID_)
     values (
-      #{id, jdbcType=VARCHAR},
+      #{id, jdbcType=${stringType}},
       1,
-      #{name, jdbcType=VARCHAR},
+      #{name, jdbcType=${stringType}},
       #{bytes, jdbcType=${blobType}},
-      #{deploymentId, jdbcType=VARCHAR}
+      #{deploymentId, jdbcType=${stringType}}
     )
   </insert>
 
@@ -21,11 +21,11 @@
     insert into ${prefix}ACT_GE_BYTEARRAY(ID_, REV_, NAME_, BYTES_, DEPLOYMENT_ID_)
     values
       <foreach collection="list" item="byteArray" index="index" separator=",">
-         (#{byteArray.id, jdbcType=VARCHAR},
+         (#{byteArray.id, jdbcType=${stringType}},
           1,
-          #{byteArray.name, jdbcType=VARCHAR},
+          #{byteArray.name, jdbcType=${stringType}},
           #{byteArray.bytes, jdbcType=${blobType}},
-          #{byteArray.deploymentId, jdbcType=VARCHAR})
+          #{byteArray.deploymentId, jdbcType=${stringType}})
       </foreach>
   </insert>
 
@@ -33,11 +33,11 @@
     INSERT ALL
       <foreach collection="list" item="byteArray" index="index">
         into ${prefix}ACT_GE_BYTEARRAY(ID_, REV_, NAME_, BYTES_, DEPLOYMENT_ID_) VALUES
-         (#{byteArray.id, jdbcType=VARCHAR},
+         (#{byteArray.id, jdbcType=${stringType}},
           1,
-          #{byteArray.name, jdbcType=VARCHAR},
+          #{byteArray.name, jdbcType=${stringType}},
           #{byteArray.bytes, jdbcType=${blobType}},
-          #{byteArray.deploymentId, jdbcType=VARCHAR})
+          #{byteArray.deploymentId, jdbcType=${stringType}})
       </foreach>
     SELECT * FROM dual
   </insert>
@@ -88,7 +88,7 @@
   </select>
 
   <select id="selectByteArray" parameterType="string" resultMap="byteArrayResultMap">
-   select * from ${prefix}ACT_GE_BYTEARRAY where ID_ = #{id, jdbcType=VARCHAR}
+   select * from ${prefix}ACT_GE_BYTEARRAY where ID_ = #{id, jdbcType=${stringType}}
   </select>
 
 

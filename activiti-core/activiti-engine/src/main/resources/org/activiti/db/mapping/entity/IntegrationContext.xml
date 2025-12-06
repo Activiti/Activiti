@@ -26,11 +26,11 @@
     CREATED_DATE_
     )
     values (
-    #{id, jdbcType=VARCHAR},
-    #{executionId, jdbcType=VARCHAR},
-    #{processInstanceId, jdbcType=VARCHAR},
-    #{processDefinitionId, jdbcType=VARCHAR},
-    #{flowNodeId, jdbcType=VARCHAR},
+    #{id, jdbcType=${stringType}},
+    #{executionId, jdbcType=${stringType}},
+    #{processInstanceId, jdbcType=${stringType}},
+    #{processDefinitionId, jdbcType=${stringType}},
+    #{flowNodeId, jdbcType=${stringType}},
     #{createdDate, jdbcType=TIMESTAMP}
     )
   </insert>
@@ -46,11 +46,11 @@
     )
     values
     <foreach collection="list" item="context" index="index" separator=",">
-        (#{context.id, jdbcType=VARCHAR},
-         #{context.executionId, jdbcType=VARCHAR},
-         #{context.processInstanceId, jdbcType=VARCHAR},
-         #{context.processDefinitionId, jdbcType=VARCHAR},
-         #{context.flowNodeId, jdbcType=VARCHAR},
+        (#{context.id, jdbcType=${stringType}},
+         #{context.executionId, jdbcType=${stringType}},
+         #{context.processInstanceId, jdbcType=${stringType}},
+         #{context.processDefinitionId, jdbcType=${stringType}},
+         #{context.flowNodeId, jdbcType=${stringType}},
          #{context.createdDate, jdbcType=TIMESTAMP})
     </foreach>
   </insert>
@@ -64,7 +64,7 @@
   <!-- Selects -->
 
   <select id="selectIntegrationContext" parameterType="string" resultMap="integrationContextResultMap">
-    select * from ${prefix}ACT_RU_INTEGRATION where ID_ = #{id, jdbcType=VARCHAR}
+    select * from ${prefix}ACT_RU_INTEGRATION where ID_ = #{id, jdbcType=${stringType}}
   </select>
 
 </mapper>

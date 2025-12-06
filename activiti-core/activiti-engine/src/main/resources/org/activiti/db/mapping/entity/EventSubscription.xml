@@ -53,7 +53,7 @@
   <!-- SELECT -->
 
   <select id="selectEventSubscription" parameterType="string" resultMap="eventSubscriptionResultMap">
-    select * from ${prefix}ACT_RU_EVENT_SUBSCR where ID_ = #{id, jdbcType=VARCHAR}
+    select * from ${prefix}ACT_RU_EVENT_SUBSCR where ID_ = #{id, jdbcType=${stringType}}
   </select>
 
   <select id="selectEventSubscriptionByQueryCriteria" parameterType="org.activiti.engine.impl.EventSubscriptionQueryImpl" resultMap="eventSubscriptionResultMap">
@@ -245,17 +245,17 @@
            	PROC_DEF_ID_,
            	TENANT_ID_
     )
-    values (#{id, jdbcType=VARCHAR},
+    values (#{id, jdbcType=${stringType}},
             1,
             'message',
-            #{eventName, jdbcType=VARCHAR},
-            #{executionId, jdbcType=VARCHAR},
-            #{processInstanceId, jdbcType=VARCHAR},
-            #{activityId, jdbcType=VARCHAR},
-            #{configuration, jdbcType=VARCHAR},
+            #{eventName, jdbcType=${stringType}},
+            #{executionId, jdbcType=${stringType}},
+            #{processInstanceId, jdbcType=${stringType}},
+            #{activityId, jdbcType=${stringType}},
+            #{configuration, jdbcType=${stringType}},
             #{created, jdbcType=TIMESTAMP},
-            #{processDefinitionId, jdbcType=VARCHAR},
-            #{tenantId, jdbcType=VARCHAR}
+            #{processDefinitionId, jdbcType=${stringType}},
+            #{tenantId, jdbcType=${stringType}}
     )
   </insert>
 
@@ -275,17 +275,17 @@
     )
     values
       <foreach collection="list" item="messageEventSubscription" index="index" separator=",">
-          (#{messageEventSubscription.id, jdbcType=VARCHAR},
+          (#{messageEventSubscription.id, jdbcType=${stringType}},
            1,
-           #{messageEventSubscription.eventType, jdbcType=VARCHAR},
-           #{messageEventSubscription.eventName, jdbcType=VARCHAR},
-           #{messageEventSubscription.executionId, jdbcType=VARCHAR},
-           #{messageEventSubscription.processInstanceId, jdbcType=VARCHAR},
-           #{messageEventSubscription.activityId, jdbcType=VARCHAR},
-           #{messageEventSubscription.configuration, jdbcType=VARCHAR},
+           #{messageEventSubscription.eventType, jdbcType=${stringType}},
+           #{messageEventSubscription.eventName, jdbcType=${stringType}},
+           #{messageEventSubscription.executionId, jdbcType=${stringType}},
+           #{messageEventSubscription.processInstanceId, jdbcType=${stringType}},
+           #{messageEventSubscription.activityId, jdbcType=${stringType}},
+           #{messageEventSubscription.configuration, jdbcType=${stringType}},
            #{messageEventSubscription.created, jdbcType=TIMESTAMP},
-           #{messageEventSubscription.processDefinitionId, jdbcType=VARCHAR},
-           #{messageEventSubscription.tenantId, jdbcType=VARCHAR})
+           #{messageEventSubscription.processDefinitionId, jdbcType=${stringType}},
+           #{messageEventSubscription.tenantId, jdbcType=${stringType}})
       </foreach>
   </insert>
 
@@ -305,17 +305,17 @@
             PROC_DEF_ID_,
             TENANT_ID_
           ) VALUES
-          (#{messageEventSubscription.id, jdbcType=VARCHAR},
+          (#{messageEventSubscription.id, jdbcType=${stringType}},
            1,
-           #{messageEventSubscription.eventType, jdbcType=VARCHAR},
-           #{messageEventSubscription.eventName, jdbcType=VARCHAR},
-           #{messageEventSubscription.executionId, jdbcType=VARCHAR},
-           #{messageEventSubscription.processInstanceId, jdbcType=VARCHAR},
-           #{messageEventSubscription.activityId, jdbcType=VARCHAR},
-           #{messageEventSubscription.configuration, jdbcType=VARCHAR},
+           #{messageEventSubscription.eventType, jdbcType=${stringType}},
+           #{messageEventSubscription.eventName, jdbcType=${stringType}},
+           #{messageEventSubscription.executionId, jdbcType=${stringType}},
+           #{messageEventSubscription.processInstanceId, jdbcType=${stringType}},
+           #{messageEventSubscription.activityId, jdbcType=${stringType}},
+           #{messageEventSubscription.configuration, jdbcType=${stringType}},
            #{messageEventSubscription.created, jdbcType=TIMESTAMP},
-           #{messageEventSubscription.processDefinitionId, jdbcType=VARCHAR},
-           #{messageEventSubscription.tenantId, jdbcType=VARCHAR})
+           #{messageEventSubscription.processDefinitionId, jdbcType=${stringType}},
+           #{messageEventSubscription.tenantId, jdbcType=${stringType}})
       </foreach>
     SELECT * FROM dual
   </insert>
@@ -330,12 +330,12 @@
        EXECUTION_ID_ = #{executionId, jdbcType=INTEGER},
        PROC_INST_ID_ = #{processInstanceId, jdbcType=INTEGER},
        ACTIVITY_ID_ = #{activityId, jdbcType=INTEGER},
-       CONFIGURATION_ = #{configuration, jdbcType=VARCHAR},
+       CONFIGURATION_ = #{configuration, jdbcType=${stringType}},
        CREATED_ = #{created, jdbcType=TIMESTAMP},
-       PROC_DEF_ID_ = #{processDefinitionId, jdbcType=VARCHAR},
-       TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
+       PROC_DEF_ID_ = #{processDefinitionId, jdbcType=${stringType}},
+       TENANT_ID_ = #{tenantId, jdbcType=${stringType}}
     </set>
-    where ID_= #{id, jdbcType=VARCHAR}
+    where ID_= #{id, jdbcType=${stringType}}
       and REV_ = #{revision, jdbcType=INTEGER}
   </update>
 
@@ -355,17 +355,17 @@
            	PROC_DEF_ID_,
            	TENANT_ID_
     )
-    values (#{id, jdbcType=VARCHAR},
+    values (#{id, jdbcType=${stringType}},
             1,
             'signal',
-            #{eventName, jdbcType=VARCHAR},
-            #{executionId, jdbcType=VARCHAR},
-            #{processInstanceId, jdbcType=VARCHAR},
-            #{activityId, jdbcType=VARCHAR},
-            #{configuration, jdbcType=VARCHAR},
+            #{eventName, jdbcType=${stringType}},
+            #{executionId, jdbcType=${stringType}},
+            #{processInstanceId, jdbcType=${stringType}},
+            #{activityId, jdbcType=${stringType}},
+            #{configuration, jdbcType=${stringType}},
             #{created, jdbcType=TIMESTAMP},
-            #{processDefinitionId, jdbcType=VARCHAR},
-            #{tenantId, jdbcType=VARCHAR}
+            #{processDefinitionId, jdbcType=${stringType}},
+            #{tenantId, jdbcType=${stringType}}
     )
   </insert>
 
@@ -385,17 +385,17 @@
     )
     values
       <foreach collection="list" item="signalEventSubscription" index="index" separator=",">
-        (#{signalEventSubscription.id, jdbcType=VARCHAR},
+        (#{signalEventSubscription.id, jdbcType=${stringType}},
          1,
-         #{signalEventSubscription.eventType, jdbcType=VARCHAR},
-         #{signalEventSubscription.eventName, jdbcType=VARCHAR},
-         #{signalEventSubscription.executionId, jdbcType=VARCHAR},
-         #{signalEventSubscription.processInstanceId, jdbcType=VARCHAR},
-         #{signalEventSubscription.activityId, jdbcType=VARCHAR},
-         #{signalEventSubscription.configuration, jdbcType=VARCHAR},
+         #{signalEventSubscription.eventType, jdbcType=${stringType}},
+         #{signalEventSubscription.eventName, jdbcType=${stringType}},
+         #{signalEventSubscription.executionId, jdbcType=${stringType}},
+         #{signalEventSubscription.processInstanceId, jdbcType=${stringType}},
+         #{signalEventSubscription.activityId, jdbcType=${stringType}},
+         #{signalEventSubscription.configuration, jdbcType=${stringType}},
          #{signalEventSubscription.created, jdbcType=TIMESTAMP},
-         #{signalEventSubscription.processDefinitionId, jdbcType=VARCHAR},
-         #{signalEventSubscription.tenantId, jdbcType=VARCHAR})
+         #{signalEventSubscription.processDefinitionId, jdbcType=${stringType}},
+         #{signalEventSubscription.tenantId, jdbcType=${stringType}})
      </foreach>
   </insert>
 
@@ -416,17 +416,17 @@
           TENANT_ID_
           )
           VALUES
-          (#{signalEventSubscription.id, jdbcType=VARCHAR},
+          (#{signalEventSubscription.id, jdbcType=${stringType}},
            1,
-           #{signalEventSubscription.eventType, jdbcType=VARCHAR},
-           #{signalEventSubscription.eventName, jdbcType=VARCHAR},
-           #{signalEventSubscription.executionId, jdbcType=VARCHAR},
-           #{signalEventSubscription.processInstanceId, jdbcType=VARCHAR},
-           #{signalEventSubscription.activityId, jdbcType=VARCHAR},
-           #{signalEventSubscription.configuration, jdbcType=VARCHAR},
+           #{signalEventSubscription.eventType, jdbcType=${stringType}},
+           #{signalEventSubscription.eventName, jdbcType=${stringType}},
+           #{signalEventSubscription.executionId, jdbcType=${stringType}},
+           #{signalEventSubscription.processInstanceId, jdbcType=${stringType}},
+           #{signalEventSubscription.activityId, jdbcType=${stringType}},
+           #{signalEventSubscription.configuration, jdbcType=${stringType}},
            #{signalEventSubscription.created, jdbcType=TIMESTAMP},
-           #{signalEventSubscription.processDefinitionId, jdbcType=VARCHAR},
-           #{signalEventSubscription.tenantId, jdbcType=VARCHAR})
+           #{signalEventSubscription.processDefinitionId, jdbcType=${stringType}},
+           #{signalEventSubscription.tenantId, jdbcType=${stringType}})
      </foreach>
     SELECT * FROM dual
   </insert>
@@ -441,11 +441,11 @@
        EXECUTION_ID_ = #{executionId, jdbcType=INTEGER},
        PROC_INST_ID_ = #{processInstanceId, jdbcType=INTEGER},
        ACTIVITY_ID_ = #{activityId, jdbcType=INTEGER},
-       CONFIGURATION_ = #{configuration, jdbcType=VARCHAR},
+       CONFIGURATION_ = #{configuration, jdbcType=${stringType}},
        CREATED_ = #{created, jdbcType=TIMESTAMP},
-       TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
+       TENANT_ID_ = #{tenantId, jdbcType=${stringType}}
     </set>
-    where ID_= #{id, jdbcType=VARCHAR}
+    where ID_= #{id, jdbcType=${stringType}}
       and REV_ = #{revision, jdbcType=INTEGER}
   </update>
 
@@ -465,17 +465,17 @@
            	PROC_DEF_ID_,
            	TENANT_ID_
     )
-    values (#{id, jdbcType=VARCHAR},
+    values (#{id, jdbcType=${stringType}},
             1,
             'compensate',
-            #{eventName, jdbcType=VARCHAR},
-            #{executionId, jdbcType=VARCHAR},
-            #{processInstanceId, jdbcType=VARCHAR},
-            #{activityId, jdbcType=VARCHAR},
-            #{configuration, jdbcType=VARCHAR},
+            #{eventName, jdbcType=${stringType}},
+            #{executionId, jdbcType=${stringType}},
+            #{processInstanceId, jdbcType=${stringType}},
+            #{activityId, jdbcType=${stringType}},
+            #{configuration, jdbcType=${stringType}},
             #{created, jdbcType=TIMESTAMP},
-            #{processDefinitionId, jdbcType=VARCHAR},
-            #{tenantId, jdbcType=VARCHAR}
+            #{processDefinitionId, jdbcType=${stringType}},
+            #{tenantId, jdbcType=${stringType}}
     )
   </insert>
 
@@ -495,17 +495,17 @@
     )
     values
       <foreach collection="list" item="compensateEventSubscription" index="index" separator=",">
-        (#{compensateEventSubscription.id, jdbcType=VARCHAR},
+        (#{compensateEventSubscription.id, jdbcType=${stringType}},
          1,
-         #{compensateEventSubscription.eventType, jdbcType=VARCHAR},
-         #{compensateEventSubscription.eventName, jdbcType=VARCHAR},
-         #{compensateEventSubscription.executionId, jdbcType=VARCHAR},
-         #{compensateEventSubscription.processInstanceId, jdbcType=VARCHAR},
-         #{compensateEventSubscription.activityId, jdbcType=VARCHAR},
-         #{compensateEventSubscription.configuration, jdbcType=VARCHAR},
+         #{compensateEventSubscription.eventType, jdbcType=${stringType}},
+         #{compensateEventSubscription.eventName, jdbcType=${stringType}},
+         #{compensateEventSubscription.executionId, jdbcType=${stringType}},
+         #{compensateEventSubscription.processInstanceId, jdbcType=${stringType}},
+         #{compensateEventSubscription.activityId, jdbcType=${stringType}},
+         #{compensateEventSubscription.configuration, jdbcType=${stringType}},
          #{compensateEventSubscription.created, jdbcType=TIMESTAMP},
-         #{compensateEventSubscription.processDefinitionId, jdbcType=VARCHAR},
-         #{compensateEventSubscription.tenantId, jdbcType=VARCHAR})
+         #{compensateEventSubscription.processDefinitionId, jdbcType=${stringType}},
+         #{compensateEventSubscription.tenantId, jdbcType=${stringType}})
       </foreach>
   </insert>
 
@@ -526,17 +526,17 @@
           TENANT_ID_
         )
         VALUES
-        (#{compensateEventSubscription.id, jdbcType=VARCHAR},
+        (#{compensateEventSubscription.id, jdbcType=${stringType}},
          1,
-         #{compensateEventSubscription.eventType, jdbcType=VARCHAR},
-         #{compensateEventSubscription.eventName, jdbcType=VARCHAR},
-         #{compensateEventSubscription.executionId, jdbcType=VARCHAR},
-         #{compensateEventSubscription.processInstanceId, jdbcType=VARCHAR},
-         #{compensateEventSubscription.activityId, jdbcType=VARCHAR},
-         #{compensateEventSubscription.configuration, jdbcType=VARCHAR},
+         #{compensateEventSubscription.eventType, jdbcType=${stringType}},
+         #{compensateEventSubscription.eventName, jdbcType=${stringType}},
+         #{compensateEventSubscription.executionId, jdbcType=${stringType}},
+         #{compensateEventSubscription.processInstanceId, jdbcType=${stringType}},
+         #{compensateEventSubscription.activityId, jdbcType=${stringType}},
+         #{compensateEventSubscription.configuration, jdbcType=${stringType}},
          #{compensateEventSubscription.created, jdbcType=TIMESTAMP},
-         #{compensateEventSubscription.processDefinitionId, jdbcType=VARCHAR},
-         #{compensateEventSubscription.tenantId, jdbcType=VARCHAR})
+         #{compensateEventSubscription.processDefinitionId, jdbcType=${stringType}},
+         #{compensateEventSubscription.tenantId, jdbcType=${stringType}})
       </foreach>
     SELECT * FROM dual
   </insert>
@@ -551,11 +551,11 @@
        EXECUTION_ID_ = #{executionId, jdbcType=INTEGER},
        PROC_INST_ID_ = #{processInstanceId, jdbcType=INTEGER},
        ACTIVITY_ID_ = #{activityId, jdbcType=INTEGER},
-       CONFIGURATION_ = #{configuration, jdbcType=VARCHAR},
+       CONFIGURATION_ = #{configuration, jdbcType=${stringType}},
        CREATED_ = #{created, jdbcType=TIMESTAMP},
-       TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
+       TENANT_ID_ = #{tenantId, jdbcType=${stringType}}
     </set>
-    where ID_= #{id, jdbcType=VARCHAR}
+    where ID_= #{id, jdbcType=${stringType}}
       and REV_ = #{revision, jdbcType=INTEGER}
   </update>
 
@@ -563,9 +563,9 @@
    <update id="updateTenantIdOfEventSubscriptions" parameterType="map">
     update ${prefix}ACT_RU_EVENT_SUBSCR
     <set>
-      TENANT_ID_ = #{newTenantId, jdbcType=VARCHAR}
+      TENANT_ID_ = #{newTenantId, jdbcType=${stringType}}
     </set>
-    where TENANT_ID_ = #{oldTenantId, jdbcType=VARCHAR}
+    where TENANT_ID_ = #{oldTenantId, jdbcType=${stringType}}
   </update>
 
 </mapper>

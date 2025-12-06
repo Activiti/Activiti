@@ -23,18 +23,18 @@
   <insert id="insertHistoricVariableInstance" parameterType="org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntityImpl">
     insert into ${prefix}ACT_HI_VARINST (ID_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_, NAME_, REV_, VAR_TYPE_, BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT_, TEXT2_, CREATE_TIME_, LAST_UPDATED_TIME_)
     values (
-      #{id, jdbcType=VARCHAR},
-      #{processInstanceId, jdbcType=VARCHAR},
-      #{executionId, jdbcType=VARCHAR},
-      #{taskId, jdbcType=VARCHAR},
-      #{variableName, jdbcType=VARCHAR},
-      #{revision, jdbcType=VARCHAR},
-      #{variableType, jdbcType=VARCHAR},
+      #{id, jdbcType=${stringType}},
+      #{processInstanceId, jdbcType=${stringType}},
+      #{executionId, jdbcType=${stringType}},
+      #{taskId, jdbcType=${stringType}},
+      #{variableName, jdbcType=${stringType}},
+      #{revision, jdbcType=${stringType}},
+      #{variableType, jdbcType=${stringType}},
       #{byteArrayRef, typeHandler=ByteArrayRefTypeHandler},
       #{doubleValue, jdbcType=DOUBLE},
       #{longValue, jdbcType=BIGINT},
-      #{textValue, jdbcType=VARCHAR},
-      #{textValue2, jdbcType=VARCHAR},
+      #{textValue, jdbcType=${stringType}},
+      #{textValue2, jdbcType=${stringType}},
       #{createTime, jdbcType=TIMESTAMP},
       #{lastUpdatedTime, jdbcType=TIMESTAMP}
     )
@@ -44,18 +44,18 @@
     insert into ${prefix}ACT_HI_VARINST (ID_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_, NAME_, REV_, VAR_TYPE_, BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT_, TEXT2_, CREATE_TIME_, LAST_UPDATED_TIME_)
     values
       <foreach collection="list" item="historicVariable" index="index" separator=",">
-        (#{historicVariable.id, jdbcType=VARCHAR},
-         #{historicVariable.processInstanceId, jdbcType=VARCHAR},
-         #{historicVariable.executionId, jdbcType=VARCHAR},
-         #{historicVariable.taskId, jdbcType=VARCHAR},
-         #{historicVariable.variableName, jdbcType=VARCHAR},
-         #{historicVariable.revision, jdbcType=VARCHAR},
-         #{historicVariable.variableType, jdbcType=VARCHAR},
+        (#{historicVariable.id, jdbcType=${stringType}},
+         #{historicVariable.processInstanceId, jdbcType=${stringType}},
+         #{historicVariable.executionId, jdbcType=${stringType}},
+         #{historicVariable.taskId, jdbcType=${stringType}},
+         #{historicVariable.variableName, jdbcType=${stringType}},
+         #{historicVariable.revision, jdbcType=${stringType}},
+         #{historicVariable.variableType, jdbcType=${stringType}},
          #{historicVariable.byteArrayRef, typeHandler=ByteArrayRefTypeHandler},
          #{historicVariable.doubleValue, jdbcType=DOUBLE},
          #{historicVariable.longValue, jdbcType=BIGINT},
-         #{historicVariable.textValue, jdbcType=VARCHAR},
-         #{historicVariable.textValue2, jdbcType=VARCHAR},
+         #{historicVariable.textValue, jdbcType=${stringType}},
+         #{historicVariable.textValue2, jdbcType=${stringType}},
          #{historicVariable.createTime, jdbcType=TIMESTAMP},
          #{historicVariable.lastUpdatedTime, jdbcType=TIMESTAMP})
        </foreach>
@@ -66,18 +66,18 @@
       <foreach collection="list" item="historicVariable" index="index">
       INTO ${prefix}ACT_HI_VARINST (ID_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_, NAME_, REV_,
       VAR_TYPE_, BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT_, TEXT2_, CREATE_TIME_, LAST_UPDATED_TIME_) VALUES
-          (#{historicVariable.id, jdbcType=VARCHAR},
-           #{historicVariable.processInstanceId, jdbcType=VARCHAR},
-           #{historicVariable.executionId, jdbcType=VARCHAR},
-           #{historicVariable.taskId, jdbcType=VARCHAR},
-           #{historicVariable.variableName, jdbcType=VARCHAR},
-           #{historicVariable.revision, jdbcType=VARCHAR},
-           #{historicVariable.variableType, jdbcType=VARCHAR},
+          (#{historicVariable.id, jdbcType=${stringType}},
+           #{historicVariable.processInstanceId, jdbcType=${stringType}},
+           #{historicVariable.executionId, jdbcType=${stringType}},
+           #{historicVariable.taskId, jdbcType=${stringType}},
+           #{historicVariable.variableName, jdbcType=${stringType}},
+           #{historicVariable.revision, jdbcType=${stringType}},
+           #{historicVariable.variableType, jdbcType=${stringType}},
            #{historicVariable.byteArrayRef, typeHandler=ByteArrayRefTypeHandler},
            #{historicVariable.doubleValue, jdbcType=DOUBLE},
            #{historicVariable.longValue, jdbcType=BIGINT},
-           #{historicVariable.textValue, jdbcType=VARCHAR},
-           #{historicVariable.textValue2, jdbcType=VARCHAR},
+           #{historicVariable.textValue, jdbcType=${stringType}},
+           #{historicVariable.textValue2, jdbcType=${stringType}},
            #{historicVariable.createTime, jdbcType=TIMESTAMP},
            #{historicVariable.lastUpdatedTime, jdbcType=TIMESTAMP})
        </foreach>
@@ -92,11 +92,11 @@
       BYTEARRAY_ID_ = #{byteArrayRef, typeHandler=ByteArrayRefTypeHandler},
       DOUBLE_ = #{doubleValue, jdbcType=DOUBLE},
       LONG_ = #{longValue, jdbcType=BIGINT},
-      TEXT_ = #{textValue, jdbcType=VARCHAR},
-      TEXT2_ = #{textValue2, jdbcType=VARCHAR},
-      VAR_TYPE_ = #{variableType, jdbcType=VARCHAR},
+      TEXT_ = #{textValue, jdbcType=${stringType}},
+      TEXT2_ = #{textValue2, jdbcType=${stringType}},
+      VAR_TYPE_ = #{variableType, jdbcType=${stringType}},
       LAST_UPDATED_TIME_ = #{lastUpdatedTime, jdbcType=TIMESTAMP}
-    where ID_ = #{id, jdbcType=VARCHAR}
+    where ID_ = #{id, jdbcType=${stringType}}
       and REV_ = #{revision, jdbcType=INTEGER}
   </update>
 
@@ -109,7 +109,7 @@
   <delete id="bulkDeleteHistoricVariableInstance" parameterType="java.util.Collection">
     delete from ${prefix}ACT_HI_VARINST where
     <foreach item="variable" collection="list" index="index" separator=" or ">
-        ID_ = #{variable.id, jdbcType=VARCHAR}
+        ID_ = #{variable.id, jdbcType=${stringType}}
     </foreach>
   </delete>
 
