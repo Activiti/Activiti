@@ -12,7 +12,7 @@
   <typeHandlers>
     <typeHandler handler="ByteArrayRefTypeHandler"
                  javaType="org.activiti.engine.impl.persistence.entity.ByteArrayRef"
-                 jdbcType="VARCHAR"/>
+                 jdbcType="${stringJdbcType}"/>
   </typeHandlers>
   <mappers>
     <mapper resource="org/activiti/db/mapping/common.xml" />

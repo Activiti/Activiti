@@ -28,17 +28,17 @@
   <!-- RESULTMAP -->
 
   <resultMap id="eventSubscriptionResultMap" type="org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityImpl">
-    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <id property="id" column="ID_" jdbcType="${stringJdbcType}" />
     <result property="revision" column="REV_" jdbcType="INTEGER" />
-    <result property="eventType" column="EVENT_TYPE_" jdbcType="VARCHAR" />
-    <result property="eventName" column="EVENT_NAME_" jdbcType="VARCHAR" />
-    <result property="executionId" column="EXECUTION_ID_" jdbcType="VARCHAR" />
-    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
-    <result property="activityId" column="ACTIVITY_ID_" jdbcType="VARCHAR" />
-    <result property="configuration" column="CONFIGURATION_" jdbcType="VARCHAR" />
+    <result property="eventType" column="EVENT_TYPE_" jdbcType="${stringJdbcType}" />
+    <result property="eventName" column="EVENT_NAME_" jdbcType="${stringJdbcType}" />
+    <result property="executionId" column="EXECUTION_ID_" jdbcType="${stringJdbcType}" />
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="${stringJdbcType}" />
+    <result property="activityId" column="ACTIVITY_ID_" jdbcType="${stringJdbcType}" />
+    <result property="configuration" column="CONFIGURATION_" jdbcType="${stringJdbcType}" />
     <result property="created" column="CREATED_" jdbcType="TIMESTAMP" />
-    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
-    <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
+    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="${stringJdbcType}" />
+    <result property="tenantId" column="TENANT_ID_" jdbcType="${stringJdbcType}" />
     <discriminator javaType="string" column="EVENT_TYPE_">
       <case value="message" resultMap="messageResultMap"/>
       <case value="signal" resultMap="signalResultMap"/>

@@ -153,21 +153,21 @@
   <!-- HISTORIC ACTIVITY INSTANCE RESULT MAP -->
 
   <resultMap id="historicActivityInstanceResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntityImpl">
-    <id property="id" column="ID_" jdbcType="VARCHAR" />
-    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
-    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
-    <result property="executionId" column="EXECUTION_ID_" jdbcType="VARCHAR" />
-    <result property="activityId" column="ACT_ID_" jdbcType="VARCHAR" />
-    <result property="taskId" column="TASK_ID_" jdbcType="VARCHAR" />
-    <result property="calledProcessInstanceId" column="CALL_PROC_INST_ID_" jdbcType="VARCHAR" />
-    <result property="activityName" column="ACT_NAME_" jdbcType="VARCHAR" />
-    <result property="activityType" column="ACT_TYPE_" jdbcType="VARCHAR" />
-    <result property="assignee" column="ASSIGNEE_" jdbcType="VARCHAR" />
+    <id property="id" column="ID_" jdbcType="${stringJdbcType}" />
+    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="${stringJdbcType}" />
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="${stringJdbcType}" />
+    <result property="executionId" column="EXECUTION_ID_" jdbcType="${stringJdbcType}" />
+    <result property="activityId" column="ACT_ID_" jdbcType="${stringJdbcType}" />
+    <result property="taskId" column="TASK_ID_" jdbcType="${stringJdbcType}" />
+    <result property="calledProcessInstanceId" column="CALL_PROC_INST_ID_" jdbcType="${stringJdbcType}" />
+    <result property="activityName" column="ACT_NAME_" jdbcType="${stringJdbcType}" />
+    <result property="activityType" column="ACT_TYPE_" jdbcType="${stringJdbcType}" />
+    <result property="assignee" column="ASSIGNEE_" jdbcType="${stringJdbcType}" />
     <result property="startTime" column="START_TIME_" jdbcType="TIMESTAMP" />
     <result property="endTime" column="END_TIME_" jdbcType="TIMESTAMP" />
     <result property="durationInMillis" column="DURATION_" jdbcType="BIGINT" />
-    <result property="deleteReason" column="DELETE_REASON_" jdbcType="VARCHAR" />
-    <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
+    <result property="deleteReason" column="DELETE_REASON_" jdbcType="${stringJdbcType}" />
+    <result property="tenantId" column="TENANT_ID_" jdbcType="${stringJdbcType}" />
   </resultMap>
 
   <!-- HISTORIC ACTIVITY INSTANCE SELECT -->

@@ -115,17 +115,17 @@
 
   <!-- HISTORIC PROCESS VARIABLE RESULTMAP -->
   <resultMap id="historicProcessVariableResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntityImpl">
-    <id property="id" column="ID_" jdbcType="VARCHAR" />
-    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
-    <result property="executionId" column="EXECUTION_ID_" jdbcType="VARCHAR" />
-    <result property="taskId" column="TASK_ID_" jdbcType="VARCHAR" />
-    <result property="name" column="NAME_" javaType="String" jdbcType="VARCHAR" />
+    <id property="id" column="ID_" jdbcType="${stringJdbcType}" />
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="${stringJdbcType}" />
+    <result property="executionId" column="EXECUTION_ID_" jdbcType="${stringJdbcType}" />
+    <result property="taskId" column="TASK_ID_" jdbcType="${stringJdbcType}" />
+    <result property="name" column="NAME_" javaType="String" jdbcType="${stringJdbcType}" />
     <result property="revision" column="REV_" jdbcType="INTEGER" />
-    <result property="variableType" column="VAR_TYPE_" javaType="org.activiti.engine.impl.variable.VariableType" jdbcType="VARCHAR"/>
+    <result property="variableType" column="VAR_TYPE_" javaType="org.activiti.engine.impl.variable.VariableType" jdbcType="${stringJdbcType}"/>
     <result property="byteArrayRef" column="BYTEARRAY_ID_" typeHandler="ByteArrayRefTypeHandler"/>
     <result property="doubleValue" column="DOUBLE_" jdbcType="DOUBLE" />
-    <result property="textValue" column="TEXT_" jdbcType="VARCHAR" />
-    <result property="textValue2" column="TEXT2_" jdbcType="VARCHAR" />
+    <result property="textValue" column="TEXT_" jdbcType="${stringJdbcType}" />
+    <result property="textValue2" column="TEXT2_" jdbcType="${stringJdbcType}" />
     <result property="longValue" column="LONG_" jdbcType="BIGINT" />
     <result property="createTime" column="CREATE_TIME_" jdbcType="TIMESTAMP" />
     <result property="lastUpdatedTime" column="LAST_UPDATED_TIME_" jdbcType="TIMESTAMP" />

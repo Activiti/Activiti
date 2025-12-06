@@ -105,21 +105,21 @@
   <!-- PROCESSDEFINITION RESULTMAP -->
 
   <resultMap id="processDefinitionResultMap" type="org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityImpl">
-    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <id property="id" column="ID_" jdbcType="${stringJdbcType}" />
     <result property="revision" column="REV_" />
     <result property="category" column="CATEGORY_" />
     <result property="name" column="NAME_" />
-    <result property="key" column="KEY_" jdbcType="VARCHAR" />
+    <result property="key" column="KEY_" jdbcType="${stringJdbcType}" />
     <result property="version" column="VERSION_" jdbcType="INTEGER"/>
-    <result property="deploymentId" column="DEPLOYMENT_ID_" jdbcType="VARCHAR"/>
-    <result property="resourceName" column="RESOURCE_NAME_" jdbcType="VARCHAR"/>
-    <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
-    <result property="diagramResourceName" column="DGRM_RESOURCE_NAME_" jdbcType="VARCHAR"/>
-    <result property="description" column="DESCRIPTION_" jdbcType="VARCHAR" />
+    <result property="deploymentId" column="DEPLOYMENT_ID_" jdbcType="${stringJdbcType}"/>
+    <result property="resourceName" column="RESOURCE_NAME_" jdbcType="${stringJdbcType}"/>
+    <result property="tenantId" column="TENANT_ID_" jdbcType="${stringJdbcType}" />
+    <result property="diagramResourceName" column="DGRM_RESOURCE_NAME_" jdbcType="${stringJdbcType}"/>
+    <result property="description" column="DESCRIPTION_" jdbcType="${stringJdbcType}" />
     <result property="hasStartFormKey" column="HAS_START_FORM_KEY_" jdbcType="BOOLEAN"/>
     <result property="isGraphicalNotationDefined" column="HAS_GRAPHICAL_NOTATION_" jdbcType="BOOLEAN" />
     <result property="suspensionState" column="SUSPENSION_STATE_" jdbcType="INTEGER"/>
-    <result property="engineVersion" column="ENGINE_VERSION_" jdbcType="VARCHAR" />
+    <result property="engineVersion" column="ENGINE_VERSION_" jdbcType="${stringJdbcType}" />
     <result property="appVersion" column="APP_VERSION_" jdbcType="INTEGER" />
   </resultMap>
 

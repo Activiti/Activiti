@@ -216,25 +216,25 @@
   <!-- EXECUTION RESULTMAP -->
 
   <resultMap id="executionResultMap" type="org.activiti.engine.impl.persistence.entity.ExecutionEntityImpl">
-    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <id property="id" column="ID_" jdbcType="${stringJdbcType}" />
     <result property="revision" column="REV_" jdbcType="INTEGER" />
-    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
-    <result property="businessKey" column="BUSINESS_KEY_" jdbcType="VARCHAR" />
-    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
-    <result property="activityId" column="ACT_ID_" jdbcType="VARCHAR" />
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="${stringJdbcType}" />
+    <result property="businessKey" column="BUSINESS_KEY_" jdbcType="${stringJdbcType}" />
+    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="${stringJdbcType}" />
+    <result property="activityId" column="ACT_ID_" jdbcType="${stringJdbcType}" />
     <result property="isActive" column="IS_ACTIVE_" jdbcType="BOOLEAN" />
     <result property="isConcurrent" column="IS_CONCURRENT_" jdbcType="BOOLEAN" />
     <result property="isScope" column="IS_SCOPE_" jdbcType="BOOLEAN" />
     <result property="isEventScope" column="IS_EVENT_SCOPE_" jdbcType="BOOLEAN" />
     <result property="isMultiInstanceRoot" column="IS_MI_ROOT_" jdbcType="BOOLEAN" />
-    <result property="parentId" column="PARENT_ID_" jdbcType="VARCHAR" />
-    <result property="superExecutionId" column="SUPER_EXEC_" jdbcType="VARCHAR" />
-    <result property="rootProcessInstanceId" column="ROOT_PROC_INST_ID_" jdbcType="VARCHAR" />
+    <result property="parentId" column="PARENT_ID_" jdbcType="${stringJdbcType}" />
+    <result property="superExecutionId" column="SUPER_EXEC_" jdbcType="${stringJdbcType}" />
+    <result property="rootProcessInstanceId" column="ROOT_PROC_INST_ID_" jdbcType="${stringJdbcType}" />
     <result property="suspensionState" column="SUSPENSION_STATE_" jdbcType="INTEGER"/>
-    <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
-    <result property="name" column="NAME_" jdbcType="VARCHAR" />
+    <result property="tenantId" column="TENANT_ID_" jdbcType="${stringJdbcType}" />
+    <result property="name" column="NAME_" jdbcType="${stringJdbcType}" />
     <result property="startTime" column="START_TIME_" jdbcType="TIMESTAMP" />
-    <result property="startUserId" column="START_USER_ID_" jdbcType="VARCHAR" />
+    <result property="startUserId" column="START_USER_ID_" jdbcType="${stringJdbcType}" />
     <result property="isCountEnabled" column="IS_COUNT_ENABLED_" jdbcType="BOOLEAN" />
     <result property="eventSubscriptionCount" column="EVT_SUBSCR_COUNT_" jdbcType="INTEGER" />
     <result property="taskCount" column="TASK_COUNT_" jdbcType="INTEGER" />
@@ -245,37 +245,37 @@
     <result property="variableCount" column="VAR_COUNT_" jdbcType="INTEGER" />
     <result property="identityLinkCount" column="ID_LINK_COUNT_" jdbcType="INTEGER" />
     <result property="appVersion" column="APP_VERSION_" jdbcType="INTEGER" />
-    <result property="parentProcessInstanceId" column="PARENT_PROC_INST_ID_" jdbcType="VARCHAR"/>
+    <result property="parentProcessInstanceId" column="PARENT_PROC_INST_ID_" jdbcType="${stringJdbcType}"/>
   </resultMap>
 
   <resultMap id="processInstanceResultMap" type="org.activiti.engine.impl.persistence.entity.ExecutionEntityImpl">
-    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <id property="id" column="ID_" jdbcType="${stringJdbcType}" />
     <result property="revision" column="REV_" jdbcType="INTEGER" />
-    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
-    <result property="businessKey" column="BUSINESS_KEY_" jdbcType="VARCHAR" />
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="${stringJdbcType}" />
+    <result property="businessKey" column="BUSINESS_KEY_" jdbcType="${stringJdbcType}" />
 
     <!-- Lowercase 'columns', as they are filled in during a query and are not mapped directly to a table column -->
-    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
-    <result property="processDefinitionName" column="ProcessDefinitionName" jdbcType="VARCHAR" />
-    <result property="processDefinitionKey" column="ProcessDefinitionKey" jdbcType="VARCHAR" />
+    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="${stringJdbcType}" />
+    <result property="processDefinitionName" column="ProcessDefinitionName" jdbcType="${stringJdbcType}" />
+    <result property="processDefinitionKey" column="ProcessDefinitionKey" jdbcType="${stringJdbcType}" />
     <result property="processDefinitionVersion" column="ProcessDefinitionVersion" jdbcType="INTEGER" />
-    <result property="deploymentId" column="DeploymentId" jdbcType="VARCHAR" />
+    <result property="deploymentId" column="DeploymentId" jdbcType="${stringJdbcType}" />
 
-    <result property="activityId" column="ACT_ID_" jdbcType="VARCHAR" />
+    <result property="activityId" column="ACT_ID_" jdbcType="${stringJdbcType}" />
     <result property="isActive" column="IS_ACTIVE_" jdbcType="BOOLEAN" />
     <result property="isConcurrent" column="IS_CONCURRENT_" jdbcType="BOOLEAN" />
     <result property="isScope" column="IS_SCOPE_" jdbcType="BOOLEAN" />
     <result property="isEventScope" column="IS_EVENT_SCOPE_" jdbcType="BOOLEAN" />
     <result property="isMultiInstanceRoot" column="IS_MI_ROOT_" jdbcType="BOOLEAN" />
-    <result property="parentId" column="PARENT_ID_" jdbcType="VARCHAR" />
-    <result property="superExecutionId" column="SUPER_EXEC_" jdbcType="VARCHAR" />
-    <result property="rootProcessInstanceId" column="ROOT_PROC_INST_ID_" jdbcType="VARCHAR" />
+    <result property="parentId" column="PARENT_ID_" jdbcType="${stringJdbcType}" />
+    <result property="superExecutionId" column="SUPER_EXEC_" jdbcType="${stringJdbcType}" />
+    <result property="rootProcessInstanceId" column="ROOT_PROC_INST_ID_" jdbcType="${stringJdbcType}" />
     <result property="suspensionState" column="SUSPENSION_STATE_" jdbcType="INTEGER"/>
-    <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
-    <result property="name" column="NAME_" jdbcType="VARCHAR" />
+    <result property="tenantId" column="TENANT_ID_" jdbcType="${stringJdbcType}" />
+    <result property="name" column="NAME_" jdbcType="${stringJdbcType}" />
     <result property="lockTime" column="LOCK_TIME_" jdbcType="TIMESTAMP" />
     <result property="startTime" column="START_TIME_" jdbcType="TIMESTAMP" />
-    <result property="startUserId" column="START_USER_ID_" jdbcType="VARCHAR" />
+    <result property="startUserId" column="START_USER_ID_" jdbcType="${stringJdbcType}" />
     <result property="isCountEnabled" column="IS_COUNT_ENABLED_" jdbcType="BOOLEAN" />
     <result property="eventSubscriptionCount" column="EVT_SUBSCR_COUNT_" jdbcType="INTEGER" />
     <result property="taskCount" column="TASK_COUNT_" jdbcType="INTEGER" />
@@ -286,30 +286,30 @@
     <result property="variableCount" column="VAR_COUNT_" jdbcType="INTEGER" />
     <result property="identityLinkCount" column="ID_LINK_COUNT_" jdbcType="INTEGER" />
     <result property="appVersion" column="APP_VERSION_" jdbcType="INTEGER" />
-    <result property="parentProcessInstanceId" column="PARENT_PROC_INST_ID_" jdbcType="VARCHAR"/>
+    <result property="parentProcessInstanceId" column="PARENT_PROC_INST_ID_" jdbcType="${stringJdbcType}"/>
   </resultMap>
 
   <!-- TODO Review because not used anywhere -->
   <resultMap id="executionAndVariablesResultMap" type="org.activiti.engine.impl.persistence.entity.ExecutionEntityImpl">
-    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <id property="id" column="ID_" jdbcType="${stringJdbcType}" />
     <result property="revision" column="REV_" jdbcType="INTEGER" />
-    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
-    <result property="businessKey" column="BUSINESS_KEY_" jdbcType="VARCHAR" />
-    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
-    <result property="activityId" column="ACT_ID_" jdbcType="VARCHAR" />
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="${stringJdbcType}" />
+    <result property="businessKey" column="BUSINESS_KEY_" jdbcType="${stringJdbcType}" />
+    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="${stringJdbcType}" />
+    <result property="activityId" column="ACT_ID_" jdbcType="${stringJdbcType}" />
     <result property="isActive" column="IS_ACTIVE_" jdbcType="BOOLEAN" />
     <result property="isConcurrent" column="IS_CONCURRENT_" jdbcType="BOOLEAN" />
     <result property="isScope" column="IS_SCOPE_" jdbcType="BOOLEAN" />
     <result property="isEventScope" column="IS_EVENT_SCOPE_" jdbcType="BOOLEAN" />
     <result property="isMultiInstanceRoot" column="IS_MI_ROOT_" jdbcType="BOOLEAN" />
-    <result property="parentId" column="PARENT_ID_" jdbcType="VARCHAR" />
-    <result property="superExecutionId" column="SUPER_EXEC_" jdbcType="VARCHAR" />
-    <result property="rootProcessInstanceId" column="ROOT_PROC_INST_ID_" jdbcType="VARCHAR" />
+    <result property="parentId" column="PARENT_ID_" jdbcType="${stringJdbcType}" />
+    <result property="superExecutionId" column="SUPER_EXEC_" jdbcType="${stringJdbcType}" />
+    <result property="rootProcessInstanceId" column="ROOT_PROC_INST_ID_" jdbcType="${stringJdbcType}" />
     <result property="suspensionState" column="SUSPENSION_STATE_" jdbcType="INTEGER"/>
-    <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
-    <result property="name" column="NAME_" jdbcType="VARCHAR" />
+    <result property="tenantId" column="TENANT_ID_" jdbcType="${stringJdbcType}" />
+    <result property="name" column="NAME_" jdbcType="${stringJdbcType}" />
     <result property="startTime" column="START_TIME_" jdbcType="TIMESTAMP" />
-    <result property="startUserId" column="START_USER_ID_" jdbcType="VARCHAR" />
+    <result property="startUserId" column="START_USER_ID_" jdbcType="${stringJdbcType}" />
     <result property="isCountEnabled" column="IS_COUNT_ENABLED_" jdbcType="BOOLEAN" />
     <result property="eventSubscriptionCount" column="EVT_SUBSCR_COUNT_" jdbcType="INTEGER" />
     <result property="taskCount" column="TASK_COUNT_" jdbcType="INTEGER" />
@@ -319,48 +319,48 @@
     <result property="deadLetterJobCount" column="DEADLETTER_JOB_COUNT_" jdbcType="INTEGER" />
     <result property="variableCount" column="VAR_COUNT_" jdbcType="INTEGER" />
     <result property="identityLinkCount" column="ID_LINK_COUNT_" jdbcType="INTEGER" />
-    <result property="parentProcessInstanceId" column="PARENT_PROC_INST_ID_" jdbcType="VARCHAR"/>
+    <result property="parentProcessInstanceId" column="PARENT_PROC_INST_ID_" jdbcType="${stringJdbcType}"/>
     <collection property="queryVariables" column="EXECUTION_ID_" javaType="ArrayList" ofType="org.activiti.engine.impl.persistence.entity.VariableInstanceEntityImpl">
       <id property="id" column="VAR_ID_"/>
-      <result property="name" column="VAR_NAME_" javaType="String" jdbcType="VARCHAR" />
-      <result property="type" column="VAR_TYPE_" javaType="org.activiti.engine.impl.variable.VariableType" jdbcType="VARCHAR" />
+      <result property="name" column="VAR_NAME_" javaType="String" jdbcType="${stringJdbcType}" />
+      <result property="type" column="VAR_TYPE_" javaType="org.activiti.engine.impl.variable.VariableType" jdbcType="${stringJdbcType}" />
       <result property="revision" column="VAR_REV_" jdbcType="INTEGER" />
-      <result property="processInstanceId" column="VAR_PROC_INST_ID_" jdbcType="VARCHAR" />
-      <result property="executionId" column="VAR_EXECUTION_ID_" jdbcType="VARCHAR" />
-      <result property="taskId" column="VAR_TASK_ID_" jdbcType="VARCHAR" />
+      <result property="processInstanceId" column="VAR_PROC_INST_ID_" jdbcType="${stringJdbcType}" />
+      <result property="executionId" column="VAR_EXECUTION_ID_" jdbcType="${stringJdbcType}" />
+      <result property="taskId" column="VAR_TASK_ID_" jdbcType="${stringJdbcType}" />
       <result property="byteArrayRef" column="VAR_BYTEARRAY_ID_" typeHandler="ByteArrayRefTypeHandler"/>
       <result property="doubleValue" column="VAR_DOUBLE_" jdbcType="DOUBLE" />
-      <result property="textValue" column="VAR_TEXT_" jdbcType="VARCHAR" />
-      <result property="textValue2" column="VAR_TEXT2_" jdbcType="VARCHAR" />
+      <result property="textValue" column="VAR_TEXT_" jdbcType="${stringJdbcType}" />
+      <result property="textValue2" column="VAR_TEXT2_" jdbcType="${stringJdbcType}" />
       <result property="longValue" column="VAR_LONG_" jdbcType="BIGINT" />
     </collection>
   </resultMap>
 
   <resultMap id="processInstanceAndVariablesResultMap" type="org.activiti.engine.impl.persistence.entity.ExecutionEntityImpl">
-    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <id property="id" column="ID_" jdbcType="${stringJdbcType}" />
     <result property="revision" column="REV_" jdbcType="INTEGER" />
-    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
-    <result property="businessKey" column="BUSINESS_KEY_" jdbcType="VARCHAR" />
-    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
-    <result property="processDefinitionName" column="ProcessDefinitionName" jdbcType="VARCHAR" />
-    <result property="processDefinitionKey" column="ProcessDefinitionKey" jdbcType="VARCHAR" />
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="${stringJdbcType}" />
+    <result property="businessKey" column="BUSINESS_KEY_" jdbcType="${stringJdbcType}" />
+    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="${stringJdbcType}" />
+    <result property="processDefinitionName" column="ProcessDefinitionName" jdbcType="${stringJdbcType}" />
+    <result property="processDefinitionKey" column="ProcessDefinitionKey" jdbcType="${stringJdbcType}" />
     <result property="processDefinitionVersion" column="ProcessDefinitionVersion" jdbcType="INTEGER" />
-    <result property="deploymentId" column="DeploymentId" jdbcType="VARCHAR" />
-    <result property="activityId" column="ACT_ID_" jdbcType="VARCHAR" />
+    <result property="deploymentId" column="DeploymentId" jdbcType="${stringJdbcType}" />
+    <result property="activityId" column="ACT_ID_" jdbcType="${stringJdbcType}" />
     <result property="isActive" column="IS_ACTIVE_" jdbcType="BOOLEAN" />
     <result property="isConcurrent" column="IS_CONCURRENT_" jdbcType="BOOLEAN" />
     <result property="isScope" column="IS_SCOPE_" jdbcType="BOOLEAN" />
     <result property="isEventScope" column="IS_EVENT_SCOPE_" jdbcType="BOOLEAN" />
     <result property="isMultiInstanceRoot" column="IS_MI_ROOT_" jdbcType="BOOLEAN" />
-    <result property="parentId" column="PARENT_ID_" jdbcType="VARCHAR" />
-    <result property="superExecutionId" column="SUPER_EXEC_" jdbcType="VARCHAR" />
-    <result property="rootProcessInstanceId" column="ROOT_PROC_INST_ID_" jdbcType="VARCHAR" />
+    <result property="parentId" column="PARENT_ID_" jdbcType="${stringJdbcType}" />
+    <result property="superExecutionId" column="SUPER_EXEC_" jdbcType="${stringJdbcType}" />
+    <result property="rootProcessInstanceId" column="ROOT_PROC_INST_ID_" jdbcType="${stringJdbcType}" />
     <result property="suspensionState" column="SUSPENSION_STATE_" jdbcType="INTEGER"/>
-    <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
-    <result property="name" column="NAME_" jdbcType="VARCHAR" />
+    <result property="tenantId" column="TENANT_ID_" jdbcType="${stringJdbcType}" />
+    <result property="name" column="NAME_" jdbcType="${stringJdbcType}" />
     <result property="lockTime" column="LOCK_TIME_" jdbcType="TIMESTAMP" />
     <result property="startTime" column="START_TIME_" jdbcType="TIMESTAMP" />
-    <result property="startUserId" column="START_USER_ID_" jdbcType="VARCHAR" />
+    <result property="startUserId" column="START_USER_ID_" jdbcType="${stringJdbcType}" />
     <result property="isCountEnabled" column="IS_COUNT_ENABLED_" jdbcType="BOOLEAN" />
     <result property="eventSubscriptionCount" column="EVT_SUBSCR_COUNT_" jdbcType="INTEGER" />
     <result property="taskCount" column="TASK_COUNT_" jdbcType="INTEGER" />
@@ -371,19 +371,19 @@
     <result property="variableCount" column="VAR_COUNT_" jdbcType="INTEGER" />
     <result property="identityLinkCount" column="ID_LINK_COUNT_" jdbcType="INTEGER" />
     <result property="appVersion" column="APP_VERSION_" jdbcType="INTEGER" />
-    <result property="parentProcessInstanceId" column="PARENT_PROC_INST_ID_" jdbcType="VARCHAR"/>
+    <result property="parentProcessInstanceId" column="PARENT_PROC_INST_ID_" jdbcType="${stringJdbcType}"/>
     <collection property="queryVariables" column="EXECUTION_ID_" javaType="ArrayList" ofType="org.activiti.engine.impl.persistence.entity.VariableInstanceEntityImpl">
       <id property="id" column="VAR_ID_"/>
-      <result property="name" column="VAR_NAME_" javaType="String" jdbcType="VARCHAR" />
-      <result property="type" column="VAR_TYPE_" javaType="org.activiti.engine.impl.variable.VariableType" jdbcType="VARCHAR" />
+      <result property="name" column="VAR_NAME_" javaType="String" jdbcType="${stringJdbcType}" />
+      <result property="type" column="VAR_TYPE_" javaType="org.activiti.engine.impl.variable.VariableType" jdbcType="${stringJdbcType}" />
       <result property="revision" column="VAR_REV_" jdbcType="INTEGER" />
-      <result property="processInstanceId" column="VAR_PROC_INST_ID_" jdbcType="VARCHAR" />
-      <result property="executionId" column="VAR_EXECUTION_ID_" jdbcType="VARCHAR" />
-      <result property="taskId" column="VAR_TASK_ID_" jdbcType="VARCHAR" />
+      <result property="processInstanceId" column="VAR_PROC_INST_ID_" jdbcType="${stringJdbcType}" />
+      <result property="executionId" column="VAR_EXECUTION_ID_" jdbcType="${stringJdbcType}" />
+      <result property="taskId" column="VAR_TASK_ID_" jdbcType="${stringJdbcType}" />
       <result property="byteArrayRef" column="VAR_BYTEARRAY_ID_" typeHandler="ByteArrayRefTypeHandler"/>
       <result property="doubleValue" column="VAR_DOUBLE_" jdbcType="DOUBLE" />
-      <result property="textValue" column="VAR_TEXT_" jdbcType="VARCHAR" />
-      <result property="textValue2" column="VAR_TEXT2_" jdbcType="VARCHAR" />
+      <result property="textValue" column="VAR_TEXT_" jdbcType="${stringJdbcType}" />
+      <result property="textValue2" column="VAR_TEXT2_" jdbcType="${stringJdbcType}" />
       <result property="longValue" column="VAR_LONG_" jdbcType="BIGINT" />
     </collection>
   </resultMap>

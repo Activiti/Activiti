@@ -62,15 +62,15 @@
   <!-- DEPLOYMENT RESULTMAP -->
 
   <resultMap id="deploymentResultMap" type="org.activiti.engine.impl.persistence.entity.DeploymentEntityImpl">
-    <id property="id" column="ID_" jdbcType="VARCHAR" />
-    <result property="name" column="NAME_" jdbcType="VARCHAR" />
-    <result property="category" column="CATEGORY_" jdbcType="VARCHAR" />
-    <result property="key" column="KEY_" jdbcType="VARCHAR" />
-    <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
+    <id property="id" column="ID_" jdbcType="${stringJdbcType}" />
+    <result property="name" column="NAME_" jdbcType="${stringJdbcType}" />
+    <result property="category" column="CATEGORY_" jdbcType="${stringJdbcType}" />
+    <result property="key" column="KEY_" jdbcType="${stringJdbcType}" />
+    <result property="tenantId" column="TENANT_ID_" jdbcType="${stringJdbcType}" />
     <result property="deploymentTime" column="DEPLOY_TIME_" jdbcType="TIMESTAMP"/>
-    <result property="engineVersion" column="ENGINE_VERSION_" jdbcType="VARCHAR" />
+    <result property="engineVersion" column="ENGINE_VERSION_" jdbcType="${stringJdbcType}" />
     <result property="version" column="VERSION_" jdbcType="INTEGER" />
-    <result property="projectReleaseVersion" column="PROJECT_RELEASE_VERSION_" jdbcType="VARCHAR" />
+    <result property="projectReleaseVersion" column="PROJECT_RELEASE_VERSION_" jdbcType="${stringJdbcType}" />
   </resultMap>
 
   <!-- DEPLOYMENT SELECT -->

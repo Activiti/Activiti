@@ -74,11 +74,11 @@
   <!-- BYTE ARRAY RESULTMAP -->
 
   <resultMap id="byteArrayResultMap" type="org.activiti.engine.impl.persistence.entity.ByteArrayEntityImpl">
-    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <id property="id" column="ID_" jdbcType="${stringJdbcType}" />
     <result property="revision" column="REV_" jdbcType="INTEGER"/>
-    <result property="name" column="NAME_" jdbcType="VARCHAR"/>
+    <result property="name" column="NAME_" jdbcType="${stringJdbcType}"/>
     <result property="bytes" column="BYTES_" jdbcType="${blobType}"/>
-    <result property="deploymentId" column="DEPLOYMENT_ID_" jdbcType="VARCHAR" />
+    <result property="deploymentId" column="DEPLOYMENT_ID_" jdbcType="${stringJdbcType}" />
   </resultMap>
 
   <!-- BYTE ARRAY SELECT -->

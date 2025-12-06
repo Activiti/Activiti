@@ -60,8 +60,8 @@
   <!-- PROPERTY SELECT -->
 
   <resultMap id="propertyResultMap" type="org.activiti.engine.impl.persistence.entity.PropertyEntityImpl">
-    <id property="name" column="NAME_" jdbcType="VARCHAR" />
-    <result property="value" column="VALUE_" jdbcType="VARCHAR" />
+    <id property="name" column="NAME_" jdbcType="${stringJdbcType}" />
+    <result property="value" column="VALUE_" jdbcType="${stringJdbcType}" />
     <result property="revision" column="REV_" jdbcType="INTEGER" />
   </resultMap>
 

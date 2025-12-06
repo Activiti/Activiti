@@ -73,13 +73,13 @@
   <!-- IDENTITY LINK RESULTMAP -->
 
   <resultMap id="identityLinkResultMap" type="org.activiti.engine.impl.persistence.entity.IdentityLinkEntityImpl">
-    <id property="id" column="ID_" jdbcType="VARCHAR" />
-    <result property="type" column="TYPE_" jdbcType="VARCHAR" />
-    <result property="userId" column="USER_ID_" jdbcType="VARCHAR" />
-    <result property="groupId" column="GROUP_ID_" jdbcType="VARCHAR" />
-    <result property="taskId" column="TASK_ID_" jdbcType="VARCHAR" />
-    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
-    <result property="processDefId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
+    <id property="id" column="ID_" jdbcType="${stringJdbcType}" />
+    <result property="type" column="TYPE_" jdbcType="${stringJdbcType}" />
+    <result property="userId" column="USER_ID_" jdbcType="${stringJdbcType}" />
+    <result property="groupId" column="GROUP_ID_" jdbcType="${stringJdbcType}" />
+    <result property="taskId" column="TASK_ID_" jdbcType="${stringJdbcType}" />
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="${stringJdbcType}" />
+    <result property="processDefId" column="PROC_DEF_ID_" jdbcType="${stringJdbcType}" />
     <result property="details" column="DETAILS_" jdbcType="${blobType}" />
   </resultMap>
 
