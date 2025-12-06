@@ -1227,9 +1227,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         properties.put("stringType", "VARCHAR");
 
         if (databaseType != null) {
-            if(databaseType.equals(DATABASE_TYPE_MSSQL)) {
-                properties.put("stringType", "NVARCHAR");
-            }
             properties.load(getResourceAsStream("org/activiti/db/properties/"+databaseType+".properties"));
         }
 
