@@ -72,24 +72,30 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
     }
 
     protected Optional<Object> calculateMappedValue(
-        Mapping inputMapping,
+        Map.Entry<String, Mapping> inputMapping,
         DelegateExecution execution,
         Extension extensions
     ) {
-        if (inputMapping != null) {
-            if (Mapping.SourceMappingType.VALUE.equals(inputMapping.getType())) {
-                return Optional.of(inputMapping.getValue());
-            }
+        Mapping mapping = inputMapping.getValue();
 
-            if (Mapping.SourceMappingType.VARIABLE.equals(inputMapping.getType())) {
-                String name = inputMapping.getValue().toString();
+        if (mapping == null || mapping.getType() == null) {
+            return Optional.empty();
+        }
+
+        switch (mapping.getType()) {
+            case VALUE:
+                return Optional.of(mapping.getValue());
+            case JSONPATCH:
+                return resolvePatchMapping(inputMapping.getKey(), mapping.getValue(), execution, extensions);
+            case VARIABLE:
+                String name = mapping.getValue().toString();
 
                 if (isTargetProcessVariableDefined(extensions, execution, name)) {
                     return Optional.ofNullable(execution.getVariable(name));
                 }
-            }
+            default:
+                return Optional.empty();
         }
-        return Optional.empty();
     }
 
     public Map<String, Object> calculateInputVariables(DelegateExecution execution) {
@@ -148,7 +154,7 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
 
         Map<String, Mapping> inputMappings = processVariablesMapping.getInputs();
         for (Map.Entry<String, Mapping> mapping : inputMappings.entrySet()) {
-            Optional<Object> mappedValue = calculateMappedValue(mapping.getValue(), execution, extensions);
+            Optional<Object> mappedValue = calculateMappedValue(mapping, execution, extensions);
             mappedValue.ifPresent(value -> inboundVariables.put(mapping.getKey(), value));
         }
         return inboundVariables;
