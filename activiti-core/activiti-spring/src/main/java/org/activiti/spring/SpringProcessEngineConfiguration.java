@@ -62,6 +62,7 @@ public class SpringProcessEngineConfiguration
         deploymentStrategies.add(new ResourceParentFolderAutoDeploymentStrategy(applicationUpgradeContextService));
         deploymentStrategies.add(new FailOnNoProcessAutoDeploymentStrategy(applicationUpgradeContextService));
         deploymentStrategies.add(new NeverFailAutoDeploymentStrategy(applicationUpgradeContextService));
+        deploymentStrategies.add(new NoneAutoDeploymentStrategy(applicationUpgradeContextService));
         if (applicationUpgradeContextService != null) {
             this.isRollbackDeployment = applicationUpgradeContextService.isRollbackDeployment();
         }
@@ -107,10 +108,8 @@ public class SpringProcessEngineConfiguration
     @Override
     public void initTransactionContextFactory() {
         if (transactionContextFactory == null && transactionManager != null) {
-            transactionContextFactory = new SpringTransactionContextFactory(
-                transactionManager,
-                transactionSynchronizationAdapterOrder
-            );
+            transactionContextFactory =
+                new SpringTransactionContextFactory(transactionManager, transactionSynchronizationAdapterOrder);
         }
     }
 
