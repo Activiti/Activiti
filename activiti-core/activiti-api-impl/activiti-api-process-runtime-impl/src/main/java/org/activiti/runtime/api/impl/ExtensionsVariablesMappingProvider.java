@@ -86,7 +86,7 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
             case VALUE:
                 return Optional.of(mapping.getValue());
             case JSONPATCH:
-                return resolvePatchMapping(inputMapping.getKey(), mapping.getValue(), execution, extensions);
+                return resolvePatchMapping(inputMapping, mapping.getValue(), execution, extensions);
             case VARIABLE:
                 String name = mapping.getValue().toString();
 
@@ -175,7 +175,7 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
             case VALUE:
                 return Optional.of(mapping.getValue());
             case JSONPATCH:
-                return resolvePatchMapping(mappingEntry.getKey(), mapping.getValue(), execution, extensions);
+                return resolvePatchMapping(mappingEntry, mapping.getValue(), execution, extensions);
             case VARIABLE:
                 if (currentContextVariables != null) {
                     return Optional.ofNullable(currentContextVariables.get(mapping.getValue().toString()));
@@ -186,15 +186,16 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
     }
 
     private Optional<Object> resolvePatchMapping(
-        String outputVariableName,
+        Map.Entry<String, Mapping> mappingEntry,
         Object changesToApply,
         DelegateExecution execution,
         Extension extensions
     ) {
-        Object executionVariableValue = execution != null ? execution.getVariable(outputVariableName) : null;
+        String sourceVariableName = mappingEntry.getValue().getSource() != null ? mappingEntry.getValue().getSource() : mappingEntry.getKey();
+        Object executionVariableValue = execution != null ? execution.getVariable(sourceVariableName) : null;
         Object processVariableCurrentValue = calculateProcessVariableCurrentValue(
             executionVariableValue,
-            extensions.getPropertyByName(outputVariableName)
+            extensions.getPropertyByName(sourceVariableName)
         );
 
         try {

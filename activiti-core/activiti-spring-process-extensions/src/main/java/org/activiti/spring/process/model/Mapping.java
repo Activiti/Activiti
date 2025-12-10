@@ -21,6 +21,8 @@ public class Mapping {
 
     private Object value;
 
+    private String source;
+
     public SourceMappingType getType() {
         return type;
     }
@@ -35,6 +37,14 @@ public class Mapping {
 
     public void setValue(Object value) {
         this.value = value;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
     }
 
     public enum SourceMappingType {

@@ -1119,4 +1119,35 @@ public class ExtensionsVariablesMappingProviderTest {
         assertThat(variablesMappingProvider.isMappingEphemeral(implicitNonEphemeralTask)).isFalse();
         assertThat(variablesMappingProvider.isMappingEphemeral(explicitNonEphemeralTask)).isFalse();
     }
+
+    @Test
+    public void should_calculateInputVariables_when_usingJsonPatchVariablesMapping() throws IOException {
+        DelegateExecution execution = initExpressionResolverTest(
+            JSONPATCH_TEST_FILES_PATH,
+            "jsonPatch-in-mapping-input.json",
+            "Process_jsonPatchMappingInput"
+        );
+
+
+        Map<String, Object> inputVariables = variablesMappingProvider.calculateInputVariables(execution);
+
+
+        Map<String, Object> expectedAddress0 = Map.of("street", "123 Main St");
+        Map<String, Object> expectedAddress1 = Map.of("street", "456 Elm St");
+
+        assertThat(inputVariables).isNotEmpty();
+        assertThat(inputVariables.entrySet())
+            .extracting(Map.Entry::getKey, Map.Entry::getValue)
+            .containsOnly(
+                tuple("person_simple_cases",
+                    Map.of(
+                        "firstname",
+                        "Bob",
+                        "addresses",
+                        List.of(expectedAddress0, expectedAddress1),
+                        "lastname",
+                        "Miracle"
+                    ))
+            );
+    }
 }
