@@ -91,8 +91,6 @@ public class CreateProcessInstanceCmd implements Command<ProcessInstance> {
             businessKey,
             processInstanceName,
             variables,
-            transientVariables,
-            linkedProcessInstanceId,
-            linkedProcessInstanceType);
+            transientVariables);
     }
 }

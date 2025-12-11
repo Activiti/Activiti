@@ -35,9 +35,8 @@ public interface ExecutionEntityManager extends EntityManager<ExecutionEntity> {
         ProcessDefinition processDefinition,
         String businessKey,
         String tenantId,
-        String initiatorVariableName,
-        String linkedProcessInstanceId,
-        String linkedProcessInstanceType);
+        String initiatorVariableName
+    );
 
     ExecutionEntity createChildExecution(ExecutionEntity parentExecutionEntity);
 

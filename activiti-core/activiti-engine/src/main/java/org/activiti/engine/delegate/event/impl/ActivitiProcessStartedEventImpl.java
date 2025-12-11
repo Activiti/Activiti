@@ -33,6 +33,10 @@ public class ActivitiProcessStartedEventImpl
 
     protected final String nestedProcessDefinitionId;
 
+    protected final String linkedProcessInstanceId;
+
+    protected final String linkedProcessInstanceType;
+
     public ActivitiProcessStartedEventImpl(final Object entity, final Map variables, final boolean localScope) {
         super(entity, variables, localScope, ActivitiEventType.PROCESS_STARTED);
         if (entity instanceof ExecutionEntity) {
@@ -53,6 +57,41 @@ public class ActivitiProcessStartedEventImpl
             this.nestedProcessDefinitionId = null;
             this.nestedProcessInstanceId = null;
         }
+        this.linkedProcessInstanceId = null;
+        this.linkedProcessInstanceType = null;
+    }
+
+    /**
+     * Constructor with link attributes
+     */
+    public ActivitiProcessStartedEventImpl(
+        final Object entity,
+        final Map variables,
+        final boolean localScope,
+        final String linkedProcessInstanceId,
+        final String linkedProcessInstanceType
+    ) {
+        super(entity, variables, localScope, ActivitiEventType.PROCESS_STARTED);
+        if (entity instanceof ExecutionEntity) {
+            ExecutionEntity executionEntity = (ExecutionEntity) entity;
+            if (!executionEntity.isProcessInstanceType()) {
+                executionEntity = executionEntity.getParent();
+            }
+
+            final ExecutionEntity superExecution = executionEntity.getSuperExecution();
+            if (superExecution != null) {
+                this.nestedProcessDefinitionId = superExecution.getProcessDefinitionId();
+                this.nestedProcessInstanceId = superExecution.getProcessInstanceId();
+            } else {
+                this.nestedProcessDefinitionId = null;
+                this.nestedProcessInstanceId = null;
+            }
+        } else {
+            this.nestedProcessDefinitionId = null;
+            this.nestedProcessInstanceId = null;
+        }
+        this.linkedProcessInstanceId = linkedProcessInstanceId;
+        this.linkedProcessInstanceType = linkedProcessInstanceType;
     }
 
     @Override
@@ -63,5 +102,15 @@ public class ActivitiProcessStartedEventImpl
     @Override
     public String getNestedProcessDefinitionId() {
         return this.nestedProcessDefinitionId;
+    }
+
+    @Override
+    public String getLinkedProcessInstanceId() {
+        return this.linkedProcessInstanceId;
+    }
+
+    @Override
+    public String getLinkedProcessInstanceType() {
+        return this.linkedProcessInstanceType;
     }
 }

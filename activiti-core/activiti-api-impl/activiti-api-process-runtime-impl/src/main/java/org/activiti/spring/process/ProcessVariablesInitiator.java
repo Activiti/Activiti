@@ -209,7 +209,9 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
             commandContext,
             calculatedVariables,
             initialFlowElement,
-            transientVariables
+            transientVariables,
+            null,
+            null
         );
     }
 }

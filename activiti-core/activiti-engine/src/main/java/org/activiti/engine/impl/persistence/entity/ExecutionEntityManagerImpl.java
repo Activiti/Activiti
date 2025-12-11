@@ -245,9 +245,8 @@ public class ExecutionEntityManagerImpl
         ProcessDefinition processDefinition,
         String businessKey,
         String tenantId,
-        String initiatorVariableName,
-        String linkedProcessInstanceId,
-        String linkedProcessInstanceType) {
+        String initiatorVariableName
+    ) {
         ExecutionEntity processInstanceExecution = executionDataManager.create();
 
         if (isExecutionRelatedEntityCountEnabledGlobally()) {
@@ -270,8 +269,6 @@ public class ExecutionEntityManagerImpl
         String authenticatedUserId = Authentication.getAuthenticatedUserId();
 
         processInstanceExecution.setStartUserId(authenticatedUserId);
-        processInstanceExecution.setLinkedProcessInstanceId(linkedProcessInstanceId);
-        processInstanceExecution.setLinkedProcessInstanceType(linkedProcessInstanceType);
 
         // Store in database
         insert(processInstanceExecution, false);
@@ -283,7 +280,6 @@ public class ExecutionEntityManagerImpl
         // Need to be after insert, cause we need the id
         processInstanceExecution.setProcessInstanceId(processInstanceExecution.getId());
         processInstanceExecution.setRootProcessInstanceId(processInstanceExecution.getId());
-
         if (authenticatedUserId != null) {
             getIdentityLinkEntityManager().addIdentityLink(
                 processInstanceExecution,

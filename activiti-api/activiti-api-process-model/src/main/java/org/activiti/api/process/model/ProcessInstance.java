@@ -52,9 +52,4 @@ public interface ProcessInstance extends ApplicationElement {
     String getProcessDefinitionName();
 
     String getRootProcessInstanceId();
-
-    String getLinkedProcessInstanceId();
-
-    String getLinkedProcessInstanceType();
-
 }
