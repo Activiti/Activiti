@@ -23,7 +23,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -721,10 +720,8 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     @Deployment(resources = {"org/activiti/standalone/history/FullHistoryTest.testHistoricTaskInstanceVariableUpdates.bpmn20.xml"})
     public void testHistoricTaskInstanceWithMaxResults() {
         // GIVEN: 5 running process
-        List<String> processInstanceIds = new ArrayList<>();
         for (int i=0;i<5;i++) {
-            final ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("HistoricTaskInstanceTest");
-            processInstanceIds.add(processInstance.getId());
+            runtimeService.startProcessInstanceByKey("HistoricTaskInstanceTest");
         }
 
         final HistoricTaskInstanceQuery query = historyService.createHistoricTaskInstanceQuery();
