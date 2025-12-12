@@ -38,27 +38,7 @@ public class ActivitiProcessStartedEventImpl
     protected final String linkedProcessInstanceType;
 
     public ActivitiProcessStartedEventImpl(final Object entity, final Map variables, final boolean localScope) {
-        super(entity, variables, localScope, ActivitiEventType.PROCESS_STARTED);
-        if (entity instanceof ExecutionEntity) {
-            ExecutionEntity executionEntity = (ExecutionEntity) entity;
-            if (!executionEntity.isProcessInstanceType()) {
-                executionEntity = executionEntity.getParent();
-            }
-
-            final ExecutionEntity superExecution = executionEntity.getSuperExecution();
-            if (superExecution != null) {
-                this.nestedProcessDefinitionId = superExecution.getProcessDefinitionId();
-                this.nestedProcessInstanceId = superExecution.getProcessInstanceId();
-            } else {
-                this.nestedProcessDefinitionId = null;
-                this.nestedProcessInstanceId = null;
-            }
-        } else {
-            this.nestedProcessDefinitionId = null;
-            this.nestedProcessInstanceId = null;
-        }
-        this.linkedProcessInstanceId = null;
-        this.linkedProcessInstanceType = null;
+        this(entity, variables, localScope, null, null);
     }
 
     /**
