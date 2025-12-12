@@ -99,7 +99,9 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
             businessKey,
             processInstanceName,
             variables,
-            transientVariables);
+            transientVariables,
+            linkedProcessInstanceId,
+            linkedProcessInstanceType);
     }
 
     protected ProcessInstance createAndStartProcessInstance(
@@ -107,14 +109,18 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
         String businessKey,
         String processInstanceName,
         Map<String, Object> variables,
-        Map<String, Object> transientVariables
+        Map<String, Object> transientVariables,
+        String linkedProcessInstanceId,
+        String linkedProcessInstanceType
     ) {
         return processInstanceHelper.createAndStartProcessInstance(
             processDefinition,
             businessKey,
             processInstanceName,
             variables,
-            transientVariables
+            transientVariables,
+            linkedProcessInstanceId,
+            linkedProcessInstanceType
         );
     }
 
