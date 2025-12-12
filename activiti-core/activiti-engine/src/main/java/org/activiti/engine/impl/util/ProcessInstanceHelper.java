@@ -87,14 +87,18 @@ public class ProcessInstanceHelper {
         String businessKey,
         String processInstanceName,
         Map<String, Object> variables,
-        Map<String, Object> transientVariables) {
+        Map<String, Object> transientVariables,
+        String linkedProcessInstanceId,
+        String linkedProcessInstanceType) {
         return createAndStartProcessInstance(
             processDefinition,
             businessKey,
             processInstanceName,
             variables,
             transientVariables,
-            true);
+            true,
+            linkedProcessInstanceId,
+            linkedProcessInstanceType);
     }
 
     protected ProcessInstance createAndStartProcessInstance(ProcessDefinition processDefinition,
@@ -102,7 +106,9 @@ public class ProcessInstanceHelper {
                                                             String processInstanceName,
                                                             Map<String, Object> variables,
                                                             Map<String, Object> transientVariables,
-                                                            boolean startProcessInstance) {
+                                                            boolean startProcessInstance,
+                                                            String linkedProcessInstanceId,
+                                                            String linkedProcessInstanceType) {
 
         Process process = this.getActiveProcess(processDefinition);
 
@@ -116,7 +122,9 @@ public class ProcessInstanceHelper {
             process,
             variables,
             transientVariables,
-            startProcessInstance);
+            startProcessInstance,
+            linkedProcessInstanceId,
+            linkedProcessInstanceType);
     }
 
     public ProcessInstance createProcessInstance(ProcessDefinition processDefinition, String businessKey,
