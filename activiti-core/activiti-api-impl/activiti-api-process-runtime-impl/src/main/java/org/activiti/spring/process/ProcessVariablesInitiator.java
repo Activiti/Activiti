@@ -194,7 +194,9 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
         CommandContext commandContext,
         Map<String, Object> variables,
         FlowElement initialFlowElement,
-        Map<String, Object> transientVariables
+        Map<String, Object> transientVariables,
+        String linkedProcessInstanceId,
+        String linkedProcessInstanceType
     ) {
         ProcessDefinition processDefinition = ProcessDefinitionUtil.getProcessDefinition(
             processInstance.getProcessDefinitionId()
@@ -210,8 +212,8 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
             calculatedVariables,
             initialFlowElement,
             transientVariables,
-            null,
-            null
+            linkedProcessInstanceId,
+            linkedProcessInstanceType
         );
     }
 }

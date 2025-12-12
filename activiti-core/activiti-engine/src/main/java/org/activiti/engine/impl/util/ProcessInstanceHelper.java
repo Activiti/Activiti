@@ -97,17 +97,6 @@ public class ProcessInstanceHelper {
             true);
     }
 
-//    protected ProcessInstance createAndStartProcessInstance(ProcessDefinition processDefinition,
-//                                                            String businessKey,
-//                                                            String processInstanceName,
-//                                                            Map<String, Object> variables,
-//                                                            Map<String, Object> transientVariables,
-//                                                            boolean startProcessInstance) {
-//
-//        return createAndStartProcessInstance(processDefinition, businessKey, processInstanceName,
-//            variables, transientVariables, startProcessInstance, null, null);
-//    }
-
     protected ProcessInstance createAndStartProcessInstance(ProcessDefinition processDefinition,
                                                             String businessKey,
                                                             String processInstanceName,
@@ -129,13 +118,6 @@ public class ProcessInstanceHelper {
             transientVariables,
             startProcessInstance);
     }
-
-//    public ProcessInstance createProcessInstance(ProcessDefinition processDefinition, String businessKey,
-//                                                 String processInstanceName, Map<String, Object> variables,
-//                                                 Map<String, Object> transientVariables) {
-//        return this.createProcessInstance(processDefinition, businessKey, processInstanceName, variables,
-//            transientVariables, null, null);
-//    }
 
     public ProcessInstance createProcessInstance(ProcessDefinition processDefinition, String businessKey,
                                                  String processInstanceName, Map<String, Object> variables,
@@ -441,13 +423,6 @@ public class ProcessInstanceHelper {
         return expression.getValue(execution).toString();
     }
 
-//public ExecutionEntity createProcessInstanceWithInitialFlowElement(ProcessDefinition processDefinition,
-//                                                                       String businessKey,
-//                                                                       String processInstanceName,
-//                                                                       FlowElement initialFlowElement,
-//                                                                       Process process) {
-//        return this.createProcessInstanceWithInitialFlowElement(processDefinition, businessKey, processInstanceName, initialFlowElement, process);
-//    }
     public ExecutionEntity createProcessInstanceWithInitialFlowElement(
         ProcessDefinition processDefinition,
         String businessKey,
