@@ -26,12 +26,12 @@ jobs:
     steps:
       - name: Check dependabot/fork build
         if: github.secret_source == 'Dependabot' || (github.secret_source == 'None' && github.event.action != 'milestoned')
-        uses: Alfresco/alfresco-build-tools/.github/actions/github-require-secrets@2d8a74e98bfdcc78252004141137f6d14a03e175 # v10.4.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/github-require-secrets@b51dfeef6bda4a506778050a1c0e53eed440598c # v11.0.1
         with:
           dependabot-error-message: "This PR requires additional validation, please set the milestone to 'Validating' or ask a reviewer to approve it."
           none-error-message: "This PR requires additional validation, please set the milestone to 'Validating'."
       - name: pre-commit
-        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@2d8a74e98bfdcc78252004141137f6d14a03e175 # v10.4.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@b51dfeef6bda4a506778050a1c0e53eed440598c # v11.0.1
       - name: Ensure SHA pinned actions
         uses: hyland/github-actions-ensure-sha-pinned-actions@22ca7a8cf33e873ba1d6fbcd2b71fa0ec5006b17 # v1.1.0
       - name: Check PR preview
