@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import org.activiti.bpmn.model.ValuedDataObject;
+import org.activiti.engine.impl.ProcessInstanceCreationOptions;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
@@ -94,34 +95,24 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
         );
 
         processInstanceHelper = commandContext.getProcessEngineConfiguration().getProcessInstanceHelper();
-        return createAndStartProcessInstance(
-            processDefinition,
-            businessKey,
-            processInstanceName,
-            variables,
-            transientVariables,
-            linkedProcessInstanceId,
-            linkedProcessInstanceType);
+
+        ProcessInstanceCreationOptions options = ProcessInstanceCreationOptions
+            .builder(processDefinition)
+            .businessKey(businessKey)
+            .processInstanceName(processInstanceName)
+            .variables(variables)
+            .transientVariables(transientVariables)
+            .linkedProcessInstanceId(linkedProcessInstanceId)
+            .linkedProcessInstanceType(linkedProcessInstanceType)
+            .build();
+
+        return createAndStartProcessInstance(options);
     }
 
     protected ProcessInstance createAndStartProcessInstance(
-        ProcessDefinition processDefinition,
-        String businessKey,
-        String processInstanceName,
-        Map<String, Object> variables,
-        Map<String, Object> transientVariables,
-        String linkedProcessInstanceId,
-        String linkedProcessInstanceType
+        ProcessInstanceCreationOptions options
     ) {
-        return processInstanceHelper.createAndStartProcessInstance(
-            processDefinition,
-            businessKey,
-            processInstanceName,
-            variables,
-            transientVariables,
-            linkedProcessInstanceId,
-            linkedProcessInstanceType
-        );
+        return processInstanceHelper.createAndStartProcessInstance(options);
     }
 
     protected Map<String, Object> processDataObjects(Collection<ValuedDataObject> dataObjects) {

@@ -19,6 +19,7 @@ import java.util.Map;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.impl.ProcessInstanceCreationOptions;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
@@ -107,8 +108,15 @@ public class StartProcessInstanceByMessageCmd implements Command<ProcessInstance
             .getProcessEngineConfiguration()
             .getProcessInstanceHelper();
 
+        ProcessInstanceCreationOptions options = ProcessInstanceCreationOptions
+            .builder(processDefinition)
+            .businessKey(businessKey)
+            .variables(processVariables)
+            .transientVariables(transientVariables)
+            .linkedProcessInstanceId(linkedProcessInstanceId)
+            .linkedProcessInstanceType(linkedProcessInstanceType)
+            .build();
 
-        return processInstanceHelper.createAndStartProcessInstanceByMessage(processDefinition,
-          businessKey, messageName, processVariables, transientVariables, linkedProcessInstanceId, linkedProcessInstanceType);
+        return processInstanceHelper.createAndStartProcessInstanceByMessage(options, messageName);
     }
 }
