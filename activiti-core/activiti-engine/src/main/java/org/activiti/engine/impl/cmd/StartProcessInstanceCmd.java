@@ -125,4 +125,12 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
         }
         return variablesMap;
     }
+
+    public String getLinkedProcessInstanceId() {
+        return linkedProcessInstanceId;
+    }
+
+    public String getLinkedProcessInstanceType() {
+        return linkedProcessInstanceType;
+    }
 }

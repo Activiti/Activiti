@@ -142,7 +142,6 @@ public class ProcessInstanceHelper {
         // Dispatch message received event
         dispatchStartMessageReceivedEvent(processInstance, messageName, messageVariables);
 
-        // Finally start the process
         CommandContext commandContext = Context.getCommandContext();
         startProcessInstance(processInstance, commandContext, messageVariables, initialFlowElement, transientVariables, linkedProcessInstanceId, linkedProcessInstanceType);
 

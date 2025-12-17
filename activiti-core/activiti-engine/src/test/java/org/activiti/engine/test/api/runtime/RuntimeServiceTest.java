@@ -25,7 +25,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
-import java.lang.reflect.Field;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -1177,13 +1176,9 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         verify(commandExecutor).execute(commandCaptor.capture());
 
         StartProcessInstanceCmd capturedCommand = commandCaptor.getValue();
-        Field linkedIdField = StartProcessInstanceCmd.class.getDeclaredField("linkedProcessInstanceId");
-        linkedIdField.setAccessible(true);
-        assertThat(linkedIdField.get(capturedCommand)).isEqualTo("linkedProcess123");
+        assertThat(capturedCommand.getLinkedProcessInstanceId()).isEqualTo("linkedProcess123");
 
-        Field linkedTypeField = StartProcessInstanceCmd.class.getDeclaredField("linkedProcessInstanceType");
-        linkedTypeField.setAccessible(true);
-        assertThat(linkedTypeField.get(capturedCommand)).isEqualTo("myLinkType");
+        assertThat(capturedCommand.getLinkedProcessInstanceType()).isEqualTo("myLinkType");
 
         assertThat(processInstance).isNotNull();
         assertThat(processInstance.getProcessDefinitionId()).isEqualTo(processDefinition.getId());
@@ -1211,13 +1206,9 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         verify(commandExecutor).execute(commandCaptor.capture());
 
         StartProcessInstanceByMessageCmd capturedCommand = commandCaptor.getValue();
-        Field linkedIdField = StartProcessInstanceByMessageCmd.class.getDeclaredField("linkedProcessInstanceId");
-        linkedIdField.setAccessible(true);
-        assertThat(linkedIdField.get(capturedCommand)).isEqualTo("linkedProcess123");
+        assertThat(capturedCommand.getLinkedProcessInstanceId()).isEqualTo("linkedProcess123");
 
-        Field linkedTypeField = StartProcessInstanceByMessageCmd.class.getDeclaredField("linkedProcessInstanceType");
-        linkedTypeField.setAccessible(true);
-        assertThat(linkedTypeField.get(capturedCommand)).isEqualTo("myLinkType");
+        assertThat(capturedCommand.getLinkedProcessInstanceType()).isEqualTo("myLinkType");
 
         assertThat(processInstance).isNotNull();
         assertThat(processInstance.getProcessDefinitionId()).isEqualTo(processDefinition.getId());

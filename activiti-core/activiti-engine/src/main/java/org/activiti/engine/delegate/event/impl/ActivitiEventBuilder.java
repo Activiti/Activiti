@@ -156,7 +156,6 @@ public class ActivitiEventBuilder {
             linkedProcessInstanceType
         );
 
-        // In case an execution-context is active, populate the event fields related to the execution
         populateEventWithCurrentContext(newEvent);
         return newEvent;
     }

@@ -37,7 +37,7 @@ public class ProcessInstanceBuilderImpl implements ProcessInstanceBuilder {
     protected String tenantId;
     protected Map<String, Object> variables;
     protected Map<String, Object> transientVariables;
-    protected String linkedProcessInstanceId;
+    private String linkedProcessInstanceId;
     private String linkedProcessInstanceType;
 
     public ProcessInstanceBuilderImpl(RuntimeServiceImpl runtimeService) {

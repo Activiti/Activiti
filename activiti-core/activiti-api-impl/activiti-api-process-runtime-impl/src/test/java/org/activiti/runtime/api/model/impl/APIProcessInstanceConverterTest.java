@@ -41,8 +41,6 @@ public class APIProcessInstanceConverterTest {
     private static final Date START_TIME = new Date();
     private static final String PROCESS_DEFINITION_NAME = "processDefinitionName";
     private static final String ROOT_PROCESS_INSTANCE_ID = "rootProcessInstanceId";
-//    private static final String LINKED_PROCESS_INSTANCE_ID = "linkedProcessInstanceId";
-//    private static final String LINKED_PROCESS_INSTANCE_TYPE = "linkedProcessInstanceType";
 
     private APIProcessInstanceConverter subject = new APIProcessInstanceConverter();
 
@@ -118,8 +116,6 @@ public class APIProcessInstanceConverterTest {
         assertThat(result.getAppVersion()).isEqualTo(appVersionString);
         assertThat(result.getProcessDefinitionName()).isEqualTo(PROCESS_DEFINITION_NAME);
         assertThat(result.getRootProcessInstanceId()).isEqualTo(ROOT_PROCESS_INSTANCE_ID);
-//        assertThat(result.getLinkedProcessInstanceId()).isEqualTo(LINKED_PROCESS_INSTANCE_ID);
-//        assertThat(result.getLinkedProcessInstanceType()).isEqualTo(LINKED_PROCESS_INSTANCE_TYPE);
     }
 
     private ExecutionEntity anInternalProcessInstance(Integer appVersion) {
@@ -139,8 +135,6 @@ public class APIProcessInstanceConverterTest {
         internalProcessInstance.setAppVersion(appVersion);
         internalProcessInstance.setProcessDefinitionName(PROCESS_DEFINITION_NAME);
         internalProcessInstance.setRootProcessInstanceId(ROOT_PROCESS_INSTANCE_ID);
-//        internalProcessInstance.setLinkedProcessInstanceId(LINKED_PROCESS_INSTANCE_ID);
-//        internalProcessInstance.setLinkedProcessInstanceType(LINKED_PROCESS_INSTANCE_TYPE);
 
         return internalProcessInstance;
     }

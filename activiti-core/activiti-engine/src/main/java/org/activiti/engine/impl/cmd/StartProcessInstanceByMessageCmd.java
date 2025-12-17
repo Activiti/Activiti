@@ -119,4 +119,12 @@ public class StartProcessInstanceByMessageCmd implements Command<ProcessInstance
 
         return processInstanceHelper.createAndStartProcessInstanceByMessage(options, messageName);
     }
+
+    public String getLinkedProcessInstanceId() {
+        return linkedProcessInstanceId;
+    }
+
+    public String getLinkedProcessInstanceType() {
+        return linkedProcessInstanceType;
+    }
 }

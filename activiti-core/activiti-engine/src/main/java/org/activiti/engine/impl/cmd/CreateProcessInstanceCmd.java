@@ -35,8 +35,6 @@ public class CreateProcessInstanceCmd implements Command<ProcessInstance> {
     protected String businessKey;
     protected String tenantId;
     protected String processInstanceName;
-    protected String linkedProcessInstanceId;
-    protected String linkedProcessInstanceType;
     protected ProcessInstanceHelper processInstanceHelper;
 
     public CreateProcessInstanceCmd(
@@ -72,8 +70,6 @@ public class CreateProcessInstanceCmd implements Command<ProcessInstance> {
         );
         this.processInstanceName = processInstanceBuilder.getProcessInstanceName();
         this.transientVariables = processInstanceBuilder.getTransientVariables();
-        this.linkedProcessInstanceId = processInstanceBuilder.getLinkedProcessInstanceId();
-        this.linkedProcessInstanceType = processInstanceBuilder.getLinkedProcessInstanceType();
     }
 
     public ProcessInstance execute(CommandContext commandContext) {

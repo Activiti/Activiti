@@ -1,0 +1,63 @@
+package org.activiti.runtime.api.event.impl;
+
+import org.activiti.api.process.runtime.events.ProcessStartedEvent;
+import org.activiti.api.runtime.model.impl.ProcessInstanceImpl;
+import org.activiti.engine.delegate.event.ActivitiProcessStartedEvent;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
+class ToAPIProcessStartedEventConverterTest {
+
+    @Mock
+    private APIProcessInstanceConverter processInstanceConverter;
+
+    @Mock
+    private ActivitiProcessStartedEvent internalEvent;
+
+    @Mock
+    private ExecutionEntity executionEntity;
+
+    private ToAPIProcessStartedEventConverter converter;
+
+    @BeforeEach
+    public void setUp() {
+        converter = new ToAPIProcessStartedEventConverter(processInstanceConverter);
+    }
+
+    @Test
+    public void shouldConvertToProcessStartedEventWhenInternalEventIsValid() {
+
+        ProcessInstanceImpl processInstance = new ProcessInstanceImpl();
+        processInstance.setId("processInstanceId");
+
+        when(internalEvent.getEntity()).thenReturn(executionEntity);
+        when(executionEntity.getProcessInstance()).thenReturn(executionEntity);
+        when(processInstanceConverter.from(executionEntity)).thenReturn(processInstance);
+
+        when(internalEvent.getNestedProcessDefinitionId()).thenReturn("nestedProcDefId");
+        when(internalEvent.getNestedProcessInstanceId()).thenReturn("nestedProcInstId");
+        when(internalEvent.getLinkedProcessInstanceId()).thenReturn("linkedProcInstId");
+        when(internalEvent.getLinkedProcessInstanceType()).thenReturn("linkedProcInstType");
+
+        Optional<ProcessStartedEvent> result = converter.from(internalEvent);
+
+        assertThat(result).isPresent();
+        ProcessStartedEvent event = result.get();
+        assertThat(result.get().getProcessInstanceId()).isEqualTo(processInstance.getId());
+        assertThat(event.getNestedProcessDefinitionId()).isEqualTo("nestedProcDefId");
+        assertThat(event.getNestedProcessInstanceId()).isEqualTo("nestedProcInstId");
+        assertThat(event.getLinkedProcessInstanceId()).isEqualTo("linkedProcInstId");
+        assertThat(event.getLinkedProcessInstanceType()).isEqualTo("linkedProcInstType");
+    }
+
+}
