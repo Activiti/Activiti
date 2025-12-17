@@ -50,7 +50,7 @@ class ToAPIProcessStartedEventConverterTest {
     }
 
     @Test
-    public void shouldConvertToProcessStartedEventWhenInternalEventIsValid() {
+    void shouldConvertToProcessStartedEventWhenInternalEventIsValid() {
 
         ProcessInstanceImpl processInstance = new ProcessInstanceImpl();
         processInstance.setId("processInstanceId");

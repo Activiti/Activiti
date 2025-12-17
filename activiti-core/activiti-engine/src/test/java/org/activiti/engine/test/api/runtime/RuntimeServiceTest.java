@@ -1155,7 +1155,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     }
 
     @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
-    public void testStartProcessInstanceCmdWithLinkedProcess() throws IllegalAccessException, NoSuchFieldException {
+    public void testStartProcessInstanceCmdWithLinkedProcess() {
         RuntimeServiceImpl runtimeService = (RuntimeServiceImpl) this.runtimeService;
 
         ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
@@ -1186,7 +1186,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     }
 
     @Deployment(resources = { "org/activiti/engine/test/api/messageStartEvent.bpmn20.xml" })
-    public void testStartProcessInstanceByMessageCmdWithLinkedProcess() throws IllegalAccessException, NoSuchFieldException {
+    public void testStartProcessInstanceByMessageCmdWithLinkedProcess() {
         RuntimeServiceImpl runtimeService = (RuntimeServiceImpl) this.runtimeService;
 
         ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
