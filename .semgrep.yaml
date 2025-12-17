@@ -1,0 +1,15 @@
+rules:
+  - id: java-no-lombok-annotations
+    message: Lombok annotations are not allowed
+    severity: ERROR
+    languages: [java]
+    pattern-either:
+      - pattern-regex: "^\\s*@lombok\\.[A-Za-z_][A-Za-z0-9_]*"
+      - pattern-regex: "^\\s*import\\s+lombok\\.[A-Za-z_][A-Za-z0-9_]*;$"
+      - pattern-regex: "^\\s*import\\s+static\\s+lombok\\.[A-Za-z_][A-Za-z0-9_]*;$"
+
+  - id: pom-no-lombok
+    message: Lombok dependency detected in pom.xml
+    severity: ERROR
+    languages: [xml]
+    pattern-regex: "<groupId>\\s*org\\.projectlombok"
