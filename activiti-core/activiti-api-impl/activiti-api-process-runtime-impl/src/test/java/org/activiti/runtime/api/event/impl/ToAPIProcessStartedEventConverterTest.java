@@ -45,7 +45,7 @@ class ToAPIProcessStartedEventConverterTest {
     private ToAPIProcessStartedEventConverter converter;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         converter = new ToAPIProcessStartedEventConverter(processInstanceConverter);
     }
 
