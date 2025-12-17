@@ -68,7 +68,8 @@ class ToAPIProcessStartedEventConverterTest {
 
         assertThat(result).isPresent();
         ProcessStartedEvent event = result.get();
-        assertThat(result.get().getProcessInstanceId()).isEqualTo(processInstance.getId());
+        ProcessInstanceImpl eventProcessInstance = (ProcessInstanceImpl) event.getEntity();
+        assertThat(eventProcessInstance.getId()).isEqualTo(processInstance.getId());
         assertThat(event.getNestedProcessDefinitionId()).isEqualTo("nestedProcDefId");
         assertThat(event.getNestedProcessInstanceId()).isEqualTo("nestedProcInstId");
         assertThat(event.getLinkedProcessInstanceId()).isEqualTo("linkedProcInstId");
