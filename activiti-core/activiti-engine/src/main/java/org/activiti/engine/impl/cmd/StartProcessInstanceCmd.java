@@ -20,9 +20,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import org.activiti.bpmn.model.ValuedDataObject;
-import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.ActivitiObjectNotFoundException;
-import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.impl.ProcessInstanceCreationOptions;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
@@ -47,6 +45,8 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
     protected String tenantId;
     protected String processInstanceName;
     protected ProcessInstanceHelper processInstanceHelper;
+    protected String linkedProcessInstanceId;
+    protected String linkedProcessInstanceType;
 
     public StartProcessInstanceCmd(
         String processDefinitionKey,
@@ -81,7 +81,9 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
         );
         this.processInstanceName = processInstanceBuilder.getProcessInstanceName();
         this.transientVariables = processInstanceBuilder.getTransientVariables();
-    }
+        this.linkedProcessInstanceId = processInstanceBuilder.getLinkedProcessInstanceId();
+        this.linkedProcessInstanceType = processInstanceBuilder.getLinkedProcessInstanceType();
+  }
 
     public ProcessInstance execute(CommandContext commandContext) {
         DeploymentManager deploymentCache = commandContext.getProcessEngineConfiguration().getDeploymentManager();
@@ -93,30 +95,24 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
         );
 
         processInstanceHelper = commandContext.getProcessEngineConfiguration().getProcessInstanceHelper();
-        ProcessInstance processInstance = createAndStartProcessInstance(
-            processDefinition,
-            businessKey,
-            processInstanceName,
-            variables,
-            transientVariables
-        );
-        return processInstance;
+
+        ProcessInstanceCreationOptions options = ProcessInstanceCreationOptions
+            .builder(processDefinition)
+            .businessKey(businessKey)
+            .processInstanceName(processInstanceName)
+            .variables(variables)
+            .transientVariables(transientVariables)
+            .linkedProcessInstanceId(linkedProcessInstanceId)
+            .linkedProcessInstanceType(linkedProcessInstanceType)
+            .build();
+
+        return createAndStartProcessInstance(options);
     }
 
     protected ProcessInstance createAndStartProcessInstance(
-        ProcessDefinition processDefinition,
-        String businessKey,
-        String processInstanceName,
-        Map<String, Object> variables,
-        Map<String, Object> transientVariables
+        ProcessInstanceCreationOptions options
     ) {
-        return processInstanceHelper.createAndStartProcessInstance(
-            processDefinition,
-            businessKey,
-            processInstanceName,
-            variables,
-            transientVariables
-        );
+        return processInstanceHelper.createAndStartProcessInstance(options);
     }
 
     protected Map<String, Object> processDataObjects(Collection<ValuedDataObject> dataObjects) {
@@ -128,5 +124,13 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
             }
         }
         return variablesMap;
+    }
+
+    public String getLinkedProcessInstanceId() {
+        return linkedProcessInstanceId;
+    }
+
+    public String getLinkedProcessInstanceType() {
+        return linkedProcessInstanceType;
     }
 }
