@@ -255,7 +255,7 @@
       <dependency>
         <groupId>org.springframework.security</groupId>
         <artifactId>spring-security-crypto</artifactId>
-        <version>7.0.0</version>
+        <version>7.0.2</version>
       </dependency>
       <dependency>
         <groupId>org.springframework.security</groupId>
