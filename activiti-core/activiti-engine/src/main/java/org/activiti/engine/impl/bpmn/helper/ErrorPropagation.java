@@ -281,19 +281,19 @@ public class ErrorPropagation {
 
         String compareErrorCode = retrieveErrorCode(bpmnModel, errorRef);
 
-        findCatchingEventSubprocesses(eventMap, process, bpmnModel, compareErrorCode);
+        eventMap.putAll(findCatchingEventSubprocesses(process, bpmnModel, compareErrorCode));
 
-        findCatchingBoundaryEvents(eventMap, process, bpmnModel, compareErrorCode);
+        eventMap.putAll(findCatchingBoundaryEvents(process, bpmnModel, compareErrorCode));
 
         return eventMap;
     }
 
-    private static void findCatchingEventSubprocesses(
-        Map<String, List<Event>> eventMap,
+    private static Map<String, List<Event>> findCatchingEventSubprocesses(
         Process process,
         BpmnModel bpmnModel,
         String compareErrorCode
     ) {
+        Map<String, List<Event>> eventMap = new HashMap<>();
         List<EventSubProcess> subProcesses = process.findFlowElementsOfType(EventSubProcess.class, true);
         for (EventSubProcess eventSubProcess : subProcesses) {
             for (FlowElement flowElement : eventSubProcess.getFlowElements()) {
@@ -308,14 +308,15 @@ public class ErrorPropagation {
                 }
             }
         }
+        return eventMap;
     }
 
-    private static void findCatchingBoundaryEvents(
-        Map<String, List<Event>> eventMap,
+    private static Map<String, List<Event>> findCatchingBoundaryEvents(
         Process process,
         BpmnModel bpmnModel,
         String compareErrorCode
     ) {
+        Map<String, List<Event>> eventMap = new HashMap<>();
         List<BoundaryEvent> boundaryEvents = process.findFlowElementsOfType(BoundaryEvent.class, true);
         List<BoundaryEvent> boundaryEventsWithoutErrorCode = new ArrayList<>();
 
@@ -338,6 +339,8 @@ public class ErrorPropagation {
         for (BoundaryEvent boundaryEvent : boundaryEventsWithoutErrorCode) {
             addBoundaryEventToMap(eventMap, boundaryEvent);
         }
+
+        return eventMap;
     }
 
     private static void addBoundaryEventToMap(Map<String, List<Event>> eventMap, BoundaryEvent boundaryEvent) {

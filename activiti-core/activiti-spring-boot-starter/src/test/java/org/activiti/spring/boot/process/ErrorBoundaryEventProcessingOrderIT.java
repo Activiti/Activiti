@@ -39,7 +39,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 /**
  * Integration tests for validating that BPMN error boundary events with specific error codes
  * are processed before catch-all boundary events (those with no error code).
- *
  * This test class validates the fix in ErrorPropagation.java that ensures proper processing
  * order of error boundary events.
  */
@@ -90,8 +89,6 @@ public class ErrorBoundaryEventProcessingOrderIT {
 
         // Validate error events received
         assertThat(listener.getErrorReceivedEvents())
-            .isNotEmpty()
-            .hasSize(1)
             .extracting(
                 event -> event.getEntity().getElementId(),
                 event -> event.getEntity().getErrorCode()
@@ -99,25 +96,6 @@ public class ErrorBoundaryEventProcessingOrderIT {
             .containsExactly(
                 Tuple.tuple("catchError1", "ERROR_CODE_1")
             );
-
-        // Verify that the specific error handler was triggered, not the catch-all
-        assertThat(listener.getErrorReceivedEvents())
-            .extracting(event -> event.getEntity().getElementId())
-            .doesNotContain("catchErrorAny")
-            .contains("catchError1");
-
-        // Additional validation: error code should not be null (proving it's not the catch-all)
-        assertThat(listener.getErrorReceivedEvents())
-            .allSatisfy(event -> {
-                assertThat(event.getEntity().getErrorCode())
-                    .as("Error code should not be null for specific error handlers")
-                    .isNotNull()
-                    .isEqualTo("ERROR_CODE_1");
-            });
-
-        // Verify the catch-all handler was NOT executed
-        assertThat(listener.getErrorReceivedEvents())
-            .noneMatch(event -> event.getEntity().getElementId().equals("catchErrorAny"));
     }
 
     @Test
@@ -137,8 +115,6 @@ public class ErrorBoundaryEventProcessingOrderIT {
 
         // Validate that only the catch-all error event was received
         assertThat(listener.getErrorReceivedEvents())
-            .isNotEmpty()
-            .hasSize(1)
             .extracting(
                 event -> event.getEntity().getElementId(),
                 event -> event.getEntity().getErrorCode()
@@ -146,16 +122,6 @@ public class ErrorBoundaryEventProcessingOrderIT {
             .containsExactly(
                 Tuple.tuple("catchErrorAny", "UNHANDLED_ERROR")
             );
-
-        // Verify that the catch-all handler was executed
-        assertThat(listener.getErrorReceivedEvents())
-            .extracting(event -> event.getEntity().getElementId())
-            .contains("catchErrorAny")
-            .doesNotContain("catchError1");
-
-        // Verify the specific handler (catchError1) was NOT executed
-        assertThat(listener.getErrorReceivedEvents())
-            .noneMatch(event -> event.getEntity().getElementId().equals("catchError1"));
     }
 
     @Test
@@ -182,26 +148,6 @@ public class ErrorBoundaryEventProcessingOrderIT {
             });
     }
 
-    @Test
-    public void should_NotExecuteMultipleBoundaryEvents_When_OneMatchesError() {
-        securityUtil.logInAs("user");
-
-        ProcessInstance processInstance = processRuntime.start(
-            ProcessPayloadBuilder.start().withProcessDefinitionKey(ERROR_BOUNDARY_EVENT_PROCESSING_ORDER).build()
-        );
-
-        assertThat(processInstance).isNotNull();
-
-        // Verify that ONLY ONE boundary event is executed (not multiple)
-        assertThat(listener.getErrorReceivedEvents())
-            .as("Only one boundary event should be executed per error")
-            .hasSize(1);
-
-        // Verify it's the correct specific handler
-        assertThat(listener.getErrorReceivedEvents())
-            .extracting(event -> event.getEntity().getElementId())
-            .containsOnly("catchError1");
-    }
 
     private void checkProcessAndTask(String processInstanceId, String taskName) {
         ProcessInstance processInstance = processRuntime.processInstance(processInstanceId);
@@ -216,6 +162,6 @@ public class ErrorBoundaryEventProcessingOrderIT {
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50), getTasksPayload);
 
         assertThat(tasks.getContent()).hasSize(1);
-        assertThat(tasks.getContent().get(0).getName()).isEqualTo(taskName);
+        assertThat(tasks.getContent().getFirst().getName()).isEqualTo(taskName);
     }
 }
