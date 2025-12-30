@@ -37,16 +37,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 /**
- * Integration tests for validating that BPMN error boundary events with specific error codes
- * are processed before catch-all boundary events (those with no error code).
+ * Integration tests for validating that BPMN error handlers (boundary events and event subprocesses)
+ * with specific error codes are processed before catch-all handlers (those with no error code).
  * This test class validates the fix in ErrorPropagation.java that ensures proper processing
- * order of error boundary events.
+ * order of error boundary events and error event subprocesses.
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-public class ErrorBoundaryEventProcessingOrderIT {
+public class EventProcessingOrderIT {
 
     private static final String ERROR_BOUNDARY_EVENT_PROCESSING_ORDER = "errorBoundaryEventProcessingOrder";
     private static final String ERROR_BOUNDARY_EVENT_CATCH_ALL = "errorBoundaryEventCatchAll";
+    private static final String ERROR_EVENT_SUBPROCESS_PROCESSING_ORDER = "errorEventSubprocessProcessingOrder";
+    private static final String ERROR_EVENT_SUBPROCESS_CATCH_ALL = "errorEventSubprocessCatchAll";
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -148,6 +150,79 @@ public class ErrorBoundaryEventProcessingOrderIT {
             });
     }
 
+    @Test
+    public void should_ProcessSpecificEventSubprocessHandler_NotCatchAll_When_SpecificErrorCodeMatches() {
+        securityUtil.logInAs("user");
+
+        ProcessInstance processInstance = processRuntime.start(
+            ProcessPayloadBuilder.start().withProcessDefinitionKey(ERROR_EVENT_SUBPROCESS_PROCESSING_ORDER).build()
+        );
+
+        assertThat(processInstance).isNotNull();
+
+        // Verify that ERROR_CODE_1 is caught by the specific event subprocess handler, not the catch-all
+        checkProcessAndTask(processInstance.getId(), "Event Subprocess Task 1");
+
+        // Validate error events received
+        assertThat(listener.getErrorReceivedEvents())
+            .extracting(
+                event -> event.getEntity().getElementId(),
+                event -> event.getEntity().getErrorCode()
+            )
+            .containsExactly(
+                Tuple.tuple("eventSubprocessError1Start", "ERROR_CODE_1")
+            );
+    }
+
+    @Test
+    public void should_ExecuteCatchAllEventSubprocess_When_NoSpecificEventSubprocessHandlerMatches() {
+        securityUtil.logInAs("user");
+
+        // This process throws UNHANDLED_ERROR which has no specific event subprocess handler
+        // Only the catch-all event subprocess (with no error code) should catch it
+        ProcessInstance processInstance = processRuntime.start(
+            ProcessPayloadBuilder.start().withProcessDefinitionKey(ERROR_EVENT_SUBPROCESS_CATCH_ALL).build()
+        );
+
+        assertThat(processInstance).isNotNull();
+
+        // Verify that the catch-all event subprocess handler caught the unhandled error
+        checkProcessAndTask(processInstance.getId(), "Event Subprocess Task Any");
+
+        // Validate that only the catch-all error event was received
+        assertThat(listener.getErrorReceivedEvents())
+            .extracting(
+                event -> event.getEntity().getElementId(),
+                event -> event.getEntity().getErrorCode()
+            )
+            .containsExactly(
+                Tuple.tuple("eventSubprocessCatchAllStart", "UNHANDLED_ERROR")
+            );
+    }
+
+    @Test
+    public void should_PrioritizeSpecificEventSubprocessHandlers_Over_CatchAllHandler() {
+        securityUtil.logInAs("user");
+
+        ProcessInstance processInstance = processRuntime.start(
+            ProcessPayloadBuilder.start().withProcessDefinitionKey(ERROR_EVENT_SUBPROCESS_PROCESSING_ORDER).build()
+        );
+
+        assertThat(processInstance).isNotNull();
+
+        // Verify that only one event subprocess handler was triggered (the specific one)
+        assertThat(listener.getErrorReceivedEvents())
+            .hasSize(1)
+            .first()
+            .satisfies(event -> {
+                assertThat(event.getEntity().getElementId())
+                    .as("Only the specific event subprocess handler should be triggered")
+                    .isEqualTo("eventSubprocessError1Start");
+                assertThat(event.getEntity().getErrorCode())
+                    .as("Error code should match the specific event subprocess handler")
+                    .isEqualTo("ERROR_CODE_1");
+            });
+    }
 
     private void checkProcessAndTask(String processInstanceId, String taskName) {
         ProcessInstance processInstance = processRuntime.processInstance(processInstanceId);

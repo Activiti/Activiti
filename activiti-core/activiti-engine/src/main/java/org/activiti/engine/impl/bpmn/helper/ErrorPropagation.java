@@ -295,6 +295,8 @@ public class ErrorPropagation {
     ) {
         Map<String, List<Event>> eventMap = new HashMap<>();
         List<EventSubProcess> subProcesses = process.findFlowElementsOfType(EventSubProcess.class, true);
+        List<EventSubProcess> eventSubprocessesWithoutErrorCode = new ArrayList<>();
+
         for (EventSubProcess eventSubProcess : subProcesses) {
             for (FlowElement flowElement : eventSubProcess.getFlowElements()) {
                 if (flowElement instanceof StartEvent startEvent) {
@@ -302,13 +304,36 @@ public class ErrorPropagation {
                         String eventErrorCode = retrieveErrorCode(bpmnModel, errorEventDef.getErrorRef());
 
                         if (isErrorCodeMatching(eventErrorCode, compareErrorCode)) {
-                            eventMap.put(eventSubProcess.getId(), Collections.singletonList(startEvent));
+                            if (eventErrorCode == null) {
+                                eventSubprocessesWithoutErrorCode.add(eventSubProcess);
+                            } else {
+                                addEventSubprocessToMap(eventMap, eventSubProcess, startEvent);
+                            }
                         }
                     });
                 }
             }
         }
+
+        for (EventSubProcess eventSubProcess : eventSubprocessesWithoutErrorCode) {
+            for (FlowElement flowElement : eventSubProcess.getFlowElements()) {
+                if (flowElement instanceof StartEvent startEvent) {
+                    startEvent.getErrorEventDefinition().ifPresent(errorEventDef -> {
+                        addEventSubprocessToMap(eventMap, eventSubProcess, startEvent);
+                    });
+                }
+            }
+        }
+
         return eventMap;
+    }
+
+    private static void addEventSubprocessToMap(
+        Map<String, List<Event>> eventMap,
+        EventSubProcess eventSubProcess,
+        StartEvent startEvent
+    ) {
+        eventMap.put(eventSubProcess.getId(), Collections.singletonList(startEvent));
     }
 
     private static Map<String, List<Event>> findCatchingBoundaryEvents(
