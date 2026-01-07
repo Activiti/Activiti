@@ -56,7 +56,9 @@ public class StartCreatedProcessInstanceCmd<T> implements Command<ProcessInstanc
             commandContext,
             variables,
             process.getInitialFlowElement(),
-            Collections.emptyMap()
+            Collections.emptyMap(),
+            null,
+            null
         );
         return processExecution;
     }

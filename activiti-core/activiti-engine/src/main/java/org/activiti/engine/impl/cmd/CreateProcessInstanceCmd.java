@@ -16,9 +16,6 @@
 package org.activiti.engine.impl.cmd;
 
 import java.util.Map;
-import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.ActivitiObjectNotFoundException;
-import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
@@ -90,7 +87,6 @@ public class CreateProcessInstanceCmd implements Command<ProcessInstance> {
             businessKey,
             processInstanceName,
             variables,
-            transientVariables
-        );
+            transientVariables);
     }
 }

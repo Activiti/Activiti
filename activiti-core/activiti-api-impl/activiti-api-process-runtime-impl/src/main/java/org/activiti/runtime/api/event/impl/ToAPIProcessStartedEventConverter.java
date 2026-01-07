@@ -38,6 +38,8 @@ public class ToAPIProcessStartedEventConverter
         );
         processStartedEvent.setNestedProcessDefinitionId(internalEvent.getNestedProcessDefinitionId());
         processStartedEvent.setNestedProcessInstanceId(internalEvent.getNestedProcessInstanceId());
+        processStartedEvent.setLinkedProcessInstanceId(internalEvent.getLinkedProcessInstanceId());
+        processStartedEvent.setLinkedProcessInstanceType(internalEvent.getLinkedProcessInstanceType());
         return Optional.of(processStartedEvent);
     }
 }

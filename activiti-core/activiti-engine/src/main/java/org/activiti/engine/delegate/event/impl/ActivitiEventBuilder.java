@@ -128,6 +128,39 @@ public class ActivitiEventBuilder {
     }
 
     /**
+     * @param entity
+     *            the entity this event targets
+     * @param variables
+     *            the variables associated with this entity
+     * @param linkedProcessInstanceId
+     *            the id of the linked process instance
+     * @param linkedProcessInstanceType
+     *            the type of the linked process instance
+     * @return an {@link ActivitiProcessStartedEvent}. In case an {@link ExecutionContext} is active, the execution related
+     *         event fields will be populated. If not, execution details will be retrieved from the {@link Object} if
+     *         possible.
+     */
+    @SuppressWarnings("rawtypes")
+    public static ActivitiProcessStartedEvent createProcessStartedEvent(
+        final Object entity,
+        final Map variables,
+        final boolean localScope,
+        final String linkedProcessInstanceId,
+        final String linkedProcessInstanceType
+    ) {
+        final ActivitiProcessStartedEventImpl newEvent = new ActivitiProcessStartedEventImpl(
+            entity,
+            variables,
+            localScope,
+            linkedProcessInstanceId,
+            linkedProcessInstanceType
+        );
+
+        populateEventWithCurrentContext(newEvent);
+        return newEvent;
+    }
+
+    /**
      * @param type
      *          type of event
      * @param entity
