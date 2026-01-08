@@ -251,18 +251,6 @@
         <version>2.6.0</version>
       </dependency>
       <!-- temporary security fix -->
-      <!-- temporary security fix AAE-33092 -->
-      <dependency>
-        <groupId>org.springframework.security</groupId>
-        <artifactId>spring-security-crypto</artifactId>
-        <version>7.0.0</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.security</groupId>
-        <artifactId>spring-security-core</artifactId>
-        <version>6.5.5</version>
-      </dependency>
-      <!-- temporary security fix -->
       <!-- temporary security fix AAE-35515-->
       <dependency>
         <groupId>org.apache.commons</groupId>
