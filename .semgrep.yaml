@@ -46,7 +46,4 @@ rules:
     message: Lombok dependency detected in pom.xml
     severity: ERROR
     languages: [xml]
-    paths:
-      exclude:
-        - "/alfresco-process-service-parent/alfresco-process-analytics-service-parent/**"
     pattern-regex: "<groupId>\\s*org\\.projectlombok"
