@@ -4,9 +4,43 @@ rules:
     severity: ERROR
     languages: [java]
     pattern-either:
-      - pattern-regex: "^\\s*@lombok\\.[A-Za-z_][A-Za-z0-9_]*"
-      - pattern-regex: "^\\s*import\\s+lombok\\.[A-Za-z_][A-Za-z0-9_]*;$"
-      - pattern-regex: "^\\s*import\\s+static\\s+lombok\\.[A-Za-z_][A-Za-z0-9_]*;$"
+      # Fully qualified Lombok annotations, e.g. @lombok.Data(...)
+      - pattern: |
+          @lombok.$ANNOTATION(...)
+      # Fully qualified Lombok annotations from subpackages, e.g. @lombok.experimental.Accessors(...)
+      - pattern: |
+          @lombok.$SUBPKG.$ANNOTATION(...)
+      # Fully qualified Lombok annotations from nested subpackages, e.g. @lombok.extern.slf4j.Slf4j(...)
+      - pattern: |
+          @lombok.$SUBPKG1.$SUBPKG2.$ANNOTATION(...)
+      # Typical Lombok usage: imported annotation and simple-name usage, e.g.:
+      #   import lombok.Data;
+      #   @Data(...)
+      - patterns:
+          - pattern: |
+              @$ANNOTATION(...)
+          - pattern-inside: |
+              import lombok.$ANNOTATION;
+      # Typical Lombok usage from subpackages, e.g.:
+      #   import lombok.experimental.Accessors;
+      #   @Accessors(...)
+      - patterns:
+          - pattern: |
+              @$ANNOTATION(...)
+          - pattern-inside: |
+              import lombok.$SUBPKG.$ANNOTATION;
+      # Typical Lombok usage from nested subpackages, e.g.:
+      #   import lombok.extern.slf4j.Slf4j;
+      #   @Slf4j(...)
+      - patterns:
+          - pattern: |
+              @$ANNOTATION(...)
+          - pattern-inside: |
+              import lombok.$SUBPKG1.$SUBPKG2.$ANNOTATION;
+      # Lombok imports (non-static) - covers all subpackages
+      - pattern-regex: "^\\s*import\\s+lombok\\.(?:[A-Za-z_][A-Za-z0-9_]*\\.)*(?:[A-Za-z_][A-Za-z0-9_]*|\\*)\\s*;$"
+      # Lombok static imports - covers all subpackages
+      - pattern-regex: "^\\s*import\\s+static\\s+lombok\\.(?:[A-Za-z_][A-Za-z0-9_]*\\.)*(?:[A-Za-z_][A-Za-z0-9_]*|\\*)\\s*;$"
 
   - id: pom-no-lombok
     message: Lombok dependency detected in pom.xml
