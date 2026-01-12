@@ -333,7 +333,7 @@ public class ErrorPropagation {
         EventSubProcess eventSubProcess,
         StartEvent startEvent
     ) {
-        eventMap.put(eventSubProcess.getId(), Collections.singletonList(startEvent));
+        eventMap.computeIfAbsent(eventSubProcess.getId(), k -> new ArrayList<>()).add(startEvent);
     }
 
     private static Map<String, List<Event>> findCatchingBoundaryEvents(
