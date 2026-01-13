@@ -37,15 +37,15 @@ public class TaskListenerInvocation extends DelegateInvocation {
         this.delegateTask = delegateTask;
     }
 
-  protected void invoke() {
-    TaskComparatorImpl taskComparator = new TaskComparatorImpl();
-    taskComparator.setOriginalTask((TaskInfo)delegateTask);
+    protected void invoke() {
+        TaskComparatorImpl taskComparator = new TaskComparatorImpl();
+        taskComparator.setOriginalTask((TaskInfo)delegateTask);
 
-    executionListenerInstance.notify(delegateTask);
+        executionListenerInstance.notify(delegateTask);
 
-    TaskUpdater taskUpdater = new TaskUpdater(Context.getCommandContext(), false);
-    taskUpdater.updateTask(taskComparator.getOriginalTask(), (TaskInfo) delegateTask);
-  }
+        TaskUpdater taskUpdater = new TaskUpdater(Context.getCommandContext(), false);
+        taskUpdater.updateTask(taskComparator.getOriginalTask(), (TaskInfo) delegateTask);
+    }
 
     public Object getTarget() {
         return executionListenerInstance;
