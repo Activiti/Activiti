@@ -31,6 +31,7 @@ import java.util.Map;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.history.HistoricIdentityLink;
 import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -39,6 +40,22 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
 public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
+
+    @Deployment(resources = {"org/activiti/engine/test/history/oneTaskProcess.bpmn20.xml"})
+    public void testHistoricProcessInstanceMaxResults() {
+        // GIVEN: 5 running process instances
+        for (int i=0; i<5; i++) {
+            runtimeService.startProcessInstanceByKey("oneTaskProcess", "myBusinessKey");
+        }
+
+        final HistoricProcessInstanceQuery query = historyService.createHistoricProcessInstanceQuery();
+        // WHEN: listing, at most, 3 running process instances
+        // THEN: the result must have 3 results
+        assertThat(query.listPage(0, 3)).hasSize(3);
+        // THEN: total number of process instances is 5
+        assertThat(query.count()).isEqualTo(5);
+    }
+
 
     @Deployment(resources = {"org/activiti/engine/test/history/oneTaskProcess.bpmn20.xml"})
     public void testHistoricDataCreatedForProcessExecution() {

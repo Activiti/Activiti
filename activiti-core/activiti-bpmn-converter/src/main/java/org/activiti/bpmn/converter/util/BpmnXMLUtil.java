@@ -130,6 +130,7 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
   public static ExtensionElement parseExtensionElement(XMLStreamReader xtr) throws Exception {
     ExtensionElement extensionElement = new ExtensionElement();
     extensionElement.setName(xtr.getLocalName());
+    BpmnXMLUtil.addXMLLocation(extensionElement, xtr);
     if (StringUtils.isNotEmpty(xtr.getNamespaceURI())) {
       extensionElement.setNamespace(xtr.getNamespaceURI());
     }
@@ -156,15 +157,20 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
       if (xtr.isCharacters() || XMLStreamReader.CDATA == xtr.getEventType()) {
         if (StringUtils.isNotEmpty(xtr.getText().trim())) {
             if (StringUtils.isBlank(extensionElement.getElementText())) {
-                  extensionElement.setElementText(xtr.getText().trim());
+                  extensionElement.setElementText(xtr.getText());
             } else {
-                  extensionElement.setElementText(extensionElement.getElementText().concat(xtr.getText().trim()));
+                  extensionElement.setElementText(extensionElement.getElementText().concat(xtr.getText()));
             }
         }
       } else if (xtr.isStartElement()) {
         ExtensionElement childExtensionElement = parseExtensionElement(xtr);
         extensionElement.addChildElement(childExtensionElement);
       } else if (xtr.isEndElement() && extensionElement.getName().equalsIgnoreCase(xtr.getLocalName())) {
+          // Only complete the trim at the end of the extended element,
+          // remove excess whitespace at the beginning and end, and retain all line breaks and formatting in the middle
+          if (extensionElement.getElementText() != null) {
+              extensionElement.setElementText(extensionElement.getElementText().trim());
+          }
         readyWithExtensionElement = true;
       }
     }
