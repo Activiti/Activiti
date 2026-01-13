@@ -275,7 +275,7 @@ public class ErrorPropagation {
         String processDefinitionId,
         String errorRef
     ) {
-        Map<String, List<Event>> eventMap = new HashMap<>();
+        Map<String, List<Event>> eventMap = new LinkedHashMap<>();
         Process process = ProcessDefinitionUtil.getProcess(processDefinitionId);
         BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(processDefinitionId);
 
@@ -293,7 +293,7 @@ public class ErrorPropagation {
         BpmnModel bpmnModel,
         String compareErrorCode
     ) {
-        Map<String, List<Event>> eventMap = new HashMap<>();
+        Map<String, List<Event>> eventMap = new LinkedHashMap<>();
         List<EventSubProcess> subProcesses = process.findFlowElementsOfType(EventSubProcess.class, true);
         List<EventSubProcess> eventSubprocessesWithoutErrorCode = new ArrayList<>();
 
@@ -343,7 +343,7 @@ public class ErrorPropagation {
         BpmnModel bpmnModel,
         String compareErrorCode
     ) {
-        Map<String, List<Event>> eventMap = new HashMap<>();
+        Map<String, List<Event>> eventMap = new LinkedHashMap<>();
         List<BoundaryEvent> boundaryEvents = process.findFlowElementsOfType(BoundaryEvent.class, true);
         List<BoundaryEvent> boundaryEventsWithoutErrorCode = new ArrayList<>();
 
