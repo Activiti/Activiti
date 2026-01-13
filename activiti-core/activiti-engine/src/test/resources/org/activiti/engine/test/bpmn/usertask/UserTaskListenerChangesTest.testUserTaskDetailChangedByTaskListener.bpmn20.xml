@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn" targetNamespace="Examples">
+  <process id="process">
+
+    <startEvent id="theStart" />
+    <sequenceFlow sourceRef="theStart" targetRef="userTask" />
+    <userTask id="userTask" activiti:dueDate="1970-01-01">
+      <extensionElements>
+        <activiti:taskListener event="create" class="org.activiti.engine.test.bpmn.usertask.UpdateTaskDetailsTaskListener"/>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow sourceRef="userTask" targetRef="theEnd" />
+    <endEvent id="theEnd" />
+
+  </process>
+
+</definitions>
