@@ -20,11 +20,8 @@ package org.activiti.engine.impl.bpmn.listener;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.TaskListener;
-import org.activiti.engine.impl.bpmn.helper.task.TaskComparatorImpl;
-import org.activiti.engine.impl.bpmn.helper.task.TaskUpdater;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
-import org.activiti.engine.task.TaskInfo;
 
 /**
 
@@ -45,18 +42,12 @@ public class ScriptTaskListener implements TaskListener {
   public void notify(DelegateTask delegateTask) {
     validateParameters();
 
-    TaskComparatorImpl taskComparator = new TaskComparatorImpl();
-    taskComparator.setOriginalTask((TaskInfo)delegateTask);
-
     ScriptingEngines scriptingEngines = Context.getProcessEngineConfiguration().getScriptingEngines();
     Object result = scriptingEngines.evaluate(script.getExpressionText(), language.getExpressionText(), delegateTask, autoStoreVariables);
 
     if (resultVariable != null) {
       delegateTask.setVariable(resultVariable.getExpressionText(), result);
     }
-
-    TaskUpdater taskUpdater = new TaskUpdater(Context.getCommandContext(), false);
-    taskUpdater.updateTask(taskComparator.getOriginalTask(), (TaskInfo) delegateTask);
   }
 
   protected void validateParameters() {
