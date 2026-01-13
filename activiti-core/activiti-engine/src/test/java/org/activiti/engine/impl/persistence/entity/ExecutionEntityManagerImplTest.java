@@ -146,8 +146,7 @@ public class ExecutionEntityManagerImplTest {
             processDefinition,
             businessKey,
             tenantId,
-            null
-        );
+            null);
 
         assertThat(processInstanceResult.getProcessDefinitionId()).isEqualTo("processDefinitionId");
         assertThat(processInstanceResult.getProcessDefinitionKey()).isEqualTo("processDefinitionKey");
@@ -338,8 +337,7 @@ public class ExecutionEntityManagerImplTest {
             processDefinition,
             businessKey,
             tenantId,
-            null
-        );
+            null);
         assertThat(processInstanceResult.getStartTime()).isNull();
 
         ExecutionEntity processInstanceUpdated = executionEntityManager.updateProcessInstanceStartDate(

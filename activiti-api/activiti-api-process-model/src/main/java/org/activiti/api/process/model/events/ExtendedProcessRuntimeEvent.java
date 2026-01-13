@@ -29,4 +29,14 @@ public interface ExtendedProcessRuntimeEvent<T extends ProcessInstance> extends 
      *         if the current process instance is not started into a nested process.
      */
     String getNestedProcessDefinitionId();
+
+    /**
+     * @return the id of the linked process instance, or null if there is no linked process instance.
+     */
+    String getLinkedProcessInstanceId();
+
+    /**
+     * @return the type of the linked process instance, or null if there is no linked process instance.
+     */
+    String getLinkedProcessInstanceType();
 }

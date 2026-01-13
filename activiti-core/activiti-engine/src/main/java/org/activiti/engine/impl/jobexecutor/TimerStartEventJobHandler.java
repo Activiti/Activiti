@@ -20,6 +20,7 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.impl.ProcessInstanceCreationOptions;
 import org.activiti.engine.impl.cmd.StartProcessInstanceCmd;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -69,14 +70,16 @@ public class TimerStartEventJobHandler extends TimerEventHandler implements JobH
                     ProcessInstanceHelper processInstanceHelper = commandContext
                         .getProcessEngineConfiguration()
                         .getProcessInstanceHelper();
+
+                    ProcessInstanceCreationOptions options = ProcessInstanceCreationOptions
+                        .builder(processDefinitionEntity)
+                        .variables(new HashMap<>())
+                        .build();
+
                     processInstanceHelper.createAndStartProcessInstanceWithInitialFlowElement(
-                        processDefinitionEntity,
-                        null,
-                        null,
+                        options,
                         flowElement,
                         process,
-                        new HashMap<>(),
-                        null,
                         true
                     );
                 } else {
