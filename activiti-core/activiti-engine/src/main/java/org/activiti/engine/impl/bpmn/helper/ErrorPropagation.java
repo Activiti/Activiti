@@ -315,12 +315,14 @@ public class ErrorPropagation {
             }
         }
 
-        for (EventSubProcess eventSubProcess : eventSubprocessesWithoutErrorCode) {
-            for (FlowElement flowElement : eventSubProcess.getFlowElements()) {
-                if (flowElement instanceof StartEvent startEvent) {
-                    startEvent.getErrorEventDefinition().ifPresent(errorEventDef -> {
-                        addEventSubprocessToMap(eventMap, eventSubProcess, startEvent);
-                    });
+        if (eventMap.isEmpty()) {
+            for (EventSubProcess eventSubProcess : eventSubprocessesWithoutErrorCode) {
+                for (FlowElement flowElement : eventSubProcess.getFlowElements()) {
+                    if (flowElement instanceof StartEvent startEvent) {
+                        startEvent.getErrorEventDefinition().ifPresent(errorEventDef -> {
+                            addEventSubprocessToMap(eventMap, eventSubProcess, startEvent);
+                        });
+                    }
                 }
             }
         }
