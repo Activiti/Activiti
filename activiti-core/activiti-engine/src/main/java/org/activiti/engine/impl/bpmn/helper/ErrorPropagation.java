@@ -109,6 +109,7 @@ public class ErrorPropagation {
                     if (CollectionUtil.isNotEmpty(events) && events.get(0) instanceof StartEvent) {
                         if (currentContainer.getFlowElement(refId) != null) {
                             matchingEvent = events.get(0);
+                            break;
                         }
                     }
                 }
@@ -315,14 +316,12 @@ public class ErrorPropagation {
             }
         }
 
-        if (eventMap.isEmpty()) {
-            for (EventSubProcess eventSubProcess : eventSubprocessesWithoutErrorCode) {
-                for (FlowElement flowElement : eventSubProcess.getFlowElements()) {
-                    if (flowElement instanceof StartEvent startEvent) {
-                        startEvent.getErrorEventDefinition().ifPresent(errorEventDef -> {
-                            addEventSubprocessToMap(eventMap, eventSubProcess, startEvent);
-                        });
-                    }
+        for (EventSubProcess eventSubProcess : eventSubprocessesWithoutErrorCode) {
+            for (FlowElement flowElement : eventSubProcess.getFlowElements()) {
+                if (flowElement instanceof StartEvent startEvent) {
+                    startEvent.getErrorEventDefinition().ifPresent(errorEventDef -> {
+                        addEventSubprocessToMap(eventMap, eventSubProcess, startEvent);
+                    });
                 }
             }
         }
