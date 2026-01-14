@@ -389,11 +389,7 @@
       <include refid="leftJoinWithIdentityLink">
         <property name="tableAlias" value="link_user"/>
       </include>
-      and (
-      link_user.USER_ID_ = #{involvedUser}
-      or RES.ASSIGNEE_ = #{involvedUser}
-      or RES.OWNER_ = #{involvedUser}
-      )
+      and link_user.USER_ID_ = #{involvedUser}
     </if>
     <if test="involvedGroups != null &amp;&amp; involvedGroups.size() &gt; 0">
       <include refid="leftJoinWithIdentityLink">
@@ -848,6 +844,8 @@
       </if>
       <if test="involvedUser != null">
         and link_user.ID_ is not null
+        or RES.ASSIGNEE_ = #{involvedUser}
+        or RES.OWNER_ = #{involvedUser}
       </if>
       <if test="involvedGroups!=null &amp;&amp; involvedGroups.size() &gt; 0">
         and link_groups.ID_ is not null
