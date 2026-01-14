@@ -57,7 +57,7 @@
       </bpmn:subProcess>
 
       <!-- Event Subprocess with NO error code (catch-all) -->
-      <bpmn:subProcess id="eventSubprocessCatchAll" triggeredByEvent="true">
+      <bpmn:subProcess id="lastEventSubprocessCatchAll" triggeredByEvent="true">
         <bpmn:startEvent id="eventSubprocessCatchAllStart" isInterrupting="true">
           <bpmn:outgoing>flow8</bpmn:outgoing>
           <bpmn:errorEventDefinition />
