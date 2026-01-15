@@ -187,7 +187,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <project.scm.organization>Activiti</project.scm.organization>
     <project.scm.repository>Activiti</project.scm.repository>
-    <project.year>2025</project.year>
+    <project.year>2026</project.year>
 
     <java.release>${java.version}</java.release>
     <java.version>21</java.version>
