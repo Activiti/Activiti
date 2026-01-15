@@ -106,10 +106,9 @@ public class ErrorPropagation {
 
                 for (String refId : eventMap.keySet()) {
                     List<Event> events = eventMap.get(refId);
-                    if (CollectionUtil.isNotEmpty(events) && events.get(0) instanceof StartEvent) {
+                    if (matchingEvent == null && CollectionUtil.isNotEmpty(events) && events.get(0) instanceof StartEvent) {
                         if (currentContainer.getFlowElement(refId) != null) {
                             matchingEvent = events.get(0);
-                            break;
                         }
                     }
                 }
