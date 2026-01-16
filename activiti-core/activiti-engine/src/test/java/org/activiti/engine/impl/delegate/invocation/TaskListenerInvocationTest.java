@@ -20,6 +20,7 @@ import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.history.HistoryLevel;
+import org.activiti.engine.impl.history.HistoryManager;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntityImpl;
 import org.junit.Test;
@@ -27,6 +28,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -36,12 +38,16 @@ public class TaskListenerInvocationTest {
     private CommandContext commandContext;
     @Mock
     private ProcessEngineConfigurationImpl processEngineConfiguration;
+    @Mock
+    private HistoryManager historyManager;
+
 
     @Test
     public void testInvokeToPassCodeCoverageTest() {
         // mock environment setup
         Context.setCommandContext(commandContext);
         given(commandContext.getProcessEngineConfiguration()).willReturn(processEngineConfiguration);
+        given(commandContext.getHistoryManager()).willReturn(historyManager);
         given(processEngineConfiguration.getHistoryLevel()).willReturn(HistoryLevel.ACTIVITY);
 
         // build TaskListenerInvocation
@@ -49,12 +55,14 @@ public class TaskListenerInvocationTest {
         TaskListener executionListener = new TaskListener() {
             @Override
             public void notify(DelegateTask delegateTask) {
-
+                delegateTask.setAssignee("some user");
             }
         };
         TaskListenerInvocation taskListenerInvocation = new TaskListenerInvocation(executionListener, task);
 
         // call method
         taskListenerInvocation.invoke();
+
+        assertThat(task.getAssignee()).isEqualTo("some user");
     }
 }
