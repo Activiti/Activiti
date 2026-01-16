@@ -280,12 +280,12 @@
       <property name="isCount" value="false"/>
     </include>
     <choose>
-      <when test="'${v3_limitAfter}' != null and _databaseId != 'mssql' and _databaseId != 'oracle'">
+      <when test="'${v3_after_withLimit}' != null and _databaseId != 'mssql' and _databaseId != 'oracle'">
         ${orderBy}
-        ${v3_limitAfter}
+        ${v3_after_withLimit}
       </when>
       <otherwise>
-        ${v3_limitAfter}
+        ${v3_after_withLimit}
         ORDER BY rnk
       </otherwise>
     </choose>
