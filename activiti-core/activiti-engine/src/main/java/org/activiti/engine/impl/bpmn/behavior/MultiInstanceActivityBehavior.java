@@ -112,7 +112,11 @@ public abstract class MultiInstanceActivityBehavior
             }
         } else {
             getCommandContext().getHistoryManager().recordActivityStart((ExecutionEntity) execution);
-
+            Context.getProcessEngineConfiguration()
+                .getEventDispatcher()
+                .dispatchEvent(
+                    ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_STARTED, execution, execution.getCurrentFlowElement())
+                );
             innerActivityBehavior.execute(execution);
         }
     }
