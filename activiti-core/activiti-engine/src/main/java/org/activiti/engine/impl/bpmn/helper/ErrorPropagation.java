@@ -52,11 +52,11 @@ public class ErrorPropagation {
         try {
             Map<String, List<Event>> eventMap = findCatchingEventsForProcess(
                 execution.getProcessDefinitionId(),
-                errorRef
-            );
+                errorRef,
+                null);
 
             if (!eventMap.isEmpty()) {
-                isCatchExecutedForProcess = executeCatch(eventMap, execution, errorRef);
+                isCatchExecutedForProcess = executeCatch(eventMap, execution, errorRef, null);
             }
 
             if (!isCatchExecutedForProcess && isCallActivity(execution)) {
@@ -77,8 +77,8 @@ public class ErrorPropagation {
     protected static boolean executeCatch(
         Map<String, List<Event>> eventMap,
         DelegateExecution delegateExecution,
-        String errorId
-    ) {
+        String errorId,
+        String errorCode) {
         Event matchingEvent = null;
         ExecutionEntity currentExecution = (ExecutionEntity) delegateExecution;
         ExecutionEntity parentExecution = null;
@@ -133,7 +133,7 @@ public class ErrorPropagation {
         }
 
         if (matchingEvent != null && parentExecution != null) {
-            executeEventHandler(matchingEvent, parentExecution, currentExecution, errorId);
+            executeEventHandler(matchingEvent, parentExecution, currentExecution, errorId, errorCode);
             return true;
         } else {
             return false;
@@ -152,6 +152,7 @@ public class ErrorPropagation {
         ExecutionEntity processInstanceExecution = executionEntityManager.findById(execution.getProcessInstanceId());
 
         Map<String, List<Event>> eventMap = Collections.emptyMap();
+        String errorCode = getErrorCodeFromExecution(execution, errorRef);
         if (processInstanceExecution != null) {
             ExecutionEntity parentExecution = processInstanceExecution.getSuperExecution();
 
@@ -159,12 +160,12 @@ public class ErrorPropagation {
             toDeleteProcessInstanceIds.add(execution.getProcessInstanceId());
 
             while (!parentExecution.isRootExecution() && eventMap.isEmpty()) {
-                eventMap = findCatchingEventsForProcess(parentExecution.getProcessDefinitionId(), errorRef);
+                eventMap = findCatchingEventsForProcess(parentExecution.getProcessDefinitionId(), errorRef, errorCode);
                 if (!eventMap.isEmpty()) {
                     for (String processInstanceId : toDeleteProcessInstanceIds) {
                         deleteProcessInstanceEntity(errorRef, execution, executionEntityManager, processInstanceId);
                     }
-                    return executeCatch(eventMap, parentExecution, errorRef);
+                    return executeCatch(eventMap, parentExecution, errorRef, errorCode);
                 } else {
                     toDeleteProcessInstanceIds.add(parentExecution.getProcessInstanceId());
                     ExecutionEntity superExecution = parentExecution.getSuperExecution();
@@ -178,6 +179,24 @@ public class ErrorPropagation {
         }
 
         return false;
+    }
+
+    private static String getErrorCodeFromExecution(DelegateExecution execution, String errorRef) {
+        if (execution == null || errorRef == null) {
+            return null;
+        }
+
+        ExecutionEntity executionEntity = (ExecutionEntity) execution;
+        BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(executionEntity.getProcessDefinitionId());
+
+        if (bpmnModel != null && bpmnModel.getErrors() != null) {
+            Error error = bpmnModel.getErrors().get(errorRef);
+            if (error != null) {
+                return error.getErrorCode();
+            }
+        }
+
+        return null;
     }
 
     private static void deleteProcessInstanceEntity(
@@ -218,17 +237,18 @@ public class ErrorPropagation {
         Event event,
         ExecutionEntity parentExecution,
         ExecutionEntity currentExecution,
-        String errorId
-    ) {
+        String errorId,
+        String errorCode) {
         if (
             Context.getProcessEngineConfiguration() != null &&
             Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()
         ) {
             BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(parentExecution.getProcessDefinitionId());
             if (bpmnModel != null) {
-                String errorCode = Optional.ofNullable(bpmnModel.getErrors().get(errorId))
-                    .map(Error::getErrorCode)
-                    .orElse(errorId);
+                String resolvedErrorCode = errorCode != null ? errorCode :
+                    Optional.ofNullable(bpmnModel.getErrors().get(errorId))
+                        .map(Error::getErrorCode)
+                        .orElse(errorId);
 
                 Context.getProcessEngineConfiguration()
                     .getEventDispatcher()
@@ -237,7 +257,7 @@ public class ErrorPropagation {
                             ActivitiEventType.ACTIVITY_ERROR_RECEIVED,
                             event.getId(),
                             errorId,
-                            errorCode,
+                            resolvedErrorCode,
                             parentExecution.getId(),
                             parentExecution.getProcessInstanceId(),
                             parentExecution.getProcessDefinitionId()
@@ -273,13 +293,13 @@ public class ErrorPropagation {
 
     protected static Map<String, List<Event>> findCatchingEventsForProcess(
         String processDefinitionId,
-        String errorRef
-    ) {
+        String errorRef,
+        String errorCode) {
         Map<String, List<Event>> eventMap = new LinkedHashMap<>();
         Process process = ProcessDefinitionUtil.getProcess(processDefinitionId);
         BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(processDefinitionId);
 
-        String compareErrorCode = retrieveErrorCode(bpmnModel, errorRef);
+        String compareErrorCode = errorCode != null ? errorCode : retrieveErrorCode(bpmnModel, errorRef);
 
         eventMap.putAll(findCatchingEventSubprocesses(process, bpmnModel, compareErrorCode));
 
