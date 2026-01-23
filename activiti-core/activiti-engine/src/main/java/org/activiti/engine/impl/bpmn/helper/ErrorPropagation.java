@@ -151,8 +151,6 @@ public class ErrorPropagation {
         ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
         ExecutionEntity processInstanceExecution = executionEntityManager.findById(execution.getProcessInstanceId());
 
-        String errorCodeFromExecution = getErrorCodeFromExecution(execution, errorRef);
-
         Map<String, List<Event>> eventMap = Collections.emptyMap();
         if (processInstanceExecution != null) {
             ExecutionEntity parentExecution = processInstanceExecution.getSuperExecution();
@@ -161,19 +159,12 @@ public class ErrorPropagation {
             toDeleteProcessInstanceIds.add(execution.getProcessInstanceId());
 
             while (!parentExecution.isRootExecution() && eventMap.isEmpty()) {
-                String matchedErrorRef = errorRef;
                 eventMap = findCatchingEventsForProcess(parentExecution.getProcessDefinitionId(), errorRef);
-                if (eventMap.isEmpty() && errorCodeFromExecution != null && !errorCodeFromExecution.equals(errorRef)) {
-                    eventMap = findCatchingEventsForProcess(parentExecution.getProcessDefinitionId(), errorCodeFromExecution);
-                    if (!eventMap.isEmpty()) {
-                        matchedErrorRef = errorCodeFromExecution;
-                    }
-                }
                 if (!eventMap.isEmpty()) {
                     for (String processInstanceId : toDeleteProcessInstanceIds) {
                         deleteProcessInstanceEntity(errorRef, execution, executionEntityManager, processInstanceId);
                     }
-                    return executeCatch(eventMap, parentExecution, matchedErrorRef);
+                    return executeCatch(eventMap, parentExecution, errorRef);
                 } else {
                     toDeleteProcessInstanceIds.add(parentExecution.getProcessInstanceId());
                     ExecutionEntity superExecution = parentExecution.getSuperExecution();
@@ -187,24 +178,6 @@ public class ErrorPropagation {
         }
 
         return false;
-    }
-
-    private static String getErrorCodeFromExecution(DelegateExecution execution, String errorRef) {
-        if (execution == null || errorRef == null) {
-            return null;
-        }
-
-        ExecutionEntity executionEntity = (ExecutionEntity) execution;
-        BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(executionEntity.getProcessDefinitionId());
-
-        if (bpmnModel != null && bpmnModel.getErrors() != null) {
-            Error error = bpmnModel.getErrors().get(errorRef);
-            if (error != null) {
-                return error.getErrorCode();
-            }
-        }
-
-        return null;
     }
 
     private static void deleteProcessInstanceEntity(
