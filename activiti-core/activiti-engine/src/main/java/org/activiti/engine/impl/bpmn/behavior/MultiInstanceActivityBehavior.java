@@ -28,6 +28,7 @@ import org.activiti.bpmn.model.CompensateEventDefinition;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.Process;
+import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
@@ -36,7 +37,6 @@ import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
-import org.activiti.engine.impl.cmd.CompleteTaskCmd;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.engine.impl.delegate.SubProcessActivityBehavior;
@@ -112,11 +112,15 @@ public abstract class MultiInstanceActivityBehavior
             }
         } else {
             getCommandContext().getHistoryManager().recordActivityStart((ExecutionEntity) execution);
-            Context.getProcessEngineConfiguration()
-                .getEventDispatcher()
-                .dispatchEvent(
-                    ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_STARTED, execution, execution.getCurrentFlowElement())
-                );
+            var currentFlowElement = execution.getCurrentFlowElement();
+             // Dispatch activity started event for service tasks
+            if(currentFlowElement instanceof ServiceTask && ((ServiceTask) currentFlowElement).isAsynchronous()) {
+                Context.getProcessEngineConfiguration()
+                    .getEventDispatcher()
+                    .dispatchEvent(
+                        ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_STARTED, execution, execution.getCurrentFlowElement())
+                    );
+            }
             innerActivityBehavior.execute(execution);
         }
     }
