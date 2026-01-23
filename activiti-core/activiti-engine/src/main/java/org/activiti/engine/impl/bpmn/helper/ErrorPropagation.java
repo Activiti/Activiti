@@ -160,13 +160,14 @@ public class ErrorPropagation {
 
             while (!parentExecution.isRootExecution() && eventMap.isEmpty()) {
                 String errorCodeFromExecution = getErrorCodeFromExecution(execution, errorRef);
+                String errorIdToDelete = errorRef;
                 if (errorCodeFromExecution != null) {
                     errorRef = errorCodeFromExecution;
                 }
                 eventMap = findCatchingEventsForProcess(parentExecution.getProcessDefinitionId(), errorRef);
                 if (!eventMap.isEmpty()) {
                     for (String processInstanceId : toDeleteProcessInstanceIds) {
-                        deleteProcessInstanceEntity(errorRef, execution, executionEntityManager, processInstanceId);
+                        deleteProcessInstanceEntity(errorIdToDelete, execution, executionEntityManager, processInstanceId);
                     }
                     return executeCatch(eventMap, parentExecution, errorRef);
                 } else {
