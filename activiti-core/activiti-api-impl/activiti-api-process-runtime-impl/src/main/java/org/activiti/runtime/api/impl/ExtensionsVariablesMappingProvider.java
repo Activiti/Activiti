@@ -149,7 +149,49 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
         Map<String, Mapping> inputMappings = processVariablesMapping.getInputs();
         for (Map.Entry<String, Mapping> mapping : inputMappings.entrySet()) {
             Optional<Object> mappedValue = calculateMappedValue(mapping.getValue(), execution, extensions);
-            mappedValue.ifPresent(value -> inboundVariables.put(mapping.getKey(), value));
+            mappedValue.ifPresent(value -> {
+                String name = mapping.getKey();
+                extensions
+                    .getProperties()
+                    .values()
+                    .stream()
+                    .filter(v -> v.getName().equals(name))
+                    .findAny()
+                    .ifPresentOrElse(
+                        v -> {
+                            String variableType = v.getType();
+                            Object parsedValue;
+                            try {
+                                LOGGER.info("Parsing variable {} as {}", name, variableType);
+                                parsedValue = variableParsingService.parse(new VariableDefinition(variableType, value));
+                            } catch (Exception e) {
+                                if ("map".equals(variableType)) {
+                                    try {
+                                        parsedValue = variableParsingService.parse(new VariableDefinition("json", value));
+                                    } catch (Exception e2) {
+                                        LOGGER.warn(
+                                            "Failed to parse variable {} as {} or json, using original value",
+                                            name,
+                                            variableType,
+                                            e2
+                                        );
+                                        parsedValue = value;
+                                    }
+                                } else {
+                                    LOGGER.warn(
+                                        "Failed to parse variable {} as {}, using original value",
+                                        name,
+                                        variableType,
+                                        e
+                                    );
+                                    parsedValue = value;
+                                }
+                            }
+                            inboundVariables.put(name, parsedValue);
+                        },
+                        () -> inboundVariables.put(name, value)
+                    );
+            });
         }
         return inboundVariables;
     }
