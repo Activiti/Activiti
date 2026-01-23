@@ -112,15 +112,6 @@ public abstract class MultiInstanceActivityBehavior
             }
         } else {
             getCommandContext().getHistoryManager().recordActivityStart((ExecutionEntity) execution);
-            var currentFlowElement = execution.getCurrentFlowElement();
-             // Dispatch activity started event for service tasks
-            if(currentFlowElement instanceof ServiceTask && ((ServiceTask) currentFlowElement).isAsynchronous()) {
-                Context.getProcessEngineConfiguration()
-                    .getEventDispatcher()
-                    .dispatchEvent(
-                        ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_STARTED, execution, execution.getCurrentFlowElement())
-                    );
-            }
             innerActivityBehavior.execute(execution);
         }
     }
