@@ -190,7 +190,7 @@ public class ProcessRuntimeBPMNErrorReceivedIT {
                     "catchError",
                     null,
                     null,
-                    "errorId",
+                    "123",
                     "123"
                 )
             );

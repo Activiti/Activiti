@@ -151,8 +151,6 @@ public class ErrorPropagation {
         ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
         ExecutionEntity processInstanceExecution = executionEntityManager.findById(execution.getProcessInstanceId());
 
-        String errorCodeFromExecution = getErrorCodeFromExecution(execution, errorRef);
-
         Map<String, List<Event>> eventMap = Collections.emptyMap();
         if (processInstanceExecution != null) {
             ExecutionEntity parentExecution = processInstanceExecution.getSuperExecution();
@@ -161,19 +159,16 @@ public class ErrorPropagation {
             toDeleteProcessInstanceIds.add(execution.getProcessInstanceId());
 
             while (!parentExecution.isRootExecution() && eventMap.isEmpty()) {
-                String matchedErrorRef = errorRef;
-                eventMap = findCatchingEventsForProcess(parentExecution.getProcessDefinitionId(), errorRef);
-                if (eventMap.isEmpty() && errorCodeFromExecution != null && !errorCodeFromExecution.equals(errorRef)) {
-                    eventMap = findCatchingEventsForProcess(parentExecution.getProcessDefinitionId(), errorCodeFromExecution);
-                    if (!eventMap.isEmpty()) {
-                        matchedErrorRef = errorCodeFromExecution;
-                    }
+                String errorCodeFromExecution = getErrorCodeFromExecution(execution, errorRef);
+                if (errorCodeFromExecution != null) {
+                    errorRef = errorCodeFromExecution;
                 }
+                eventMap = findCatchingEventsForProcess(parentExecution.getProcessDefinitionId(), errorRef);
                 if (!eventMap.isEmpty()) {
                     for (String processInstanceId : toDeleteProcessInstanceIds) {
                         deleteProcessInstanceEntity(errorRef, execution, executionEntityManager, processInstanceId);
                     }
-                    return executeCatch(eventMap, parentExecution, matchedErrorRef);
+                    return executeCatch(eventMap, parentExecution, errorRef);
                 } else {
                     toDeleteProcessInstanceIds.add(parentExecution.getProcessInstanceId());
                     ExecutionEntity superExecution = parentExecution.getSuperExecution();
