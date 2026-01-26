@@ -223,7 +223,7 @@
     <maven-source-plugin.version>3.4.0</maven-source-plugin.version>
     <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
     <sonar-maven-plugin.version>5.5.0.6356</sonar-maven-plugin.version>
-    <spring-boot.version>3.5.7</spring-boot.version>
+    <spring-boot.version>4.0.2</spring-boot.version>
     <h2.version>2.4.240</h2.version>
     <jakarta.el-api.version>5.0.1</jakarta.el-api.version>
     <testcontainers.version>2.0.3</testcontainers.version>
