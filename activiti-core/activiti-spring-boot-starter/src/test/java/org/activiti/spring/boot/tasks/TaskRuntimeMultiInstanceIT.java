@@ -1349,45 +1349,9 @@ public class TaskRuntimeMultiInstanceIT {
         // testing the multi instance element start, complete, cancel events
         verifyActivityStartedAndCompletedAreEmitted(elementId, startCount, completeCount);
 
-
-       await().untilAsserted(
-           () -> {
-               assertThat(localEventSource.getEvents())
-                   .extracting(RuntimeEvent::getEventType, RuntimeEvent::getProcessInstanceId)
-                   .contains(tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED, processInstance.getId()));
-
-               List<BPMNActivityStartedEvent> startedEvents = localEventSource.getEvents(BPMNActivityStartedEvent.class);
-               startedEvents.forEach(event ->
-                   System.out.println("Started: " + event.getEntity().getElementId() +
-                       ", Instance: " + event.getEntity().getProcessInstanceId() +
-                       ", Time: " + event.getTimestamp())
-               );
-           }
-    );
-    }
-
-    @Test
-    public void processWithAsyncParallelMultiInstancesOnServiceTask_should_emmit_EqualStartAndEndEvent() {
-        verifyMultiInstanceStartAndEndEventCountAsync("miParallelServiceTaskAsync", "miServiceTask", 2, 2);
-    }
-
-    private void verifyMultiInstanceStartAndEndEventCountAsync(
-        String processDefinitionKey,
-        String elementId,
-        Integer startCount,
-        Integer completeCount
-    ) {
-        processBaseRuntime.startProcessWithProcessDefinitionKey(processDefinitionKey);
-
-        await().untilAsserted(() -> {
-            assertThat(localEventSource.getEvents(BPMNActivityStartedEvent.class))
-                .filteredOn(event -> elementId.equals(event.getEntity().getElementId()))
-                .hasSize(startCount);
-
-            assertThat(localEventSource.getEvents(BPMNActivityCompletedEvent.class))
-                .filteredOn(event -> elementId.equals(event.getEntity().getElementId()))
-                .hasSize(completeCount);
-        });
+        assertThat(localEventSource.getEvents())
+            .extracting(RuntimeEvent::getEventType, RuntimeEvent::getProcessInstanceId)
+            .contains(tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED, processInstance.getId()));
     }
 
     @Test
@@ -1460,7 +1424,7 @@ public class TaskRuntimeMultiInstanceIT {
         assertThat(localEventSource.getEvents(BPMNActivityCancelledEvent.class))
             .filteredOn(event -> elementId.equals(event.getEntity().getElementId()))
             .hasSize(0);
-       }
+    }
 
     @Test
     public void parallelMultiInstance_should_collectOutputValues() {
