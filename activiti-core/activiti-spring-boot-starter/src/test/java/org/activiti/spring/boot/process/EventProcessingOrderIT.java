@@ -224,6 +224,30 @@ public class EventProcessingOrderIT {
             });
     }
 
+    @Test
+    public void should_CatchErrorByErrorCode_When_CallActivityThrowsErrorWithDifferentErrorId() {
+        securityUtil.logInAs("user");
+
+        ProcessInstance processInstance = processRuntime.start(
+            ProcessPayloadBuilder.start().withProcessDefinitionKey("callActivityErrorMatchByCode").build()
+        );
+
+        assertThat(processInstance).isNotNull();
+
+        // Verify that parent caught error by matching error code "BUSINESS_ERROR"
+        checkProcessAndTask(processInstance.getId(), "Error Handled by Code");
+
+        // Validate error events received
+        assertThat(listener.getErrorReceivedEvents())
+            .hasSize(1)
+            .first()
+            .satisfies(event -> {
+                assertThat(event.getEntity().getErrorCode())
+                    .as("Error should be caught by matching error code")
+                    .isEqualTo("BUSINESS_ERROR");
+            });
+    }
+
     private void checkProcessAndTask(String processInstanceId, String taskName) {
         ProcessInstance processInstance = processRuntime.processInstance(processInstanceId);
         assertThat(processInstance).isNotNull();
