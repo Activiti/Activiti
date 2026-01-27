@@ -1355,6 +1355,30 @@ public class TaskRuntimeMultiInstanceIT {
     }
 
     @Test
+    public void processWithParallelMultiInstancesOnServiceTaskAsync_should_emmit_EqualStartAndEndEvent() {
+        verifyMultiInstanceStartAndEndEventCountAsync("miParallelServiceTaskAsync", "miServiceTask", 2, 2);
+    }
+
+    private void verifyMultiInstanceStartAndEndEventCountAsync(
+        String processDefinitionKey,
+        String elementId,
+        Integer startCount,
+        Integer completeCount
+    ) {
+        processBaseRuntime.startProcessWithProcessDefinitionKey(processDefinitionKey);
+
+        await().untilAsserted(() -> {
+            assertThat(localEventSource.getEvents(BPMNActivityStartedEvent.class))
+                .filteredOn(event -> elementId.equals(event.getEntity().getElementId()))
+                .hasSize(startCount);
+
+            assertThat(localEventSource.getEvents(BPMNActivityCompletedEvent.class))
+                .filteredOn(event -> elementId.equals(event.getEntity().getElementId()))
+                .hasSize(completeCount);
+        });
+    }
+
+    @Test
     public void processWithParallelMultiInstancesManualTask_should_emmitEventsAndContinueOnceCompletionConditionIsReached() {
         verifyEventsOnAutomaticMultiInstanceWithCompletionCondition(
             "miParallelManualTasksCompletionCondition",
@@ -1424,7 +1448,7 @@ public class TaskRuntimeMultiInstanceIT {
         assertThat(localEventSource.getEvents(BPMNActivityCancelledEvent.class))
             .filteredOn(event -> elementId.equals(event.getEntity().getElementId()))
             .hasSize(0);
-    }
+       }
 
     @Test
     public void parallelMultiInstance_should_collectOutputValues() {
