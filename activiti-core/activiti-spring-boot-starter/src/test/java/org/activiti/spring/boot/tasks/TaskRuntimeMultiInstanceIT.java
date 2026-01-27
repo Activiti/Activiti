@@ -773,9 +773,7 @@ public class TaskRuntimeMultiInstanceIT {
         ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(
             "miParallelUserTasksAsync"
         );
-
-        //then//
-
+        //then
        await().untilAsserted(()->
        {
            securityUtil.logInAs("user");
@@ -1448,7 +1446,7 @@ public class TaskRuntimeMultiInstanceIT {
         assertThat(localEventSource.getEvents(BPMNActivityCancelledEvent.class))
             .filteredOn(event -> elementId.equals(event.getEntity().getElementId()))
             .hasSize(0);
-       }
+    }
 
     @Test
     public void parallelMultiInstance_should_collectOutputValues() {
