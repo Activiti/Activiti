@@ -95,7 +95,7 @@ jobs:
         shell: bash
         run: mvn ${{ steps.define_maven_command.outputs.command }} ${{ env.MAVEN_CLI_OPTS}}
         env:
-          MAVEN_CLI_OPTS: --show-version --no-transfer-progress --settings settings.xml -DskipTests
+          MAVEN_CLI_OPTS: --show-version --no-transfer-progress --settings settings.xml
           MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
 
