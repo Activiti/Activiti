@@ -129,4 +129,26 @@ public class EventProcessingOrderTest extends PluggableActivitiTestCase {
         taskService.complete(task.getId());
         assertProcessEnded(procId);
     }
+
+    /**
+     * Tests call activity error matching by error code when error IDs are different.
+     * BPMN Structure:
+     * - Child process throws error with id="ERR_CHILD" errorCode="BUSINESS_ERROR"
+     * - Parent process has error definition id="ERR_PARENT" errorCode="BUSINESS_ERROR"
+     * - Parent catches error with errorRef="ERR_PARENT"
+     * Expected: Parent catches error by matching error code "BUSINESS_ERROR"
+     */
+    @Deployment
+    public void testCallActivityErrorMatchByErrorCode() {
+        String procId = runtimeService.startProcessInstanceByKey("parentProcess").getId();
+
+        // Parent should catch error by matching error code "BUSINESS_ERROR"
+        Task task = taskService.createTaskQuery().singleResult();
+        assertThat(task).isNotNull();
+        assertThat(task.getName()).isEqualTo("Error Handled by Code");
+        assertThat(task.getTaskDefinitionKey()).isEqualTo("errorHandledByCode");
+
+        taskService.complete(task.getId());
+        assertProcessEnded(procId);
+    }
 }
