@@ -244,6 +244,13 @@
         <version>3.20.0</version>
       </dependency>
       <!-- temporary security fix -->
+      <!-- security fix AAE-41710, remove with Spring update -->
+      <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <version>3.27.7</version>
+      </dependency>
+      <!-- security fix AAE-41710 -->
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-dependency-check</artifactId>
