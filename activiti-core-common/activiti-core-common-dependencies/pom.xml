@@ -51,10 +51,12 @@
         <groupId>org.activiti</groupId>
         <artifactId>activiti-core-test-assertions</artifactId>
         <version>${project.version}</version>
+        <type>test-jar</type>
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-core-test-local-runtime</artifactId>
+        <type>test-jar</type>
         <version>${project.version}</version>
       </dependency>
       <dependency>

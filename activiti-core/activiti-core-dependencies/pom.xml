@@ -121,6 +121,7 @@
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-spring-conformance-util</artifactId>
+        <type>test-jar</type>
         <version>${project.version}</version>
       </dependency>
       <dependency>

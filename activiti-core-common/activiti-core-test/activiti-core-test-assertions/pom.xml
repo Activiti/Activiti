@@ -13,31 +13,53 @@
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-api-task-model</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-api-process-model</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-api-model-shared</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.awaitility</groupId>
       <artifactId>awaitility</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-autoconfigure</artifactId>
       <optional>true</optional>
+      <scope>test</scope>
     </dependency>
   </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>

@@ -686,6 +686,29 @@ limitations under the License.
               </rules>
             </configuration>
           </execution>
+          <execution>
+            <id>ban-test-dependencies-in-compile</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <bannedDependencies>
+                  <excludes>
+                    <!-- These should only be test-scoped -->
+                    <exclude>org.assertj:*:*:*:compile</exclude>
+                    <exclude>org.mockito:*:*:*:compile</exclude>
+                    <exclude>org.springframework:spring-test:*:*:compile</exclude>
+                    <exclude>junit:*:*:*:compile</exclude>
+                    <exclude>org.junit.jupiter:*:*:*:compile</exclude>
+                    <exclude>org.awaitility:awaitility:*:*:compile</exclude>
+                  </excludes>
+                  <searchTransitive>true</searchTransitive>
+                </bannedDependencies>
+              </rules>
+              <fail>true</fail>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
       <plugin>
