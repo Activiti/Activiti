@@ -437,6 +437,14 @@ public class BpmnModel {
         return errorMap.containsKey(errorRef);
     }
 
+    public String getErrorCode(String errorRef) {
+        if (errorRef == null) {
+            return null;
+        }
+        Error error = errorMap.get(errorRef);
+        return error != null ? error.getErrorCode() : null;
+    }
+
     public Map<String, ItemDefinition> getItemDefinitions() {
         return itemDefinitionMap;
     }
