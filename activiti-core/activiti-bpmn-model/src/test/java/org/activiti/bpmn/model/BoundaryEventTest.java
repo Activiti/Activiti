@@ -62,8 +62,7 @@ public class BoundaryEventTest {
 
         Optional<ErrorEventDefinition> result = boundaryEvent.getErrorEventDefinition();
 
-        assertThat(result).isPresent();
-        assertThat(result.get()).isSameAs(errorEventDefinition);
+        assertThat(result).containsSame(errorEventDefinition);
     }
 
     @Test
@@ -106,8 +105,7 @@ public class BoundaryEventTest {
 
         Optional<ErrorEventDefinition> result = boundaryEvent.getErrorEventDefinition();
 
-        assertThat(result).isPresent();
-        assertThat(result.get()).isSameAs(errorEventDefinition);
+        assertThat(result).containsSame(errorEventDefinition);
     }
 
     @Test

@@ -53,8 +53,7 @@ public class StartEventTest {
 
         Optional<ErrorEventDefinition> result = startEvent.getErrorEventDefinition();
 
-        assertThat(result).isPresent();
-        assertThat(result.get()).isSameAs(errorEventDefinition);
+        assertThat(result).containsSame(errorEventDefinition);
     }
 
     @Test
