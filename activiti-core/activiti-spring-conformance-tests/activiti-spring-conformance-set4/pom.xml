@@ -17,11 +17,6 @@
     </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
-      <artifactId>activiti-core-test-assertions</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.activiti</groupId>
       <artifactId>activiti-spring-conformance-util</artifactId>
       <scope>test</scope>
     </dependency>

@@ -164,11 +164,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.activiti</groupId>
-      <artifactId>activiti-core-test-assertions</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>uk.org.webcompere</groupId>
       <artifactId>system-stubs-jupiter</artifactId>
       <version>${system.stubs.jupiter.version}</version>
