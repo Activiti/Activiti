@@ -14,7 +14,6 @@
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-spring-conformance-util</artifactId>
-      <type>test-jar</type>
       <scope>test</scope>
     </dependency>
     <dependency>
