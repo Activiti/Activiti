@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:activiti="http://activiti.org/bpmn"
+             targetNamespace="http://www.activiti.org/test">
+
+  <error id="ERR_CHILD" errorCode="BUSINESS_ERROR"/>
+
+  <process id="callActivityErrorMatchByCodeChild" name="Call Activity Error Match By Code - Child" isExecutable="true">
+    <startEvent id="start"/>
+    <sequenceFlow sourceRef="start" targetRef="throwError"/>
+
+    <endEvent id="throwError">
+      <errorEventDefinition errorRef="ERR_CHILD"/>
+    </endEvent>
+  </process>
+</definitions>

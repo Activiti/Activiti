@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,9 @@ package org.activiti.bpmn.model;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import org.junit.Test;
 
 public class BoundaryEventTest {
@@ -49,5 +52,71 @@ public class BoundaryEventTest {
 
         // then
         assertThat(boundaryEvent.hasErrorEventDefinition()).isFalse();
+    }
+
+    @Test
+    public void getErrorEventDefinition_should_returnErrorEventDefinition_when_firstEventDefinitionIsErrorEvent() {
+        BoundaryEvent boundaryEvent = new BoundaryEvent();
+        ErrorEventDefinition errorEventDefinition = new ErrorEventDefinition();
+        boundaryEvent.setEventDefinitions(List.of(errorEventDefinition));
+
+        Optional<ErrorEventDefinition> result = boundaryEvent.getErrorEventDefinition();
+
+        assertThat(result).containsSame(errorEventDefinition);
+    }
+
+    @Test
+    public void getErrorEventDefinition_should_returnEmpty_when_eventDefinitionsIsNull() {
+        BoundaryEvent boundaryEvent = new BoundaryEvent();
+        boundaryEvent.setEventDefinitions(null);
+
+        Optional<ErrorEventDefinition> result = boundaryEvent.getErrorEventDefinition();
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void getErrorEventDefinition_should_returnEmpty_when_eventDefinitionsIsEmpty() {
+        BoundaryEvent boundaryEvent = new BoundaryEvent();
+        boundaryEvent.setEventDefinitions(Collections.emptyList());
+
+        Optional<ErrorEventDefinition> result = boundaryEvent.getErrorEventDefinition();
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void getErrorEventDefinition_should_returnEmpty_when_firstEventDefinitionIsNotErrorEvent() {
+        BoundaryEvent boundaryEvent = new BoundaryEvent();
+        MessageEventDefinition messageEventDefinition = new MessageEventDefinition();
+        boundaryEvent.setEventDefinitions(List.of(messageEventDefinition));
+
+        Optional<ErrorEventDefinition> result = boundaryEvent.getErrorEventDefinition();
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void getErrorEventDefinition_should_returnErrorEventDefinition_when_firstOfMultipleEventDefinitionsIsErrorEvent() {
+        BoundaryEvent boundaryEvent = new BoundaryEvent();
+        ErrorEventDefinition errorEventDefinition = new ErrorEventDefinition();
+        MessageEventDefinition messageEventDefinition = new MessageEventDefinition();
+        boundaryEvent.setEventDefinitions(List.of(errorEventDefinition, messageEventDefinition));
+
+        Optional<ErrorEventDefinition> result = boundaryEvent.getErrorEventDefinition();
+
+        assertThat(result).containsSame(errorEventDefinition);
+    }
+
+    @Test
+    public void getErrorEventDefinition_should_returnEmpty_when_errorEventDefinitionIsNotFirst() {
+        BoundaryEvent boundaryEvent = new BoundaryEvent();
+        MessageEventDefinition messageEventDefinition = new MessageEventDefinition();
+        ErrorEventDefinition errorEventDefinition = new ErrorEventDefinition();
+        boundaryEvent.setEventDefinitions(List.of(messageEventDefinition, errorEventDefinition));
+
+        Optional<ErrorEventDefinition> result = boundaryEvent.getErrorEventDefinition();
+
+        assertThat(result).isEmpty();
     }
 }

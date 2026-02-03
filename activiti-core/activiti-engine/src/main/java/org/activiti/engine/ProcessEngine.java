@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,8 +39,9 @@ import org.activiti.engine.api.internal.Internal;
  */
 @Internal
 public interface ProcessEngine {
-    /** the version of the activiti library */
-    public static String VERSION = "8.1.3"; // Note the extra -x at the end. To cater for snapshot releases with different database changes
+
+  /** the version of the activiti library */
+  public static String VERSION = "8.1.4"; // Note the extra -x at the end. To cater for snapshot releases with different database changes
 
     /**
      * The name as specified in 'process-engine-name' in the activiti.cfg.xml configuration file. The default name for a process engine is 'default
