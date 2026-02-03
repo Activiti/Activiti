@@ -127,22 +127,15 @@ public class JuelExpression implements Expression {
         return invocation.getInvocationResult();
     }
 
-    private static class ExpressionContext {
+    private record ExpressionContext(String flowElementId, String sequenceFlowId) {
 
         private static final String UNKNOWN_ID = "unknown";
-        private final String flowElementId;
-        private final String sequenceFlowId;
-
-        private ExpressionContext(String flowElementId, String sequenceFlowId) {
-            this.flowElementId = flowElementId;
-            this.sequenceFlowId = sequenceFlowId;
-        }
 
         static ExpressionContext from(VariableScope variableScope, String expressionText) {
-            Optional<FlowElement> flowElementOptional = extractFlowElement(variableScope);
-            String flowElementId = flowElementOptional.map(FlowElement::getId).filter(StringUtils::hasText).orElse(UNKNOWN_ID);
-            String sequenceFlowId = extractSequenceFlow(flowElementOptional, expressionText).map(SequenceFlow::getId).filter(StringUtils::hasText).orElse(UNKNOWN_ID);
-            return new ExpressionContext(flowElementId, sequenceFlowId);
+                Optional<FlowElement> flowElementOptional = extractFlowElement(variableScope);
+                String flowElementId = flowElementOptional.map(FlowElement::getId).filter(StringUtils::hasText).orElse(UNKNOWN_ID);
+                String sequenceFlowId = extractSequenceFlow(flowElementOptional, expressionText).map(SequenceFlow::getId).filter(StringUtils::hasText).orElse(UNKNOWN_ID);
+                return new ExpressionContext(flowElementId, sequenceFlowId);
         }
 
         private static Optional<FlowElement> extractFlowElement(VariableScope variableScope) {
