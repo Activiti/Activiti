@@ -17,10 +17,11 @@ package org.activiti.bpmn.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public abstract class Event extends FlowNode {
 
-    protected List<EventDefinition> eventDefinitions = new ArrayList<EventDefinition>();
+    protected List<EventDefinition> eventDefinitions = new ArrayList<>();
 
     public List<EventDefinition> getEventDefinitions() {
         return eventDefinitions;
@@ -37,7 +38,7 @@ public abstract class Event extends FlowNode {
     public void setValues(Event otherEvent) {
         super.setValues(otherEvent);
 
-        eventDefinitions = new ArrayList<EventDefinition>();
+        eventDefinitions = new ArrayList<>();
         if (otherEvent.getEventDefinitions() != null && !otherEvent.getEventDefinitions().isEmpty()) {
             for (EventDefinition eventDef : otherEvent.getEventDefinitions()) {
                 eventDefinitions.add(eventDef.clone());
@@ -50,5 +51,12 @@ public abstract class Event extends FlowNode {
             return this.getEventDefinitions().getFirst() instanceof LinkEventDefinition;
         }
         return false;
+    }
+
+    public Optional<ErrorEventDefinition> getErrorEventDefinition() {
+        return eventDefinitions != null && !eventDefinitions.isEmpty() &&
+               eventDefinitions.getFirst() instanceof ErrorEventDefinition errorEventDefinition
+            ? Optional.of(errorEventDefinition)
+            : Optional.empty();
     }
 }

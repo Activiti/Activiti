@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:activiti="http://activiti.org/bpmn" id="Definitions_eventsubprocess_catchall" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Activiti Modeler" exporterVersion="3.0.0-beta.3">
+  <bpmn:error id="errorId1" name="errorName1" errorCode="ERROR_CODE_1" />
+  <bpmn:error id="errorId2" name="errorName2" errorCode="ERROR_CODE_2" />
+  <bpmn:error id="errorIdUnhandled" name="errorNameUnhandled" errorCode="UNHANDLED_ERROR" />
+  <bpmn:process id="errorEventSubprocessCatchAll" name="errorEventSubprocessCatchAll" isExecutable="true">
+    <bpmn:startEvent id="theStart">
+      <bpmn:outgoing>flow1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="flow1" sourceRef="theStart" targetRef="mainSubProcess" />
+
+    <bpmn:subProcess id="mainSubProcess">
+      <bpmn:incoming>flow1</bpmn:incoming>
+      <bpmn:outgoing>flow2</bpmn:outgoing>
+
+      <bpmn:startEvent id="subStart">
+        <bpmn:outgoing>flow3</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:sequenceFlow id="flow3" sourceRef="subStart" targetRef="subEnd" />
+      <bpmn:endEvent id="subEnd">
+        <bpmn:incoming>flow3</bpmn:incoming>
+        <bpmn:errorEventDefinition errorRef="errorIdUnhandled" />
+      </bpmn:endEvent>
+
+      <!-- Event Subprocess with specific error code ERROR_CODE_1 - won't match -->
+      <bpmn:subProcess id="eventSubprocessError1" triggeredByEvent="true">
+        <bpmn:startEvent id="eventSubprocessError1Start" isInterrupting="true">
+          <bpmn:outgoing>flow4</bpmn:outgoing>
+          <bpmn:errorEventDefinition errorRef="errorId1" />
+        </bpmn:startEvent>
+        <bpmn:sequenceFlow id="flow4" sourceRef="eventSubprocessError1Start" targetRef="eventSubprocessTask1" />
+        <bpmn:userTask id="eventSubprocessTask1" name="Event Subprocess Task 1" activiti:candidateUsers="user">
+          <bpmn:incoming>flow4</bpmn:incoming>
+          <bpmn:outgoing>flow5</bpmn:outgoing>
+        </bpmn:userTask>
+        <bpmn:sequenceFlow id="flow5" sourceRef="eventSubprocessTask1" targetRef="eventSubprocessEnd1" />
+        <bpmn:endEvent id="eventSubprocessEnd1">
+          <bpmn:incoming>flow5</bpmn:incoming>
+        </bpmn:endEvent>
+      </bpmn:subProcess>
+
+      <!-- Event Subprocess with specific error code ERROR_CODE_2 - won't match -->
+      <bpmn:subProcess id="eventSubprocessError2" triggeredByEvent="true">
+        <bpmn:startEvent id="eventSubprocessError2Start" isInterrupting="true">
+          <bpmn:outgoing>flow6</bpmn:outgoing>
+          <bpmn:errorEventDefinition errorRef="errorId2" />
+        </bpmn:startEvent>
+        <bpmn:sequenceFlow id="flow6" sourceRef="eventSubprocessError2Start" targetRef="eventSubprocessTask2" />
+        <bpmn:userTask id="eventSubprocessTask2" name="Event Subprocess Task 2" activiti:candidateUsers="user">
+          <bpmn:incoming>flow6</bpmn:incoming>
+          <bpmn:outgoing>flow7</bpmn:outgoing>
+        </bpmn:userTask>
+        <bpmn:sequenceFlow id="flow7" sourceRef="eventSubprocessTask2" targetRef="eventSubprocessEnd2" />
+        <bpmn:endEvent id="eventSubprocessEnd2">
+          <bpmn:incoming>flow7</bpmn:incoming>
+        </bpmn:endEvent>
+      </bpmn:subProcess>
+
+      <!-- Event Subprocess with NO error code (catch-all) - SHOULD match -->
+      <bpmn:subProcess id="eventSubprocessCatchAll" triggeredByEvent="true">
+        <bpmn:startEvent id="eventSubprocessCatchAllStart" isInterrupting="true">
+          <bpmn:outgoing>flow8</bpmn:outgoing>
+          <bpmn:errorEventDefinition />
+        </bpmn:startEvent>
+        <bpmn:sequenceFlow id="flow8" sourceRef="eventSubprocessCatchAllStart" targetRef="eventSubprocessTaskAny" />
+        <bpmn:userTask id="eventSubprocessTaskAny" name="Event Subprocess Task Any" activiti:candidateUsers="user">
+          <bpmn:incoming>flow8</bpmn:incoming>
+          <bpmn:outgoing>flow9</bpmn:outgoing>
+        </bpmn:userTask>
+        <bpmn:sequenceFlow id="flow9" sourceRef="eventSubprocessTaskAny" targetRef="eventSubprocessEndAny" />
+        <bpmn:endEvent id="eventSubprocessEndAny">
+          <bpmn:incoming>flow9</bpmn:incoming>
+        </bpmn:endEvent>
+      </bpmn:subProcess>
+
+    </bpmn:subProcess>
+
+    <bpmn:sequenceFlow id="flow2" sourceRef="mainSubProcess" targetRef="theEnd" />
+    <bpmn:endEvent id="theEnd">
+      <bpmn:incoming>flow2</bpmn:incoming>
+    </bpmn:endEvent>
+  </bpmn:process>
+</bpmn:definitions>
