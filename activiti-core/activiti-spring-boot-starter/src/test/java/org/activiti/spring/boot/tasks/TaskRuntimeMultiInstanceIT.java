@@ -768,6 +768,83 @@ public class TaskRuntimeMultiInstanceIT {
     }
 
     @Test
+    public void processWithParallelMultiInstancesOnUserTaskAsync_should_emmit_EqualStartAndEndEvent() {
+        //when
+        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(
+            "miParallelUserTasksAsync"
+        );
+        //then
+       await().untilAsserted(()->
+       {
+           securityUtil.logInAs("user");
+
+           List<Task> tasks = taskBaseRuntime.getTasks(processInstance);
+
+           assertThat(tasks).extracting(Task::getName).containsExactlyInAnyOrder("My Task 0", "My Task 1");
+
+           assertActivityEvents(
+               "miTasks",
+               BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+               BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED
+           );
+           assertThat(localEventSource.getTaskEvents())
+               .extracting(
+                   RuntimeEvent::getEventType,
+                   event -> ((Task) event.getEntity()).getName(),
+                   event -> ((Task) event.getEntity()).getProcessInstanceId()
+               )
+               .containsExactlyInAnyOrder(
+                   tuple(TaskRuntimeEvent.TaskEvents.TASK_CREATED, "My Task 0", processInstance.getId()),
+                   tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED, "My Task 0", processInstance.getId()),
+                   tuple(TaskRuntimeEvent.TaskEvents.TASK_CREATED, "My Task 1", processInstance.getId()),
+                   tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED, "My Task 1", processInstance.getId())
+               );
+           //complete first iteration: multi instance should not complete yet
+           localEventSource.clearEvents();
+           taskBaseRuntime.completeTask(tasks.get(0));
+
+           assertActivityEvents("miTasks", BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED);
+
+           assertThat(localEventSource.getTaskEvents())
+               .extracting(
+                   RuntimeEvent::getEventType,
+                   event -> ((Task) event.getEntity()).getName(),
+                   event -> ((Task) event.getEntity()).getProcessInstanceId()
+               )
+               .containsExactly(
+                   tuple(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED, tasks.get(0).getName(), processInstance.getId())
+               );
+
+           assertThat(localEventSource.getProcessInstanceEvents()).isEmpty();
+
+           //complete second iteration: multi instance should complete
+           localEventSource.clearEvents();
+           taskBaseRuntime.completeTask(tasks.get(1));
+
+           assertActivityEvents("miTasks", BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED);
+
+           assertThat(localEventSource.getTaskEvents())
+               .extracting(
+                   RuntimeEvent::getEventType,
+                   event -> ((Task) event.getEntity()).getName(),
+                   event -> ((Task) event.getEntity()).getProcessInstanceId()
+               )
+               .containsExactly(
+                   tuple(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED, tasks.get(1).getName(), processInstance.getId())
+               );
+
+           assertThat(localEventSource.getProcessInstanceEvents())
+               .extracting(RuntimeEvent::getEventType, event -> ((ProcessInstance) event.getEntity()).getId())
+               .containsExactlyInAnyOrder(
+                   tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED, processInstance.getId())
+               );
+
+           assertThat(taskBaseRuntime.getTasks(processInstance)).isEmpty();
+
+       });
+    }
+
+    @Test
     public void processWithParallelMultiInstancesOnUserTask_Boundary_Event() {
         //when
         ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(
@@ -1273,6 +1350,30 @@ public class TaskRuntimeMultiInstanceIT {
         assertThat(localEventSource.getEvents())
             .extracting(RuntimeEvent::getEventType, RuntimeEvent::getProcessInstanceId)
             .contains(tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED, processInstance.getId()));
+    }
+
+    @Test
+    public void processWithParallelMultiInstancesOnServiceTaskAsync_should_emmit_EqualStartAndEndEvent() {
+        verifyMultiInstanceStartAndEndEventCountAsync("miParallelServiceTaskAsync", "miServiceTask", 2, 2);
+    }
+
+    private void verifyMultiInstanceStartAndEndEventCountAsync(
+        String processDefinitionKey,
+        String elementId,
+        Integer startCount,
+        Integer completeCount
+    ) {
+        processBaseRuntime.startProcessWithProcessDefinitionKey(processDefinitionKey);
+
+        await().untilAsserted(() -> {
+            assertThat(localEventSource.getEvents(BPMNActivityStartedEvent.class))
+                .filteredOn(event -> elementId.equals(event.getEntity().getElementId()))
+                .hasSize(startCount);
+
+            assertThat(localEventSource.getEvents(BPMNActivityCompletedEvent.class))
+                .filteredOn(event -> elementId.equals(event.getEntity().getElementId()))
+                .hasSize(completeCount);
+        });
     }
 
     @Test

@@ -161,6 +161,7 @@ drop index ACT_IDX_EVENT_SUBSCR_CONFIG_;
 drop index ACT_IDX_EVENT_SUBSCR;
 drop index ACT_IDX_ATHRZ_PROCEDEF;
 drop index ACT_IDX_PROCDEF_INFO_PROC;
+drop index ACT_IDX_IDENT_LNK_TASK;
 
 drop table ACT_GE_PROPERTY;
 drop table ACT_GE_BYTEARRAY;

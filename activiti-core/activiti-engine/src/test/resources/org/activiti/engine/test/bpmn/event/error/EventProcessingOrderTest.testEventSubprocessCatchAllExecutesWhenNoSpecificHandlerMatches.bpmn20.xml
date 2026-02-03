@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+    xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+    xmlns:activiti="http://activiti.org/bpmn"
+    targetNamespace="Examples">
+
+    <error id="error1" errorCode="ERROR_1" />
+    <error id="error2" errorCode="ERROR_2" />
+
+    <process id="eventSubprocessCatchAllFallback">
+
+        <startEvent id="theStart" />
+        <sequenceFlow id="flow1" sourceRef="theStart" targetRef="mainSubProcess" />
+
+        <subProcess id="mainSubProcess">
+            <startEvent id="subProcessStart" />
+            <sequenceFlow id="subFlow1" sourceRef="subProcessStart" targetRef="throwErrorTask" />
+
+            <!-- Script task that throws an error with code "ERROR_UNKNOWN" -->
+            <scriptTask id="throwErrorTask" scriptFormat="groovy">
+                <script>
+                    throw new org.activiti.engine.delegate.BpmnError("ERROR_UNKNOWN")
+                </script>
+            </scriptTask>
+
+            <sequenceFlow id="subFlow2" sourceRef="throwErrorTask" targetRef="subProcessEnd" />
+            <endEvent id="subProcessEnd" />
+
+            <!-- Event Subprocess 1: Specific error ERROR_1 - won't match -->
+            <subProcess id="error1EventSubProcess" triggeredByEvent="true">
+                <startEvent id="error1Start">
+                    <errorEventDefinition errorRef="error1" />
+                </startEvent>
+                <sequenceFlow id="error1Flow" sourceRef="error1Start" targetRef="error1Task" />
+                <userTask id="error1Task" name="Error 1 Handler Task" />
+                <sequenceFlow id="error1EndFlow" sourceRef="error1Task" targetRef="error1End" />
+                <endEvent id="error1End" />
+            </subProcess>
+
+            <!-- Event Subprocess 2: Specific error ERROR_2 - won't match -->
+            <subProcess id="error2EventSubProcess" triggeredByEvent="true">
+                <startEvent id="error2Start">
+                    <errorEventDefinition errorRef="error2" />
+                </startEvent>
+                <sequenceFlow id="error2Flow" sourceRef="error2Start" targetRef="error2Task" />
+                <userTask id="error2Task" name="Error 2 Handler Task" />
+                <sequenceFlow id="error2EndFlow" sourceRef="error2Task" targetRef="error2End" />
+                <endEvent id="error2End" />
+            </subProcess>
+
+            <!-- Event Subprocess 3: Catch-all (no error code) - SHOULD match as fallback -->
+            <subProcess id="catchAllEventSubProcess" triggeredByEvent="true">
+                <startEvent id="catchAllStart">
+                    <errorEventDefinition />
+                </startEvent>
+                <sequenceFlow id="catchAllFlow" sourceRef="catchAllStart" targetRef="catchAllEventSubprocessTask" />
+                <userTask id="catchAllEventSubprocessTask" name="Catch All Event Subprocess Task" />
+                <sequenceFlow id="catchAllEndFlow" sourceRef="catchAllEventSubprocessTask" targetRef="catchAllEnd" />
+                <endEvent id="catchAllEnd" />
+            </subProcess>
+
+        </subProcess>
+
+        <sequenceFlow id="flow2" sourceRef="mainSubProcess" targetRef="theEnd" />
+        <endEvent id="theEnd" />
+
+    </process>
+
+</definitions>

@@ -119,6 +119,11 @@ public class ContinueMultiInstanceOperation extends AbstractOperation {
 
     protected void executeAsynchronous(FlowNode flowNode) {
         JobEntity job = commandContext.getJobManager().createAsyncJob(execution, flowNode.isExclusive());
+        Context.getProcessEngineConfiguration()
+            .getEventDispatcher()
+            .dispatchEvent(
+                ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_STARTED, execution, execution.getCurrentFlowElement())
+            );
         commandContext.getJobManager().scheduleAsyncJob(job);
     }
 }
