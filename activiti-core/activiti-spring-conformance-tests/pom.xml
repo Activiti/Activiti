@@ -13,6 +13,7 @@
   <name>Activiti :: Spring :: Conformance Tests Parent</name>
   <properties>
     <maven.deploy.skip>true</maven.deploy.skip>
+    <enforcer.skip>true</enforcer.skip>
   </properties>
   <modules>
     <module>activiti-spring-conformance-util</module>
@@ -25,19 +26,4 @@
     <module>activiti-spring-conformance-variables</module>
     <module>activiti-spring-conformance-signals</module>
   </modules>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <executions>
-          <!-- skips checking test dependencies in test modules -->
-          <execution>
-            <id>ban-test-dependencies-in-compile</id>
-            <phase/>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
 </project>

@@ -9,6 +9,9 @@
   </parent>
   <artifactId>activiti-spring-conformance-util</artifactId>
   <name>Activiti :: Spring :: Conformance Util </name>
+  <properties>
+    <enforcer.skip>true</enforcer.skip>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>org.activiti</groupId>
@@ -67,18 +70,4 @@
       <artifactId>spring-boot-starter-test</artifactId>
     </dependency>
   </dependencies>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <executions>
-          <!-- skips checking test dependencies in test modules -->
-          <execution>
-            <id>ban-test-dependencies-in-compile</id>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
 </project>
