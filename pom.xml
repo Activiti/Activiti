@@ -187,7 +187,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <project.scm.organization>Activiti</project.scm.organization>
     <project.scm.repository>Activiti</project.scm.repository>
-    <project.year>2025</project.year>
+    <project.year>2026</project.year>
 
     <java.release>${java.version}</java.release>
     <java.version>21</java.version>
@@ -196,9 +196,9 @@
     <maven.compiler.target>${java.version}</maven.compiler.target>
 
     <!-- versions -->
-    <asm.version>9.9</asm.version>
+    <asm.version>9.9.1</asm.version>
     <build-helper-maven-plugin.version>3.6.1</build-helper-maven-plugin.version>
-    <dependency-check-maven.version>12.1.9</dependency-check-maven.version>
+    <dependency-check-maven.version>12.2.0</dependency-check-maven.version>
     <exec-maven-plugin.version>3.6.3</exec-maven-plugin.version>
     <extra-enforcer-rules.version>1.11.0</extra-enforcer-rules.version>
     <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
@@ -206,7 +206,7 @@
     <third-party-license-maven-plugin.version>2.7.1</third-party-license-maven-plugin.version>
     <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
     <maven-clean-plugin.version>3.5.0</maven-clean-plugin.version>
-    <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
+    <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
     <maven-deploy-plugin.version>3.1.4</maven-deploy-plugin.version>
     <maven-enforcer-plugin.version>3.6.2</maven-enforcer-plugin.version>
     <maven-failsafe-plugin.version>3.5.4</maven-failsafe-plugin.version>
@@ -227,7 +227,7 @@
     <h2.version>2.4.240</h2.version>
     <jakarta.el-api.version>5.0.1</jakarta.el-api.version>
     <testcontainers.version>2.0.3</testcontainers.version>
-    <versions-maven-plugin.version>2.20.1</versions-maven-plugin.version>
+    <versions-maven-plugin.version>2.21.0</versions-maven-plugin.version>
 
     <!-- configuration properties for tests -->
     <generated-assertions-folder>
@@ -244,32 +244,13 @@
         <version>3.20.0</version>
       </dependency>
       <!-- temporary security fix -->
-      <!-- temporary security fix AAE-32649 -->
+      <!-- security fix AAE-41710, remove with Spring update -->
       <dependency>
-        <groupId>net.minidev</groupId>
-        <artifactId>json-smart</artifactId>
-        <version>2.6.0</version>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <version>3.27.7</version>
       </dependency>
-      <!-- temporary security fix -->
-      <!-- temporary security fix AAE-33092 -->
-      <dependency>
-        <groupId>org.springframework.security</groupId>
-        <artifactId>spring-security-crypto</artifactId>
-        <version>7.0.0</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.security</groupId>
-        <artifactId>spring-security-core</artifactId>
-        <version>6.5.5</version>
-      </dependency>
-      <!-- temporary security fix -->
-      <!-- temporary security fix AAE-35515-->
-      <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-compress</artifactId>
-        <version>1.28.0</version>
-      </dependency>
-      <!-- temporary security fix -->
+      <!-- security fix AAE-41710 -->
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-dependency-check</artifactId>
