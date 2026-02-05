@@ -142,9 +142,7 @@ public class JuelExpressionTest {
 
     @Test
     public void should_includeFlowElementContext_when_delegateExecutionPresent() {
-        FlowNode flowNode = mock(FlowNode.class);
-        when(flowNode.getId()).thenReturn("serviceTask1");
-        when(flowNode.getOutgoingFlows()).thenReturn(Collections.emptyList());
+        FlowNode flowNode = mockFlowNodeWithoutOutgoingFlows("serviceTask1");
 
         when(delegateExecution.getCurrentFlowElement()).thenReturn(flowNode);
 
@@ -163,14 +161,11 @@ public class JuelExpressionTest {
         String conditionExpression = "${myVar}";
         JuelExpression expressionWithCondition = new JuelExpression(valueExpression, conditionExpression);
 
-        FlowNode flowNode = mock(FlowNode.class);
-        when(flowNode.getId()).thenReturn("exclusiveGateway1");
-
         SequenceFlow sequenceFlow = mock(SequenceFlow.class);
         when(sequenceFlow.getId()).thenReturn("flow1");
         when(sequenceFlow.getConditionExpression()).thenReturn(conditionExpression);
 
-        when(flowNode.getOutgoingFlows()).thenReturn(Collections.singletonList(sequenceFlow));
+        FlowNode flowNode = mockFlowNode("exclusiveGateway1", Collections.singletonList(sequenceFlow));
         when(delegateExecution.getCurrentFlowElement()).thenReturn(flowNode);
 
         doThrow(new PropertyNotFoundException("Property not found"))
@@ -200,8 +195,7 @@ public class JuelExpressionTest {
         doAnswer(invocation -> {
             ExpressionSetInvocation setInvocation = invocation.getArgument(0);
             Object[] params = setInvocation.getInvocationParameters();
-            assertThat(params).hasSize(1);
-            assertThat(params[0]).isEqualTo(valueToSet);
+            assertThat(params).containsExactly(valueToSet);
             return null;
         }).when(delegateInterceptor).handleInvocation(any(ExpressionSetInvocation.class));
 
@@ -285,9 +279,8 @@ public class JuelExpressionTest {
 
     @Test
     public void should_showUnknown_when_flowElementIdEmpty() {
-        FlowNode flowNode = mock(FlowNode.class);
-        when(flowNode.getId()).thenReturn("");
-        when(flowNode.getOutgoingFlows()).thenReturn(Collections.emptyList());
+
+        FlowNode flowNode = mockFlowNodeWithoutOutgoingFlows("");
 
         when(delegateExecution.getCurrentFlowElement()).thenReturn(flowNode);
 
@@ -301,9 +294,7 @@ public class JuelExpressionTest {
 
     @Test
     public void should_showUnknown_when_flowElementIdNull() {
-        FlowNode flowNode = mock(FlowNode.class);
-        when(flowNode.getId()).thenReturn(null);
-        when(flowNode.getOutgoingFlows()).thenReturn(Collections.emptyList());
+        FlowNode flowNode = mockFlowNodeWithoutOutgoingFlows(null);
 
         when(delegateExecution.getCurrentFlowElement()).thenReturn(flowNode);
 
@@ -336,8 +327,6 @@ public class JuelExpressionTest {
         String targetCondition = "${approved == true}";
         JuelExpression targetExpression = new JuelExpression(valueExpression, targetCondition);
 
-        FlowNode flowNode = mock(FlowNode.class);
-        when(flowNode.getId()).thenReturn("gateway1");
 
         SequenceFlow flow1 = mock(SequenceFlow.class);
         when(flow1.getConditionExpression()).thenReturn("${rejected}");
@@ -348,8 +337,8 @@ public class JuelExpressionTest {
 
         SequenceFlow flow3 = mock(SequenceFlow.class);
 
-        List<SequenceFlow> flows = List.of(flow1, flow2, flow3);
-        when(flowNode.getOutgoingFlows()).thenReturn(flows);
+        FlowNode flowNode = mockFlowNode("gateway1", List.of(flow1, flow2, flow3));
+
         when(delegateExecution.getCurrentFlowElement()).thenReturn(flowNode);
 
         doThrow(new PropertyNotFoundException("Property not found"))
@@ -359,6 +348,17 @@ public class JuelExpressionTest {
             .isInstanceOf(ActivitiException.class)
             .hasMessageContaining("flowElementId: [gateway1]")
             .hasMessageContaining("sequenceFlowId: [flow2]");
+    }
+
+    private FlowNode mockFlowNodeWithoutOutgoingFlows(String flowNodeId) {
+        return mockFlowNode(flowNodeId, Collections.emptyList());
+    }
+
+    private FlowNode mockFlowNode(String flowNodeId, List<SequenceFlow> outgoingFlows) {
+        FlowNode flowNode = mock(FlowNode.class);
+        when(flowNode.getId()).thenReturn(flowNodeId);
+        when(flowNode.getOutgoingFlows()).thenReturn(outgoingFlows);
+        return flowNode;
     }
 
 }
