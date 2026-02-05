@@ -1,5 +1,9 @@
+alter table ACT_RU_IDENTITYLINK drop FOREIGN KEY ACT_FK_TSKASS_TASK;
+drop index if exists ACT_IDX_IDENT_LNK_TASK on ACT_RU_IDENTITYLINK;
 create index ACT_IDX_IDENT_LNK_TASK on ACT_RU_IDENTITYLINK(TASK_ID_ ASC);
+alter table ACT_RU_IDENTITYLINK add constraint ACT_FK_TSKASS_TASK foreign key (TASK_ID_) references ACT_RU_TASK (ID_);
 
+drop index if exists ACT_IDX_RE_PROCDEF_DEPLOYMENT_ID ON ACT_RE_PROCDEF;
 create index ACT_IDX_RE_PROCDEF_DEPLOYMENT_ID on ACT_RE_PROCDEF(DEPLOYMENT_ID_ ASC, ID_ ASC);
 
 update ACT_GE_PROPERTY set VALUE_ = '8.1.4' where NAME_ = 'schema.version';
