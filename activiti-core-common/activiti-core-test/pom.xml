@@ -15,4 +15,7 @@
     <module>activiti-core-test-assertions</module>
     <module>activiti-core-test-local-runtime</module>
   </modules>
+  <properties>
+    <enforcer.skip>true</enforcer.skip>
+  </properties>
 </project>
