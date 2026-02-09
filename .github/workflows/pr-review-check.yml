@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   check:
-    uses: Alfresco/alfresco-build-tools/.github/workflows/pr-review-check.yml@3768f40c71f5f9b0c4e6a507c8f87ed40d9b60c9 # v12.9.0
+    uses: Alfresco/alfresco-build-tools/.github/workflows/pr-review-check.yml@fd5878fdc8b6de4d27591c5100434f31019f1f28 # v12.11.0
     with:
       trigger-labels: '["CI", "preview", "skip-tests"]'
       milestone-name: 'Validating'
