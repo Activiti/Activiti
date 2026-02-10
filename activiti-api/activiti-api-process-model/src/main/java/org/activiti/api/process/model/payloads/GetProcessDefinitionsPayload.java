@@ -22,7 +22,7 @@ import org.activiti.api.model.shared.Payload;
 public class GetProcessDefinitionsPayload implements Payload {
 
     private String id;
-    private String processDefinitionId;
+    private Set<String> processDefinitionIds;
     private Set<String> processDefinitionKeys;
     private boolean latestVersionOnly;
 
@@ -30,19 +30,19 @@ public class GetProcessDefinitionsPayload implements Payload {
         this.id = UUID.randomUUID().toString();
     }
 
-    public GetProcessDefinitionsPayload(String processDefinitionId, Set<String> processDefinitionKeys) {
+    public GetProcessDefinitionsPayload(Set<String> processDefinitionIds, Set<String> processDefinitionKeys) {
         this();
-        this.processDefinitionId = processDefinitionId;
+        this.processDefinitionIds = processDefinitionIds;
         this.processDefinitionKeys = processDefinitionKeys;
     }
 
     public GetProcessDefinitionsPayload(
-        String processDefinitionId,
+        Set<String> processDefinitionIds,
         Set<String> processDefinitionKeys,
         boolean latestVersionOnly
     ) {
         this();
-        this.processDefinitionId = processDefinitionId;
+        this.processDefinitionIds = processDefinitionIds;
         this.processDefinitionKeys = processDefinitionKeys;
         this.latestVersionOnly = latestVersionOnly;
     }
@@ -52,8 +52,12 @@ public class GetProcessDefinitionsPayload implements Payload {
         return id;
     }
 
-    public String getProcessDefinitionId() {
-        return processDefinitionId;
+    public Set<String> getProcessDefinitionIds() {
+        return processDefinitionIds;
+    }
+
+    public void setProcessDefinitionIds(Set<String> processDefinitionIds) {
+      this.processDefinitionIds = processDefinitionIds;
     }
 
     public Set<String> getProcessDefinitionKeys() {
@@ -62,6 +66,10 @@ public class GetProcessDefinitionsPayload implements Payload {
 
     public boolean hasDefinitionKeys() {
         return processDefinitionKeys != null && !processDefinitionKeys.isEmpty();
+    }
+
+    public boolean hasDefinitionIds() {
+        return processDefinitionIds != null && !processDefinitionIds.isEmpty();
     }
 
     public void setProcessDefinitionKeys(Set<String> processDefinitionKeys) {

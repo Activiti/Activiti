@@ -21,7 +21,7 @@ import org.activiti.api.process.model.payloads.GetProcessDefinitionsPayload;
 
 public class GetProcessDefinitionsPayloadBuilder {
 
-    private String processDefinitionId;
+    private Set<String> processDefinitionIds;
     private Set<String> processDefinitionKeys = new HashSet<>();
     private boolean latestVersionOnly;
 
@@ -30,8 +30,16 @@ public class GetProcessDefinitionsPayloadBuilder {
         return this;
     }
 
+    public GetProcessDefinitionsPayloadBuilder withProcessDefinitionIds(Set<String> processDefinitionIds) {
+        this.processDefinitionIds = processDefinitionIds;
+        return this;
+    }
+
     public GetProcessDefinitionsPayloadBuilder withProcessDefinitionId(String processDefinitionId) {
-        this.processDefinitionId = processDefinitionId;
+        if (processDefinitionIds == null) {
+            processDefinitionIds = new HashSet<>();
+        }
+        processDefinitionIds.add(processDefinitionId);
         return this;
     }
 
@@ -50,7 +58,7 @@ public class GetProcessDefinitionsPayloadBuilder {
 
     public GetProcessDefinitionsPayload build() {
         return new GetProcessDefinitionsPayload(
-            processDefinitionId,
+            processDefinitionIds,
             processDefinitionKeys,
             latestVersionOnly
         );

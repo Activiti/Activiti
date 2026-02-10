@@ -141,6 +141,10 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
             processDefinitionQuery.processDefinitionKeys(getProcessDefinitionsPayload.getProcessDefinitionKeys());
         }
 
+        if (getProcessDefinitionsPayload.hasDefinitionIds()) {
+            processDefinitionQuery.processDefinitionIds(getProcessDefinitionsPayload.getProcessDefinitionIds());
+        }
+
         return new PageImpl<>(
             processDefinitionConverter.from(
                 processDefinitionQuery.listPage(pageable.getStartIndex(), pageable.getMaxItems())
