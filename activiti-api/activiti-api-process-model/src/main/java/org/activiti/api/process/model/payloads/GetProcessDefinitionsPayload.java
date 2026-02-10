@@ -57,7 +57,7 @@ public class GetProcessDefinitionsPayload implements Payload {
     }
 
     public void setProcessDefinitionIds(Set<String> processDefinitionIds) {
-      this.processDefinitionIds = processDefinitionIds;
+        this.processDefinitionIds = processDefinitionIds;
     }
 
     public Set<String> getProcessDefinitionKeys() {
