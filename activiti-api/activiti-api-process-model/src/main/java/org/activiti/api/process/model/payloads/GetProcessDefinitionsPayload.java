@@ -15,6 +15,7 @@
  */
 package org.activiti.api.process.model.payloads;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import org.activiti.api.model.shared.Payload;
@@ -47,9 +48,34 @@ public class GetProcessDefinitionsPayload implements Payload {
         this.latestVersionOnly = latestVersionOnly;
     }
 
+    public GetProcessDefinitionsPayload(String processDefinitionId, Set<String> processDefinitionKeys) {
+        this(new HashSet<>(Set.of(processDefinitionId)), processDefinitionKeys);
+    }
+
+    public GetProcessDefinitionsPayload(
+        String processDefinitionId,
+        Set<String> processDefinitionKeys,
+        boolean latestVersionOnly
+    ) {
+        this(new HashSet<>(Set.of(processDefinitionId)), processDefinitionKeys, latestVersionOnly);
+    }
+
     @Override
     public String getId() {
         return id;
+    }
+
+
+
+    /**
+     * @deprecated Use {@link #getProcessDefinitionIds()} instead
+     */
+    @Deprecated(since = "Use getProcessDefinitionIds() instead")
+    public String getProcessDefinitionId() {
+        if (processDefinitionIds == null) {
+            return null;
+        }
+        return processDefinitionIds.stream().findFirst().orElse(null);
     }
 
     public Set<String> getProcessDefinitionIds() {

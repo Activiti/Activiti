@@ -687,7 +687,7 @@ class ProcessAdminRuntimeImplTest {
     }
 
     @Test
-    void should_notApplyBothActiveAndSuspendedFilters_whenBothAreSet() {
+    void should_applyBothActiveAndSuspendedFilters_whenBothAreSet() {
         var processInstanceQuery = mock(ProcessInstanceQuery.class, Answers.RETURNS_SELF);
         var payload = new GetProcessInstancesPayload();
         payload.setActiveOnly(true);
