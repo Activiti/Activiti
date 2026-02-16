@@ -43,15 +43,13 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.invocation.ExpressionGetInvocation;
 import org.activiti.engine.impl.delegate.invocation.ExpressionSetInvocation;
 import org.activiti.engine.impl.interceptor.DelegateInterceptor;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
 
-@RunWith(MockitoJUnitRunner.class)
-public class JuelExpressionTest {
+class JuelExpressionTest {
 
     @Mock
     private ValueExpression valueExpression;
@@ -75,9 +73,11 @@ public class JuelExpressionTest {
     private DelegateExecution delegateExecution;
 
     private JuelExpression juelExpression;
+    private AutoCloseable mockitoCloseable;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
+        mockitoCloseable = MockitoAnnotations.openMocks(this);
         Context.setProcessEngineConfiguration(processEngineConfiguration);
         when(processEngineConfiguration.getExpressionManager()).thenReturn(expressionManager);
         when(processEngineConfiguration.getDelegateInterceptor()).thenReturn(delegateInterceptor);
@@ -86,13 +86,14 @@ public class JuelExpressionTest {
         juelExpression = new JuelExpression(valueExpression, "${myVar}");
     }
 
-    @After
-    public void tearDown() {
+    @AfterEach
+    void tearDown() throws Exception {
         Context.setProcessEngineConfiguration(null);
+        mockitoCloseable.close();
     }
 
     @Test
-    public void should_returnExpressionValue() {
+    void should_returnExpressionValue() {
         String expectedValue = "testValue";
         doAnswer(invocation -> {
             ExpressionGetInvocation getInvocation = invocation.getArgument(0);
@@ -108,7 +109,7 @@ public class JuelExpressionTest {
     }
 
     @Test
-    public void should_wrapPropertyNotFound_when_resolvingValue() {
+    void should_wrapPropertyNotFound_when_resolvingValue() {
         doThrow(new PropertyNotFoundException("Property not found"))
             .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
 
@@ -119,7 +120,7 @@ public class JuelExpressionTest {
     }
 
     @Test
-    public void should_wrapMethodNotFound_when_resolvingValue() {
+    void should_wrapMethodNotFound_when_resolvingValue() {
         doThrow(new MethodNotFoundException("Method not found"))
             .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
 
@@ -130,7 +131,7 @@ public class JuelExpressionTest {
     }
 
     @Test
-    public void should_wrapGenericException_when_resolvingValue() {
+    void should_wrapGenericException_when_resolvingValue() {
         doThrow(new RuntimeException("Generic error"))
             .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
 
@@ -141,7 +142,7 @@ public class JuelExpressionTest {
     }
 
     @Test
-    public void should_includeFlowElementContext_when_delegateExecutionPresent() {
+    void should_includeFlowElementContext_when_delegateExecutionPresent() {
         FlowNode flowNode = mockFlowNodeWithoutOutgoingFlows("serviceTask1");
 
         when(delegateExecution.getCurrentFlowElement()).thenReturn(flowNode);
@@ -157,7 +158,7 @@ public class JuelExpressionTest {
     }
 
     @Test
-    public void should_includeFlowAndSequenceContext_when_sequenceFlowMatchesCondition() {
+    void should_includeFlowAndSequenceContext_when_sequenceFlowMatchesCondition() {
         String conditionExpression = "${myVar}";
         JuelExpression expressionWithCondition = new JuelExpression(valueExpression, conditionExpression);
 
@@ -179,7 +180,7 @@ public class JuelExpressionTest {
     }
 
     @Test
-    public void should_showUnknownContext_when_noDelegateExecution() {
+    void should_showUnknownContext_when_noDelegateExecution() {
         doThrow(new PropertyNotFoundException("Property not found"))
             .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
 
@@ -190,7 +191,7 @@ public class JuelExpressionTest {
     }
 
     @Test
-    public void should_setExpressionValue() {
+    void should_setExpressionValue() {
         String valueToSet = "newValue";
         doAnswer(invocation -> {
             ExpressionSetInvocation setInvocation = invocation.getArgument(0);
@@ -205,7 +206,7 @@ public class JuelExpressionTest {
     }
 
     @Test
-    public void should_wrapException_when_settingValue() {
+    void should_wrapException_when_settingValue() {
         doThrow(new RuntimeException("Set value error"))
             .when(delegateInterceptor).handleInvocation(any(ExpressionSetInvocation.class));
 
@@ -216,7 +217,7 @@ public class JuelExpressionTest {
     }
 
     @Test
-    public void should_returnExpressionString_when_valueExpressionPresent() {
+    void should_returnExpressionString_when_valueExpressionPresent() {
         String expectedString = "${myVar}";
         when(valueExpression.getExpressionString()).thenReturn(expectedString);
 
@@ -226,7 +227,7 @@ public class JuelExpressionTest {
     }
 
     @Test
-    public void should_returnDefaultToString_when_valueExpressionNull() {
+    void should_returnDefaultToString_when_valueExpressionNull() {
         JuelExpression expressionWithNull = new JuelExpression(null, "${myVar}");
 
         String result = expressionWithNull.toString();
@@ -235,14 +236,14 @@ public class JuelExpressionTest {
     }
 
     @Test
-    public void should_returnOriginalExpressionText() {
+    void should_returnOriginalExpressionText() {
         String result = juelExpression.getExpressionText();
 
         assertThat(result).isEqualTo("${myVar}");
     }
 
     @Test
-    public void should_evaluateExpression_withExpressionManagerAndVariablesMap() {
+    void should_evaluateExpression_withExpressionManagerAndVariablesMap() {
         Map<String, Object> variables = new HashMap<>();
         variables.put("myVar", "testValue");
 
@@ -263,7 +264,7 @@ public class JuelExpressionTest {
     }
 
     @Test
-    public void should_notIncludeFlowContext_when_expressionManagerThrows() {
+    void should_notIncludeFlowContext_when_expressionManagerThrows() {
         Map<String, Object> variables = new HashMap<>();
         when(expressionManager.getElContext(variables)).thenReturn(elContext);
 
@@ -278,7 +279,7 @@ public class JuelExpressionTest {
     }
 
     @Test
-    public void should_showUnknown_when_flowElementIdEmpty() {
+    void should_showUnknown_when_flowElementIdEmpty() {
 
         FlowNode flowNode = mockFlowNodeWithoutOutgoingFlows("");
 
@@ -293,7 +294,7 @@ public class JuelExpressionTest {
     }
 
     @Test
-    public void should_showUnknown_when_flowElementIdNull() {
+    void should_showUnknown_when_flowElementIdNull() {
         FlowNode flowNode = mockFlowNodeWithoutOutgoingFlows(null);
 
         when(delegateExecution.getCurrentFlowElement()).thenReturn(flowNode);
@@ -307,7 +308,7 @@ public class JuelExpressionTest {
     }
 
     @Test
-    public void should_notExtractSequenceFlow_when_flowElementIsNotFlowNode() {
+    void should_notExtractSequenceFlow_when_flowElementIsNotFlowNode() {
         FlowElement flowElement = mock(FlowElement.class);
         when(flowElement.getId()).thenReturn("startEvent1");
 
@@ -323,7 +324,109 @@ public class JuelExpressionTest {
     }
 
     @Test
-    public void should_matchSequenceFlowByConditionExpression_when_multipleOutgoingFlows() {
+    void should_showUnknownFlowElement_when_currentFlowElementIsNull() {
+        when(delegateExecution.getCurrentFlowElement()).thenReturn(null);
+
+        doThrow(new PropertyNotFoundException("Property not found"))
+            .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
+
+        assertThatThrownBy(() -> juelExpression.getValue(delegateExecution))
+            .isInstanceOf(ActivitiException.class)
+            .hasMessageContaining("flowElementId: [unknown]")
+            .hasMessageContaining("sequenceFlowId: [unknown]");
+    }
+
+    @Test
+    void should_showUnknownSequenceFlow_when_conditionExpressionIsNull() {
+        SequenceFlow flowWithNullCondition = mock(SequenceFlow.class);
+        when(flowWithNullCondition.getConditionExpression()).thenReturn(null);
+
+        FlowNode flowNode = mockFlowNode("gateway1", List.of(flowWithNullCondition));
+        when(delegateExecution.getCurrentFlowElement()).thenReturn(flowNode);
+
+        doThrow(new PropertyNotFoundException("Property not found"))
+            .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
+
+        assertThatThrownBy(() -> juelExpression.getValue(delegateExecution))
+            .isInstanceOf(ActivitiException.class)
+            .hasMessageContaining("flowElementId: [gateway1]")
+            .hasMessageContaining("sequenceFlowId: [unknown]");
+    }
+
+    @Test
+    void should_showUnknownSequenceFlow_when_conditionExpressionIsEmpty() {
+        SequenceFlow flowWithEmptyCondition = mock(SequenceFlow.class);
+        when(flowWithEmptyCondition.getConditionExpression()).thenReturn("");
+
+        FlowNode flowNode = mockFlowNode("gateway1", List.of(flowWithEmptyCondition));
+        when(delegateExecution.getCurrentFlowElement()).thenReturn(flowNode);
+
+        doThrow(new PropertyNotFoundException("Property not found"))
+            .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
+
+        assertThatThrownBy(() -> juelExpression.getValue(delegateExecution))
+            .isInstanceOf(ActivitiException.class)
+            .hasMessageContaining("flowElementId: [gateway1]")
+            .hasMessageContaining("sequenceFlowId: [unknown]");
+    }
+
+    @Test
+    void should_showUnknownSequenceFlow_when_conditionExpressionIsWhitespaceOnly() {
+        SequenceFlow flowWithWhitespaceCondition = mock(SequenceFlow.class);
+        when(flowWithWhitespaceCondition.getConditionExpression()).thenReturn("   ");
+
+        FlowNode flowNode = mockFlowNode("gateway1", List.of(flowWithWhitespaceCondition));
+        when(delegateExecution.getCurrentFlowElement()).thenReturn(flowNode);
+
+        doThrow(new PropertyNotFoundException("Property not found"))
+            .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
+
+        assertThatThrownBy(() -> juelExpression.getValue(delegateExecution))
+            .isInstanceOf(ActivitiException.class)
+            .hasMessageContaining("flowElementId: [gateway1]")
+            .hasMessageContaining("sequenceFlowId: [unknown]");
+    }
+
+    @Test
+    void should_showUnknownSequenceFlow_when_sequenceFlowIdIsNull() {
+        String conditionExpression = "${myVar}";
+        SequenceFlow flowWithNullId = mock(SequenceFlow.class);
+        when(flowWithNullId.getConditionExpression()).thenReturn(conditionExpression);
+        when(flowWithNullId.getId()).thenReturn(null);
+
+        FlowNode flowNode = mockFlowNode("gateway1", List.of(flowWithNullId));
+        when(delegateExecution.getCurrentFlowElement()).thenReturn(flowNode);
+
+        doThrow(new PropertyNotFoundException("Property not found"))
+            .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
+
+        assertThatThrownBy(() -> juelExpression.getValue(delegateExecution))
+            .isInstanceOf(ActivitiException.class)
+            .hasMessageContaining("flowElementId: [gateway1]")
+            .hasMessageContaining("sequenceFlowId: [unknown]");
+    }
+
+    @Test
+    void should_showUnknownSequenceFlow_when_sequenceFlowIdIsEmpty() {
+        String conditionExpression = "${myVar}";
+        SequenceFlow flowWithEmptyId = mock(SequenceFlow.class);
+        when(flowWithEmptyId.getConditionExpression()).thenReturn(conditionExpression);
+        when(flowWithEmptyId.getId()).thenReturn("");
+
+        FlowNode flowNode = mockFlowNode("gateway1", List.of(flowWithEmptyId));
+        when(delegateExecution.getCurrentFlowElement()).thenReturn(flowNode);
+
+        doThrow(new PropertyNotFoundException("Property not found"))
+            .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
+
+        assertThatThrownBy(() -> juelExpression.getValue(delegateExecution))
+            .isInstanceOf(ActivitiException.class)
+            .hasMessageContaining("flowElementId: [gateway1]")
+            .hasMessageContaining("sequenceFlowId: [unknown]");
+    }
+
+    @Test
+    void should_matchSequenceFlowByConditionExpression_when_multipleOutgoingFlows() {
         String targetCondition = "${approved == true}";
         JuelExpression targetExpression = new JuelExpression(valueExpression, targetCondition);
 
@@ -348,6 +451,38 @@ public class JuelExpressionTest {
             .isInstanceOf(ActivitiException.class)
             .hasMessageContaining("flowElementId: [gateway1]")
             .hasMessageContaining("sequenceFlowId: [flow2]");
+    }
+
+    @Test
+    void should_includeFlowElementContext_when_methodNotFoundWithDelegateExecution() {
+        FlowNode flowNode = mockFlowNodeWithoutOutgoingFlows("serviceTask1");
+        when(delegateExecution.getCurrentFlowElement()).thenReturn(flowNode);
+
+        doThrow(new MethodNotFoundException("Method not found"))
+            .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
+
+        assertThatThrownBy(() -> juelExpression.getValue(delegateExecution))
+            .isInstanceOf(ActivitiException.class)
+            .hasMessageContaining("Unknown method used in expression: ${myVar}")
+            .hasMessageContaining("flowElementId: [serviceTask1]")
+            .hasMessageContaining("sequenceFlowId: [unknown]")
+            .hasCauseInstanceOf(MethodNotFoundException.class);
+    }
+
+    @Test
+    void should_includeFlowElementContext_when_genericExceptionWithDelegateExecution() {
+        FlowNode flowNode = mockFlowNodeWithoutOutgoingFlows("serviceTask1");
+        when(delegateExecution.getCurrentFlowElement()).thenReturn(flowNode);
+
+        doThrow(new RuntimeException("Generic error"))
+            .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
+
+        assertThatThrownBy(() -> juelExpression.getValue(delegateExecution))
+            .isInstanceOf(ActivitiException.class)
+            .hasMessageContaining("Error while evaluating expression: ${myVar}")
+            .hasMessageContaining("flowElementId: [serviceTask1]")
+            .hasMessageContaining("sequenceFlowId: [unknown]")
+            .hasCauseInstanceOf(RuntimeException.class);
     }
 
     private FlowNode mockFlowNodeWithoutOutgoingFlows(String flowNodeId) {
