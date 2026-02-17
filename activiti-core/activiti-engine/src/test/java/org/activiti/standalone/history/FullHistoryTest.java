@@ -34,6 +34,7 @@ import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.history.HistoricTaskInstanceQuery;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.history.HistoricVariableInstanceQuery;
 import org.activiti.engine.history.HistoricVariableUpdate;
@@ -714,6 +715,21 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
         assertThatExceptionOfType(ActivitiIllegalArgumentException.class).isThrownBy(() ->
             historyService.createHistoricDetailQuery().orderByVariableType().list()
         );
+    }
+
+    @Deployment(resources = {"org/activiti/standalone/history/FullHistoryTest.testHistoricTaskInstanceVariableUpdates.bpmn20.xml"})
+    public void testHistoricTaskInstanceWithMaxResults() {
+        // GIVEN: 5 running process
+        for (int i=0;i<5;i++) {
+            runtimeService.startProcessInstanceByKey("HistoricTaskInstanceTest");
+        }
+
+        final HistoricTaskInstanceQuery query = historyService.createHistoricTaskInstanceQuery();
+        // WHEN: listing, at most, 3 running process instances
+        // THEN: the result must have 3 results
+        assertThat(query.listPage(0,3)).hasSize(3);
+        // THEN: total number of process instances is 5
+        assertThat(query.count()).isEqualTo(5);
     }
 
     @Deployment
