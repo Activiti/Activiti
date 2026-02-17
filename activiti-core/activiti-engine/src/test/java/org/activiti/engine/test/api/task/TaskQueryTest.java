@@ -1394,13 +1394,13 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     @Deployment(resources = {"org/activiti/engine/test/api/task/TaskQueryTest.testTaskVariableValueEquals.bpmn20.xml"})
     public void testQueryByMaxResults() {
         // GIVEN: 5 running process instances
-        List<String> processInstancesId = new ArrayList<>();
+        List<String> processInstancesIds = new ArrayList<>();
         for( int i=0; i<5; i++) {
             final ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
-            processInstancesId.add(processInstance.getId());
+            processInstancesIds.add(processInstance.getId());
         }
 
-        final TaskQuery query = taskService.createTaskQuery().processInstanceIdIn(processInstancesId);
+        final TaskQuery query = taskService.createTaskQuery().processInstanceIdIn(processInstancesIds);
         // WHEN: listing, at most, 3 running process instances
         // THEN: the result must have 3 results
         assertThat(query.listPage(0, 3)).hasSize(3);
