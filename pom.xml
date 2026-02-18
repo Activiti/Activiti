@@ -228,6 +228,7 @@
     <jakarta.el-api.version>5.0.1</jakarta.el-api.version>
     <testcontainers.version>2.0.3</testcontainers.version>
     <versions-maven-plugin.version>2.21.0</versions-maven-plugin.version>
+    <commons-email2-jakarta.version>2.0.0-M1</commons-email2-jakarta.version>
 
     <!-- configuration properties for tests -->
     <generated-assertions-folder>
@@ -1024,20 +1025,6 @@ limitations under the License.
       <snapshots>
         <enabled>false</enabled>
       </snapshots>
-    </repository>
-<!--    Added below repository as a temporary measure,
-        It can be removed once commons-email2-* dependencies are added to our repo-->
-    <repository>
-      <id>apache central snapshots</id>
-      <name>Central Repository Snapshots</name>
-      <layout>default</layout>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <url>https://repository.apache.org/content/repositories/snapshots/</url>
     </repository>
     <repository>
       <id>activiti-releases</id>
