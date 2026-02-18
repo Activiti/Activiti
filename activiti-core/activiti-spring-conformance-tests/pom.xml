@@ -13,6 +13,7 @@
   <name>Activiti :: Spring :: Conformance Tests Parent</name>
   <properties>
     <maven.deploy.skip>true</maven.deploy.skip>
+    <enforcer.skip>true</enforcer.skip>
   </properties>
   <modules>
     <module>activiti-spring-conformance-util</module>

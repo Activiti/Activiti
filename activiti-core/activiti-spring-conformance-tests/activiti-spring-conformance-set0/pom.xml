@@ -13,46 +13,57 @@
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-spring-conformance-util</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-api-process-runtime</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-api-task-runtime</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-api-runtime-shared</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-api-task-model</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-api-process-model</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-api-model-shared</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-engine</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-spring-boot-starter</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.h2database</groupId>
