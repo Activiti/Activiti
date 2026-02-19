@@ -13,7 +13,6 @@
   <name>Activiti :: Core :: Parent</name>
   <properties>
     <batik.version>1.19</batik.version>
-    <commons-email.version>1.6.0</commons-email.version>
     <commons-io.version>2.21.0</commons-io.version>
     <commons-text.version>1.15.0</commons-text.version>
     <jakarta-enterprise-concurrent.version>3.1.1</jakarta-enterprise-concurrent.version>
@@ -51,11 +50,6 @@
         <groupId>jakarta.enterprise.concurrent</groupId>
         <artifactId>jakarta.enterprise.concurrent-api</artifactId>
         <version>${jakarta-enterprise-concurrent.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-email</artifactId>
-        <version>${commons-email.version}</version>
       </dependency>
       <dependency>
         <groupId>commons-io</groupId>
