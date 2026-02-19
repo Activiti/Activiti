@@ -17,6 +17,10 @@ package org.activiti.engine.impl.delegate.invocation;
 
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
+import org.activiti.engine.impl.bpmn.helper.task.TaskComparatorImpl;
+import org.activiti.engine.impl.bpmn.helper.task.TaskUpdater;
+import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.task.TaskInfo;
 
 /**
  * Class handling invocations of {@link TaskListener TaskListeners}
@@ -34,7 +38,13 @@ public class TaskListenerInvocation extends DelegateInvocation {
     }
 
     protected void invoke() {
+        TaskComparatorImpl taskComparator = new TaskComparatorImpl();
+        taskComparator.setOriginalTask((TaskInfo)delegateTask);
+
         executionListenerInstance.notify(delegateTask);
+
+        TaskUpdater taskUpdater = new TaskUpdater(Context.getCommandContext(), false);
+        taskUpdater.updateTask(taskComparator.getOriginalTask(), (TaskInfo) delegateTask);
     }
 
     public Object getTarget() {
