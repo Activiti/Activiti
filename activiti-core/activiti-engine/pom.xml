@@ -46,7 +46,6 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-email2-jakarta</artifactId>
-      <version>${commons-email2-jakarta.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>

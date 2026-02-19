@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.bpmn.behavior;
 
 import java.io.File;
@@ -23,10 +21,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
 import jakarta.activation.DataSource;
 import javax.naming.NamingException;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.cfg.MailServerInfo;
@@ -42,11 +38,6 @@ import org.apache.commons.mail2.jakarta.SimpleEmail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
-
-
-
- */
 public class MailActivityBehavior extends AbstractBpmnActivityBehavior {
 
     private static final long serialVersionUID = 1L;
