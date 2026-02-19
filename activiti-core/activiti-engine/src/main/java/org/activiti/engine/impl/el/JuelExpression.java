@@ -132,10 +132,10 @@ public class JuelExpression implements Expression {
         private static final String UNKNOWN_ID = "unknown";
 
         static ExpressionContext from(VariableScope variableScope, String expressionText) {
-                Optional<FlowElement> flowElementOptional = extractFlowElement(variableScope);
-                String flowElementId = flowElementOptional.map(FlowElement::getId).filter(StringUtils::hasText).orElse(UNKNOWN_ID);
-                String sequenceFlowId = extractSequenceFlow(flowElementOptional, expressionText).map(SequenceFlow::getId).filter(StringUtils::hasText).orElse(UNKNOWN_ID);
-                return new ExpressionContext(flowElementId, sequenceFlowId);
+            Optional<FlowElement> flowElementOptional = extractFlowElement(variableScope);
+            String flowElementId = flowElementOptional.map(FlowElement::getId).filter(StringUtils::hasText).orElse(UNKNOWN_ID);
+            String sequenceFlowId = extractSequenceFlow(flowElementOptional, expressionText).map(SequenceFlow::getId).filter(StringUtils::hasText).orElse(UNKNOWN_ID);
+            return new ExpressionContext(flowElementId, sequenceFlowId);
         }
 
         private static Optional<FlowElement> extractFlowElement(VariableScope variableScope) {
