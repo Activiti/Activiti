@@ -454,6 +454,34 @@ class JuelExpressionTest {
     }
 
     @Test
+    void should_showUnknownSequenceFlow_when_runtimeExpressionDiffersFromStaticCondition() {
+        // Simulate dynamic override: runtime expression text differs from static model condition
+        String staticCondition = "${originalCondition}";
+        String runtimeCondition = "${overriddenCondition}";
+        
+        // Expression evaluated at runtime uses the overridden condition
+        JuelExpression runtimeExpression = new JuelExpression(valueExpression, runtimeCondition);
+        
+        // But the model still has the original static condition
+        SequenceFlow sequenceFlow = mock(SequenceFlow.class);
+        when(sequenceFlow.getId()).thenReturn("flow1");
+        when(sequenceFlow.getConditionExpression()).thenReturn(staticCondition);
+        
+        FlowNode flowNode = mockFlowNode("exclusiveGateway1", List.of(sequenceFlow));
+        when(delegateExecution.getCurrentFlowElement()).thenReturn(flowNode);
+        
+        doThrow(new PropertyNotFoundException("Property not found"))
+            .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
+        
+        // The match fails because staticCondition != runtimeCondition
+        assertThatThrownBy(() -> runtimeExpression.getValue(delegateExecution))
+            .isInstanceOf(ActivitiException.class)
+            .hasMessageContaining("Unknown property used in expression: " + runtimeCondition)
+            .hasMessageContaining("flowElementId: [exclusiveGateway1]")
+            .hasMessageContaining("sequenceFlowId: [unknown]");
+    }
+
+    @Test
     void should_includeFlowElementContext_when_methodNotFoundWithDelegateExecution() {
         FlowNode flowNode = mockFlowNodeWithoutOutgoingFlows("serviceTask1");
         when(delegateExecution.getCurrentFlowElement()).thenReturn(flowNode);
