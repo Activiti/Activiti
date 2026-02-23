@@ -15,16 +15,21 @@
  */
 package org.activiti.engine.impl.el;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.el.ELContext;
 import jakarta.el.MethodNotFoundException;
 import jakarta.el.PropertyNotFoundException;
 import jakarta.el.ValueExpression;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.DynamicBpmnConstants;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.VariableScope;
@@ -37,8 +42,6 @@ import org.springframework.util.StringUtils;
 /**
  * Expression implementation backed by a JUEL {@link ValueExpression}.
  *
-
-
  */
 public class JuelExpression implements Expression {
 
@@ -134,8 +137,21 @@ public class JuelExpression implements Expression {
         static ExpressionContext from(VariableScope variableScope, String expressionText) {
             Optional<FlowElement> flowElementOptional = extractFlowElement(variableScope);
             String flowElementId = flowElementOptional.map(FlowElement::getId).filter(StringUtils::hasText).orElse(UNKNOWN_ID);
-            String sequenceFlowId = extractSequenceFlow(flowElementOptional, expressionText).map(SequenceFlow::getId).filter(StringUtils::hasText).orElse(UNKNOWN_ID);
+            String sequenceFlowId = safeGet(
+                () -> extractSequenceFlow(variableScope, flowElementOptional, expressionText).map(SequenceFlow::getId).filter(StringUtils::hasText).orElse(UNKNOWN_ID),
+                UNKNOWN_ID
+            );
             return new ExpressionContext(flowElementId, sequenceFlowId);
+        }
+
+        private static <T> T safeGet(Supplier<T> supplier, T defaultValue) {
+            return Optional.ofNullable(supplier).map(s -> {
+                try {
+                    return s.get();
+                } catch (Exception e) {
+                    return defaultValue;
+                }
+            }).orElse(defaultValue);
         }
 
         private static Optional<FlowElement> extractFlowElement(VariableScope variableScope) {
@@ -146,15 +162,36 @@ public class JuelExpression implements Expression {
             );
         }
 
-        private static Optional<SequenceFlow> extractSequenceFlow(Optional<FlowElement> flowElementOpt, String expressionText) {
+        private static Optional<SequenceFlow> extractSequenceFlow(VariableScope variableScope, Optional<FlowElement> flowElementOpt, String expressionText) {
+
             return flowElementOpt
                 .filter(FlowNode.class::isInstance)
                 .map(FlowNode.class::cast)
                 .flatMap(flowNode -> flowNode.getOutgoingFlows().stream()
-                    .filter(flow -> StringUtils.hasText(flow.getConditionExpression()) && flow.getConditionExpression()
-                        .equals(expressionText))
+                    .filter(flow -> findActiveConditionExpression(variableScope, expressionText).test(flow))
                     .findFirst()
                 );
+        }
+
+        private static Predicate<SequenceFlow> findActiveConditionExpression(VariableScope variableScope, String expressionText) {
+            return (sequenceFlow -> {
+                var activeCondition = getActiveConditionExpression(sequenceFlow.getConditionExpression(), sequenceFlow, variableScope);
+                return Objects.equals(activeCondition, expressionText);
+            });
+        }
+
+        private static String getActiveConditionExpression(String originalExpression, SequenceFlow sequenceFlow, VariableScope variableScope) {
+            if (variableScope instanceof DelegateExecution execution) {
+                var processDefinitionId = execution.getProcessDefinitionId();
+                var flowElementId = sequenceFlow.getId();
+                var objectNode = Context.getBpmnOverrideElementProperties(flowElementId, processDefinitionId);
+                JsonNode newValue;
+                if (objectNode != null && (newValue = objectNode.get(DynamicBpmnConstants.SEQUENCE_FLOW_CONDITION)) != null) {
+                    if (newValue.isNull()) return null;
+                    return newValue.asText();
+                }
+            }
+            return originalExpression;
         }
 
         String formatContextInfo() {

@@ -18,12 +18,15 @@ package org.activiti.engine.impl.el;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.el.ELContext;
 import jakarta.el.MethodNotFoundException;
 import jakarta.el.PropertyNotFoundException;
@@ -36,6 +39,8 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.DynamicBpmnConstants;
+import org.activiti.engine.DynamicBpmnService;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -43,6 +48,9 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.invocation.ExpressionGetInvocation;
 import org.activiti.engine.impl.delegate.invocation.ExpressionSetInvocation;
 import org.activiti.engine.impl.interceptor.DelegateInterceptor;
+import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
+import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionInfoCache;
+import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionInfoCacheObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -88,7 +96,8 @@ class JuelExpressionTest {
 
     @AfterEach
     void tearDown() throws Exception {
-        Context.setProcessEngineConfiguration(null);
+        Context.removeBpmnOverrideContext();
+        Context.removeProcessEngineConfiguration();
         mockitoCloseable.close();
     }
 
@@ -168,6 +177,8 @@ class JuelExpressionTest {
 
         FlowNode flowNode = mockFlowNode("exclusiveGateway1", Collections.singletonList(sequenceFlow));
         when(delegateExecution.getCurrentFlowElement()).thenReturn(flowNode);
+
+        setupDefaultBpmnOverrideContext();
 
         doThrow(new PropertyNotFoundException("Property not found"))
             .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
@@ -344,6 +355,8 @@ class JuelExpressionTest {
         FlowNode flowNode = mockFlowNode("gateway1", List.of(flowWithNullCondition));
         when(delegateExecution.getCurrentFlowElement()).thenReturn(flowNode);
 
+        setupDefaultBpmnOverrideContext();
+
         doThrow(new PropertyNotFoundException("Property not found"))
             .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
 
@@ -361,6 +374,8 @@ class JuelExpressionTest {
         FlowNode flowNode = mockFlowNode("gateway1", List.of(flowWithEmptyCondition));
         when(delegateExecution.getCurrentFlowElement()).thenReturn(flowNode);
 
+        setupDefaultBpmnOverrideContext();
+
         doThrow(new PropertyNotFoundException("Property not found"))
             .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
 
@@ -377,6 +392,8 @@ class JuelExpressionTest {
 
         FlowNode flowNode = mockFlowNode("gateway1", List.of(flowWithWhitespaceCondition));
         when(delegateExecution.getCurrentFlowElement()).thenReturn(flowNode);
+
+        setupDefaultBpmnOverrideContext();
 
         doThrow(new PropertyNotFoundException("Property not found"))
             .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
@@ -397,6 +414,8 @@ class JuelExpressionTest {
         FlowNode flowNode = mockFlowNode("gateway1", List.of(flowWithNullId));
         when(delegateExecution.getCurrentFlowElement()).thenReturn(flowNode);
 
+        setupDefaultBpmnOverrideContext();
+
         doThrow(new PropertyNotFoundException("Property not found"))
             .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
 
@@ -415,6 +434,8 @@ class JuelExpressionTest {
 
         FlowNode flowNode = mockFlowNode("gateway1", List.of(flowWithEmptyId));
         when(delegateExecution.getCurrentFlowElement()).thenReturn(flowNode);
+
+        setupDefaultBpmnOverrideContext();
 
         doThrow(new PropertyNotFoundException("Property not found"))
             .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
@@ -443,6 +464,8 @@ class JuelExpressionTest {
         FlowNode flowNode = mockFlowNode("gateway1", List.of(flow1, flow2, flow3));
 
         when(delegateExecution.getCurrentFlowElement()).thenReturn(flowNode);
+
+        setupDefaultBpmnOverrideContext();
 
         doThrow(new PropertyNotFoundException("Property not found"))
             .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
@@ -485,6 +508,261 @@ class JuelExpressionTest {
             .hasCauseInstanceOf(RuntimeException.class);
     }
 
+    @Test
+    void should_matchSequenceFlowByOverriddenCondition_when_bpmnOverrideExists() {
+        String originalCondition = "${original}";
+        String overriddenCondition = "${overridden}";
+        String processDefinitionId = "process-def-1";
+        String sequenceFlowId = "flow1";
+
+        JuelExpression expressionWithOverriddenCondition = new JuelExpression(valueExpression, overriddenCondition);
+
+        SequenceFlow sequenceFlow = mock(SequenceFlow.class);
+        when(sequenceFlow.getId()).thenReturn(sequenceFlowId);
+        when(sequenceFlow.getConditionExpression()).thenReturn(originalCondition);
+
+        FlowNode flowNode = mockFlowNode("gateway1", List.of(sequenceFlow));
+        when(delegateExecution.getCurrentFlowElement()).thenReturn(flowNode);
+        when(delegateExecution.getProcessDefinitionId()).thenReturn(processDefinitionId);
+
+        ObjectNode elementProperties = mock(ObjectNode.class);
+        JsonNode conditionNode = mock(JsonNode.class);
+        when(conditionNode.isNull()).thenReturn(false);
+        when(conditionNode.asText()).thenReturn(overriddenCondition);
+        when(elementProperties.get(DynamicBpmnConstants.SEQUENCE_FLOW_CONDITION)).thenReturn(conditionNode);
+
+        setupBpmnOverrideContext(processDefinitionId, sequenceFlowId, elementProperties);
+
+        doThrow(new PropertyNotFoundException("Property not found"))
+            .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
+
+        assertThatThrownBy(() -> expressionWithOverriddenCondition.getValue(delegateExecution))
+            .isInstanceOf(ActivitiException.class)
+            .hasMessageContaining("flowElementId: [gateway1]")
+            .hasMessageContaining("sequenceFlowId: [flow1]");
+    }
+
+    @Test
+    void should_fallbackToOriginalCondition_when_bpmnOverrideReturnsNullObjectNode() {
+        String conditionExpression = "${myVar}";
+        String processDefinitionId = "process-def-1";
+        String sequenceFlowId = "flow1";
+
+        JuelExpression expressionWithCondition = new JuelExpression(valueExpression, conditionExpression);
+
+        SequenceFlow sequenceFlow = mock(SequenceFlow.class);
+        when(sequenceFlow.getId()).thenReturn(sequenceFlowId);
+        when(sequenceFlow.getConditionExpression()).thenReturn(conditionExpression);
+
+        FlowNode flowNode = mockFlowNode("gateway1", List.of(sequenceFlow));
+        when(delegateExecution.getCurrentFlowElement()).thenReturn(flowNode);
+        when(delegateExecution.getProcessDefinitionId()).thenReturn(processDefinitionId);
+
+        setupBpmnOverrideContext(processDefinitionId, sequenceFlowId, null);
+
+        doThrow(new PropertyNotFoundException("Property not found"))
+            .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
+
+        assertThatThrownBy(() -> expressionWithCondition.getValue(delegateExecution))
+            .isInstanceOf(ActivitiException.class)
+            .hasMessageContaining("flowElementId: [gateway1]")
+            .hasMessageContaining("sequenceFlowId: [flow1]");
+    }
+
+    @Test
+    void should_fallbackToOriginalCondition_when_sequenceFlowConditionPropertyIsNull() {
+        String conditionExpression = "${myVar}";
+        String processDefinitionId = "process-def-1";
+        String sequenceFlowId = "flow1";
+
+        JuelExpression expressionWithCondition = new JuelExpression(valueExpression, conditionExpression);
+
+        SequenceFlow sequenceFlow = mock(SequenceFlow.class);
+        when(sequenceFlow.getId()).thenReturn(sequenceFlowId);
+        when(sequenceFlow.getConditionExpression()).thenReturn(conditionExpression);
+
+        FlowNode flowNode = mockFlowNode("gateway1", List.of(sequenceFlow));
+        when(delegateExecution.getCurrentFlowElement()).thenReturn(flowNode);
+        when(delegateExecution.getProcessDefinitionId()).thenReturn(processDefinitionId);
+
+        ObjectNode elementProperties = mock(ObjectNode.class);
+        when(elementProperties.get(DynamicBpmnConstants.SEQUENCE_FLOW_CONDITION)).thenReturn(null);
+
+        setupBpmnOverrideContext(processDefinitionId, sequenceFlowId, elementProperties);
+
+        doThrow(new PropertyNotFoundException("Property not found"))
+            .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
+
+        assertThatThrownBy(() -> expressionWithCondition.getValue(delegateExecution))
+            .isInstanceOf(ActivitiException.class)
+            .hasMessageContaining("flowElementId: [gateway1]")
+            .hasMessageContaining("sequenceFlowId: [flow1]");
+    }
+
+    @Test
+    void should_returnNullActiveCondition_when_overriddenValueIsJsonNull() {
+        String originalCondition = "${original}";
+        String processDefinitionId = "process-def-1";
+        String sequenceFlowId = "flow1";
+
+        JuelExpression expressionWithNull = new JuelExpression(valueExpression, null);
+
+        SequenceFlow sequenceFlow = mock(SequenceFlow.class);
+        when(sequenceFlow.getId()).thenReturn(sequenceFlowId);
+        when(sequenceFlow.getConditionExpression()).thenReturn(originalCondition);
+
+        FlowNode flowNode = mockFlowNode("gateway1", List.of(sequenceFlow));
+        when(delegateExecution.getCurrentFlowElement()).thenReturn(flowNode);
+        when(delegateExecution.getProcessDefinitionId()).thenReturn(processDefinitionId);
+
+        ObjectNode elementProperties = mock(ObjectNode.class);
+        JsonNode conditionNode = mock(JsonNode.class);
+        when(conditionNode.isNull()).thenReturn(true);
+        when(elementProperties.get(DynamicBpmnConstants.SEQUENCE_FLOW_CONDITION)).thenReturn(conditionNode);
+
+        setupBpmnOverrideContext(processDefinitionId, sequenceFlowId, elementProperties);
+
+        doThrow(new PropertyNotFoundException("Property not found"))
+            .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
+
+        assertThatThrownBy(() -> expressionWithNull.getValue(delegateExecution))
+            .isInstanceOf(ActivitiException.class)
+            .hasMessageContaining("flowElementId: [gateway1]")
+            .hasMessageContaining("sequenceFlowId: [flow1]");
+    }
+
+    @Test
+    void should_notMatchSequenceFlow_when_overriddenConditionDoesNotMatchExpression() {
+        String expressionText = "${different}";
+        String originalCondition = "${original}";
+        String overriddenCondition = "${overridden}";
+        String processDefinitionId = "process-def-1";
+        String sequenceFlowId = "flow1";
+
+        JuelExpression expression = new JuelExpression(valueExpression, expressionText);
+
+        SequenceFlow sequenceFlow = mock(SequenceFlow.class);
+        when(sequenceFlow.getId()).thenReturn(sequenceFlowId);
+        when(sequenceFlow.getConditionExpression()).thenReturn(originalCondition);
+
+        FlowNode flowNode = mockFlowNode("gateway1", List.of(sequenceFlow));
+        when(delegateExecution.getCurrentFlowElement()).thenReturn(flowNode);
+        when(delegateExecution.getProcessDefinitionId()).thenReturn(processDefinitionId);
+
+        ObjectNode elementProperties = mock(ObjectNode.class);
+        JsonNode conditionNode = mock(JsonNode.class);
+        when(conditionNode.isNull()).thenReturn(false);
+        when(conditionNode.asText()).thenReturn(overriddenCondition);
+        when(elementProperties.get(DynamicBpmnConstants.SEQUENCE_FLOW_CONDITION)).thenReturn(conditionNode);
+
+        setupBpmnOverrideContext(processDefinitionId, sequenceFlowId, elementProperties);
+
+        doThrow(new PropertyNotFoundException("Property not found"))
+            .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
+
+        assertThatThrownBy(() -> expression.getValue(delegateExecution))
+            .isInstanceOf(ActivitiException.class)
+            .hasMessageContaining("flowElementId: [gateway1]")
+            .hasMessageContaining("sequenceFlowId: [unknown]");
+    }
+
+    @Test
+    void should_useOriginalCondition_when_variableScopeIsNotDelegateExecution() {
+        String conditionExpression = "${myVar}";
+
+        JuelExpression expressionWithCondition = new JuelExpression(valueExpression, conditionExpression);
+
+        SequenceFlow sequenceFlow = mock(SequenceFlow.class);
+        when(sequenceFlow.getId()).thenReturn("flow1");
+        when(sequenceFlow.getConditionExpression()).thenReturn(conditionExpression);
+
+        doThrow(new PropertyNotFoundException("Property not found"))
+            .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
+
+        assertThatThrownBy(() -> expressionWithCondition.getValue(variableScope))
+            .isInstanceOf(ActivitiException.class)
+            .hasMessageContaining("flowElementId: [unknown]")
+            .hasMessageContaining("sequenceFlowId: [unknown]");
+    }
+
+    @Test
+    void should_returnUnknownSequenceFlowId_when_extractSequenceFlowThrowsException() {
+        String conditionExpression = "${myVar}";
+        JuelExpression expressionWithCondition = new JuelExpression(valueExpression, conditionExpression);
+
+        FlowNode flowNode = mock(FlowNode.class);
+        when(flowNode.getId()).thenReturn("gateway1");
+        when(flowNode.getOutgoingFlows()).thenThrow(new RuntimeException("Unexpected error during flow extraction"));
+
+        when(delegateExecution.getCurrentFlowElement()).thenReturn(flowNode);
+
+        doThrow(new PropertyNotFoundException("Property not found"))
+            .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
+
+        assertThatThrownBy(() -> expressionWithCondition.getValue(delegateExecution))
+            .isInstanceOf(ActivitiException.class)
+            .hasMessageContaining("flowElementId: [gateway1]")
+            .hasMessageContaining("sequenceFlowId: [unknown]")
+            .hasMessageNotContaining("Unexpected error during flow extraction");
+    }
+
+    @Test
+    void should_returnUnknownSequenceFlowId_when_bpmnOverrideContextThrowsException() {
+        String conditionExpression = "${myVar}";
+        String processDefinitionId = "process-def-1";
+
+        JuelExpression expressionWithCondition = new JuelExpression(valueExpression, conditionExpression);
+
+        SequenceFlow sequenceFlow = mock(SequenceFlow.class);
+        when(sequenceFlow.getId()).thenReturn("flow1");
+        when(sequenceFlow.getConditionExpression()).thenReturn(conditionExpression);
+
+        FlowNode flowNode = mockFlowNode("gateway1", List.of(sequenceFlow));
+        when(delegateExecution.getCurrentFlowElement()).thenReturn(flowNode);
+        when(delegateExecution.getProcessDefinitionId()).thenReturn(processDefinitionId);
+
+        DeploymentManager deploymentManager = mock(DeploymentManager.class);
+        when(processEngineConfiguration.getDeploymentManager()).thenReturn(deploymentManager);
+        when(deploymentManager.getProcessDefinitionInfoCache()).thenThrow(new RuntimeException("Cache access failed"));
+
+        doThrow(new PropertyNotFoundException("Property not found"))
+            .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
+
+        assertThatThrownBy(() -> expressionWithCondition.getValue(delegateExecution))
+            .isInstanceOf(ActivitiException.class)
+            .hasMessageContaining("flowElementId: [gateway1]")
+            .hasMessageContaining("sequenceFlowId: [unknown]")
+            .hasMessageNotContaining("Cache access failed");
+    }
+
+    private void setupBpmnOverrideContext(String processDefinitionId, String flowElementId, ObjectNode elementProperties) {
+        DynamicBpmnService dynamicBpmnService = mock(DynamicBpmnService.class);
+        DeploymentManager deploymentManager = mock(DeploymentManager.class);
+        ProcessDefinitionInfoCache processDefinitionInfoCache = mock(ProcessDefinitionInfoCache.class);
+        ProcessDefinitionInfoCacheObject cacheObject = mock(ProcessDefinitionInfoCacheObject.class);
+        ObjectNode infoNode = mock(ObjectNode.class);
+
+        when(processEngineConfiguration.getDynamicBpmnService()).thenReturn(dynamicBpmnService);
+        when(processEngineConfiguration.getDeploymentManager()).thenReturn(deploymentManager);
+        when(deploymentManager.getProcessDefinitionInfoCache()).thenReturn(processDefinitionInfoCache);
+        when(processDefinitionInfoCache.get(processDefinitionId)).thenReturn(cacheObject);
+        when(cacheObject.getInfoNode()).thenReturn(infoNode);
+        when(dynamicBpmnService.getBpmnElementProperties(eq(flowElementId), any(ObjectNode.class))).thenReturn(elementProperties);
+    }
+
+    private void setupDefaultBpmnOverrideContext() {
+        DynamicBpmnService dynamicBpmnService = mock(DynamicBpmnService.class);
+        DeploymentManager deploymentManager = mock(DeploymentManager.class);
+        ProcessDefinitionInfoCache processDefinitionInfoCache = mock(ProcessDefinitionInfoCache.class);
+        ProcessDefinitionInfoCacheObject cacheObject = mock(ProcessDefinitionInfoCacheObject.class);
+
+        when(processEngineConfiguration.getDynamicBpmnService()).thenReturn(dynamicBpmnService);
+        when(processEngineConfiguration.getDeploymentManager()).thenReturn(deploymentManager);
+        when(deploymentManager.getProcessDefinitionInfoCache()).thenReturn(processDefinitionInfoCache);
+        when(processDefinitionInfoCache.get(any())).thenReturn(cacheObject);
+        when(cacheObject.getInfoNode()).thenReturn(null);
+    }
+
     private FlowNode mockFlowNodeWithoutOutgoingFlows(String flowNodeId) {
         return mockFlowNode(flowNodeId, Collections.emptyList());
     }
@@ -495,5 +773,4 @@ class JuelExpressionTest {
         when(flowNode.getOutgoingFlows()).thenReturn(outgoingFlows);
         return flowNode;
     }
-
 }
