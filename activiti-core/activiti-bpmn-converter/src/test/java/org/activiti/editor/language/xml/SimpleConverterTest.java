@@ -70,7 +70,7 @@ public class SimpleConverterTest extends AbstractConverterTest {
         assertThat(flowElement.getId()).isEqualTo("catchEvent");
         IntermediateCatchEvent catchEvent = (IntermediateCatchEvent) flowElement;
         assertThat(catchEvent.getEventDefinitions().size() == 1).isTrue();
-        EventDefinition eventDefinition = catchEvent.getEventDefinitions().get(0);
+        EventDefinition eventDefinition = catchEvent.getEventDefinitions().getFirst();
         assertThat(eventDefinition).isInstanceOf(TimerEventDefinition.class);
         TimerEventDefinition timerDefinition = (TimerEventDefinition) eventDefinition;
         assertThat(timerDefinition.getTimeDuration()).isEqualTo("PT5M");

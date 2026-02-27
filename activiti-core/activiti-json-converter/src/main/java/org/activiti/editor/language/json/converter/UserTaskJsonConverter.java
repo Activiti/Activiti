@@ -91,7 +91,7 @@ public class UserTaskJsonConverter extends BaseBpmnJsonConverter implements Form
                 if (CollectionUtils.isNotEmpty(canCompleteList)) {
                     assignmentValuesNode.put(
                         "initiatorCanCompleteTask",
-                        Boolean.valueOf(canCompleteList.get(0).getElementText())
+                        Boolean.valueOf(canCompleteList.getFirst().getElementText())
                     );
                 }
 
@@ -126,11 +126,11 @@ public class UserTaskJsonConverter extends BaseBpmnJsonConverter implements Form
 
                     if (
                         userTask.getCandidateUsers().size() == 1 &&
-                        userTask.getCandidateUsers().get(0).contains("${taskAssignmentBean.assignTaskToCandidateUsers(")
+                        userTask.getCandidateUsers().getFirst().contains("${taskAssignmentBean.assignTaskToCandidateUsers(")
                     ) {
                         idmNode.put("type", "users");
 
-                        String candidateUsersString = userTask.getCandidateUsers().get(0);
+                        String candidateUsersString = userTask.getCandidateUsers().getFirst();
                         candidateUsersString = candidateUsersString.replace(
                             "${taskAssignmentBean.assignTaskToCandidateUsers('",
                             ""
@@ -208,12 +208,12 @@ public class UserTaskJsonConverter extends BaseBpmnJsonConverter implements Form
                         userTask.getCandidateGroups().size() == 1 &&
                         userTask
                             .getCandidateGroups()
-                            .get(0)
+                            .getFirst()
                             .contains("${taskAssignmentBean.assignTaskToCandidateGroups(")
                     ) {
                         idmNode.put("type", "groups");
 
-                        String candidateGroupsString = userTask.getCandidateGroups().get(0);
+                        String candidateGroupsString = userTask.getCandidateGroups().getFirst();
                         candidateGroupsString = candidateGroupsString.replace(
                             "${taskAssignmentBean.assignTaskToCandidateGroups('",
                             ""
@@ -332,7 +332,7 @@ public class UserTaskJsonConverter extends BaseBpmnJsonConverter implements Form
     protected String getExtensionElementValue(String name, UserTask userTask) {
         String value = "";
         if (CollectionUtils.isNotEmpty(userTask.getExtensionElements().get(name))) {
-            ExtensionElement extensionElement = userTask.getExtensionElements().get(name).get(0);
+            ExtensionElement extensionElement = userTask.getExtensionElements().get(name).getFirst();
             value = extensionElement.getElementText();
         }
         return value;
@@ -620,7 +620,7 @@ public class UserTaskJsonConverter extends BaseBpmnJsonConverter implements Form
     ) {
         List<ExtensionElement> extensionElementList = task.getExtensionElements().get(extensionElementName);
         if (CollectionUtils.isNotEmpty(extensionElementList)) {
-            elementNode.put(propertyName, extensionElementList.get(0).getElementText());
+            elementNode.put(propertyName, extensionElementList.getFirst().getElementText());
         }
     }
 

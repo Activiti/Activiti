@@ -75,7 +75,7 @@ public class IntermediateCatchEventActivityBehavior extends AbstractBpmnActivity
 
             // If behind an event based gateway, there is only one incoming sequence flow that originates from said gateway
             if (incomingSequenceFlow != null && incomingSequenceFlow.size() == 1) {
-                SequenceFlow sequenceFlow = incomingSequenceFlow.get(0);
+                SequenceFlow sequenceFlow = incomingSequenceFlow.getFirst();
                 FlowElement sourceFlowElement = sequenceFlow.getSourceFlowElement();
                 if (sourceFlowElement instanceof EventGateway) {
                     return (EventGateway) sourceFlowElement;

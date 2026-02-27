@@ -92,7 +92,7 @@ public class UserTaskCandidateVisibilityTest {
 
         assertThat(tasks.getTotalItems()).isEqualTo(1);
 
-        final Task task = tasks.getContent().get(0);
+        final Task task = tasks.getContent().getFirst();
 
         Task taskById = taskRuntime.task(task.getId());
 
@@ -197,7 +197,7 @@ public class UserTaskCandidateVisibilityTest {
 
         assertThat(tasks.getTotalItems()).isEqualTo(1);
 
-        final Task task = tasks.getContent().get(0);
+        final Task task = tasks.getContent().getFirst();
 
         Task taskById = taskRuntime.task(task.getId());
 

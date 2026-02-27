@@ -45,7 +45,7 @@ public class TimeExpressionTest extends PluggableActivitiTestCase {
 
         List<Job> jobs = managementService.createTimerJobQuery().executable().list();
         assertThat(jobs).hasSize(1);
-        return jobs.get(0).getDuedate();
+        return jobs.getFirst().getDuedate();
     }
 
     @Deployment(

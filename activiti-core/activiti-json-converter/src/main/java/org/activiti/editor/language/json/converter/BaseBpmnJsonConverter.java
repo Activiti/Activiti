@@ -510,7 +510,7 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
     protected void addEventProperties(Event event, ObjectNode propertiesNode) {
         List<EventDefinition> eventDefinitions = event.getEventDefinitions();
         if (eventDefinitions.size() == 1) {
-            EventDefinition eventDefinition = eventDefinitions.get(0);
+            EventDefinition eventDefinition = eventDefinitions.getFirst();
             if (eventDefinition instanceof ErrorEventDefinition) {
                 ErrorEventDefinition errorDefinition = (ErrorEventDefinition) eventDefinition;
                 if (StringUtils.isNotEmpty(errorDefinition.getErrorRef())) {

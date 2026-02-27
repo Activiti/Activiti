@@ -58,7 +58,7 @@ public class HistoricProcessInstanceQueryAndWithExceptionTest extends PluggableA
             HistoricProcessInstanceQuery queryNoException = historyService.createHistoricProcessInstanceQuery();
             assertThat(queryNoException.count()).isEqualTo(1);
             assertThat(queryNoException.list()).hasSize(1);
-            assertThat(queryNoException.list().get(0).getId()).isEqualTo(processNoException.getId());
+            assertThat(queryNoException.list().getFirst().getId()).isEqualTo(processNoException.getId());
 
             HistoricProcessInstanceQuery queryWithException = historyService.createHistoricProcessInstanceQuery();
             assertThat(queryWithException.withJobException().count()).isEqualTo(0);
@@ -74,7 +74,7 @@ public class HistoricProcessInstanceQueryAndWithExceptionTest extends PluggableA
             assertThat(jobQuery1.withException().list()).hasSize(1);
             assertThat(queryWithException.withJobException().count()).isEqualTo(1);
             assertThat(queryWithException.withJobException().list()).hasSize(1);
-            assertThat(queryWithException.withJobException().list().get(0).getId()).isEqualTo(
+            assertThat(queryWithException.withJobException().list().getFirst().getId()).isEqualTo(
                 processWithException1.getId()
             );
 
@@ -94,7 +94,7 @@ public class HistoricProcessInstanceQueryAndWithExceptionTest extends PluggableA
                     .withJobException()
                     .processDefinitionKey(PROCESS_DEFINITION_KEY_WITH_EXCEPTION_1)
                     .list()
-                    .get(0)
+                    .getFirst()
                     .getId()
             ).isEqualTo(processWithException1.getId());
             assertThat(
@@ -102,7 +102,7 @@ public class HistoricProcessInstanceQueryAndWithExceptionTest extends PluggableA
                     .withJobException()
                     .processDefinitionKey(PROCESS_DEFINITION_KEY_WITH_EXCEPTION_2)
                     .list()
-                    .get(0)
+                    .getFirst()
                     .getId()
             ).isEqualTo(processWithException2.getId());
         }

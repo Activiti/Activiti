@@ -232,7 +232,7 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
         assertThat(attachments).hasSize(1);
 
         assertThat(
-            new AttachmentQuery(managementService).orderByAttachmentName().desc().list().get(0).getName()
+            new AttachmentQuery(managementService).orderByAttachmentName().desc().list().getFirst().getName()
         ).isEqualTo("zattachment3");
 
         // Cleanup

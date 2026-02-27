@@ -51,7 +51,7 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
         assertThat(deploymentResources).hasSize(1);
         String bpmnResourceName =
             "org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testGetBpmnXmlFileThroughService.bpmn20.xml";
-        assertThat(deploymentResources.get(0)).isEqualTo(bpmnResourceName);
+        assertThat(deploymentResources.getFirst()).isEqualTo(bpmnResourceName);
 
         ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
         assertThat(processDefinition.getResourceName()).isEqualTo(bpmnResourceName);
@@ -158,7 +158,7 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
 
         // verify bpmn file name
         assertThat(deploymentResources).hasSize(1);
-        assertThat(deploymentResources.get(0)).isEqualTo(bpmnResourceName);
+        assertThat(deploymentResources.getFirst()).isEqualTo(bpmnResourceName);
 
         repositoryService
             .createDeployment()
@@ -208,7 +208,7 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
 
         // verify bpmn file name
         assertThat(deploymentResources).hasSize(1);
-        assertThat(deploymentResources.get(0)).isEqualTo(bpmnResourceName);
+        assertThat(deploymentResources.getFirst()).isEqualTo(bpmnResourceName);
 
         bpmnResourceName =
             "org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testProcessDiagramResource.bpmn20.xml";
@@ -243,7 +243,7 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
         BpmnModel processModel = repositoryService.getBpmnModel(processDefinition.getId());
         List<StartEvent> startEvents = processModel.getMainProcess().findFlowElementsOfType(StartEvent.class);
         assertThat(startEvents).hasSize(1);
-        assertThat(startEvents.get(0).getFormKey()).isEqualTo("someFormKey");
+        assertThat(startEvents.getFirst().getFormKey()).isEqualTo("someFormKey");
 
         String diagramResourceName = processDefinition.getDiagramResourceName();
         assertThat(diagramResourceName).isEqualTo(
@@ -316,7 +316,7 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
 
         // verify bpmn file name
         assertThat(deploymentResources).hasSize(1);
-        assertThat(deploymentResources.get(0)).isEqualTo(bpmnResourceName);
+        assertThat(deploymentResources.getFirst()).isEqualTo(bpmnResourceName);
 
         repositoryService
             .createDeployment()

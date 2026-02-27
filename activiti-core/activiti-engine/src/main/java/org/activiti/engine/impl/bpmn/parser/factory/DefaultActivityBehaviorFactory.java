@@ -579,12 +579,12 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
         if (
             endEvent.getEventDefinitions() != null &&
             endEvent.getEventDefinitions().size() > 0 &&
-            endEvent.getEventDefinitions().get(0) instanceof TerminateEventDefinition
+            endEvent.getEventDefinitions().getFirst() instanceof TerminateEventDefinition
         ) {
-            terminateAll = ((TerminateEventDefinition) endEvent.getEventDefinitions().get(0)).isTerminateAll();
+            terminateAll = ((TerminateEventDefinition) endEvent.getEventDefinitions().getFirst()).isTerminateAll();
             terminateMultiInstance = ((TerminateEventDefinition) endEvent
                     .getEventDefinitions()
-                    .get(0)).isTerminateMultiInstance();
+                    .getFirst()).isTerminateMultiInstance();
         }
 
         TerminateEndEventActivityBehavior terminateEndEventActivityBehavior = new TerminateEndEventActivityBehavior();

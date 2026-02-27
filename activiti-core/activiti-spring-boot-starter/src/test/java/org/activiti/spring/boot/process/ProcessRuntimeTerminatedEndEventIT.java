@@ -96,7 +96,7 @@ public class ProcessRuntimeTerminatedEndEventIT {
         List<ProcessCancelledEvent> processCancelledEvents = localEventSource.getEvents(ProcessCancelledEvent.class);
 
         assertThat(processCancelledEvents).hasSize(1);
-        ProcessCancelledEvent processCancelledEvent = processCancelledEvents.get(0);
+        ProcessCancelledEvent processCancelledEvent = processCancelledEvents.getFirst();
         assertThat(processCancelledEvent.getCause()).contains("Terminated by end event");
         assertThat(processCancelledEvent.getEntity().getId()).isEqualTo(processInstance.getId());
         assertThat(processCancelledEvent.getEntity().getProcessDefinitionId()).isEqualTo(

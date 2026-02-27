@@ -115,8 +115,8 @@ public class ValuedDataObjectConverterTest extends AbstractConverterTest {
         List<ExtensionElement> testValues = dataObj.getExtensionElements().get("testvalue");
         assertThat(testValues).isNotNull();
         assertThat(testValues).hasSize(1);
-        assertThat(testValues.get(0).getName()).isEqualTo("testvalue");
-        assertThat(testValues.get(0).getElementText()).isEqualTo("test");
+        assertThat(testValues.getFirst().getName()).isEqualTo("testvalue");
+        assertThat(testValues.getFirst().getElementText()).isEqualTo("test");
 
         dataObj = objectMap.get("NoData");
         assertThat(dataObj.getId()).isEqualTo("NoData");

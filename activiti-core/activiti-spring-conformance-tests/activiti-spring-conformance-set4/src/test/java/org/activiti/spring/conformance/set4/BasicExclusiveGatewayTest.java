@@ -102,7 +102,7 @@ public class BasicExclusiveGatewayTest {
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
         assertThat(tasks.getTotalItems()).isEqualTo(1);
 
-        Task task = tasks.getContent().get(0);
+        Task task = tasks.getContent().getFirst();
         assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
         assertThat(task.getAssignee()).isEqualTo("user1");
 
@@ -124,7 +124,7 @@ public class BasicExclusiveGatewayTest {
         tasks = taskRuntime.tasks(Pageable.of(0, 50));
         assertThat(tasks.getTotalItems()).isEqualTo(1);
 
-        task = tasks.getContent().get(0);
+        task = tasks.getContent().getFirst();
         assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
         assertThat(task.getAssignee()).isEqualTo("user1");
     }

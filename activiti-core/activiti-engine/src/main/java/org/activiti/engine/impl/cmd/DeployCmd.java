@@ -77,7 +77,7 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
             }
 
             if (!existingDeployments.isEmpty()) {
-                DeploymentEntity existingDeployment = (DeploymentEntity) existingDeployments.get(0);
+                DeploymentEntity existingDeployment = (DeploymentEntity) existingDeployments.getFirst();
 
                 if (existingDeployment.getVersion() > newDeployment.getVersion()) {
                     newDeployment.setVersion(existingDeployment.getVersion());

@@ -41,12 +41,12 @@ public class EngineEventsTest extends ResourceActivitiTestCase {
 
         // Check create-event
         assertThat(listener.getEventsReceived()).hasSize(1);
-        assertThat(listener.getEventsReceived().get(0).getType()).isEqualTo(ActivitiEventType.ENGINE_CREATED);
+        assertThat(listener.getEventsReceived().getFirst().getType()).isEqualTo(ActivitiEventType.ENGINE_CREATED);
         listener.clearEventsReceived();
 
         // Check close-event
         processEngine.close();
         assertThat(listener.getEventsReceived()).hasSize(1);
-        assertThat(listener.getEventsReceived().get(0).getType()).isEqualTo(ActivitiEventType.ENGINE_CLOSED);
+        assertThat(listener.getEventsReceived().getFirst().getType()).isEqualTo(ActivitiEventType.ENGINE_CLOSED);
     }
 }

@@ -57,7 +57,7 @@ public class ThrowEventJsonConverter extends BaseBpmnJsonConverter {
             return STENCIL_EVENT_THROW_NONE;
         }
 
-        EventDefinition eventDefinition = eventDefinitions.get(0);
+        EventDefinition eventDefinition = eventDefinitions.getFirst();
         if (eventDefinition instanceof SignalEventDefinition) {
             return STENCIL_EVENT_THROW_SIGNAL;
         } else {

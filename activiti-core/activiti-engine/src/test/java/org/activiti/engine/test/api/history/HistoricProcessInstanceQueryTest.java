@@ -41,8 +41,8 @@ public class HistoricProcessInstanceQueryTest extends PluggableActivitiTestCase 
                 .processInstanceId(processInstanceId)
                 .list();
             assertThat(processes).hasSize(1);
-            assertThat(processes.get(0).getName()).isNull();
-            assertThat(processes.get(0).getDescription()).isNull();
+            assertThat(processes.getFirst().getName()).isNull();
+            assertThat(processes.getFirst().getDescription()).isNull();
 
             ObjectNode infoNode = dynamicBpmnService.changeLocalizationName(
                 "en-GB",
@@ -73,8 +73,8 @@ public class HistoricProcessInstanceQueryTest extends PluggableActivitiTestCase 
 
             processes = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).list();
             assertThat(processes).hasSize(1);
-            assertThat(processes.get(0).getName()).isNull();
-            assertThat(processes.get(0).getDescription()).isNull();
+            assertThat(processes.getFirst().getName()).isNull();
+            assertThat(processes.getFirst().getDescription()).isNull();
 
             processes = historyService
                 .createHistoricProcessInstanceQuery()
@@ -82,16 +82,16 @@ public class HistoricProcessInstanceQueryTest extends PluggableActivitiTestCase 
                 .locale("en-GB")
                 .list();
             assertThat(processes).hasSize(1);
-            assertThat(processes.get(0).getName()).isEqualTo("Historic Process Name 'en-GB'");
-            assertThat(processes.get(0).getDescription()).isEqualTo("Historic Process Description 'en-GB'");
+            assertThat(processes.getFirst().getName()).isEqualTo("Historic Process Name 'en-GB'");
+            assertThat(processes.getFirst().getDescription()).isEqualTo("Historic Process Description 'en-GB'");
 
             processes = historyService
                 .createHistoricProcessInstanceQuery()
                 .processInstanceId(processInstanceId)
                 .listPage(0, 10);
             assertThat(processes).hasSize(1);
-            assertThat(processes.get(0).getName()).isNull();
-            assertThat(processes.get(0).getDescription()).isNull();
+            assertThat(processes.getFirst().getName()).isNull();
+            assertThat(processes.getFirst().getDescription()).isNull();
 
             processes = historyService
                 .createHistoricProcessInstanceQuery()
@@ -99,8 +99,8 @@ public class HistoricProcessInstanceQueryTest extends PluggableActivitiTestCase 
                 .locale("en-GB")
                 .listPage(0, 10);
             assertThat(processes).hasSize(1);
-            assertThat(processes.get(0).getName()).isEqualTo("Historic Process Name 'en-GB'");
-            assertThat(processes.get(0).getDescription()).isEqualTo("Historic Process Description 'en-GB'");
+            assertThat(processes.getFirst().getName()).isEqualTo("Historic Process Name 'en-GB'");
+            assertThat(processes.getFirst().getDescription()).isEqualTo("Historic Process Description 'en-GB'");
 
             HistoricProcessInstance process = historyService
                 .createHistoricProcessInstanceQuery()

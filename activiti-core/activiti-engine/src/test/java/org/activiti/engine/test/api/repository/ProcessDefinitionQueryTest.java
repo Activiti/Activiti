@@ -72,7 +72,7 @@ public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
             .asc()
             .list();
 
-        ProcessDefinition processDefinition = processDefinitions.get(0);
+        ProcessDefinition processDefinition = processDefinitions.getFirst();
         assertThat(processDefinition.getKey()).isEqualTo("one");
         assertThat(processDefinition.getName()).isEqualTo("One");
         assertThat(processDefinition.getId().startsWith("one:1")).isTrue();
@@ -321,8 +321,8 @@ public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
         List<ProcessDefinition> processDefinitions = query.list();
         assertThat(processDefinitions).hasSize(3);
 
-        assertThat(processDefinitions.get(0).getKey()).isEqualTo("one");
-        assertThat(processDefinitions.get(0).getVersion()).isEqualTo(2);
+        assertThat(processDefinitions.getFirst().getKey()).isEqualTo("one");
+        assertThat(processDefinitions.getFirst().getVersion()).isEqualTo(2);
         assertThat(processDefinitions.get(1).getKey()).isEqualTo("one");
         assertThat(processDefinitions.get(1).getVersion()).isEqualTo(1);
         assertThat(processDefinitions.get(2).getKey()).isEqualTo("two");

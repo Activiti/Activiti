@@ -68,6 +68,6 @@ public class InclusivewithMessageTest extends PluggableActivitiTestCase {
         taskService.complete(task.getId(), singletonMap("form51outcome", "A"));
 
         List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
-        assertEquals("Task A", tasks.get(0).getName());
+        assertEquals("Task A", tasks.getFirst().getName());
     }
 }

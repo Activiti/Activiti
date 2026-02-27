@@ -41,7 +41,7 @@ public class IntermediateCatchEventValidator extends ProcessLevelValidator {
         for (IntermediateCatchEvent intermediateCatchEvent : intermediateCatchEvents) {
             EventDefinition eventDefinition = null;
             if (!intermediateCatchEvent.getEventDefinitions().isEmpty()) {
-                eventDefinition = intermediateCatchEvent.getEventDefinitions().get(0);
+                eventDefinition = intermediateCatchEvent.getEventDefinitions().getFirst();
             }
 
             if (eventDefinition == null) {

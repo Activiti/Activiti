@@ -440,13 +440,13 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
 
         tasks = taskService.createTaskQuery().list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getName()).isEqualTo("MainUserTask");
+        assertThat(tasks.getFirst().getName()).isEqualTo("MainUserTask");
 
         activeActivities = runtimeService.getActiveActivityIds(processInstance.getId());
         assertThat(activeActivities).hasSize(1);
-        assertThat(activeActivities.get(0)).isEqualTo("MainUserTask");
+        assertThat(activeActivities.getFirst()).isEqualTo("MainUserTask");
 
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
         assertProcessEnded(processInstance.getId());
     }
 
@@ -807,7 +807,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
                 .createExecutionQuery()
                 .signalEventSubscriptionName("alert")
                 .listPage(0, 1);
-            runtimeService.signalEventReceived("alert", page.get(0).getId());
+            runtimeService.signalEventReceived("alert", page.getFirst().getId());
 
             assertThat(runtimeService.createExecutionQuery().signalEventSubscriptionName("alert").count()).isEqualTo(
                 executions - 1
@@ -819,7 +819,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
                 .createExecutionQuery()
                 .signalEventSubscriptionName("panic")
                 .listPage(0, 1);
-            runtimeService.signalEventReceived("panic", page.get(0).getId());
+            runtimeService.signalEventReceived("panic", page.getFirst().getId());
 
             assertThat(runtimeService.createExecutionQuery().signalEventSubscriptionName("panic").count()).isEqualTo(
                 executions - 1
@@ -844,7 +844,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
                 .createExecutionQuery()
                 .messageEventSubscriptionName("alert")
                 .listPage(0, 1);
-            runtimeService.messageEventReceived("alert", page.get(0).getId());
+            runtimeService.messageEventReceived("alert", page.getFirst().getId());
 
             assertThat(runtimeService.createExecutionQuery().messageEventSubscriptionName("alert").count()).isEqualTo(
                 executions - 1
@@ -856,7 +856,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
                 .createExecutionQuery()
                 .messageEventSubscriptionName("panic")
                 .listPage(0, 1);
-            runtimeService.messageEventReceived("panic", page.get(0).getId());
+            runtimeService.messageEventReceived("panic", page.getFirst().getId());
 
             assertThat(runtimeService.createExecutionQuery().messageEventSubscriptionName("panic").count()).isEqualTo(
                 executions - 1

@@ -123,7 +123,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
             }
         }
         assertThat(execution).isNotNull();
-        assertThat(runtimeService.getActiveActivityIds(execution.getId()).get(0)).isEqualTo("service");
+        assertThat(runtimeService.getActiveActivityIds(execution.getId()).getFirst()).isEqualTo("service");
 
         // there is still a single job because the timer was created in the same
         // transaction as the service was executed (which rolled back)
@@ -147,7 +147,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
         // task:
         Execution execution = runtimeService.createExecutionQuery().singleResult();
         assertThat(execution).isNotNull();
-        assertThat(runtimeService.getActiveActivityIds(execution.getId()).get(0)).isEqualTo("service");
+        assertThat(runtimeService.getActiveActivityIds(execution.getId()).getFirst()).isEqualTo("service");
 
         // there are tow jobs, the message and the timer (the message will not
         // be retried anymore, max retires is reached.)
@@ -353,13 +353,13 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
 
         // execute first of 3 parallel multi instance tasks
         managementService.executeJob(
-            managementService.createJobQuery().processInstanceId(processInstance.getId()).list().get(0).getId()
+            managementService.createJobQuery().processInstanceId(processInstance.getId()).list().getFirst().getId()
         );
         assertThat(managementService.createJobQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(2);
 
         // execute second of 3 parallel multi instance tasks
         managementService.executeJob(
-            managementService.createJobQuery().processInstanceId(processInstance.getId()).list().get(0).getId()
+            managementService.createJobQuery().processInstanceId(processInstance.getId()).list().getFirst().getId()
         );
         assertThat(managementService.createJobQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(1);
 

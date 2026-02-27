@@ -40,7 +40,7 @@ public class JsonTypeConverterTest {
         List<Integer> originalValue = asList(1, 2);
         String json = objectMapper.writeValueAsString(originalValue);
         JsonNode jsonNode = objectMapper.readTree(json);
-        System.out.println(json);
+        IO.println(json);
 
         ValueFields valueFields = buildValueFields("numbers", originalValue);
 
@@ -49,7 +49,7 @@ public class JsonTypeConverterTest {
 
         //then
         assertThat(numbers).isInstanceOf(List.class);
-        assertThat(((List<?>) numbers).get(0)).isInstanceOf(Integer.class);
+        assertThat(((List<?>) numbers).getFirst()).isInstanceOf(Integer.class);
         assertThat(numbers).isEqualTo(originalValue);
     }
 

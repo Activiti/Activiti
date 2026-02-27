@@ -181,7 +181,7 @@ public class EventSubscriptionQueryTest extends PluggableActivitiTestCase {
         List<EventSubscriptionEntity> list = newEventSubscriptionQuery().activityId("someOtherActivity").list();
         assertThat(list).hasSize(1);
 
-        final EventSubscriptionEntity entity = list.get(0);
+        final EventSubscriptionEntity entity = list.getFirst();
 
         list = newEventSubscriptionQuery().eventSubscriptionId(entity.getId()).list();
 

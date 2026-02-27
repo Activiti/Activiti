@@ -488,7 +488,7 @@ public class TaskQueryEscapeClauseTest extends AbstractEscapeClauseTestCase {
                 .list();
             assertThat(list).hasSize(2);
             List<String> taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task1.getId())).isTrue();
             assertThat(taskIds.contains(task2.getId())).isTrue();
@@ -504,7 +504,7 @@ public class TaskQueryEscapeClauseTest extends AbstractEscapeClauseTestCase {
                 .list();
             assertThat(list).hasSize(2);
             taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task1.getId())).isTrue();
             assertThat(taskIds.contains(task2.getId())).isTrue();

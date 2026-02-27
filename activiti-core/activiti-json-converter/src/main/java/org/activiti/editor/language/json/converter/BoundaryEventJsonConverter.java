@@ -67,7 +67,7 @@ public class BoundaryEventJsonConverter extends BaseBpmnJsonConverter {
             return STENCIL_EVENT_BOUNDARY_TIMER;
         }
 
-        EventDefinition eventDefinition = eventDefinitions.get(0);
+        EventDefinition eventDefinition = eventDefinitions.getFirst();
         if (eventDefinition instanceof ErrorEventDefinition) {
             return STENCIL_EVENT_BOUNDARY_ERROR;
         } else if (eventDefinition instanceof SignalEventDefinition) {

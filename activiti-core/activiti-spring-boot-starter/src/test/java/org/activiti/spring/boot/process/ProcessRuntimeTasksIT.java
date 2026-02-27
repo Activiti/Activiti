@@ -74,7 +74,7 @@ public class ProcessRuntimeTasksIT {
 
         assertThat(tasks.getContent()).hasSize(1);
 
-        Task result = tasks.getContent().get(0);
+        Task result = tasks.getContent().getFirst();
 
         assertThat(result.getName()).isEqualTo("my-task");
         assertThat(result.getAppVersion()).isEqualTo("1");

@@ -30,67 +30,63 @@ public class ConsoleLogger {
 
     public void log() {
         for (ProfileSession profileSession : profiler.getProfileSessions()) {
-            System.out.println();
-            System.out.println("#############################################");
-            System.out.println("#############################################");
-            System.out.println(profileSession.getName());
-            System.out.println("#############################################");
-            System.out.println("#############################################");
+            IO.println();
+            IO.println("#############################################");
+            IO.println("#############################################");
+            IO.println(profileSession.getName());
+            IO.println("#############################################");
+            IO.println("#############################################");
 
-            System.out.println();
-            System.out.println("Start time: " + profileSession.getStartTime());
-            System.out.println("End time: " + profileSession.getEndTime());
-            System.out.println("Total time: " + profileSession.getTotalTime() + " ms");
-            System.out.println();
+            IO.println();
+            IO.println("Start time: " + profileSession.getStartTime());
+            IO.println("End time: " + profileSession.getEndTime());
+            IO.println("Total time: " + profileSession.getTotalTime() + " ms");
+            IO.println();
 
             Map<String, CommandStats> allStats = profileSession.calculateSummaryStatistics();
             for (String classFqn : allStats.keySet()) {
                 CommandStats stats = allStats.get(classFqn);
-                System.out.println("Command class: " + classFqn);
-                System.out.println("Number of times invoked: " + stats.getCount());
+                IO.println("Command class: " + classFqn);
+                IO.println("Number of times invoked: " + stats.getCount());
                 double commandPercentage = (double) stats.getTotalCommandTime / (double) profileSession.getTotalTime();
-                System.out.println(
-                    ((100.0 * Math.round(commandPercentage * 100.0)) / 100.0) +
-                    "% of profile session was spent executing this command"
-                );
+                IO.println(((100.0 * Math.round(commandPercentage * 100.0)) / 100.0) +
+                    "% of profile session was spent executing this command");
 
-                System.out.println();
-                System.out.println(
-                    "Average execution time: " +
+                IO.println();
+                IO.println("Average execution time: " +
                     stats.getAverageExecutionTime() +
                     " ms (Average database time: " +
                     stats.getAverageDatabaseExecutionTime() +
                     " ms (" +
                     stats.getAverageDatabaseExecutionTimePercentage() +
-                    "%) )"
-                );
+                    "%) )");
 
-                System.out.println();
-                System.out.println("Database selects:");
+                IO.println();
+                IO.println("Database selects:");
                 for (String select : stats.getDbSelects().keySet()) {
-                    System.out.println(select + " : " + stats.getDbSelects().get(select));
+                    IO.println(select + " : " + stats.getDbSelects().get(select));
                 }
 
-                System.out.println();
-                System.out.println("Database inserts:");
+                IO.println();
+                IO.println("Database inserts:");
                 for (String insert : stats.getDbInserts().keySet()) {
-                    System.out.println(insert + " : " + stats.getDbInserts().get(insert));
+                    IO.println(insert + " : " + stats.getDbInserts().get(insert));
                 }
 
-                System.out.println();
-                System.out.println("Database updates:");
+                IO.println();
+                IO.println("Database updates:");
                 for (String update : stats.getDbUpdates().keySet()) {
-                    System.out.println(update + " : " + stats.getDbSelects().get(update));
+                    IO.println(update + " : " + stats.getDbSelects().get(update));
                 }
 
-                System.out.println();
-                System.out.println("Database delete:");
+                IO.println();
+                IO.println("Database delete:");
                 for (String delete : stats.getDbDeletes().keySet()) {
-                    System.out.println(delete + " : " + stats.getDbDeletes().get(delete));
+                    IO.println(delete + " : " + stats.getDbDeletes().get(delete));
                 }
 
-                System.out.println();
-                System.out.println();
+                IO.println();
+                IO.println();
             }
         }
     }

@@ -135,7 +135,7 @@ public class TaskRuntimeMultiInstanceIT {
         );
 
         //given
-        Task taskToComplete = tasks.get(0);
+        Task taskToComplete = tasks.getFirst();
 
         //when first multi instance is completed: 3 remaining / completion condition not reached
         localEventSource.clearEvents();
@@ -216,7 +216,7 @@ public class TaskRuntimeMultiInstanceIT {
         );
 
         //given
-        Task taskToComplete = tasks.get(0);
+        Task taskToComplete = tasks.getFirst();
 
         //when first multi instance is completed: 3 remaining / completion condition not reached
         localEventSource.clearEvents();
@@ -280,12 +280,12 @@ public class TaskRuntimeMultiInstanceIT {
                 tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED, parentProcessInstance.getId(), null),
                 tuple(
                     ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
-                    childrenProcess.get(0).getId(),
+                    childrenProcess.getFirst().getId(),
                     parentProcessInstance.getId()
                 ),
                 tuple(
                     ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
-                    childrenProcess.get(0).getId(),
+                    childrenProcess.getFirst().getId(),
                     parentProcessInstance.getId()
                 ),
                 tuple(
@@ -327,11 +327,11 @@ public class TaskRuntimeMultiInstanceIT {
                 event -> ((Task) event.getEntity()).getProcessInstanceId()
             )
             .containsExactlyInAnyOrder(
-                tuple(TaskRuntimeEvent.TaskEvents.TASK_CREATED, "User Task", childrenProcess.get(0).getId()),
+                tuple(TaskRuntimeEvent.TaskEvents.TASK_CREATED, "User Task", childrenProcess.getFirst().getId()),
                 tuple(TaskRuntimeEvent.TaskEvents.TASK_CREATED, "User Task", childrenProcess.get(1).getId()),
                 tuple(TaskRuntimeEvent.TaskEvents.TASK_CREATED, "User Task", childrenProcess.get(2).getId()),
                 tuple(TaskRuntimeEvent.TaskEvents.TASK_CREATED, "User Task", childrenProcess.get(3).getId()),
-                tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED, "User Task", childrenProcess.get(0).getId()),
+                tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED, "User Task", childrenProcess.getFirst().getId()),
                 tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED, "User Task", childrenProcess.get(1).getId()),
                 tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED, "User Task", childrenProcess.get(2).getId()),
                 tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED, "User Task", childrenProcess.get(3).getId())
@@ -347,7 +347,7 @@ public class TaskRuntimeMultiInstanceIT {
 
         //first multi instance is completed: 3 remaining / completion condition not reached
         List<TaskAssignedEvent> assignedTasksEvents = localEventSource.getEvents(TaskAssignedEvent.class);
-        TaskAssignedEvent taskAssignedEvent = assignedTasksEvents.get(0);
+        TaskAssignedEvent taskAssignedEvent = assignedTasksEvents.getFirst();
         localEventSource.clearEvents();
         taskBaseRuntime.completeTask(taskAssignedEvent.getEntity().getId());
 
@@ -468,7 +468,7 @@ public class TaskRuntimeMultiInstanceIT {
 
         //complete first iteration, multi-instance should not complete yet
         localEventSource.clearEvents();
-        taskBaseRuntime.completeTask(tasks.get(0));
+        taskBaseRuntime.completeTask(tasks.getFirst());
 
         assertActivityEvents(
             "miTasks",
@@ -493,7 +493,7 @@ public class TaskRuntimeMultiInstanceIT {
 
         //complete second iteration, multi-instance should not complete
         localEventSource.clearEvents();
-        taskBaseRuntime.completeTask(tasks.get(0));
+        taskBaseRuntime.completeTask(tasks.getFirst());
 
         assertActivityEvents("miTasks", BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED);
 
@@ -542,7 +542,7 @@ public class TaskRuntimeMultiInstanceIT {
 
         //complete first iteration, multi-instance should not complete yet
         localEventSource.clearEvents();
-        taskBaseRuntime.completeTask(tasks.get(0));
+        taskBaseRuntime.completeTask(tasks.getFirst());
 
         assertActivityEvents(
             "miSubProcess",
@@ -567,7 +567,7 @@ public class TaskRuntimeMultiInstanceIT {
 
         //complete second iteration, multi-instance should not complete
         localEventSource.clearEvents();
-        taskBaseRuntime.completeTask(tasks.get(0));
+        taskBaseRuntime.completeTask(tasks.getFirst());
 
         assertActivityEvents("miSubProcess", BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED);
 
@@ -597,7 +597,7 @@ public class TaskRuntimeMultiInstanceIT {
             .getChildrenProcessInstances(parentProcessInstance.getId())
             .getContent();
         assertThat(childrenProcessInstances).hasSize(1);
-        ProcessInstance firstChildProcInst = childrenProcessInstances.get(0);
+        ProcessInstance firstChildProcInst = childrenProcessInstances.getFirst();
 
         assertThat(localEventSource.getProcessInstanceEvents())
             .extracting(RuntimeEvent::getEventType, event -> ((ProcessInstance) event.getEntity()).getId())
@@ -625,7 +625,7 @@ public class TaskRuntimeMultiInstanceIT {
 
         //complete first iteration, multi-instance should not complete yet
         localEventSource.clearEvents();
-        taskBaseRuntime.completeTask(tasks.get(0));
+        taskBaseRuntime.completeTask(tasks.getFirst());
 
         assertActivityEvents(
             "miCallActivity",
@@ -637,7 +637,7 @@ public class TaskRuntimeMultiInstanceIT {
             .getChildrenProcessInstances(parentProcessInstance.getId())
             .getContent();
         assertThat(childrenProcessInstances).hasSize(1);
-        ProcessInstance secondChildProcInst = childrenProcessInstances.get(0);
+        ProcessInstance secondChildProcInst = childrenProcessInstances.getFirst();
 
         assertThat(localEventSource.getTaskEvents())
             .extracting(
@@ -664,7 +664,7 @@ public class TaskRuntimeMultiInstanceIT {
 
         //complete second iteration, multi-instance should not complete
         localEventSource.clearEvents();
-        taskBaseRuntime.completeTask(tasks.get(0));
+        taskBaseRuntime.completeTask(tasks.getFirst());
 
         assertActivityEvents("miCallActivity", BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED);
 
@@ -726,7 +726,7 @@ public class TaskRuntimeMultiInstanceIT {
 
         //complete first iteration: multi instance should not complete yet
         localEventSource.clearEvents();
-        taskBaseRuntime.completeTask(tasks.get(0));
+        taskBaseRuntime.completeTask(tasks.getFirst());
 
         assertActivityEvents("miTasks", BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED);
 
@@ -737,7 +737,7 @@ public class TaskRuntimeMultiInstanceIT {
                 event -> ((Task) event.getEntity()).getProcessInstanceId()
             )
             .containsExactly(
-                tuple(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED, tasks.get(0).getName(), processInstance.getId())
+                tuple(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED, tasks.getFirst().getName(), processInstance.getId())
             );
 
         assertThat(localEventSource.getProcessInstanceEvents()).isEmpty();
@@ -928,7 +928,7 @@ public class TaskRuntimeMultiInstanceIT {
                 List<Task> availableTasks = taskBaseRuntime.getTasks(processInstance);
                 assertThat(availableTasks).extracting(Task::getName).containsExactly("Escalation Task");
                 localEventSource.clearEvents();
-                taskBaseRuntime.completeTask(availableTasks.get(0));
+                taskBaseRuntime.completeTask(availableTasks.getFirst());
             });
 
         assertThat(localEventSource.getTaskEvents())
@@ -992,7 +992,7 @@ public class TaskRuntimeMultiInstanceIT {
         assertThat(tasks.size()).isEqualTo(1);
         assertThat(tasks).extracting(Task::getName).contains("Escalation Task");
 
-        taskBaseRuntime.completeTask(tasks.get(0));
+        taskBaseRuntime.completeTask(tasks.getFirst());
 
         assertThat(taskBaseRuntime.getTasks(processInstance)).isEmpty();
         assertThat(localEventSource.getProcessInstanceEvents())
@@ -1021,7 +1021,7 @@ public class TaskRuntimeMultiInstanceIT {
                 tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED, parentProcessInstance.getId(), null),
                 tuple(
                     ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
-                    childrenProcessInstances.getContent().get(0).getId(),
+                    childrenProcessInstances.getContent().getFirst().getId(),
                     parentProcessInstance.getId()
                 ),
                 tuple(
@@ -1047,7 +1047,7 @@ public class TaskRuntimeMultiInstanceIT {
                 tuple(
                     TaskRuntimeEvent.TaskEvents.TASK_CREATED,
                     "User Task",
-                    childrenProcessInstances.getContent().get(0).getId()
+                    childrenProcessInstances.getContent().getFirst().getId()
                 ),
                 tuple(
                     TaskRuntimeEvent.TaskEvents.TASK_CREATED,
@@ -1057,7 +1057,7 @@ public class TaskRuntimeMultiInstanceIT {
                 tuple(
                     TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED,
                     "User Task",
-                    childrenProcessInstances.getContent().get(0).getId()
+                    childrenProcessInstances.getContent().getFirst().getId()
                 ),
                 tuple(
                     TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED,
@@ -1083,7 +1083,7 @@ public class TaskRuntimeMultiInstanceIT {
                 tuple(
                     TaskRuntimeEvent.TaskEvents.TASK_CANCELLED,
                     "User Task",
-                    childrenProcessInstances.getContent().get(0).getId()
+                    childrenProcessInstances.getContent().getFirst().getId()
                 ),
                 tuple(
                     TaskRuntimeEvent.TaskEvents.TASK_CANCELLED,
@@ -1105,7 +1105,7 @@ public class TaskRuntimeMultiInstanceIT {
             .containsExactlyInAnyOrder(
                 tuple(
                     ProcessRuntimeEvent.ProcessEvents.PROCESS_CANCELLED,
-                    childrenProcessInstances.getContent().get(0).getId()
+                    childrenProcessInstances.getContent().getFirst().getId()
                 ),
                 tuple(
                     ProcessRuntimeEvent.ProcessEvents.PROCESS_CANCELLED,
@@ -1118,7 +1118,7 @@ public class TaskRuntimeMultiInstanceIT {
         assertThat(tasks).extracting(Task::getName).contains("Escalation Task");
 
         localEventSource.clearEvents();
-        taskBaseRuntime.completeTask(tasks.get(0));
+        taskBaseRuntime.completeTask(tasks.getFirst());
 
         assertThat(taskBaseRuntime.getTasks(parentProcessInstance)).isEmpty();
         assertThat(localEventSource.getProcessInstanceEvents())
@@ -1151,7 +1151,7 @@ public class TaskRuntimeMultiInstanceIT {
 
         //complete first iteration: multi instance should not finish yet
         localEventSource.clearEvents();
-        taskBaseRuntime.completeTask(tasks.get(0));
+        taskBaseRuntime.completeTask(tasks.getFirst());
 
         assertThat(localEventSource.getTaskEvents())
             .extracting(
@@ -1160,7 +1160,7 @@ public class TaskRuntimeMultiInstanceIT {
                 event -> ((Task) event.getEntity()).getProcessInstanceId()
             )
             .containsExactly(
-                tuple(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED, tasks.get(0).getName(), processInstance.getId())
+                tuple(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED, tasks.getFirst().getName(), processInstance.getId())
             );
 
         assertActivityEvents("miSubProcess", BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED);
@@ -1222,7 +1222,7 @@ public class TaskRuntimeMultiInstanceIT {
                 tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED, parentProcessInstance.getId(), null),
                 tuple(
                     ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
-                    childrenProcess.get(0).getId(),
+                    childrenProcess.getFirst().getId(),
                     parentProcessInstance.getId()
                 ),
                 tuple(
@@ -1239,16 +1239,16 @@ public class TaskRuntimeMultiInstanceIT {
                 event -> ((Task) event.getEntity()).getProcessInstanceId()
             )
             .containsExactlyInAnyOrder(
-                tuple(TaskRuntimeEvent.TaskEvents.TASK_CREATED, "User Task", childrenProcess.get(0).getId()),
+                tuple(TaskRuntimeEvent.TaskEvents.TASK_CREATED, "User Task", childrenProcess.getFirst().getId()),
                 tuple(TaskRuntimeEvent.TaskEvents.TASK_CREATED, "User Task", childrenProcess.get(1).getId()),
-                tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED, "User Task", childrenProcess.get(0).getId()),
+                tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED, "User Task", childrenProcess.getFirst().getId()),
                 tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED, "User Task", childrenProcess.get(1).getId())
             );
 
         //complete first iteration: multi instance should not complete yet
         List<TaskAssignedEvent> taskAssignedEvents = localEventSource.getEvents(TaskAssignedEvent.class);
         localEventSource.clearEvents();
-        TaskAssignedEvent taskAssignedEvent = taskAssignedEvents.get(0);
+        TaskAssignedEvent taskAssignedEvent = taskAssignedEvents.getFirst();
         taskBaseRuntime.completeTask(taskAssignedEvent.getEntity());
 
         assertActivityEvents("miCallActivity", BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED);
@@ -1489,7 +1489,7 @@ public class TaskRuntimeMultiInstanceIT {
         List<Task> tasks = taskBaseRuntime.getTasks(processInstance);
         assertThat(tasks).hasSize(2);
 
-        taskBaseRuntime.completeTask(tasks.get(0), singletonMap("meal", mealForFirstTask));
+        taskBaseRuntime.completeTask(tasks.getFirst(), singletonMap("meal", mealForFirstTask));
         taskBaseRuntime.completeTask(tasks.get(1), singletonMap("meal", mealForSecondTask));
     }
 
@@ -1501,7 +1501,7 @@ public class TaskRuntimeMultiInstanceIT {
         );
         List<Task> tasks = taskBaseRuntime.getTasks(processInstance);
         assertThat(tasks).hasSize(2);
-        taskBaseRuntime.completeTask(tasks.get(0), Map.of("meal", "pizza", "size", "small"));
+        taskBaseRuntime.completeTask(tasks.getFirst(), Map.of("meal", "pizza", "size", "small"));
         taskBaseRuntime.completeTask(tasks.get(1), Map.of("meal", "pasta", "size", "medium"));
 
         //when
@@ -1529,11 +1529,11 @@ public class TaskRuntimeMultiInstanceIT {
 
         List<Task> tasks = taskBaseRuntime.getTasks(processInstance);
         assertThat(tasks).hasSize(1);
-        taskBaseRuntime.completeTask(tasks.get(0), singletonMap("meal", "pizza"));
+        taskBaseRuntime.completeTask(tasks.getFirst(), singletonMap("meal", "pizza"));
 
         tasks = taskBaseRuntime.getTasks(processInstance);
         assertThat(tasks).hasSize(1);
-        taskBaseRuntime.completeTask(tasks.get(0), singletonMap("meal", "pasta"));
+        taskBaseRuntime.completeTask(tasks.getFirst(), singletonMap("meal", "pasta"));
 
         List<VariableInstance> variables = processBaseRuntime.getVariables(processInstance);
 
@@ -1550,11 +1550,11 @@ public class TaskRuntimeMultiInstanceIT {
 
         List<Task> tasks = taskBaseRuntime.getTasks(processInstance);
         assertThat(tasks).hasSize(1);
-        taskBaseRuntime.completeTask(tasks.get(0), Map.of("meal", "pizza", "size", "small"));
+        taskBaseRuntime.completeTask(tasks.getFirst(), Map.of("meal", "pizza", "size", "small"));
 
         tasks = taskBaseRuntime.getTasks(processInstance);
         assertThat(tasks).hasSize(1);
-        taskBaseRuntime.completeTask(tasks.get(0), Map.of("meal", "pasta", "size", "medium"));
+        taskBaseRuntime.completeTask(tasks.getFirst(), Map.of("meal", "pasta", "size", "medium"));
 
         List<VariableInstance> variables = processBaseRuntime.getVariables(processInstance);
 

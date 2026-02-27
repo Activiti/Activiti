@@ -66,7 +66,7 @@ public class StartEventJsonConverter
     protected String getStencilId(BaseElement baseElement) {
         Event event = (Event) baseElement;
         if (event.getEventDefinitions().size() > 0) {
-            EventDefinition eventDefinition = event.getEventDefinitions().get(0);
+            EventDefinition eventDefinition = event.getEventDefinitions().getFirst();
             if (eventDefinition instanceof TimerEventDefinition) {
                 return STENCIL_EVENT_START_TIMER;
             } else if (eventDefinition instanceof ErrorEventDefinition) {

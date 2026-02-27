@@ -141,7 +141,7 @@ public class Builder implements TreeBuilder {
         try {
             tree = new Builder(Feature.METHOD_INVOCATIONS).build(args[0]);
         } catch (TreeBuilderException e) {
-            System.out.println(e.getMessage());
+            IO.println(e.getMessage());
             System.exit(0);
         }
         NodePrinter.dump(out, tree.getRoot());

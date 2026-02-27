@@ -827,7 +827,7 @@ public class JSONArray {
         int i;
         StringBuilder sb = new StringBuilder("[");
         if (len == 1) {
-            sb.append(JSONObject.valueToString(this.myArrayList.get(0), indentFactor, indent));
+            sb.append(JSONObject.valueToString(this.myArrayList.getFirst(), indentFactor, indent));
         } else {
             int newindent = indent + indentFactor;
             sb.append('\n');

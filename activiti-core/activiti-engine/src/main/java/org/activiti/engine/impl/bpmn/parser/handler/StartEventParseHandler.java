@@ -43,7 +43,7 @@ public class StartEventParseHandler extends AbstractActivityBpmnParseHandler<Sta
     protected void executeParse(BpmnParse bpmnParse, StartEvent element) {
         if (element.getSubProcess() != null && element.getSubProcess() instanceof EventSubProcess) {
             if (CollectionUtil.isNotEmpty(element.getEventDefinitions())) {
-                EventDefinition eventDefinition = element.getEventDefinitions().get(0);
+                EventDefinition eventDefinition = element.getEventDefinitions().getFirst();
                 if (eventDefinition instanceof MessageEventDefinition) {
                     MessageEventDefinition messageDefinition = (MessageEventDefinition) eventDefinition;
                     BpmnModel bpmnModel = bpmnParse.getBpmnModel();

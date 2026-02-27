@@ -375,7 +375,7 @@ public class TransactionSubProcessTest extends PluggableActivitiTestCase {
         // there are 10 compensation event subscriptions
         assertThat(eventSubscriptionEntities).hasSize(10);
 
-        Task task = taskService.createTaskQuery().listPage(0, 1).get(0);
+        Task task = taskService.createTaskQuery().listPage(0, 1).getFirst();
 
         // canceling one instance triggers compensation for all other instances:
         taskService.setVariable(task.getId(), "confirmed", false);

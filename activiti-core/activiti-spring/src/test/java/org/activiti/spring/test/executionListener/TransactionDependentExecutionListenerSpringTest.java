@@ -42,8 +42,8 @@ public class TransactionDependentExecutionListenerSpringTest extends SpringActiv
         Task task = taskService.createTaskQuery().singleResult();
         taskService.complete(task.getId());
 
-        assertThat(listener.getCurrentActivities().get(0).getActivityId()).isEqualTo("task3");
-        assertThat(listener.getCurrentActivities().get(0).getCustomPropertiesMap().get("customProp1")).isEqualTo(
+        assertThat(listener.getCurrentActivities().getFirst().getActivityId()).isEqualTo("task3");
+        assertThat(listener.getCurrentActivities().getFirst().getCustomPropertiesMap().get("customProp1")).isEqualTo(
             "task3"
         );
 

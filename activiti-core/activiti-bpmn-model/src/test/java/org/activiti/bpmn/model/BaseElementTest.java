@@ -119,7 +119,7 @@ public class BaseElementTest {
         List<ExtensionElement> extensionElements = baseElement.getExtensionElements().get("elementOne");
         assertThat(extensionElements).hasSize(1);
 
-        ExtensionElement extensionElementOne = extensionElements.get(0);
+        ExtensionElement extensionElementOne = extensionElements.getFirst();
         assertThat(extensionElementOne.getName()).isEqualTo("elementOne");
         assertThat(extensionElementOne.getAttributes()).hasSize(1);
 
@@ -127,8 +127,8 @@ public class BaseElementTest {
             .getAttributes()
             .get("attrOneElementOne");
         assertThat(nestedAttributesInElementOne).hasSize(1);
-        assertThat(nestedAttributesInElementOne.get(0).getName()).isEqualTo("attrOneElementOne");
-        assertThat(nestedAttributesInElementOne.get(0).getValue()).isEqualTo("attrOneElementOneValue");
+        assertThat(nestedAttributesInElementOne.getFirst().getName()).isEqualTo("attrOneElementOne");
+        assertThat(nestedAttributesInElementOne.getFirst().getValue()).isEqualTo("attrOneElementOneValue");
 
         assertThat(baseElement.getAttributes()).hasSize(1);
         assertThat(baseElement.getAttributeValue("namespace", "attrOne")).isEqualTo("attrValueOne");

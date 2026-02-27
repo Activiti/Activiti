@@ -42,7 +42,7 @@ public class IntermediateThrowEventParseHandler extends AbstractActivityBpmnPars
     protected void executeParse(BpmnParse bpmnParse, ThrowEvent intermediateEvent) {
         EventDefinition eventDefinition = null;
         if (!intermediateEvent.getEventDefinitions().isEmpty()) {
-            eventDefinition = intermediateEvent.getEventDefinitions().get(0);
+            eventDefinition = intermediateEvent.getEventDefinitions().getFirst();
         }
 
         if (eventDefinition instanceof SignalEventDefinition) {

@@ -77,7 +77,7 @@ public class ProcessRuntimeCallActivityIT {
 
         assertThat(taskList).isNotEmpty();
 
-        Task task = taskList.get(0);
+        Task task = taskList.getFirst();
 
         assertThat(task).isNotNull();
         assertThat("my-task-call-activity").isEqualTo(task.getName());
@@ -109,7 +109,7 @@ public class ProcessRuntimeCallActivityIT {
 
         assertThat(parentProcessInstanceList).isNotEmpty();
 
-        ProcessInstance parentProcessInstance = parentProcessInstanceList.get(0);
+        ProcessInstance parentProcessInstance = parentProcessInstanceList.getFirst();
 
         return parentProcessInstance;
     }

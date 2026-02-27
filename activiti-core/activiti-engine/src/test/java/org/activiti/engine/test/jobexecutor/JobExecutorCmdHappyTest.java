@@ -55,7 +55,7 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
 
         managementService.executeJob(job.getId());
 
-        assertThat(tweetHandler.getMessages().get(0)).isEqualTo("i'm coding a test");
+        assertThat(tweetHandler.getMessages().getFirst()).isEqualTo("i'm coding a test");
         assertThat(tweetHandler.getMessages()).hasSize(1);
     }
 
@@ -96,7 +96,7 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
         Job executableJob = managementService.moveTimerToExecutableJob(jobId);
         commandExecutor.execute(new ExecuteAsyncJobCmd(executableJob.getId()));
 
-        assertThat(tweetHandler.getMessages().get(0)).isEqualTo("i'm coding a test");
+        assertThat(tweetHandler.getMessages().getFirst()).isEqualTo("i'm coding a test");
         assertThat(tweetHandler.getMessages()).hasSize(1);
     }
 }

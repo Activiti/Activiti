@@ -87,7 +87,7 @@ public class StartTimerEventRepeatWithoutEndDateTest extends PluggableActivitiTe
         dueDateCalendar.set(2025, Calendar.DECEMBER, 11, 0, 0, 0);
 
         // check the due date is inside the 2 seconds range
-        assertThat(Math.abs(dueDateCalendar.getTime().getTime() - jobs.get(0).getDuedate().getTime()) < 2000).isEqualTo(
+        assertThat(Math.abs(dueDateCalendar.getTime().getTime() - jobs.getFirst().getDuedate().getTime()) < 2000).isEqualTo(
             true
         );
 
@@ -125,7 +125,7 @@ public class StartTimerEventRepeatWithoutEndDateTest extends PluggableActivitiTe
         // (10'th repeat after 10 dec. => dueDate must have DueDate = 20 dec.)
         dueDateCalendar = Calendar.getInstance();
         dueDateCalendar.set(2025, Calendar.DECEMBER, 20, 0, 0, 0);
-        assertThat(Math.abs(dueDateCalendar.getTime().getTime() - jobs.get(0).getDuedate().getTime()) < 2000).isEqualTo(
+        assertThat(Math.abs(dueDateCalendar.getTime().getTime() - jobs.getFirst().getDuedate().getTime()) < 2000).isEqualTo(
             true
         );
 
@@ -189,7 +189,7 @@ public class StartTimerEventRepeatWithoutEndDateTest extends PluggableActivitiTe
         // complete the processes.
         for (ProcessInstance processInstance : processInstances) {
             tasks = taskService.createTaskQuery().processInstanceId(processInstance.getProcessInstanceId()).list();
-            Task task = tasks.get(0);
+            Task task = tasks.getFirst();
             assertThat(task.getName()).isEqualTo("Task A");
             assertThat(tasks).hasSize(1);
             taskService.complete(task.getId());

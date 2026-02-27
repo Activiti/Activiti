@@ -58,17 +58,17 @@ public class ExecutionListenerOnTransactionTest extends PluggableActivitiTestCas
             CurrentActivityTransactionDependentExecutionListener.getCurrentActivities();
         assertThat(currentActivities).hasSize(1);
 
-        assertThat(currentActivities.get(0).getActivityId()).isEqualTo("serviceTask1");
-        assertThat(currentActivities.get(0).getActivityName()).isEqualTo("Service Task 1");
-        assertThat(currentActivities.get(0).getProcessInstanceId()).isEqualTo(processInstance.getId());
-        assertThat(currentActivities.get(0).getProcessInstanceId()).isNotNull();
+        assertThat(currentActivities.getFirst().getActivityId()).isEqualTo("serviceTask1");
+        assertThat(currentActivities.getFirst().getActivityName()).isEqualTo("Service Task 1");
+        assertThat(currentActivities.getFirst().getProcessInstanceId()).isEqualTo(processInstance.getId());
+        assertThat(currentActivities.getFirst().getProcessInstanceId()).isNotNull();
 
         assertThat(
             managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).count()
         ).isEqualTo(1);
         List<String> activeActivityIds = runtimeService.getActiveActivityIds(processInstance.getId());
         assertThat(activeActivityIds).hasSize(1);
-        assertThat(activeActivityIds.get(0)).isEqualTo("serviceTask2");
+        assertThat(activeActivityIds.getFirst()).isEqualTo("serviceTask2");
     }
 
     @Deployment
@@ -96,8 +96,8 @@ public class ExecutionListenerOnTransactionTest extends PluggableActivitiTestCas
         assertThat(currentActivities).hasSize(2);
 
         // the before commit listener
-        assertThat(currentActivities.get(0).getActivityId()).isEqualTo("serviceTask1");
-        assertThat(currentActivities.get(0).getActivityName()).isEqualTo("Service Task 1");
+        assertThat(currentActivities.getFirst().getActivityId()).isEqualTo("serviceTask1");
+        assertThat(currentActivities.getFirst().getActivityName()).isEqualTo("Service Task 1");
 
         // the before rolled-back listener
         assertThat(currentActivities.get(1).getActivityId()).isEqualTo("serviceTask3");
@@ -114,9 +114,9 @@ public class ExecutionListenerOnTransactionTest extends PluggableActivitiTestCas
             CurrentActivityTransactionDependentExecutionListener.getCurrentActivities();
         assertThat(currentActivities).hasSize(3);
 
-        assertThat(currentActivities.get(0).getActivityId()).isEqualTo("serviceTask1");
-        assertThat(currentActivities.get(0).getActivityName()).isEqualTo("Service Task 1");
-        assertThat(currentActivities.get(0).getExecutionVariables()).hasSize(0);
+        assertThat(currentActivities.getFirst().getActivityId()).isEqualTo("serviceTask1");
+        assertThat(currentActivities.getFirst().getActivityName()).isEqualTo("Service Task 1");
+        assertThat(currentActivities.getFirst().getExecutionVariables()).hasSize(0);
 
         assertThat(currentActivities.get(1).getActivityId()).isEqualTo("serviceTask2");
         assertThat(currentActivities.get(1).getActivityName()).isEqualTo("Service Task 2");
@@ -147,7 +147,7 @@ public class ExecutionListenerOnTransactionTest extends PluggableActivitiTestCas
                 .createHistoricProcessInstanceQuery()
                 .list();
             assertThat(historicProcessInstances).hasSize(1);
-            assertThat(historicProcessInstances.get(0).getProcessDefinitionKey()).isEqualTo(
+            assertThat(historicProcessInstances.getFirst().getProcessDefinitionKey()).isEqualTo(
                 "transactionDependentExecutionListenerProcess"
             );
         }
@@ -163,7 +163,7 @@ public class ExecutionListenerOnTransactionTest extends PluggableActivitiTestCas
                 .createHistoricProcessInstanceQuery()
                 .list();
             assertThat(historicProcessInstances).hasSize(1);
-            assertThat(historicProcessInstances.get(0).getProcessDefinitionKey()).isEqualTo(
+            assertThat(historicProcessInstances.getFirst().getProcessDefinitionKey()).isEqualTo(
                 "secondTransactionDependentExecutionListenerProcess"
             );
         }
@@ -172,8 +172,8 @@ public class ExecutionListenerOnTransactionTest extends PluggableActivitiTestCas
             MyTransactionalOperationTransactionDependentExecutionListener.getCurrentActivities();
         assertThat(currentActivities).hasSize(1);
 
-        assertThat(currentActivities.get(0).getActivityId()).isEqualTo("serviceTask1");
-        assertThat(currentActivities.get(0).getActivityName()).isEqualTo("Service Task 1");
+        assertThat(currentActivities.getFirst().getActivityId()).isEqualTo("serviceTask1");
+        assertThat(currentActivities.getFirst().getActivityName()).isEqualTo("Service Task 1");
     }
 
     @Deployment
@@ -186,9 +186,9 @@ public class ExecutionListenerOnTransactionTest extends PluggableActivitiTestCas
             CurrentActivityTransactionDependentExecutionListener.getCurrentActivities();
         assertThat(currentActivities).hasSize(1);
 
-        assertThat(currentActivities.get(0).getActivityId()).isEqualTo("serviceTask1");
-        assertThat(currentActivities.get(0).getActivityName()).isEqualTo("Service Task 1");
-        assertThat(currentActivities.get(0).getCustomPropertiesMap()).hasSize(1);
-        assertThat(currentActivities.get(0).getCustomPropertiesMap().get("customProp1")).isEqualTo("serviceTask1");
+        assertThat(currentActivities.getFirst().getActivityId()).isEqualTo("serviceTask1");
+        assertThat(currentActivities.getFirst().getActivityName()).isEqualTo("Service Task 1");
+        assertThat(currentActivities.getFirst().getCustomPropertiesMap()).hasSize(1);
+        assertThat(currentActivities.getFirst().getCustomPropertiesMap().get("customProp1")).isEqualTo("serviceTask1");
     }
 }

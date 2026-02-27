@@ -68,7 +68,7 @@ public class EmailServiceTaskTest extends PluggableActivitiTestCase {
         List<WiserMessage> messages = wiser.getMessages();
         assertThat(messages).hasSize(1);
 
-        WiserMessage message = messages.get(0);
+        WiserMessage message = messages.getFirst();
         MimeMessage mimeMessage = message.getMimeMessage();
 
         assertThat(mimeMessage.getHeader("Subject", null)).isEqualTo("Your order " + orderId + " has been shipped");

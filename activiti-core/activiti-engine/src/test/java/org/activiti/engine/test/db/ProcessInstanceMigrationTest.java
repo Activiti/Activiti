@@ -194,7 +194,7 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
                 .unfinished()
                 .list();
             assertThat(historicActivities).hasSize(1);
-            assertThat(historicActivities.get(0).getProcessDefinitionId()).isEqualTo(newProcessDefinition.getId());
+            assertThat(historicActivities.getFirst().getProcessDefinitionId()).isEqualTo(newProcessDefinition.getId());
         }
 
         // undeploy "manually" deployed process definition

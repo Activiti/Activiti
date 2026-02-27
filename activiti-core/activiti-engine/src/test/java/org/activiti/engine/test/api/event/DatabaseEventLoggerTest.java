@@ -584,7 +584,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 
         List<EventLogEntry> events = managementService.getEventLogEntries(null, null);
         assertThat(events).hasSize(4);
-        assertThat(events.get(0).getType()).isEqualTo("TASK_CREATED");
+        assertThat(events.getFirst().getType()).isEqualTo("TASK_CREATED");
         assertThat(events.get(1).getType()).isEqualTo("TASK_ASSIGNED");
         assertThat(events.get(2).getType()).isEqualTo("TASK_ASSIGNED");
         assertThat(events.get(3).getType()).isEqualTo("TASK_ASSIGNED");

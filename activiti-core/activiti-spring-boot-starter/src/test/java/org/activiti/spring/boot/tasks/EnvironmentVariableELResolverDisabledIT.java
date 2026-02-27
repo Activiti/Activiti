@@ -55,7 +55,7 @@ class EnvironmentVariableELResolverDisabledIT {
         List<Task> tasks = taskBaseRuntime.getTasksByProcessInstanceId(processInstanceId);
         assertThat(tasks).isNotEmpty();
         assertThat(tasks).hasSize(1);
-        return tasks.get(0);
+        return tasks.getFirst();
     }
 
     @Test

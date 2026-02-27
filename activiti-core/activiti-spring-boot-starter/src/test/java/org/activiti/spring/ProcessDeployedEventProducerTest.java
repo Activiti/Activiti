@@ -103,9 +103,9 @@ public class ProcessDeployedEventProducerTest {
         assertThat(allValues)
             .extracting(ProcessDeployedEvent::getEntity, ProcessDeployedEvent::getProcessModelContent)
             .containsExactly(
-                tuple(apiProcessDefinitions.get(0), "content1"), //firstListener
+                tuple(apiProcessDefinitions.getFirst(), "content1"), //firstListener
                 tuple(apiProcessDefinitions.get(1), "content2"), //firstListener
-                tuple(apiProcessDefinitions.get(0), "content1"), //secondListener
+                tuple(apiProcessDefinitions.getFirst(), "content1"), //secondListener
                 tuple(apiProcessDefinitions.get(1), "content2")
             ); //secondListener
     }

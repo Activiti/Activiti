@@ -35,7 +35,7 @@ public class MultiLineEmailHTMLTest extends AbstractConverterTest {
         Map<String, List<ExtensionElement>> extensionElements = new HashMap<>();
         extensionElements = model.getMainProcess().getFlowElement("userTask").getExtensionElements();
         List<ExtensionElement> emailTemplateEmailList = extensionElements.get("email-template");
-        ExtensionElement extensionElement = emailTemplateEmailList.get(0);
+        ExtensionElement extensionElement = emailTemplateEmailList.getFirst();
         String elementText = extensionElement.getElementText();
         assertThat(elementText).isEqualTo(getEmailBody());
     }

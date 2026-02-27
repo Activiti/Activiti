@@ -47,7 +47,7 @@ public class EventListenerConverterTest extends AbstractConverterTest {
         assertThat(process.getEventListeners()).hasSize(8);
 
         // Listener with class
-        EventListener listener = process.getEventListeners().get(0);
+        EventListener listener = process.getEventListeners().getFirst();
         assertThat(listener.getEvents()).isEqualTo("ENTITY_CREATE");
         assertThat(listener.getImplementation()).isEqualTo("org.activiti.test.MyListener");
         assertThat(listener.getImplementationType()).isEqualTo(ImplementationType.IMPLEMENTATION_TYPE_CLASS);

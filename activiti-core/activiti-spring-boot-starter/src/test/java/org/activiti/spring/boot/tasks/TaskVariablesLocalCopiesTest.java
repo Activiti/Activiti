@@ -107,14 +107,14 @@ public class TaskVariablesLocalCopiesTest {
             .containsExactly(tuple("start1", "start1"), tuple("start2", "start2"));
 
         //both tasks should have the process variables
-        Task task1 = taskRuntime.tasks(Pageable.of(0, 10), TaskPayloadBuilder.tasks().build()).getContent().get(0);
+        Task task1 = taskRuntime.tasks(Pageable.of(0, 10), TaskPayloadBuilder.tasks().build()).getContent().getFirst();
         assertThat(taskRuntime.variables(TaskPayloadBuilder.variables().withTaskId(task1.getId()).build()))
             .extracting(VariableInstance::getName, VariableInstance::getValue)
             .containsExactly(tuple("start1", "start1"), tuple("start2", "start2"));
 
         securityUtil.logInAs("garth");
 
-        Task task2 = taskRuntime.tasks(Pageable.of(0, 10), TaskPayloadBuilder.tasks().build()).getContent().get(0);
+        Task task2 = taskRuntime.tasks(Pageable.of(0, 10), TaskPayloadBuilder.tasks().build()).getContent().getFirst();
         assertThat(taskRuntime.variables(TaskPayloadBuilder.variables().withTaskId(task2.getId()).build()))
             .extracting(VariableInstance::getName, VariableInstance::getValue)
             .containsExactly(tuple("start1", "start1"), tuple("start2", "start2"));
@@ -189,7 +189,7 @@ public class TaskVariablesLocalCopiesTest {
             .containsExactly(tuple("start1", "start1"), tuple("start2", "start2"));
 
         //both tasks should have the process variables
-        Task task1 = taskRuntime.tasks(Pageable.of(0, 10), TaskPayloadBuilder.tasks().build()).getContent().get(0);
+        Task task1 = taskRuntime.tasks(Pageable.of(0, 10), TaskPayloadBuilder.tasks().build()).getContent().getFirst();
 
         //check that admin can get task variables
         securityUtil.logInAs("admin");

@@ -110,7 +110,7 @@ public class ExecutionTreeNode implements Iterable<ExecutionTreeNode> {
                 children.get(i).internalToString(strb, prefix + (isTail ? "    " : "│   "), false);
             }
             if (children.size() > 0) {
-                children.get(children.size() - 1).internalToString(strb, prefix + (isTail ? "    " : "│   "), true);
+                children.getLast().internalToString(strb, prefix + (isTail ? "    " : "│   "), true);
             }
         }
     }

@@ -105,7 +105,7 @@ public class EventSubscriptionManager {
                 if (element instanceof StartEvent) {
                     StartEvent startEvent = (StartEvent) element;
                     if (CollectionUtil.isNotEmpty(startEvent.getEventDefinitions())) {
-                        EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
+                        EventDefinition eventDefinition = startEvent.getEventDefinitions().getFirst();
                         if (eventDefinition instanceof MessageEventDefinition) {
                             MessageEventDefinition messageEventDefinition = (MessageEventDefinition) eventDefinition;
                             insertMessageEvent(messageEventDefinition, startEvent, processDefinition, bpmnModel);
@@ -181,7 +181,7 @@ public class EventSubscriptionManager {
                 if (element instanceof StartEvent) {
                     StartEvent startEvent = (StartEvent) element;
                     if (CollectionUtil.isNotEmpty(startEvent.getEventDefinitions())) {
-                        EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
+                        EventDefinition eventDefinition = startEvent.getEventDefinitions().getFirst();
                         if (eventDefinition instanceof SignalEventDefinition) {
                             SignalEventDefinition signalEventDefinition = (SignalEventDefinition) eventDefinition;
                             SignalEventSubscriptionEntity subscriptionEntity = commandContext

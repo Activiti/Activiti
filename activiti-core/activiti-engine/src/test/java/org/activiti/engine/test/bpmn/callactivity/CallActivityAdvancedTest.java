@@ -168,7 +168,7 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
         List<Task> tasks = taskQuery.list();
         assertThat(tasks).hasSize(2);
 
-        Task taskA = tasks.get(0);
+        Task taskA = tasks.getFirst();
         Task taskB = tasks.get(1);
         assertThat(taskA.getName()).isEqualTo("Task A");
         assertThat(taskB.getName()).isEqualTo("Task B");

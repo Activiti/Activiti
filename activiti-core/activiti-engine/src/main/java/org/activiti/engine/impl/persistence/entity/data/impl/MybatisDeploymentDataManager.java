@@ -51,7 +51,7 @@ public class MybatisDeploymentDataManager
     public DeploymentEntity findLatestDeploymentByName(String deploymentName) {
         List<?> list = getDbSqlSession().selectList("selectDeploymentsByName", deploymentName, 0, 1);
         if (list != null && !list.isEmpty()) {
-            return (DeploymentEntity) list.get(0);
+            return (DeploymentEntity) list.getFirst();
         }
         return null;
     }

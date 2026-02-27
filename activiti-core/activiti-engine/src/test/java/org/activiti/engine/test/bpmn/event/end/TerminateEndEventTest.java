@@ -856,7 +856,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
             .orderByTaskName()
             .asc()
             .list();
-        assertThat(tasks.get(0).getName()).isEqualTo("A");
+        assertThat(tasks.getFirst().getName()).isEqualTo("A");
         assertThat(tasks.get(1).getName()).isEqualTo("B");
         assertThat(tasks.get(2).getName()).isEqualTo("D");
         assertThat(tasks.get(3).getName()).isEqualTo("E");
@@ -872,7 +872,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
         assertThat(task).isNotNull();
 
         // Completing A should make C active
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
         task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("C").singleResult();
         assertThat(task).isNotNull();
 
@@ -1022,7 +1022,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
             .processInstanceId(processInstance.getId())
             .taskName("E")
             .list()
-            .get(0);
+            .getFirst();
         taskService.complete(task.getId());
         assertProcessEnded(processInstance.getId());
         assertHistoricProcessInstanceDetails(processInstance);
@@ -1037,7 +1037,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
             .processInstanceId(processInstance.getId())
             .taskName("C")
             .list()
-            .get(0);
+            .getFirst();
         taskService.complete(task.getId());
         assertProcessEnded(processInstance.getId());
         assertHistoricProcessInstanceDetails(processInstance);
@@ -1052,7 +1052,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
             .processInstanceId(processInstance.getId())
             .taskName("E")
             .list()
-            .get(0);
+            .getFirst();
         taskService.complete(task.getId());
         assertProcessEnded(processInstance.getId());
         assertHistoricProcessInstanceDetails(processInstance);
@@ -1068,7 +1068,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
             .processInstanceId(processInstance.getId())
             .taskName("C")
             .list()
-            .get(0);
+            .getFirst();
         taskService.complete(task.getId());
         assertProcessEnded(processInstance.getId());
         assertHistoricProcessInstanceDetails(processInstance);
@@ -1180,18 +1180,18 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 
         Map<String, List<ExtensionElement>> extensionElements = bpmnModel
             .getProcesses()
-            .get(0)
+            .getFirst()
             .findFlowElementsOfType(EndEvent.class)
-            .get(0)
+            .getFirst()
             .getExtensionElements();
         assertThat(extensionElements).hasSize(1);
         List<ExtensionElement> strangeProperties = extensionElements.get("strangeProperty");
         assertThat(strangeProperties).hasSize(1);
-        ExtensionElement strangeProperty = strangeProperties.get(0);
+        ExtensionElement strangeProperty = strangeProperties.getFirst();
         assertThat(strangeProperty.getNamespace()).isEqualTo("http://activiti.org/bpmn");
         assertThat(strangeProperty.getElementText()).isEqualTo("value");
         assertThat(strangeProperty.getAttributes()).hasSize(1);
-        ExtensionAttribute id = strangeProperty.getAttributes().get("id").get(0);
+        ExtensionAttribute id = strangeProperty.getAttributes().get("id").getFirst();
         assertThat(id.getName()).isEqualTo("id");
         assertThat(id.getValue()).isEqualTo("strangeId");
 

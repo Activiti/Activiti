@@ -101,8 +101,8 @@ public class JsonTest extends PluggableActivitiTestCase {
                 .list();
             assertThat(historicVariableInstances).hasSize(2);
 
-            assertThat(historicVariableInstances.get(0).getVariableName()).isEqualTo(BIG_JSON_OBJ);
-            value = (ObjectNode) historicVariableInstances.get(0).getValue();
+            assertThat(historicVariableInstances.getFirst().getVariableName()).isEqualTo(BIG_JSON_OBJ);
+            value = (ObjectNode) historicVariableInstances.getFirst().getValue();
             assertThat(value).isNotNull();
             assertThat(value.toString()).isEqualTo(createBigJsonObject().toString());
 

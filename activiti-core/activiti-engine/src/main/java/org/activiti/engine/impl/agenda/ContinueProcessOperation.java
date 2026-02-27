@@ -281,7 +281,7 @@ public class ContinueProcessOperation extends AbstractOperation {
         for (BoundaryEvent boundaryEvent : boundaryEvents) {
             if (
                 CollectionUtil.isEmpty(boundaryEvent.getEventDefinitions()) ||
-                (boundaryEvent.getEventDefinitions().get(0) instanceof CompensateEventDefinition)
+                (boundaryEvent.getEventDefinitions().getFirst() instanceof CompensateEventDefinition)
             ) {
                 continue;
             }

@@ -42,7 +42,7 @@ public class EventSubprocessValidator extends ProcessLevelValidator {
             );
             for (StartEvent startEvent : startEvents) {
                 if (startEvent.getEventDefinitions() != null && !startEvent.getEventDefinitions().isEmpty()) {
-                    EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
+                    EventDefinition eventDefinition = startEvent.getEventDefinitions().getFirst();
                     if (
                         !(eventDefinition instanceof org.activiti.bpmn.model.ErrorEventDefinition) &&
                         !(eventDefinition instanceof MessageEventDefinition) &&

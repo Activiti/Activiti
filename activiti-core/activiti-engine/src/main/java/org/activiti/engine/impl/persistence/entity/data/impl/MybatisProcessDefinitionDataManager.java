@@ -156,7 +156,7 @@ public class MybatisProcessDefinitionDataManager
             params
         );
         if (results.size() == 1) {
-            return results.get(0);
+            return results.getFirst();
         } else if (results.size() > 1) {
             throw new ActivitiException(
                 "There are " +
@@ -187,7 +187,7 @@ public class MybatisProcessDefinitionDataManager
             params
         );
         if (results.size() == 1) {
-            return results.get(0);
+            return results.getFirst();
         } else if (results.size() > 1) {
             throw new ActivitiException(
                 "There are " +

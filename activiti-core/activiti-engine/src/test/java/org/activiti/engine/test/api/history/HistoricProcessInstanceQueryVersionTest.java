@@ -62,7 +62,7 @@ public class HistoricProcessInstanceQueryVersionTest extends PluggableActivitiTe
                 .createHistoricProcessInstanceQuery()
                 .processDefinitionVersion(1)
                 .list()
-                .get(0)
+                .getFirst()
                 .getProcessDefinitionVersion()
                 .intValue()
         ).isEqualTo(1);
@@ -71,7 +71,7 @@ public class HistoricProcessInstanceQueryVersionTest extends PluggableActivitiTe
                 .createHistoricProcessInstanceQuery()
                 .processDefinitionVersion(2)
                 .list()
-                .get(0)
+                .getFirst()
                 .getProcessDefinitionVersion()
                 .intValue()
         ).isEqualTo(2);

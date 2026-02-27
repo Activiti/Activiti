@@ -233,7 +233,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
 
         Process mainProcess = null;
         if (model.getPools().size() > 0) {
-            mainProcess = model.getProcess(model.getPools().get(0).getId());
+            mainProcess = model.getProcess(model.getPools().getFirst().getId());
         } else {
             mainProcess = model.getMainProcess();
         }
@@ -674,7 +674,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
                                 shapeNode,
                                 modelNode,
                                 this,
-                                bpmnModel.getProcesses().get(0),
+                                bpmnModel.getProcesses().getFirst(),
                                 shapeMap,
                                 bpmnModel
                             );
@@ -800,7 +800,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
             if (flowElement instanceof Event) {
                 Event event = (Event) flowElement;
                 if (CollectionUtils.isNotEmpty(event.getEventDefinitions())) {
-                    EventDefinition eventDef = event.getEventDefinitions().get(0);
+                    EventDefinition eventDef = event.getEventDefinitions().getFirst();
                     if (eventDef instanceof SignalEventDefinition) {
                         SignalEventDefinition signalEventDef = (SignalEventDefinition) eventDef;
                         if (StringUtils.isNotEmpty(signalEventDef.getSignalRef())) {
@@ -860,7 +860,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
                         sequenceFlow.getExtensionElements().get("EDITOR_RESOURCEID").size() > 0
                     ) {
                         allFlowMap.put(
-                            sequenceFlow.getExtensionElements().get("EDITOR_RESOURCEID").get(0).getElementText(),
+                            sequenceFlow.getExtensionElements().get("EDITOR_RESOURCEID").getFirst().getElementText(),
                             flowWithContainer
                         );
                         sequenceFlow.getExtensionElements().remove("EDITOR_RESOURCEID");
@@ -1012,7 +1012,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
             JsonNode targetRefNode = null;
 
             if (sourceAndTargetList != null && sourceAndTargetList.size() > 1) {
-                sourceRefNode = sourceAndTargetList.get(0);
+                sourceRefNode = sourceAndTargetList.getFirst();
                 targetRefNode = sourceAndTargetList.get(1);
             }
 

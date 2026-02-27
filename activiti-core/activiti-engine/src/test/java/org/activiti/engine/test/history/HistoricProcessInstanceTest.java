@@ -99,7 +99,7 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
         // user completes the task (yes! he must be almost as fast as me)
         Date twentyFiveSecsAfterNoon = new Date(noon.getTime() + 25 * 1000);
         processEngineConfiguration.getClock().setCurrentTime(twentyFiveSecsAfterNoon);
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
 
         historicProcessInstance = historyService
             .createHistoricProcessInstanceQuery()
@@ -820,7 +820,7 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
             .desc()
             .list();
         List<String> processInstanceIds = new ArrayList<String>(2);
-        processInstanceIds.add(historicProcessInstances.get(0).getId());
+        processInstanceIds.add(historicProcessInstances.getFirst().getId());
         processInstanceIds.add(historicProcessInstances.get(1).getId());
         assertThat(processInstanceIds.contains(processInstance1.getId())).isTrue();
         assertThat(processInstanceIds.contains(processInstance2.getId())).isTrue();
@@ -833,7 +833,7 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
             .includeProcessVariables()
             .list();
         processInstanceIds = new ArrayList<String>(2);
-        processInstanceIds.add(historicProcessInstances.get(0).getId());
+        processInstanceIds.add(historicProcessInstances.getFirst().getId());
         processInstanceIds.add(historicProcessInstances.get(1).getId());
         assertThat(processInstanceIds.contains(processInstance1.getId())).isTrue();
         assertThat(processInstanceIds.contains(processInstance2.getId())).isTrue();
@@ -880,10 +880,10 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
             );
             assertThat(historicLinks).hasSize(1);
 
-            assertThat(historicLinks.get(0).getType()).isEqualTo("myType");
-            assertThat(historicLinks.get(0).getUserId()).isEqualTo("kermit");
-            assertThat(historicLinks.get(0).getGroupId()).isNull();
-            assertThat(historicLinks.get(0).getProcessInstanceId()).isEqualTo(pi.getId());
+            assertThat(historicLinks.getFirst().getType()).isEqualTo("myType");
+            assertThat(historicLinks.getFirst().getUserId()).isEqualTo("kermit");
+            assertThat(historicLinks.getFirst().getGroupId()).isNull();
+            assertThat(historicLinks.getFirst().getProcessInstanceId()).isEqualTo(pi.getId());
 
             // When process is ended, link should remain
             taskService.complete(taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult().getId());
@@ -911,11 +911,11 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
             );
             assertThat(historicLinks).hasSize(1);
 
-            assertThat(historicLinks.get(0).getType()).isEqualTo("myType");
-            assertThat(historicLinks.get(0).getUserId()).isEqualTo("kermit");
-            assertThat(historicLinks.get(0).getGroupId()).isNull();
-            assertThat(historicLinks.get(0).getProcessInstanceId()).isEqualTo(pi.getId());
-            assertThat(historicLinks.get(0).getDetails()).isEqualTo("details".getBytes());
+            assertThat(historicLinks.getFirst().getType()).isEqualTo("myType");
+            assertThat(historicLinks.getFirst().getUserId()).isEqualTo("kermit");
+            assertThat(historicLinks.getFirst().getGroupId()).isNull();
+            assertThat(historicLinks.getFirst().getProcessInstanceId()).isEqualTo(pi.getId());
+            assertThat(historicLinks.getFirst().getDetails()).isEqualTo("details".getBytes());
 
             // When process is ended, link should remain
             taskService.complete(taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult().getId());
@@ -998,7 +998,7 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
             .includeProcessVariables()
             .list();
         assertThat(processInstances).hasSize(1);
-        processInstance = processInstances.get(0);
+        processInstance = processInstances.getFirst();
 
         assertThat(processInstance.getName()).isEqualTo(processInstanceName);
         assertThat(processInstance.getTenantId()).isEqualTo(tenantId);
@@ -1014,7 +1014,7 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
             .includeProcessVariables()
             .list();
         assertThat(historicProcessInstances).hasSize(1);
-        HistoricProcessInstance historicProcessInstance = historicProcessInstances.get(0);
+        HistoricProcessInstance historicProcessInstance = historicProcessInstances.getFirst();
 
         // Verify name and tenant id (didn't work on mssql and db2) on process instance
         assertThat(historicProcessInstance.getName()).isEqualTo(processInstanceName);

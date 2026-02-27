@@ -91,7 +91,7 @@ public class AssociationJsonConverter extends BaseBpmnJsonConverter {
         }
 
         GraphicInfo targetGraphicInfo = model.getGraphicInfo(association.getTargetRef());
-        GraphicInfo flowGraphicInfo = graphicInfoList.get(graphicInfoList.size() - 1);
+        GraphicInfo flowGraphicInfo = graphicInfoList.getLast();
 
         double diffTopY = Math.abs(flowGraphicInfo.getY() - targetGraphicInfo.getY());
         double diffRightX = Math.abs(

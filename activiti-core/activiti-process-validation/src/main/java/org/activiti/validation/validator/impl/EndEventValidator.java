@@ -37,7 +37,7 @@ public class EndEventValidator extends ProcessLevelValidator {
         List<EndEvent> endEvents = process.findFlowElementsOfType(EndEvent.class);
         for (EndEvent endEvent : endEvents) {
             if (endEvent.getEventDefinitions() != null && !endEvent.getEventDefinitions().isEmpty()) {
-                EventDefinition eventDefinition = endEvent.getEventDefinitions().get(0);
+                EventDefinition eventDefinition = endEvent.getEventDefinitions().getFirst();
 
                 // Error end event
                 if (eventDefinition instanceof CancelEventDefinition) {

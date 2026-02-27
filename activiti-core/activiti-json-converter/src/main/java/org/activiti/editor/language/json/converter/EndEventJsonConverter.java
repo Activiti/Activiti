@@ -61,7 +61,7 @@ public class EndEventJsonConverter extends BaseBpmnJsonConverter {
             return STENCIL_EVENT_END_NONE;
         }
 
-        EventDefinition eventDefinition = eventDefinitions.get(0);
+        EventDefinition eventDefinition = eventDefinitions.getFirst();
         if (eventDefinition instanceof ErrorEventDefinition) {
             return STENCIL_EVENT_END_ERROR;
         } else if (eventDefinition instanceof CancelEventDefinition) {

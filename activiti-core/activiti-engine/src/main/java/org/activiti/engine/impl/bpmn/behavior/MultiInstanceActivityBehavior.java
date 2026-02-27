@@ -138,7 +138,7 @@ public abstract class MultiInstanceActivityBehavior
                     continue;
                 }
 
-                if (boundaryEvent.getEventDefinitions().get(0) instanceof CompensateEventDefinition) {
+                if (boundaryEvent.getEventDefinitions().getFirst() instanceof CompensateEventDefinition) {
                     ExecutionEntity childExecutionEntity = getCommandContext()
                         .getExecutionEntityManager()
                         .createChildExecution((ExecutionEntity) execution);

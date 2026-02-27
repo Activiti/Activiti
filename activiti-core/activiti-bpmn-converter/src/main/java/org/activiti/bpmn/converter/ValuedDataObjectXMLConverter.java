@@ -99,7 +99,7 @@ public class ValuedDataObjectXMLConverter extends BaseBpmnXMLConverter {
 
             List<ExtensionElement> valuesElement = dataObject.getExtensionElements().get("value");
             if (valuesElement != null && !valuesElement.isEmpty()) {
-                ExtensionElement valueElement = valuesElement.get(0);
+                ExtensionElement valueElement = valuesElement.getFirst();
                 if (StringUtils.isNotEmpty(valueElement.getElementText())) {
                     if (dataObject instanceof DateDataObject) {
                         try {
