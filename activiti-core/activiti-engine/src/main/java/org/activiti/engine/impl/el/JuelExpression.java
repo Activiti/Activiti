@@ -148,7 +148,7 @@ public class JuelExpression implements Expression {
             return Optional.ofNullable(supplier).map(s -> {
                 try {
                     return s.get();
-                } catch (Exception e) {
+                } catch (Exception _) {
                     return defaultValue;
                 }
             }).orElse(defaultValue);
