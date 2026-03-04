@@ -228,6 +228,8 @@
     <jakarta.el-api.version>5.0.1</jakarta.el-api.version>
     <testcontainers.version>2.0.3</testcontainers.version>
     <versions-maven-plugin.version>2.21.0</versions-maven-plugin.version>
+    <jackson.core.version>2.21.1</jackson.core.version>
+    <jackson.annotations.version>2.21</jackson.annotations.version>
 
     <!-- configuration properties for tests -->
     <generated-assertions-folder>
@@ -277,6 +279,22 @@
         <version>${spring-boot.version}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+      <!-- AAE-42877 Update jackson to fix security issue -->
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>${jackson.core.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-annotations</artifactId>
+        <version>${jackson.annotations.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${jackson.core.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
