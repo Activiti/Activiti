@@ -17,7 +17,7 @@ package org.activiti.engine.test.bpmn.usertask;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.node.ObjectNode;
 import java.util.HashMap;
 import java.util.Map;
 import org.activiti.engine.ProcessEngine;

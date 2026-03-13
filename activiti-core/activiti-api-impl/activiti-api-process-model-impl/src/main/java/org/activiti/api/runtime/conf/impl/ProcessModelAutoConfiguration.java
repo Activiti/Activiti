@@ -15,15 +15,14 @@
  */
 package org.activiti.api.runtime.conf.impl;
 
-import com.fasterxml.jackson.core.Version;
-import com.fasterxml.jackson.databind.BeanDescription;
-import com.fasterxml.jackson.databind.DeserializationConfig;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.Module;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.jsontype.NamedType;
-import com.fasterxml.jackson.databind.module.SimpleAbstractTypeResolver;
-import com.fasterxml.jackson.databind.module.SimpleModule;
+import tools.jackson.core.Version;
+import tools.jackson.databind.BeanDescription;
+import tools.jackson.databind.DeserializationConfig;
+import tools.jackson.databind.JavaType;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.jsontype.NamedType;
+import tools.jackson.databind.module.SimpleAbstractTypeResolver;
+import tools.jackson.databind.module.SimpleModule;
 import java.util.Collections;
 import java.util.Set;
 import org.activiti.api.process.model.BPMNActivity;
@@ -106,6 +105,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.format.support.FormattingConversionService;
+import tools.jackson.databind.JacksonModule;
 
 @AutoConfiguration
 @AutoConfigureBefore({ JacksonAutoConfiguration.class })
@@ -116,19 +116,12 @@ public class ProcessModelAutoConfiguration {
     @Lazy
     private Set<Converter<?, ?>> converters = Collections.emptySet();
 
-    //this bean will be automatically injected inside boot's ObjectMapper
+    //this bean will be automatically injected inside boot's JsonMapper
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
-    public Module customizeProcessModelObjectMapper(ObjectProvider<ConversionService> conversionServiceProvider) {
+    public JacksonModule customizeProcessModelObjectMapper(ObjectProvider<ConversionService> conversionServiceProvider) {
         SimpleModule module = new SimpleModule("mapProcessModelInterfaces", Version.unknownVersion());
-        SimpleAbstractTypeResolver resolver = new SimpleAbstractTypeResolver() {
-            //this is a workaround for https://github.com/FasterXML/jackson-databind/issues/2019
-            //once version 2.9.6 is related we can remove this @override method
-            @Override
-            public JavaType resolveAbstractType(DeserializationConfig config, BeanDescription typeDesc) {
-                return findTypeMapping(config, typeDesc.getType());
-            }
-        };
+        SimpleAbstractTypeResolver resolver = new SimpleAbstractTypeResolver();
 
         resolver.addMapping(BPMNActivity.class, BPMNActivityImpl.class);
         resolver.addMapping(ProcessInstance.class, ProcessInstanceImpl.class);
@@ -200,23 +193,23 @@ public class ProcessModelAutoConfiguration {
     }
 
     @Bean
-    public StringToMapConverter stringToMapConverter(@Lazy ObjectMapper objectMapper) {
-        return new StringToMapConverter(objectMapper);
+    public StringToMapConverter stringToMapConverter(@Lazy JsonMapper jsonMapper) {
+        return new StringToMapConverter(jsonMapper);
     }
 
     @Bean
-    public MapToStringConverter mapToStringConverter(@Lazy ObjectMapper objectMapper) {
-        return new MapToStringConverter(objectMapper);
+    public MapToStringConverter mapToStringConverter(@Lazy JsonMapper jsonMapper) {
+        return new MapToStringConverter(jsonMapper);
     }
 
     @Bean
-    public StringToJsonNodeConverter stringToJsonNodeConverter(@Lazy ObjectMapper objectMapper) {
-        return new StringToJsonNodeConverter(objectMapper);
+    public StringToJsonNodeConverter stringToJsonNodeConverter(@Lazy JsonMapper jsonMapper) {
+        return new StringToJsonNodeConverter(jsonMapper);
     }
 
     @Bean
-    public JsonNodeToStringConverter jsonNodeToStringConverter(@Lazy ObjectMapper objectMapper) {
-        return new JsonNodeToStringConverter(objectMapper);
+    public JsonNodeToStringConverter jsonNodeToStringConverter(@Lazy JsonMapper jsonMapper) {
+        return new JsonNodeToStringConverter(jsonMapper);
     }
 
     @Bean
@@ -250,32 +243,32 @@ public class ProcessModelAutoConfiguration {
     }
 
     @Bean
-    public StringToListConverter sringToListConverter(@Lazy ObjectMapper objectMapper) {
-        return new StringToListConverter(objectMapper);
+    public StringToListConverter sringToListConverter(@Lazy JsonMapper jsonMapper) {
+        return new StringToListConverter(jsonMapper);
     }
 
     @Bean
-    public ListToStringConverter listToStringConverter(@Lazy ObjectMapper objectMapper) {
-        return new ListToStringConverter(objectMapper);
+    public ListToStringConverter listToStringConverter(@Lazy JsonMapper jsonMapper) {
+        return new ListToStringConverter(jsonMapper);
     }
 
     @Bean
-    public StringToSetConverter stringToSetConverter(@Lazy ObjectMapper objectMapper) {
-        return new StringToSetConverter(objectMapper);
+    public StringToSetConverter stringToSetConverter(@Lazy JsonMapper jsonMapper) {
+        return new StringToSetConverter(jsonMapper);
     }
 
     @Bean
-    public SetToStringConverter setToStringConverter(@Lazy ObjectMapper objectMapper) {
-        return new SetToStringConverter(objectMapper);
+    public SetToStringConverter setToStringConverter(@Lazy JsonMapper jsonMapper) {
+        return new SetToStringConverter(jsonMapper);
     }
 
     @Bean
-    public StringToObjectValueConverter stringToObjectValueConverter(@Lazy ObjectMapper objectMapper) {
-        return new StringToObjectValueConverter(objectMapper);
+    public StringToObjectValueConverter stringToObjectValueConverter(@Lazy JsonMapper jsonMapper) {
+        return new StringToObjectValueConverter(jsonMapper);
     }
 
     @Bean
-    public ObjectValueToStringConverter objectValueToStringConverter(@Lazy ObjectMapper objectMapper) {
-        return new ObjectValueToStringConverter(objectMapper);
+    public ObjectValueToStringConverter objectValueToStringConverter(@Lazy JsonMapper jsonMapper) {
+        return new ObjectValueToStringConverter(jsonMapper);
     }
 }

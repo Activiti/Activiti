@@ -78,7 +78,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 @AutoConfiguration
 @AutoConfigureAfter(
     name = {
-        "org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration",
+        "org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration",
         "org.springframework.boot.autoconfigure.task.TaskExecutionAutoConfiguration",
     }
 )

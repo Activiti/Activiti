@@ -230,8 +230,7 @@
     <jakarta.el-api.version>5.0.1</jakarta.el-api.version>
     <testcontainers.version>2.0.4</testcontainers.version>
     <versions-maven-plugin.version>2.21.0</versions-maven-plugin.version>
-    <jackson.version>2.21.2</jackson.version>
-    <spring-webmvc.version>6.2.17</spring-webmvc.version>
+    <jackson.version>3.0.4</jackson.version>
     <tomcat-embed-core.version>10.1.54</tomcat-embed-core.version>
 
     <!-- configuration properties for tests -->
@@ -278,7 +277,7 @@
       </dependency>
       <!-- AAE-42877 Update jackson to fix security issue - must come before Spring Boot BOM -->
       <dependency>
-        <groupId>com.fasterxml.jackson</groupId>
+        <groupId>tools.jackson</groupId>
         <artifactId>jackson-bom</artifactId>
         <version>${jackson.version}</version>
         <type>pom</type>

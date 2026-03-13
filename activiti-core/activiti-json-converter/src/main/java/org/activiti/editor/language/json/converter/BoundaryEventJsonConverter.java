@@ -15,9 +15,9 @@
  */
 package org.activiti.editor.language.json.converter;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.ObjectNode;
 import java.util.List;
 import java.util.Map;
 import org.activiti.bpmn.model.BaseElement;
@@ -85,8 +85,8 @@ public class BoundaryEventJsonConverter extends BaseBpmnJsonConverter {
 
     protected void convertElementToJson(ObjectNode propertiesNode, BaseElement baseElement) {
         BoundaryEvent boundaryEvent = (BoundaryEvent) baseElement;
-        ArrayNode dockersArrayNode = objectMapper.createArrayNode();
-        ObjectNode dockNode = objectMapper.createObjectNode();
+        ArrayNode dockersArrayNode = jsonMapper.createArrayNode();
+        ObjectNode dockNode = jsonMapper.createObjectNode();
         GraphicInfo graphicInfo = model.getGraphicInfo(boundaryEvent.getId());
         GraphicInfo parentGraphicInfo = model.getGraphicInfo(boundaryEvent.getAttachedToRef().getId());
         dockNode.put(EDITOR_BOUNDS_X, graphicInfo.getX() - parentGraphicInfo.getX());
@@ -127,7 +127,7 @@ public class BoundaryEventJsonConverter extends BaseBpmnJsonConverter {
             boundaryEvent.setCancelActivity(getPropertyValueAsBoolean(PROPERTY_CANCEL_ACTIVITY, elementNode));
         }
         boundaryEvent.setAttachedToRefId(
-            lookForAttachedRef(elementNode.get(EDITOR_SHAPE_ID).asText(), modelNode.get(EDITOR_CHILD_SHAPES))
+            lookForAttachedRef(elementNode.get(EDITOR_SHAPE_ID).asString(), modelNode.get(EDITOR_CHILD_SHAPES))
         );
         return boundaryEvent;
     }
@@ -141,7 +141,7 @@ public class BoundaryEventJsonConverter extends BaseBpmnJsonConverter {
                 if (outgoingNode != null && outgoingNode.size() > 0) {
                     for (JsonNode outgoingChildNode : outgoingNode) {
                         JsonNode resourceNode = outgoingChildNode.get(EDITOR_SHAPE_ID);
-                        if (resourceNode != null && boundaryEventId.equals(resourceNode.asText())) {
+                        if (resourceNode != null && boundaryEventId.equals(resourceNode.asString())) {
                             attachedRefId = BpmnJsonConverterUtil.getElementId(childNode);
                             break;
                         }

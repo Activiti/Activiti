@@ -15,9 +15,9 @@
  */
 package org.activiti.editor.language.json.converter;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.ObjectNode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -70,10 +70,10 @@ public class CallActivityJsonConverter extends BaseBpmnJsonConverter {
         List<IOParameter> parameterList,
         ObjectNode propertiesNode
     ) {
-        ObjectNode parametersNode = objectMapper.createObjectNode();
-        ArrayNode itemsNode = objectMapper.createArrayNode();
+        ObjectNode parametersNode = jsonMapper.createObjectNode();
+        ArrayNode itemsNode = jsonMapper.createArrayNode();
         for (IOParameter parameter : parameterList) {
-            ObjectNode parameterItemNode = objectMapper.createObjectNode();
+            ObjectNode parameterItemNode = jsonMapper.createObjectNode();
             if (StringUtils.isNotEmpty(parameter.getSource())) {
                 parameterItemNode.put(PROPERTY_IOPARAMETER_SOURCE, parameter.getSource());
             } else {
@@ -128,8 +128,8 @@ public class CallActivityJsonConverter extends BaseBpmnJsonConverter {
                     JsonNode sourceNode = itemNode.get(PROPERTY_IOPARAMETER_SOURCE);
                     JsonNode sourceExpressionNode = itemNode.get(PROPERTY_IOPARAMETER_SOURCE_EXPRESSION);
                     if (
-                        (sourceNode != null && StringUtils.isNotEmpty(sourceNode.asText())) ||
-                        (sourceExpressionNode != null && StringUtils.isNotEmpty(sourceExpressionNode.asText()))
+                        (sourceNode != null && StringUtils.isNotEmpty(sourceNode.asString())) ||
+                        (sourceExpressionNode != null && StringUtils.isNotEmpty(sourceExpressionNode.asString()))
                     ) {
                         IOParameter parameter = new IOParameter();
                         if (StringUtils.isNotEmpty(getValueAsString(PROPERTY_IOPARAMETER_SOURCE, itemNode))) {

@@ -15,7 +15,7 @@
  */
 package org.activiti.engine.impl.event.logger;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -55,7 +55,7 @@ public class EventLogger implements ActivitiEventListener {
     private static final String EVENT_FLUSHER_KEY = "eventFlusher";
 
     protected Clock clock;
-    protected ObjectMapper objectMapper;
+    protected JsonMapper jsonMapper;
 
     // Mapping of type -> handler
     protected Map<ActivitiEventType, Class<? extends EventLoggerEventHandler>> eventHandlers = new HashMap<
@@ -70,10 +70,10 @@ public class EventLogger implements ActivitiEventListener {
         initializeDefaultHandlers();
     }
 
-    public EventLogger(Clock clock, ObjectMapper objectMapper) {
+    public EventLogger(Clock clock, JsonMapper jsonMapper) {
         this();
         this.clock = clock;
-        this.objectMapper = objectMapper;
+        this.jsonMapper = jsonMapper;
     }
 
     protected void initializeDefaultHandlers() {
@@ -177,7 +177,7 @@ public class EventLogger implements ActivitiEventListener {
             EventLoggerEventHandler eventHandler = eventHandlerClass.getDeclaredConstructor().newInstance();
             eventHandler.setTimeStamp(clock.getCurrentTime());
             eventHandler.setEvent(event);
-            eventHandler.setObjectMapper(objectMapper);
+            eventHandler.setObjectMapper(jsonMapper);
             return eventHandler;
         } catch (Exception e) {
             logger.warn("Could not instantiate " + eventHandlerClass + ", this is most likely a programmatic error");
@@ -219,12 +219,12 @@ public class EventLogger implements ActivitiEventListener {
         this.clock = clock;
     }
 
-    public ObjectMapper getObjectMapper() {
-        return objectMapper;
+    public JsonMapper getObjectMapper() {
+        return jsonMapper;
     }
 
-    public void setObjectMapper(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
+    public void setObjectMapper(JsonMapper jsonMapper) {
+        this.jsonMapper = jsonMapper;
     }
 
     public List<EventLoggerListener> getListeners() {

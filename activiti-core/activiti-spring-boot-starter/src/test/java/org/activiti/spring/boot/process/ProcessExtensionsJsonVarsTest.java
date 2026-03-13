@@ -19,9 +19,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.AssertionsForClassTypes.tuple;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
@@ -53,7 +53,7 @@ public class ProcessExtensionsJsonVarsTest {
     private SecurityUtil securityUtil;
 
     @Autowired
-    private ObjectMapper objectMapper;
+    private JsonMapper jsonMapper;
 
     @Autowired
     private ProcessCleanUpUtil processCleanUpUtil;
@@ -83,12 +83,12 @@ public class ProcessExtensionsJsonVarsTest {
                 .withProcessDefinitionKey(JSON_VARS_PROCESS)
                 .withVariable(
                     "var2",
-                    new ObjectMapper().readValue("{ \"testvar2element\":\"testvar2element\"}", JsonNode.class)
+                    new JsonMapper().readValue("{ \"testvar2element\":\"testvar2element\"}", JsonNode.class)
                 )
                 .withVariable("var4", customType)
                 .withVariable(
                     "var5",
-                    new ObjectMapper().readValue(
+                    new JsonMapper().readValue(
                         "{ \"verylongjson\":\"" + StringUtils.repeat("a", 4000) + "\"}",
                         JsonNode.class
                     )
@@ -164,7 +164,7 @@ public class ProcessExtensionsJsonVarsTest {
         assertThat(configuration).isNotNull();
 
         //by default jackson won't ser empty bean so it can't be handled as json
-        assertThat(objectMapper.canSerialize(EmptyBean.class)).isFalse();
+        assertThat(canSerialize(jsonMapper, new EmptyBean())).isFalse();
 
         assertThatExceptionOfType(IllegalStateException.class)
             .isThrownBy(() -> {
@@ -191,7 +191,7 @@ public class ProcessExtensionsJsonVarsTest {
         //but it still needs to be serlializable as json because serializePOJOsInVariablesToJson is true, meaning java ser is not available
 
         //by default jackson won't ser empty bean so it can't be handled as json
-        assertThat(objectMapper.canSerialize(EmptyBean.class)).isFalse();
+        assertThat(canSerialize(jsonMapper, new EmptyBean())).isFalse();
 
         assertThatExceptionOfType(ActivitiException.class)
             .isThrownBy(() -> {
@@ -200,13 +200,22 @@ public class ProcessExtensionsJsonVarsTest {
                         .withProcessDefinitionKey(JSON_VARS_PROCESS)
                         .withVariable(
                             "var2",
-                            new ObjectMapper().readValue("{ \"testvar2element\":\"testvar2element\"}", JsonNode.class)
+                            new JsonMapper().readValue("{ \"testvar2element\":\"testvar2element\"}", JsonNode.class)
                         )
                         .withVariable("var5", new EmptyBean())
                         .build()
                 );
             })
             .withMessageStartingWith("couldn't find a variable type that is able to serialize");
+    }
+
+    private static boolean canSerialize(JsonMapper jsonMapper, Object value) {
+        try {
+            jsonMapper.writeValueAsBytes(value);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     //is serializable but not as json by default and java ser disabled at spring level by default

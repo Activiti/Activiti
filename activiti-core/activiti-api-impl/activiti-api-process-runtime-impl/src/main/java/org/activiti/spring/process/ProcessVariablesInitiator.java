@@ -17,7 +17,7 @@ package org.activiti.spring.process;
 
 import static java.util.Collections.emptyMap;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.node.ObjectNode;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;

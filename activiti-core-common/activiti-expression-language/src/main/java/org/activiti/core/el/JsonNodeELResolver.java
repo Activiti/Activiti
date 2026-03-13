@@ -15,9 +15,9 @@
  */
 package org.activiti.core.el;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.ObjectNode;
 import jakarta.el.CompositeELResolver;
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
@@ -37,7 +37,7 @@ import java.util.List;
 public class JsonNodeELResolver extends ELResolver {
 
     private final boolean readOnly;
-    private final ObjectMapper defaultObjectMapper = new ObjectMapper();
+    private final JsonMapper defaultObjectMapper = new JsonMapper();
 
     /**
      * Creates a new read/write BeanELResolver.
@@ -100,7 +100,7 @@ public class JsonNodeELResolver extends ELResolver {
     public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
         if (isResolvable(base)) {
             JsonNode node = (JsonNode) base;
-            final Iterator<String> keys = node.fieldNames();
+            final Iterator<String> keys = node.propertyNames().iterator();
             return new Iterator<FeatureDescriptor>() {
                 @Override
                 public boolean hasNext() {
@@ -219,8 +219,8 @@ public class JsonNodeELResolver extends ELResolver {
                     result = resultNode.asLong();
                 } else if (resultNode.isBigDecimal() || resultNode.isDouble()) {
                     result = resultNode.asDouble();
-                } else if (resultNode.isTextual()) {
-                    result = resultNode.asText();
+                } else if (resultNode.isString()) {
+                    result = resultNode.asString();
                 } else {
                     result = resultNode.toString();
                 }
@@ -237,10 +237,10 @@ public class JsonNodeELResolver extends ELResolver {
     }
 
     /**
-     * Returns the {@link ObjectMapper} used internally to convert {@link List}
+     * Returns the {@link JsonMapper} used internally to convert {@link List}
      * properties. Subclasses may override this method to provide a specific one
      */
-    protected ObjectMapper getObjectMapper() {
+    protected JsonMapper getObjectMapper() {
         return defaultObjectMapper;
     }
 

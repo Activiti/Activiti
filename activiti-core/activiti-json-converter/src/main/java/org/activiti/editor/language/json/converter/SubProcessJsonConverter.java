@@ -15,9 +15,9 @@
  */
 package org.activiti.editor.language.json.converter;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.ObjectNode;
 import java.util.List;
 import java.util.Map;
 import org.activiti.bpmn.model.BaseElement;
@@ -68,7 +68,7 @@ public class SubProcessJsonConverter
 
         propertiesNode.put("activitytype", "Sub-Process");
         propertiesNode.put("subprocesstype", "Embedded");
-        ArrayNode subProcessShapesArrayNode = objectMapper.createArrayNode();
+        ArrayNode subProcessShapesArrayNode = jsonMapper.createArrayNode();
         GraphicInfo graphicInfo = model.getGraphicInfo(subProcess.getId());
         processor.processFlowElements(
             subProcess,

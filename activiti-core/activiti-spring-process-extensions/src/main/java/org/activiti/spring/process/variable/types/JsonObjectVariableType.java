@@ -15,7 +15,7 @@
  */
 package org.activiti.spring.process.variable.types;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import java.util.List;
 import org.activiti.engine.ActivitiException;
 import org.slf4j.Logger;
@@ -25,18 +25,18 @@ public class JsonObjectVariableType extends VariableType {
 
     private static final Logger logger = LoggerFactory.getLogger(JsonObjectVariableType.class);
 
-    private ObjectMapper objectMapper;
+    private JsonMapper jsonMapper;
 
-    public JsonObjectVariableType(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
+    public JsonObjectVariableType(JsonMapper jsonMapper) {
+        this.jsonMapper = jsonMapper;
     }
 
-    public ObjectMapper getObjectMapper() {
-        return objectMapper;
+    public JsonMapper getObjectMapper() {
+        return jsonMapper;
     }
 
-    public void setObjectMapper(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
+    public void setObjectMapper(JsonMapper jsonMapper) {
+        this.jsonMapper = jsonMapper;
     }
 
     @Override
@@ -46,16 +46,23 @@ public class JsonObjectVariableType extends VariableType {
         //also doesn't guarantee it will be persisted as json
         //could be a pojo and then could be persisted as serializable if user sets serializePOJOsInVariablesToJson to false - see JsonType.java
 
-        if (!objectMapper.canSerialize(var.getClass())) {
+        String json = null;
+        try {
+            json = jsonMapper.writeValueAsString(var);
+        } catch (Exception e) {
             String message = var.getClass() + " is not serializable as json";
             errors.add(new ActivitiException(message));
             logger.error(message);
         }
 
-        if (!objectMapper.canDeserialize(objectMapper.constructType(var.getClass()))) {
-            String message = var.getClass() + " is not deserializable as json";
-            errors.add(new ActivitiException(message));
-            logger.error(message);
+        if (json != null) {
+            try {
+                jsonMapper.readValue(json, var.getClass());
+            } catch (Exception e) {
+                String message = var.getClass() + " is not deserializable as json";
+                errors.add(new ActivitiException(message));
+                logger.error(message);
+            }
         }
     }
 }

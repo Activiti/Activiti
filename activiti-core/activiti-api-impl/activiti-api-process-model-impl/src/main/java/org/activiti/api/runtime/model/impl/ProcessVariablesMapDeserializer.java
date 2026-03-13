@@ -15,24 +15,23 @@
  */
 package org.activiti.api.runtime.model.impl;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.convert.ConversionService;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ValueDeserializer;
 
-public class ProcessVariablesMapDeserializer extends JsonDeserializer<ProcessVariablesMap<String, Object>> {
+public class ProcessVariablesMapDeserializer extends ValueDeserializer<ProcessVariablesMap<String, Object>> {
 
     private static final Logger logger = LoggerFactory.getLogger(ProcessVariablesMapDeserializer.class);
 
     private static final String VALUE = "value";
     private static final String TYPE = "type";
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final JsonMapper jsonMapper = new JsonMapper();
     private final ConversionService conversionService;
 
     public ProcessVariablesMapDeserializer(ConversionService conversionService) {
@@ -40,22 +39,21 @@ public class ProcessVariablesMapDeserializer extends JsonDeserializer<ProcessVar
     }
 
     @Override
-    public ProcessVariablesMap<String, Object> deserialize(JsonParser jp, DeserializationContext ctxt)
-        throws IOException, JsonProcessingException {
+    public ProcessVariablesMap<String, Object> deserialize(JsonParser jp, DeserializationContext ctxt) {
         ProcessVariablesMap<String, Object> map = new ProcessVariablesMap<>();
 
-        ObjectMapper codec = (ObjectMapper) jp.getCodec();
+        JsonMapper codec = (JsonMapper) jp.objectReadContext();
         JsonNode node = codec.readTree(jp);
         node
-            .fields()
+            .properties().iterator()
             .forEachRemaining(entry -> {
                 String name = entry.getKey();
                 JsonNode entryValue = entry.getValue();
 
                 if (!entryValue.isNull()) {
                     if (entryValue.get(TYPE) != null && entryValue.get(VALUE) != null) {
-                        String type = entryValue.get(TYPE).textValue();
-                        String value = entryValue.get(VALUE).asText();
+                        String type = entryValue.get(TYPE).asString();
+                        String value = entryValue.get(VALUE).asString();
 
                         Class<?> clazz = ProcessVariablesMapTypeRegistry.forType(type);
                         Object result = conversionService.convert(value, clazz);
@@ -68,8 +66,8 @@ public class ProcessVariablesMapDeserializer extends JsonDeserializer<ProcessVar
                     } else {
                         Object value = null;
                         try {
-                            value = objectMapper.treeToValue(entryValue, Object.class);
-                        } catch (JsonProcessingException e) {
+                            value = jsonMapper.treeToValue(entryValue, Object.class);
+                        } catch (JacksonException e) {
                             logger.error("Unexpected Json Processing Exception: ", e);
                         }
                         map.put(name, value);

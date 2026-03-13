@@ -15,7 +15,7 @@
  */
 package org.activiti.core.common.spring.project.conf;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import org.activiti.core.common.spring.project.ApplicationUpgradeContextService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -30,8 +30,8 @@ public class ApplicationUpgradeContextAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnMissingClass(value = "org.springframework.http.converter.json.Jackson2ObjectMapperBuilder")
-    public ObjectMapper objectMapper() {
-        return new ObjectMapper();
+    public JsonMapper jsonMapper() {
+        return new JsonMapper();
     }
 
     @Bean
@@ -39,14 +39,14 @@ public class ApplicationUpgradeContextAutoConfiguration {
         @Value("${project.manifest.file.path:classpath:/default-app.json}") String absolutePath,
         @Value("${application.version:0}") Integer enforcedAppVersion,
         @Value("${activiti.deploy.after-rollback:false}") Boolean isRollbackDeployment,
-        ObjectMapper objectMapper,
+        JsonMapper jsonMapper,
         ResourcePatternResolver resourceLoader
     ) {
         return new ApplicationUpgradeContextService(
             absolutePath,
             enforcedAppVersion,
             isRollbackDeployment,
-            objectMapper,
+            jsonMapper,
             resourceLoader
         );
     }

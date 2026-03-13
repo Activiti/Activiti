@@ -28,8 +28,9 @@
     <nashorn-core.version>15.7</nashorn-core.version>
     <groovy.version>3.0.25</groovy.version>
     <simple-jndi.version>0.25.0</simple-jndi.version>
-    <zjsonpatch.version>0.4.16</zjsonpatch.version>
+
     <system.stubs.jupiter.version>2.1.8</system.stubs.jupiter.version>
+    <zjsonpatch.version>0.6.2</zjsonpatch.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -205,7 +206,7 @@
       <type>pom</type>
     </dependency>
     <dependency>
-      <groupId>com.flipkart.zjsonpatch</groupId>
+      <groupId>io.github.vishwakarma</groupId>
       <artifactId>zjsonpatch</artifactId>
       <version>${zjsonpatch.version}</version>
     </dependency>

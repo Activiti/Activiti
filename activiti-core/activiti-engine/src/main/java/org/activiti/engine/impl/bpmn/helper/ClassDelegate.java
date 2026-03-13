@@ -15,7 +15,7 @@
  */
 package org.activiti.engine.impl.bpmn.helper;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.node.ObjectNode;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -272,7 +272,7 @@ public class ClassDelegate
                 ) {
                     String overrideClassName = taskElementProperties
                         .get(DynamicBpmnConstants.SERVICE_TASK_CLASS_NAME)
-                        .asText();
+                        .asString();
                     if (StringUtils.isNotEmpty(overrideClassName) && !overrideClassName.equals(className)) {
                         className = overrideClassName;
                         activityBehaviorInstance = null;

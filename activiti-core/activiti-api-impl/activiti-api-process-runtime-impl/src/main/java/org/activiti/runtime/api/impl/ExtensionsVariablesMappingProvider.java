@@ -17,12 +17,12 @@ package org.activiti.runtime.api.impl;
 
 import static java.util.Collections.emptyMap;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.NullNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.flipkart.zjsonpatch.JsonPatch;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.NullNode;
+import tools.jackson.databind.node.ObjectNode;
+import com.flipkart.zjsonpatch.Jackson3JsonPatch;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
 
 public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final JsonMapper jsonMapper = new JsonMapper();
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ExtensionsVariablesMappingProvider.class);
 
@@ -194,19 +194,19 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
         try {
             JsonNode oldNode;
             if (isObjectVariable(processVariableCurrentValue)) {
-                oldNode = objectMapper.convertValue(processVariableCurrentValue, JsonNode.class);
+                oldNode = jsonMapper.convertValue(processVariableCurrentValue, JsonNode.class);
             } else {
-                oldNode = objectMapper.createObjectNode();
+                oldNode = jsonMapper.createObjectNode();
             }
 
-            JsonNode patchNode = objectMapper.convertValue(changesToApply, JsonNode.class);
+            JsonNode patchNode = jsonMapper.convertValue(changesToApply, JsonNode.class);
 
             replaceVariablesInJsonPath(patchNode, execution, extensions);
             initializePath(oldNode, patchNode);
 
-            JsonNode patchedNode = JsonPatch.apply(patchNode, oldNode);
+            JsonNode patchedNode = Jackson3JsonPatch.apply(patchNode, oldNode);
 
-            return Optional.ofNullable(objectMapper.treeToValue(patchedNode, Object.class));
+            return Optional.ofNullable(jsonMapper.treeToValue(patchedNode, Object.class));
         } catch (Exception e) {
             LOGGER.error(
                 "Error patching variable. Changes to apply: {}, Process variable current value: {}",
@@ -225,7 +225,7 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
     private void replaceVariablesInJsonPath(JsonNode patchNode, DelegateExecution execution, Extension extensions) {
         for (JsonNode patch : patchNode) {
             if (patch.has("path")) {
-                String path = patch.get("path").asText();
+                String path = patch.get("path").asString();
                 String updatedPath = resolvePath(path, execution, extensions);
 
                 // Only update if there was a variable in the path
@@ -296,7 +296,7 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
 
     private void initializePath(JsonNode oldNode, JsonNode patchNode) {
         for (JsonNode patch : patchNode) {
-            String path = patch.get("path").asText();
+            String path = patch.get("path").asString();
             String[] properties = path.split("/");
 
             JsonNode currentNode = oldNode;
@@ -310,7 +310,7 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
                     currentNode = handleArrayPath(property, currentNode);
                 } else {
                     if (!currentNode.has(property) || !currentNode.get(property).isObject()) {
-                        ((ObjectNode) currentNode).set(property, objectMapper.createObjectNode());
+                        ((ObjectNode) currentNode).set(property, jsonMapper.createObjectNode());
                     }
                     currentNode = currentNode.get(property);
                 }
@@ -331,7 +331,7 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
             ArrayNode arrayNode = (ArrayNode) currentNode;
             int index = Integer.parseInt(property);
             while (arrayNode.size() <= index) {
-                arrayNode.add(objectMapper.createObjectNode());
+                arrayNode.add(jsonMapper.createObjectNode());
             }
         }
     }
@@ -348,7 +348,7 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
         ArrayNode arrayNode = (ArrayNode) currentNode;
 
         while (arrayNode.size() <= index) {
-            arrayNode.add(objectMapper.createObjectNode());
+            arrayNode.add(jsonMapper.createObjectNode());
         }
 
         return arrayNode.get(index);

@@ -20,13 +20,13 @@ import static org.activiti.api.runtime.model.impl.ProcessVariablesMapTypeRegistr
 import static org.activiti.api.runtime.model.impl.ProcessVariablesMapTypeRegistry.getContainerType;
 import static org.activiti.api.runtime.model.impl.ProcessVariablesMapTypeRegistry.isScalarType;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.ser.std.StdSerializer;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.core.convert.ConversionService;
+import tools.jackson.databind.SerializationContext;
 
 public class ProcessVariablesMapSerializer extends StdSerializer<ProcessVariablesMap<String, Object>> {
 
@@ -42,8 +42,8 @@ public class ProcessVariablesMapSerializer extends StdSerializer<ProcessVariable
     public void serialize(
         ProcessVariablesMap<String, Object> processVariablesMap,
         JsonGenerator gen,
-        SerializerProvider serializers
-    ) throws IOException {
+        SerializationContext serializers
+    )  {
         HashMap<String, ProcessVariableValue> map = new HashMap<>();
         for (Map.Entry<String, Object> entry : processVariablesMap.entrySet()) {
             String name = entry.getKey();
@@ -51,7 +51,7 @@ public class ProcessVariablesMapSerializer extends StdSerializer<ProcessVariable
             map.put(name, buildProcessVariableValue(value));
         }
 
-        gen.writeObject(map);
+        gen.writePOJO(map);
     }
 
     private ProcessVariableValue buildProcessVariableValue(Object value) {

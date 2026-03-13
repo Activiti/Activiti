@@ -15,11 +15,11 @@
  */
 package org.activiti.engine.impl.variable;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.core.JacksonException;
 
 public class JsonType implements VariableType {
 
@@ -27,18 +27,18 @@ public class JsonType implements VariableType {
     public static final String JSON = "json";
 
     private final int maxLength;
-    private ObjectMapper objectMapper;
+    private JsonMapper jsonMapper;
     private boolean serializePOJOsInVariablesToJson;
     private JsonTypeConverter jsonTypeConverter;
 
     public JsonType(
         int maxLength,
-        ObjectMapper objectMapper,
+        JsonMapper jsonMapper,
         boolean serializePOJOsInVariablesToJson,
         JsonTypeConverter jsonTypeConverter
     ) {
         this.maxLength = maxLength;
-        this.objectMapper = objectMapper;
+        this.jsonMapper = jsonMapper;
         this.serializePOJOsInVariablesToJson = serializePOJOsInVariablesToJson;
         this.jsonTypeConverter = jsonTypeConverter;
     }
@@ -56,7 +56,7 @@ public class JsonType implements VariableType {
         if (valueFields.getTextValue() != null && valueFields.getTextValue().length() > 0) {
             try {
                 loadedValue = jsonTypeConverter.convertToValue(
-                    objectMapper.readTree(valueFields.getTextValue()),
+                    jsonMapper.readTree(valueFields.getTextValue()),
                     valueFields
                 );
             } catch (Exception e) {
@@ -68,11 +68,11 @@ public class JsonType implements VariableType {
 
     public void setValue(Object value, ValueFields valueFields) {
         try {
-            valueFields.setTextValue(objectMapper.writeValueAsString(value));
+            valueFields.setTextValue(jsonMapper.writeValueAsString(value));
             if (value != null) {
                 valueFields.setTextValue2(value.getClass().getName());
             }
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             logger.error("Error writing json variable " + valueFields.getName(), e);
         }
     }
@@ -82,13 +82,10 @@ public class JsonType implements VariableType {
             return true;
         }
 
-        if (
-            JsonNode.class.isAssignableFrom(value.getClass()) ||
-            (objectMapper.canSerialize(value.getClass()) && serializePOJOsInVariablesToJson)
-        ) {
+        if (JsonNode.class.isAssignableFrom(value.getClass()) || serializePOJOsInVariablesToJson) {
             try {
-                return objectMapper.writeValueAsString(value).length() <= maxLength;
-            } catch (JsonProcessingException e) {
+                return jsonMapper.writeValueAsString(value).length() <= maxLength;
+            } catch (JacksonException e) {
                 logger.error("Error writing json variable of type " + value.getClass(), e);
             }
         }

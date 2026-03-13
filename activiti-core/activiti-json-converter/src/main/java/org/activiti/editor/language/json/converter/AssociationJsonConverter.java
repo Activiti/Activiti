@@ -15,9 +15,9 @@
  */
 package org.activiti.editor.language.json.converter;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.ObjectNode;
 import java.util.List;
 import java.util.Map;
 import org.activiti.bpmn.model.Association;
@@ -73,8 +73,8 @@ public class AssociationJsonConverter extends BaseBpmnJsonConverter {
             128,
             212
         );
-        ArrayNode dockersArrayNode = objectMapper.createArrayNode();
-        ObjectNode dockNode = objectMapper.createObjectNode();
+        ArrayNode dockersArrayNode = jsonMapper.createArrayNode();
+        ObjectNode dockNode = jsonMapper.createObjectNode();
         dockNode.put(EDITOR_BOUNDS_X, model.getGraphicInfo(association.getSourceRef()).getWidth() / 2.0);
         dockNode.put(EDITOR_BOUNDS_Y, model.getGraphicInfo(association.getSourceRef()).getHeight() / 2.0);
         dockersArrayNode.add(dockNode);
@@ -83,7 +83,7 @@ public class AssociationJsonConverter extends BaseBpmnJsonConverter {
         if (graphicInfoList.size() > 2) {
             for (int i = 1; i < graphicInfoList.size() - 1; i++) {
                 GraphicInfo graphicInfo = graphicInfoList.get(i);
-                dockNode = objectMapper.createObjectNode();
+                dockNode = jsonMapper.createObjectNode();
                 dockNode.put(EDITOR_BOUNDS_X, graphicInfo.getX());
                 dockNode.put(EDITOR_BOUNDS_Y, graphicInfo.getY());
                 dockersArrayNode.add(dockNode);
@@ -101,7 +101,7 @@ public class AssociationJsonConverter extends BaseBpmnJsonConverter {
             flowGraphicInfo.getY() - (targetGraphicInfo.getY() + targetGraphicInfo.getHeight())
         );
 
-        dockNode = objectMapper.createObjectNode();
+        dockNode = jsonMapper.createObjectNode();
         if (diffTopY < 5) {
             dockNode.put(EDITOR_BOUNDS_X, targetGraphicInfo.getWidth() / 2.0);
             dockNode.put(EDITOR_BOUNDS_Y, 0.0);
@@ -117,12 +117,12 @@ public class AssociationJsonConverter extends BaseBpmnJsonConverter {
         }
         dockersArrayNode.add(dockNode);
         flowNode.set("dockers", dockersArrayNode);
-        ArrayNode outgoingArrayNode = objectMapper.createArrayNode();
+        ArrayNode outgoingArrayNode = jsonMapper.createArrayNode();
         outgoingArrayNode.add(BpmnJsonConverterUtil.createResourceNode(association.getTargetRef()));
         flowNode.set("outgoing", outgoingArrayNode);
         flowNode.set("target", BpmnJsonConverterUtil.createResourceNode(association.getTargetRef()));
 
-        ObjectNode propertiesNode = objectMapper.createObjectNode();
+        ObjectNode propertiesNode = jsonMapper.createObjectNode();
         propertiesNode.put(PROPERTY_OVERRIDE_ID, association.getId());
 
         flowNode.set(EDITOR_SHAPE_PROPERTIES, propertiesNode);
@@ -144,13 +144,13 @@ public class AssociationJsonConverter extends BaseBpmnJsonConverter {
         Association association = new Association();
 
         String sourceRef = BpmnJsonConverterUtil.lookForSourceRef(
-            elementNode.get(EDITOR_SHAPE_ID).asText(),
+            elementNode.get(EDITOR_SHAPE_ID).asString(),
             modelNode.get(EDITOR_CHILD_SHAPES)
         );
 
         if (sourceRef != null) {
             association.setSourceRef(sourceRef);
-            String targetId = elementNode.get("target").get(EDITOR_SHAPE_ID).asText();
+            String targetId = elementNode.get("target").get(EDITOR_SHAPE_ID).asString();
             association.setTargetRef(BpmnJsonConverterUtil.getElementId(shapeMap.get(targetId)));
         }
 
