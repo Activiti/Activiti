@@ -26,7 +26,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.annotation.DirtiesContext;
 
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
-@DirtiesContext
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class ApplicationDeployedEventIT {
 
     @Autowired
