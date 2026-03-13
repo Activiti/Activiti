@@ -225,6 +225,7 @@
     <sonar-maven-plugin.version>5.5.0.6356</sonar-maven-plugin.version>
     <junit.version>5.12.2</junit.version>
     <spring-boot.version>4.0.4</spring-boot.version>
+    <spring-framework.version>7.0.5</spring-framework.version>
     <h2.version>2.4.240</h2.version>
     <jakarta.el-api.version>5.0.1</jakarta.el-api.version>
     <testcontainers.version>2.0.4</testcontainers.version>
@@ -311,6 +312,17 @@
         <version>${tomcat-embed-core.version}</version>
       </dependency>
       <!-- Security fix AAE-42677 -->
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-core</artifactId>
+        <version>${spring-framework.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
     </dependencies>
   </dependencyManagement>
   <pluginRepositories>
