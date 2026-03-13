@@ -39,7 +39,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ProcessExtensionsJsonVarsTest {
@@ -219,5 +218,11 @@ public class ProcessExtensionsJsonVarsTest {
     }
 
     //is serializable but not as json by default and java ser disabled at spring level by default
-    static class EmptyBean implements Serializable {}
+    //Jackson 3 removed FAIL_ON_EMPTY_BEANS so an empty bean serializes as {}; use a failing getter instead
+    static class EmptyBean implements Serializable {
+
+        public Object getBadProperty() {
+            throw new UnsupportedOperationException("not serializable as JSON");
+        }
+    }
 }
