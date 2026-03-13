@@ -42,8 +42,7 @@ public class ProcessVariablesMapDeserializer extends ValueDeserializer<ProcessVa
     public ProcessVariablesMap<String, Object> deserialize(JsonParser jp, DeserializationContext ctxt) {
         ProcessVariablesMap<String, Object> map = new ProcessVariablesMap<>();
 
-        JsonMapper codec = (JsonMapper) jp.objectReadContext();
-        JsonNode node = codec.readTree(jp);
+        JsonNode node = ctxt.readTree(jp);
         node
             .properties().iterator()
             .forEachRemaining(entry -> {
