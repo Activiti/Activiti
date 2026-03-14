@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -90,7 +90,7 @@ public class UserTaskCandidateGroupsTest {
 
         assertThat(tasks.getTotalItems()).isEqualTo(1);
 
-        Task task = tasks.getContent().get(0);
+        Task task = tasks.getContent().getFirst();
 
         Task taskById = taskRuntime.task(task.getId());
 
@@ -141,7 +141,7 @@ public class UserTaskCandidateGroupsTest {
 
         assertThat(tasks.getTotalItems()).isEqualTo(1);
 
-        task = tasks.getContent().get(0);
+        task = tasks.getContent().getFirst();
 
         taskById = taskRuntime.task(task.getId());
 

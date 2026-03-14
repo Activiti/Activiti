@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -78,7 +78,7 @@ public class UserTaskConverterTest extends AbstractConverterTest {
 
         List<FormProperty> formProperties = userTask.getFormProperties();
         assertThat(formProperties).hasSize(3);
-        FormProperty formProperty = formProperties.get(0);
+        FormProperty formProperty = formProperties.getFirst();
         assertThat(formProperty.getId()).isEqualTo("formId");
         assertThat(formProperty.getName()).isEqualTo("formName");
         assertThat(formProperty.getType()).isEqualTo("string");
@@ -100,7 +100,7 @@ public class UserTaskConverterTest extends AbstractConverterTest {
 
         List<ActivitiListener> listeners = userTask.getTaskListeners();
         assertThat(listeners).hasSize(3);
-        ActivitiListener listener = listeners.get(0);
+        ActivitiListener listener = listeners.getFirst();
         assertThat(ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(listener.getImplementationType())).isTrue();
         assertThat(listener.getImplementation()).isEqualTo("org.test.TestClass");
         assertThat(listener.getEvent()).isEqualTo("create");
@@ -123,7 +123,7 @@ public class UserTaskConverterTest extends AbstractConverterTest {
 
         List<ActivitiListener> executionListeners = userTask.getExecutionListeners();
         assertThat(executionListeners).hasSize(1);
-        ActivitiListener executionListener = executionListeners.get(0);
+        ActivitiListener executionListener = executionListeners.getFirst();
         assertThat(executionListener.getEvent()).isEqualTo("end");
         assertThat(executionListener.getOnTransaction()).isEqualTo("before-commit");
         assertThat(executionListener.getCustomPropertiesResolverImplementation()).isEqualTo(

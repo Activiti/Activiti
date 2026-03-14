@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,7 +63,7 @@ public class ApplicationDeployedEventProducer extends AbstractActivitiSmartLifeC
         List<ApplicationDeployedEvent> applicationDeployedEvents = getApplicationDeployedEvents();
 
         if (!applicationDeployedEvents.isEmpty()) {
-            ApplicationDeployedEvent applicationDeployedEvent = applicationDeployedEvents.get(0);
+            ApplicationDeployedEvent applicationDeployedEvent = applicationDeployedEvents.getFirst();
             for (ProcessRuntimeEventListener<ApplicationDeployedEvent> listener : listeners) {
                 listener.onEvent(applicationDeployedEvent);
             }

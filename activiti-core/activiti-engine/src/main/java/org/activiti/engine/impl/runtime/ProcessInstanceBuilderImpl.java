@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,6 +37,8 @@ public class ProcessInstanceBuilderImpl implements ProcessInstanceBuilder {
     protected String tenantId;
     protected Map<String, Object> variables;
     protected Map<String, Object> transientVariables;
+    private String linkedProcessInstanceId;
+    private String linkedProcessInstanceType;
 
     public ProcessInstanceBuilderImpl(RuntimeServiceImpl runtimeService) {
         this.runtimeService = runtimeService;
@@ -112,6 +114,18 @@ public class ProcessInstanceBuilderImpl implements ProcessInstanceBuilder {
         return this;
     }
 
+    @Override
+    public ProcessInstanceBuilder linkedProcessInstanceId(String linkedProcessInstanceId) {
+        this.linkedProcessInstanceId = linkedProcessInstanceId;
+        return  this;
+    }
+
+    @Override
+    public ProcessInstanceBuilder linkedProcessInstanceType(String linkedProcessInstanceType) {
+        this.linkedProcessInstanceType = linkedProcessInstanceType;
+        return  this;
+    }
+
     public boolean hasProcessDefinitionIdOrKey() {
         return this.getProcessDefinitionId() != null || this.getProcessDefinitionKey() != null;
     }
@@ -142,6 +156,14 @@ public class ProcessInstanceBuilderImpl implements ProcessInstanceBuilder {
 
     public String getBusinessKey() {
         return businessKey;
+    }
+
+    public String getLinkedProcessInstanceId() {
+        return linkedProcessInstanceId;
+    }
+
+    public String getLinkedProcessInstanceType() {
+        return linkedProcessInstanceType;
     }
 
     public String getTenantId() {

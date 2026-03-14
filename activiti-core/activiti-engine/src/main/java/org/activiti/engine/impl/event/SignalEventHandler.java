@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -97,10 +97,10 @@ public class SignalEventHandler extends AbstractEventHandler {
                 flowElement,
                 process
             );
-            DelegateExecution execution = executionEntity.getExecutions().get(0);
+            DelegateExecution execution = executionEntity.getExecutions().getFirst();
             dispatchActivitySignalledEvent(execution, eventSubscription.getEventName(), payload, commandContext);
 
-            processInstanceHelper.startProcessInstance(executionEntity, commandContext, variables, flowElement, null);
+            processInstanceHelper.startProcessInstance(executionEntity, commandContext, variables, flowElement, null, null, null);
         } else {
             throw new ActivitiException("Invalid signal handling: no execution nor process definition set");
         }

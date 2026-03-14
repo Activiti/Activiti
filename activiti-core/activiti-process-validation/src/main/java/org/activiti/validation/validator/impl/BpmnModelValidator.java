@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ public class BpmnModelValidator extends ValidatorImpl {
     public void validate(BpmnModel bpmnModel, List<ValidationError> errors) {
         List<Process> processesDuplicated = getProcessesWithSameId(bpmnModel.getProcesses());
         if (!processesDuplicated.isEmpty()) {
-            addError(errors, Problems.PROCESS_DEFINITION_ID_NOT_UNIQUE, processesDuplicated.get(0));
+            addError(errors, Problems.PROCESS_DEFINITION_ID_NOT_UNIQUE, processesDuplicated.getFirst());
         }
 
         // If all process definitions of this bpmnModel are not executable, raise an error

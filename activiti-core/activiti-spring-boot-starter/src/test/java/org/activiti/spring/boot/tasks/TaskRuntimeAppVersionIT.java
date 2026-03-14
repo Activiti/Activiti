@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,7 +56,7 @@ public class TaskRuntimeAppVersionIT {
 
         assertThat(tasks.getContent()).hasSize(1);
 
-        Task result = tasks.getContent().get(0);
+        Task result = tasks.getContent().getFirst();
 
         assertThat(result.getName()).isEqualTo("new task");
         assertThat(result.getAppVersion()).isEqualTo("1");

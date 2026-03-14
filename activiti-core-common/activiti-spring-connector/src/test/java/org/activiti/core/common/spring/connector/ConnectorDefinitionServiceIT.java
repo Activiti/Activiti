@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,14 +37,14 @@ public class ConnectorDefinitionServiceIT {
     public void connectorDefinition() throws IOException {
         List<ConnectorDefinition> connectorDefinitions = connectorDefinitionService.get();
         assertThat(connectorDefinitions).hasSize(1);
-        assertThat(connectorDefinitions.get(0).getId()).isEqualTo("connector-uuid");
-        assertThat(connectorDefinitions.get(0).getName()).isEqualTo("Name-of-the-connector");
-        assertThat(connectorDefinitions.get(0).getActions().size()).isEqualTo(2);
-        assertThat(connectorDefinitions.get(0).getActions().get("actionId1").getName()).isEqualTo("actionName1");
-        assertThat(connectorDefinitions.get(0).getActions().get("actionId1").getInputs().get(0).getName()).isEqualTo(
+        assertThat(connectorDefinitions.getFirst().getId()).isEqualTo("connector-uuid");
+        assertThat(connectorDefinitions.getFirst().getName()).isEqualTo("Name-of-the-connector");
+        assertThat(connectorDefinitions.getFirst().getActions().size()).isEqualTo(2);
+        assertThat(connectorDefinitions.getFirst().getActions().get("actionId1").getName()).isEqualTo("actionName1");
+        assertThat(connectorDefinitions.getFirst().getActions().get("actionId1").getInputs().getFirst().getName()).isEqualTo(
             "input-variable-name-1"
         );
-        assertThat(connectorDefinitions.get(0).getActions().get("actionId1").getOutputs().get(0).getName()).isEqualTo(
+        assertThat(connectorDefinitions.getFirst().getActions().get("actionId1").getOutputs().getFirst().getName()).isEqualTo(
             "output-variable-name-1"
         );
     }

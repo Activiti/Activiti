@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -182,7 +182,7 @@ public class MultiTenantProcessEngineTest {
             .addClasspathResource("org/activiti/engine/test/cfg/multitenant/jobTest.bpmn20.xml")
             .addClasspathResource("org/activiti/engine/test/cfg/multitenant/TimerJob_test.bpmn20.xml")
             .deploy();
-        System.out.println("Process deployed! Deployment id is " + deployment.getId());
+        IO.println("Process deployed! Deployment id is " + deployment.getId());
 
         tenantInfoHolder.clearCurrentUserId();
         tenantInfoHolder.clearCurrentTenantId();

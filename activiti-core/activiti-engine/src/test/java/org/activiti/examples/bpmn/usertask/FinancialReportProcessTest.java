@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ public class FinancialReportProcessTest extends PluggableActivitiTestCase {
 
         List<Task> tasks = taskService.createTaskQuery().taskCandidateUser("fozzie", FOZZIESGROUPS).list();
         assertThat(tasks).hasSize(1);
-        Task task = tasks.get(0);
+        Task task = tasks.getFirst();
         assertThat(task.getName()).isEqualTo("Write monthly financial report");
 
         taskService.claim(task.getId(), FOZZIE);
@@ -51,8 +51,8 @@ public class FinancialReportProcessTest extends PluggableActivitiTestCase {
         assertThat(tasks).hasSize(0);
         tasks = taskService.createTaskQuery().taskCandidateUser(KERMIT, KERMITSGROUPS).list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getName()).isEqualTo("Verify monthly financial report");
-        taskService.complete(tasks.get(0).getId());
+        assertThat(tasks.getFirst().getName()).isEqualTo("Verify monthly financial report");
+        taskService.complete(tasks.getFirst().getId());
 
         assertProcessEnded(processInstance.getId());
     }

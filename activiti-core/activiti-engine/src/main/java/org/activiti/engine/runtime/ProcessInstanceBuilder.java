@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -81,6 +81,16 @@ public interface ProcessInstanceBuilder {
      * Adds a transient variable to the process instance
      */
     ProcessInstanceBuilder transientVariable(String variableName, Object value);
+
+    /**
+     * Sets the linked process Instance ID
+    */
+    ProcessInstanceBuilder linkedProcessInstanceId(String linkedProcessInstanceId);
+
+    /**
+     * Sets the root process Instance type
+     */
+    ProcessInstanceBuilder linkedProcessInstanceType(String linkedProcessInstanceType);
 
     /**
      * Start the process instance

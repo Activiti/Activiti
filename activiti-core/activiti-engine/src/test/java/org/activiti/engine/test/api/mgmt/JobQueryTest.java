@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -398,11 +398,11 @@ public class JobQueryTest extends PluggableActivitiTestCase {
         List<Job> jobs = query.list();
         assertThat(jobs).hasSize(3);
 
-        assertThat(jobs.get(0).getRetries()).isEqualTo(2);
+        assertThat(jobs.getFirst().getRetries()).isEqualTo(2);
         assertThat(jobs.get(1).getRetries()).isEqualTo(3);
         assertThat(jobs.get(2).getRetries()).isEqualTo(3);
 
-        assertThat(jobs.get(0).getProcessInstanceId()).isEqualTo(processInstanceIdTwo);
+        assertThat(jobs.getFirst().getProcessInstanceId()).isEqualTo(processInstanceIdTwo);
         assertThat(jobs.get(1).getProcessInstanceId()).isEqualTo(processInstanceIdThree);
         assertThat(jobs.get(2).getProcessInstanceId()).isEqualTo(processInstanceIdOne);
     }

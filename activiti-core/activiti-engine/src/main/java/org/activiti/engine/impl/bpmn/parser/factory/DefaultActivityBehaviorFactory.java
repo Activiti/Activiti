@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -579,12 +579,12 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
         if (
             endEvent.getEventDefinitions() != null &&
             endEvent.getEventDefinitions().size() > 0 &&
-            endEvent.getEventDefinitions().get(0) instanceof TerminateEventDefinition
+            endEvent.getEventDefinitions().getFirst() instanceof TerminateEventDefinition
         ) {
-            terminateAll = ((TerminateEventDefinition) endEvent.getEventDefinitions().get(0)).isTerminateAll();
+            terminateAll = ((TerminateEventDefinition) endEvent.getEventDefinitions().getFirst()).isTerminateAll();
             terminateMultiInstance = ((TerminateEventDefinition) endEvent
                     .getEventDefinitions()
-                    .get(0)).isTerminateMultiInstance();
+                    .getFirst()).isTerminateMultiInstance();
         }
 
         TerminateEndEventActivityBehavior terminateEndEventActivityBehavior = new TerminateEndEventActivityBehavior();

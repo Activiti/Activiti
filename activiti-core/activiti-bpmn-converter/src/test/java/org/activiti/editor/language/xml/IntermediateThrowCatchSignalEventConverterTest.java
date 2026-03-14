@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,8 +66,8 @@ public class IntermediateThrowCatchSignalEventConverterTest extends AbstractConv
         assertThat(throwEvent.getOutgoingFlows()).hasSize(1);
         assertThat(throwEvent.getEventDefinitions()).hasSize(1);
 
-        assertThat(throwEvent.getIncomingFlows().get(0).getXmlRowNumber()).isLessThan(
-            throwEvent.getEventDefinitions().get(0).getXmlRowNumber()
+        assertThat(throwEvent.getIncomingFlows().getFirst().getXmlRowNumber()).isLessThan(
+            throwEvent.getEventDefinitions().getFirst().getXmlRowNumber()
         );
 
         checkSignalEventDefinition(throwEvent, signalRef);
@@ -84,16 +84,16 @@ public class IntermediateThrowCatchSignalEventConverterTest extends AbstractConv
         assertThat(catchEvent.getOutgoingFlows()).hasSize(1);
         assertThat(catchEvent.getEventDefinitions()).hasSize(1);
 
-        assertThat(catchEvent.getIncomingFlows().get(0).getXmlRowNumber()).isLessThan(
-            catchEvent.getEventDefinitions().get(0).getXmlRowNumber()
+        assertThat(catchEvent.getIncomingFlows().getFirst().getXmlRowNumber()).isLessThan(
+            catchEvent.getEventDefinitions().getFirst().getXmlRowNumber()
         );
 
         checkSignalEventDefinition(catchEvent, signalRef);
     }
 
     private void checkSignalEventDefinition(Event event, String signalRef) {
-        assertThat(event.getEventDefinitions().get(0)).isInstanceOf(SignalEventDefinition.class);
-        SignalEventDefinition signalEventDefinition = (SignalEventDefinition) event.getEventDefinitions().get(0);
+        assertThat(event.getEventDefinitions().getFirst()).isInstanceOf(SignalEventDefinition.class);
+        SignalEventDefinition signalEventDefinition = (SignalEventDefinition) event.getEventDefinitions().getFirst();
 
         assertThat(signalEventDefinition.getSignalRef()).isEqualTo(signalRef);
     }

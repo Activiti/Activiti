@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,8 @@ import static java.util.Collections.singletonMap;
 import static org.activiti.engine.impl.util.CollectionUtil.map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -36,9 +38,14 @@ import org.activiti.engine.history.DeleteReason;
 import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.impl.RuntimeServiceImpl;
+import org.activiti.engine.impl.cmd.StartProcessInstanceByMessageCmd;
+import org.activiti.engine.impl.cmd.StartProcessInstanceCmd;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.identity.Authentication;
+import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity;
+import org.activiti.engine.impl.runtime.ProcessInstanceBuilderImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Execution;
@@ -46,6 +53,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceBuilder;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
+import org.mockito.ArgumentCaptor;
 
 public class RuntimeServiceTest extends PluggableActivitiTestCase {
 
@@ -432,13 +440,13 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
 
         tasks = taskService.createTaskQuery().list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getName()).isEqualTo("MainUserTask");
+        assertThat(tasks.getFirst().getName()).isEqualTo("MainUserTask");
 
         activeActivities = runtimeService.getActiveActivityIds(processInstance.getId());
         assertThat(activeActivities).hasSize(1);
-        assertThat(activeActivities.get(0)).isEqualTo("MainUserTask");
+        assertThat(activeActivities.getFirst()).isEqualTo("MainUserTask");
 
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
         assertProcessEnded(processInstance.getId());
     }
 
@@ -799,7 +807,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
                 .createExecutionQuery()
                 .signalEventSubscriptionName("alert")
                 .listPage(0, 1);
-            runtimeService.signalEventReceived("alert", page.get(0).getId());
+            runtimeService.signalEventReceived("alert", page.getFirst().getId());
 
             assertThat(runtimeService.createExecutionQuery().signalEventSubscriptionName("alert").count()).isEqualTo(
                 executions - 1
@@ -811,7 +819,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
                 .createExecutionQuery()
                 .signalEventSubscriptionName("panic")
                 .listPage(0, 1);
-            runtimeService.signalEventReceived("panic", page.get(0).getId());
+            runtimeService.signalEventReceived("panic", page.getFirst().getId());
 
             assertThat(runtimeService.createExecutionQuery().signalEventSubscriptionName("panic").count()).isEqualTo(
                 executions - 1
@@ -836,7 +844,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
                 .createExecutionQuery()
                 .messageEventSubscriptionName("alert")
                 .listPage(0, 1);
-            runtimeService.messageEventReceived("alert", page.get(0).getId());
+            runtimeService.messageEventReceived("alert", page.getFirst().getId());
 
             assertThat(runtimeService.createExecutionQuery().messageEventSubscriptionName("alert").count()).isEqualTo(
                 executions - 1
@@ -848,7 +856,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
                 .createExecutionQuery()
                 .messageEventSubscriptionName("panic")
                 .listPage(0, 1);
-            runtimeService.messageEventReceived("panic", page.get(0).getId());
+            runtimeService.messageEventReceived("panic", page.getFirst().getId());
 
             assertThat(runtimeService.createExecutionQuery().messageEventSubscriptionName("panic").count()).isEqualTo(
                 executions - 1
@@ -1072,5 +1080,153 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         final ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
         assertThat(processInstance.getStartUserId()).isNull();
+    }
+
+    @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
+    public void testStartsProcessInstanceWithValidBuilder() {
+        RuntimeServiceImpl runtimeService = (RuntimeServiceImpl) this.runtimeService;
+        ProcessInstanceBuilderImpl builder = new ProcessInstanceBuilderImpl(runtimeService);
+        builder.processDefinitionKey("oneTaskProcess");
+        builder.businessKey("businessKey123");
+        builder.variable("var1", "value1");
+
+        ProcessInstance processInstance = runtimeService.startProcessInstance(builder);
+
+        assertThat(processInstance).isNotNull();
+        assertThat(processInstance.getBusinessKey()).isEqualTo("businessKey123");
+        assertThat(runtimeService.getVariable(processInstance.getId(), "var1")).isEqualTo("value1");
+    }
+
+    @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
+    public void testFailsToStartProcessInstanceWithoutDefinitionKey() {
+        RuntimeServiceImpl runtimeService = (RuntimeServiceImpl) this.runtimeService;
+
+        ProcessInstanceBuilderImpl builder = new ProcessInstanceBuilderImpl(runtimeService);
+
+        assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+            .isThrownBy(() -> runtimeService.startProcessInstance(builder))
+            .withMessageContaining("No processDefinitionId, processDefinitionKey nor messageName provided");
+    }
+
+    @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
+    public void testStartsProcessInstanceWithNameUsingBuilder() {
+        RuntimeServiceImpl runtimeService = (RuntimeServiceImpl) this.runtimeService;
+
+        ProcessInstanceBuilderImpl builder = new ProcessInstanceBuilderImpl(runtimeService);
+        builder.processDefinitionKey("oneTaskProcess");
+        builder.name("Custom Process Name");
+
+        ProcessInstance processInstance = runtimeService.startProcessInstance(builder);
+
+        assertThat(processInstance).isNotNull();
+        assertThat(processInstance.getName()).isEqualTo("Custom Process Name");
+    }
+
+    @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
+    public void testStartsProcessInstanceWithTransientVariables() {
+        RuntimeServiceImpl runtimeService = (RuntimeServiceImpl) this.runtimeService;
+
+        ProcessInstanceBuilderImpl builder = new ProcessInstanceBuilderImpl(runtimeService);
+        builder.processDefinitionKey("oneTaskProcess");
+        builder.transientVariable("transient1", "transientValue");
+        builder.variable("persistent1", "persistentValue");
+
+        ProcessInstance processInstance = runtimeService.startProcessInstance(builder);
+
+        assertThat(processInstance).isNotNull();
+        assertThat(runtimeService.getVariable(processInstance.getId(), "persistent1")).isEqualTo("persistentValue");
+        assertThat(runtimeService.getVariable(processInstance.getId(), "transient1")).isNull();
+    }
+
+    @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
+    public void testStartsProcessInstanceWithProcessDefinitionId() {
+        RuntimeServiceImpl runtimeService = (RuntimeServiceImpl) this.runtimeService;
+
+        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+        ProcessInstanceBuilderImpl builder = new ProcessInstanceBuilderImpl(runtimeService);
+        builder.processDefinitionId(processDefinition.getId());
+        builder.businessKey("businessKey456");
+
+        ProcessInstance processInstance = runtimeService.startProcessInstance(builder);
+
+        assertThat(processInstance).isNotNull();
+        assertThat(processInstance.getProcessDefinitionId()).isEqualTo(processDefinition.getId());
+        assertThat(processInstance.getBusinessKey()).isEqualTo("businessKey456");
+    }
+
+    @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
+    public void testStartProcessInstanceCmdWithLinkedProcess() {
+        RuntimeServiceImpl runtimeService = (RuntimeServiceImpl) this.runtimeService;
+
+        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+        ProcessInstanceBuilderImpl builder = new ProcessInstanceBuilderImpl(runtimeService);
+        builder.processDefinitionId(processDefinition.getId());
+        builder.businessKey("businessKey456");
+        builder.linkedProcessInstanceId("linkedProcess123");
+        builder.linkedProcessInstanceType("myLinkType");
+
+        // Spy on the command executor to capture the command
+        CommandExecutor commandExecutor = spy(processEngineConfiguration.getCommandExecutor());
+        runtimeService.setCommandExecutor(commandExecutor);
+
+        ProcessInstance processInstance = runtimeService.startProcessInstance(builder);
+
+        // Capture the StartProcessInstanceCmd
+        ArgumentCaptor<StartProcessInstanceCmd> commandCaptor = ArgumentCaptor.forClass(StartProcessInstanceCmd.class);
+        verify(commandExecutor).execute(commandCaptor.capture());
+
+        StartProcessInstanceCmd capturedCommand = commandCaptor.getValue();
+        assertThat(capturedCommand.getLinkedProcessInstanceId()).isEqualTo("linkedProcess123");
+
+        assertThat(capturedCommand.getLinkedProcessInstanceType()).isEqualTo("myLinkType");
+
+        assertThat(processInstance).isNotNull();
+        assertThat(processInstance.getProcessDefinitionId()).isEqualTo(processDefinition.getId());
+        assertThat(processInstance.getBusinessKey()).isEqualTo("businessKey456");
+    }
+
+    @Deployment(resources = { "org/activiti/engine/test/api/messageStartEvent.bpmn20.xml" })
+    public void testStartProcessInstanceByMessageCmdWithLinkedProcess() {
+        RuntimeServiceImpl runtimeService = (RuntimeServiceImpl) this.runtimeService;
+
+        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+        ProcessInstanceBuilderImpl builder = new ProcessInstanceBuilderImpl(runtimeService);
+        builder.messageName("messageStart");
+        builder.businessKey("businessKey456");
+        builder.linkedProcessInstanceId("linkedProcess123");
+        builder.linkedProcessInstanceType("myLinkType");
+
+        CommandExecutor commandExecutor = spy(processEngineConfiguration.getCommandExecutor());
+        runtimeService.setCommandExecutor(commandExecutor);
+
+        ProcessInstance processInstance = runtimeService.startProcessInstance(builder);
+
+        // Capture the StartProcessInstanceByMessageCmd
+        ArgumentCaptor<StartProcessInstanceByMessageCmd> commandCaptor = ArgumentCaptor.forClass(StartProcessInstanceByMessageCmd.class);
+        verify(commandExecutor).execute(commandCaptor.capture());
+
+        StartProcessInstanceByMessageCmd capturedCommand = commandCaptor.getValue();
+        assertThat(capturedCommand.getLinkedProcessInstanceId()).isEqualTo("linkedProcess123");
+
+        assertThat(capturedCommand.getLinkedProcessInstanceType()).isEqualTo("myLinkType");
+
+        assertThat(processInstance).isNotNull();
+        assertThat(processInstance.getProcessDefinitionId()).isEqualTo(processDefinition.getId());
+        assertThat(processInstance.getBusinessKey()).isEqualTo("businessKey456");
+    }
+
+
+    @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
+    public void testStartsProcessInstanceWithEmptyBusinessKey() {
+        RuntimeServiceImpl runtimeService = (RuntimeServiceImpl) this.runtimeService;
+
+        ProcessInstanceBuilderImpl builder = new ProcessInstanceBuilderImpl(runtimeService);
+        builder.processDefinitionKey("oneTaskProcess");
+        builder.businessKey("");
+
+        ProcessInstance processInstance = runtimeService.startProcessInstance(builder);
+
+        assertThat(processInstance).isNotNull();
+        assertThat(processInstance.getBusinessKey()).isEmpty();
     }
 }

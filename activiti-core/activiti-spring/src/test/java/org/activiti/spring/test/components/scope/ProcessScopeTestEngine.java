@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,7 +68,7 @@ class ProcessScopeTestEngine {
         List<Task> tasks = taskService.createTaskQuery().executionId(procId).list();
         assertThat(tasks.size()).isEqualTo(1);
 
-        Task t = tasks.iterator().next();
+        Task t = tasks.getFirst();
         this.taskService.claim(t.getId(), "me");
         this.taskService.complete(t.getId());
 

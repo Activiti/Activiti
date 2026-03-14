@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ public class JobExecutorFailRetryTest extends PluggableActivitiTestCase {
 
         executeJobExecutorForTime(14000, 500);
         assertThat(RetryFailingDelegate.times).hasSize(2); // check number of calls of delegate
-        long timeDiff = RetryFailingDelegate.times.get(1) - RetryFailingDelegate.times.get(0);
+        long timeDiff = RetryFailingDelegate.times.get(1) - RetryFailingDelegate.times.getFirst();
         assertThat(timeDiff > 6000 && timeDiff < 12000).isTrue(); // check time difference between calls. Just roughly
     }
 }

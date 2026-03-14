@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -82,7 +82,7 @@ public class ProcessRuntimeBPMNSignalReceivedIT {
         processRuntime.signal(signalPayload);
 
         //then
-        String processDefinitionId = processDefinitionPage.getContent().get(0).getId();
+        String processDefinitionId = processDefinitionPage.getContent().getFirst().getId();
         assertThat(listener.getSignalReceivedEvents())
             .extracting(
                 BPMNSignalReceivedEvent::getEventType,
@@ -179,7 +179,7 @@ public class ProcessRuntimeBPMNSignalReceivedIT {
         //then
         assertThat(listener.getSignalReceivedEvents()).isNotEmpty().hasSize(1);
 
-        BPMNSignalReceivedEvent event = listener.getSignalReceivedEvents().iterator().next();
+        BPMNSignalReceivedEvent event = listener.getSignalReceivedEvents().getFirst();
 
         assertThat(event.getEntity()).isNotNull();
         assertThat(event.getProcessInstanceId()).isEqualTo(process.getId());

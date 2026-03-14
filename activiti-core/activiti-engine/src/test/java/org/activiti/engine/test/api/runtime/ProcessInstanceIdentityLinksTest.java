@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ public class ProcessInstanceIdentityLinksTest extends PluggableActivitiTestCase 
         runtimeService.addParticipantUser(processInstanceId, "kermit");
 
         List<IdentityLink> identityLinks = runtimeService.getIdentityLinksForProcessInstance(processInstanceId);
-        IdentityLink identityLink = identityLinks.get(0);
+        IdentityLink identityLink = identityLinks.getFirst();
 
         assertThat(identityLink.getGroupId()).isNull();
         assertThat(identityLink.getUserId()).isEqualTo("kermit");
@@ -62,7 +62,7 @@ public class ProcessInstanceIdentityLinksTest extends PluggableActivitiTestCase 
         runtimeService.addParticipantGroup(processInstanceId, "muppets");
 
         List<IdentityLink> identityLinks = runtimeService.getIdentityLinksForProcessInstance(processInstanceId);
-        IdentityLink identityLink = identityLinks.get(0);
+        IdentityLink identityLink = identityLinks.getFirst();
 
         assertThat(identityLink.getGroupId()).isEqualTo("muppets");
         assertThat(identityLink.getUserId()).as("kermit").isNull();
@@ -74,10 +74,10 @@ public class ProcessInstanceIdentityLinksTest extends PluggableActivitiTestCase 
         if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
             List<Event> processInstanceEvents = runtimeService.getProcessInstanceEvents(processInstanceId);
             assertThat(processInstanceEvents).hasSize(1);
-            Event processInstanceEvent = processInstanceEvents.get(0);
+            Event processInstanceEvent = processInstanceEvents.getFirst();
             assertThat(processInstanceEvent.getAction()).isEqualTo(Event.ACTION_ADD_GROUP_LINK);
             List<String> processInstanceEventMessageParts = processInstanceEvent.getMessageParts();
-            assertThat(processInstanceEventMessageParts.get(0)).isEqualTo("muppets");
+            assertThat(processInstanceEventMessageParts.getFirst()).isEqualTo("muppets");
             assertThat(processInstanceEventMessageParts.get(1)).isEqualTo(IdentityLinkType.PARTICIPANT);
             assertThat(processInstanceEventMessageParts).hasSize(2);
         }
@@ -92,7 +92,7 @@ public class ProcessInstanceIdentityLinksTest extends PluggableActivitiTestCase 
             );
             assertThat(processIsntanceEvent.getAction()).isEqualTo(Event.ACTION_DELETE_GROUP_LINK);
             List<String> processInstanceEventMessageParts = processIsntanceEvent.getMessageParts();
-            assertThat(processInstanceEventMessageParts.get(0)).isEqualTo("muppets");
+            assertThat(processInstanceEventMessageParts.getFirst()).isEqualTo("muppets");
             assertThat(processInstanceEventMessageParts.get(1)).isEqualTo(IdentityLinkType.PARTICIPANT);
             assertThat(processInstanceEventMessageParts).hasSize(2);
             assertThat(processInstanceEvents).hasSize(2);
@@ -119,7 +119,7 @@ public class ProcessInstanceIdentityLinksTest extends PluggableActivitiTestCase 
         runtimeService.addUserIdentityLink(processInstanceId, "kermit", "interestee");
 
         List<IdentityLink> identityLinks = runtimeService.getIdentityLinksForProcessInstance(processInstanceId);
-        IdentityLink identityLink = identityLinks.get(0);
+        IdentityLink identityLink = identityLinks.getFirst();
 
         assertThat(identityLink.getGroupId()).isNull();
         assertThat(identityLink.getUserId()).isEqualTo("kermit");
@@ -144,7 +144,7 @@ public class ProcessInstanceIdentityLinksTest extends PluggableActivitiTestCase 
         runtimeService.addUserIdentityLink(processInstanceId, "kermit", "actor", details.getBytes());
 
         List<IdentityLink> identityLinks = runtimeService.getIdentityLinksForProcessInstance(processInstanceId);
-        IdentityLink identityLink = identityLinks.get(0);
+        IdentityLink identityLink = identityLinks.getFirst();
 
         assertThat(identityLink.getGroupId()).isNull();
         assertThat(identityLink.getUserId()).isEqualTo("kermit");
@@ -168,7 +168,7 @@ public class ProcessInstanceIdentityLinksTest extends PluggableActivitiTestCase 
         runtimeService.addGroupIdentityLink(processInstanceId, "muppets", "playing");
 
         List<IdentityLink> identityLinks = runtimeService.getIdentityLinksForProcessInstance(processInstanceId);
-        IdentityLink identityLink = identityLinks.get(0);
+        IdentityLink identityLink = identityLinks.getFirst();
 
         assertThat(identityLink.getGroupId()).isEqualTo("muppets");
         assertThat(identityLink.getUserId()).as("kermit").isNull();

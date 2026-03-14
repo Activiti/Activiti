@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,14 +48,14 @@ public class FlowNodeConverterTest extends AbstractConverterTest {
         List<SequenceFlow> sequenceFlows = gateway.getOutgoingFlows();
         assertThat(sequenceFlows.size() == 2).isTrue();
         assertThat(
-            sequenceFlows.get(0).getId().equals("sid-07A7E174-8857-4DE9-A7CD-A041706D79C3") ||
-            sequenceFlows.get(0).getId().equals("sid-C2068B1E-9A82-41C9-B876-C58E2736C186")
+            sequenceFlows.getFirst().getId().equals("sid-07A7E174-8857-4DE9-A7CD-A041706D79C3") ||
+            sequenceFlows.getFirst().getId().equals("sid-C2068B1E-9A82-41C9-B876-C58E2736C186")
         ).isTrue();
         assertThat(
             sequenceFlows.get(1).getId().equals("sid-07A7E174-8857-4DE9-A7CD-A041706D79C3") ||
             sequenceFlows.get(1).getId().equals("sid-C2068B1E-9A82-41C9-B876-C58E2736C186")
         ).isTrue();
-        assertThat(sequenceFlows.get(0).getSourceRef().equals("sid-B074A0DD-934A-4053-A537-20ADF0781023")).isTrue();
+        assertThat(sequenceFlows.getFirst().getSourceRef().equals("sid-B074A0DD-934A-4053-A537-20ADF0781023")).isTrue();
         assertThat(sequenceFlows.get(1).getSourceRef().equals("sid-B074A0DD-934A-4053-A537-20ADF0781023")).isTrue();
         assertThat(gateway.getDefaultFlow()).isEqualTo("sid-07A7E174-8857-4DE9-A7CD-A041706D79C3");
     }

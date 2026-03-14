@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -344,7 +344,7 @@ public class Activiti6ExecutionTest extends PluggableActivitiTestCase {
         List<ActivitiEvent> events = listener.getEventsReceived();
         assertThat(events).hasSize(2);
 
-        ActivitiActivityEvent event = (ActivitiActivityEvent) events.get(0);
+        ActivitiActivityEvent event = (ActivitiActivityEvent) events.getFirst();
         assertThat(event.getActivityType()).isEqualTo("subProcess");
         assertThat(event.getExecutionId()).isEqualTo(subProcessExecution.getId());
 

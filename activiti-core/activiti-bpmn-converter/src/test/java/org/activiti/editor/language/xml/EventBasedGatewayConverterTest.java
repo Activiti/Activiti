@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ public class EventBasedGatewayConverterTest extends AbstractConverterTest {
         EventGateway gateway = (EventGateway) flowElement;
         List<ActivitiListener> listeners = gateway.getExecutionListeners();
         assertThat(listeners).hasSize(1);
-        ActivitiListener listener = listeners.get(0);
+        ActivitiListener listener = listeners.getFirst();
         assertThat(ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(listener.getImplementationType())).isTrue();
         assertThat(listener.getImplementation()).isEqualTo("org.test.TestClass");
         assertThat(listener.getEvent()).isEqualTo("start");

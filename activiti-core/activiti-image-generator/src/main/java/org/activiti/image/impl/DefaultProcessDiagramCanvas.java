@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -873,7 +873,7 @@ public class DefaultProcessDiagramCanvas {
                 // The line we're about to add should NOT be added anymore, append three dots to previous one instead
                 // to indicate more text is truncated
                 if (!layouts.isEmpty()) {
-                    layouts.remove(layouts.size() - 1);
+                    layouts.removeLast();
 
                     if (lastLine.length() >= 4) {
                         lastLine = lastLine.substring(0, lastLine.length() - 4) + "...";
@@ -1428,8 +1428,8 @@ public class DefaultProcessDiagramCanvas {
         Shape shapeLast = createShape(targetShapeType, targetGraphicInfo);
 
         if (graphicInfoList != null && graphicInfoList.size() > 0) {
-            GraphicInfo graphicInfoFirst = graphicInfoList.get(0);
-            GraphicInfo graphicInfoLast = graphicInfoList.get(graphicInfoList.size() - 1);
+            GraphicInfo graphicInfoFirst = graphicInfoList.getFirst();
+            GraphicInfo graphicInfoLast = graphicInfoList.getLast();
             if (shapeFirst != null) {
                 graphicInfoFirst.setX(shapeFirst.getBounds2D().getCenterX());
                 graphicInfoFirst.setY(shapeFirst.getBounds2D().getCenterY());

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -90,7 +90,7 @@ public class TaskRuntimeCompleteTaskTest {
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
 
         assertThat(tasks.getContent()).hasSize(1);
-        Task task = tasks.getContent().get(0);
+        Task task = tasks.getContent().getFirst();
 
         assertThat(task.getAssignee()).isEqualTo("garth");
         assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
@@ -119,7 +119,7 @@ public class TaskRuntimeCompleteTaskTest {
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
 
         assertThat(tasks.getContent()).hasSize(1);
-        Task task = tasks.getContent().get(0);
+        Task task = tasks.getContent().getFirst();
 
         assertThat(task.getAssignee()).isEqualTo("garth");
         assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
@@ -161,7 +161,7 @@ public class TaskRuntimeCompleteTaskTest {
                 .containsExactly(tuple("start1", "start1"), tuple("start2", "start2"));
         }
 
-        Task task = tasks.get(0);
+        Task task = tasks.getFirst();
 
         //claim task
         Task claimTask = taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());

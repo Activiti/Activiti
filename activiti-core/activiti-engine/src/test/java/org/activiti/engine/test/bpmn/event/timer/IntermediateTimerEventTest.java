@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,7 +59,7 @@ public class IntermediateTimerEventTest extends PluggableActivitiTestCase {
         ProcessInstance pi = runtimeService.startProcessInstanceByKey("timerEventWithStartAndDuration");
         List<Task> tasks = taskService.createTaskQuery().list();
         assertThat(tasks).hasSize(1);
-        Task task = tasks.get(0);
+        Task task = tasks.getFirst();
         assertThat(task.getName()).isEqualTo("Task A");
 
         TimerJobQuery jobQuery = managementService.createTimerJobQuery().processInstanceId(pi.getId());
@@ -87,7 +87,7 @@ public class IntermediateTimerEventTest extends PluggableActivitiTestCase {
 
         tasks = taskService.createTaskQuery().list();
         assertThat(tasks).hasSize(1);
-        task = tasks.get(0);
+        task = tasks.getFirst();
         assertThat(task.getName()).isEqualTo("Task B");
         taskService.complete(task.getId());
 

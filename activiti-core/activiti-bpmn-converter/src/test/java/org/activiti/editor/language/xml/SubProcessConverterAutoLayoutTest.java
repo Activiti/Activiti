@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,7 +76,7 @@ public class SubProcessConverterAutoLayoutTest extends AbstractConverterTest {
         List<ValuedDataObject> dataObjects = ((SubProcess) flowElement).getDataObjects();
         assertThat(dataObjects.size() == 1).isTrue();
 
-        ValuedDataObject dataObj = dataObjects.get(0);
+        ValuedDataObject dataObj = dataObjects.getFirst();
         assertThat(dataObj.getName()).isEqualTo("SubTest");
         assertThat(dataObj.getItemSubjectRef().getStructureRef()).isEqualTo("xsd:string");
         assertThat(dataObj.getValue()).isInstanceOf(String.class);

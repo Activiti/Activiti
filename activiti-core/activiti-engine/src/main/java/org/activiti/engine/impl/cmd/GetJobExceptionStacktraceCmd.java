@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,21 +43,12 @@ public class GetJobExceptionStacktraceCmd implements Command<String>, Serializab
             throw new ActivitiIllegalArgumentException("jobId is null");
         }
 
-        AbstractJobEntity job = null;
-        switch (jobType) {
-            case ASYNC:
-                job = commandContext.getJobEntityManager().findById(jobId);
-                break;
-            case TIMER:
-                job = commandContext.getTimerJobEntityManager().findById(jobId);
-                break;
-            case SUSPENDED:
-                job = commandContext.getSuspendedJobEntityManager().findById(jobId);
-                break;
-            case DEADLETTER:
-                job = commandContext.getDeadLetterJobEntityManager().findById(jobId);
-                break;
-        }
+        AbstractJobEntity job = switch (jobType) {
+            case ASYNC -> commandContext.getJobEntityManager().findById(jobId);
+            case TIMER -> commandContext.getTimerJobEntityManager().findById(jobId);
+            case SUSPENDED -> commandContext.getSuspendedJobEntityManager().findById(jobId);
+            case DEADLETTER -> commandContext.getDeadLetterJobEntityManager().findById(jobId);
+        };
 
         if (job == null) {
             throw new ActivitiObjectNotFoundException("No job found with id " + jobId, Job.class);

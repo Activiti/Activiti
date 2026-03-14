@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -105,7 +105,7 @@ public class ProcessDefinitionsTest extends PluggableActivitiTestCase {
 
         assertThat(processDefinitions).hasSize(5);
 
-        ProcessDefinition processDefinition = processDefinitions.get(0);
+        ProcessDefinition processDefinition = processDefinitions.getFirst();
         assertThat(processDefinition.getKey()).isEqualTo("EN");
         assertThat(processDefinition.getName()).isEqualTo("Expense Note 2");
         assertThat(processDefinition.getId().startsWith("EN:2")).isTrue();
@@ -136,7 +136,7 @@ public class ProcessDefinitionsTest extends PluggableActivitiTestCase {
         assertThat(processDefinition.getVersion()).isEqualTo(1);
 
         Set<String> queryDeploymentIds = new HashSet<String>();
-        queryDeploymentIds.add(processDefinitions.get(0).getDeploymentId());
+        queryDeploymentIds.add(processDefinitions.getFirst().getDeploymentId());
         queryDeploymentIds.add(processDefinitions.get(1).getDeploymentId());
         List<ProcessDefinition> queryProcessDefinitions = repositoryService
             .createProcessDefinitionQuery()
@@ -148,7 +148,7 @@ public class ProcessDefinitionsTest extends PluggableActivitiTestCase {
             .list();
         assertThat(queryProcessDefinitions).hasSize(2);
 
-        processDefinition = queryProcessDefinitions.get(0);
+        processDefinition = queryProcessDefinitions.getFirst();
         assertThat(processDefinition.getKey()).isEqualTo("EN");
         assertThat(processDefinition.getName()).isEqualTo("Expense Note 2");
 
@@ -157,7 +157,7 @@ public class ProcessDefinitionsTest extends PluggableActivitiTestCase {
         assertThat(processDefinition.getName()).isEqualTo("Expense Note 1");
 
         queryDeploymentIds = new HashSet<String>();
-        queryDeploymentIds.add(processDefinitions.get(0).getDeploymentId());
+        queryDeploymentIds.add(processDefinitions.getFirst().getDeploymentId());
         queryDeploymentIds.add(processDefinitions.get(3).getDeploymentId());
         queryDeploymentIds.add(processDefinitions.get(4).getDeploymentId());
         queryProcessDefinitions = repositoryService
@@ -166,7 +166,7 @@ public class ProcessDefinitionsTest extends PluggableActivitiTestCase {
             .list();
         assertThat(queryProcessDefinitions).hasSize(3);
 
-        processDefinition = queryProcessDefinitions.get(0);
+        processDefinition = queryProcessDefinitions.getFirst();
         assertThat(processDefinition.getKey()).isEqualTo("EN");
         assertThat(processDefinition.getName()).isEqualTo("Expense Note 2");
 
@@ -217,7 +217,7 @@ public class ProcessDefinitionsTest extends PluggableActivitiTestCase {
         assertThat(processDefinitions).isNotNull();
         assertThat(processDefinitions).hasSize(2);
 
-        ProcessDefinition processDefinition = processDefinitions.get(0);
+        ProcessDefinition processDefinition = processDefinitions.getFirst();
         assertThat(processDefinition.getKey()).isEqualTo("IDR");
         assertThat(processDefinition.getName()).isEqualTo("Insurance Damage Report");
         assertThat(processDefinition.getId().startsWith("IDR:2")).isTrue();

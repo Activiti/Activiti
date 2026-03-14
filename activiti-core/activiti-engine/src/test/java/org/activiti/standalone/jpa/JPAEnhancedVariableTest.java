@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -173,12 +173,12 @@ public class JPAEnhancedVariableTest extends AbstractActivitiTestCase {
         Task task = getTask(instance);
         List list = (List) task.getProcessVariables().get("list1");
         assertThat(list.size() == 2).isTrue();
-        assertThat(list.get(0)).isInstanceOf(FieldAccessJPAEntity.class);
+        assertThat(list.getFirst()).isInstanceOf(FieldAccessJPAEntity.class);
         assertThat(list.get(1)).isInstanceOf(FieldAccessJPAEntity.class);
 
         list = (List) task.getProcessVariables().get("list2");
         assertThat(list.size() == 2).isTrue();
-        assertThat(list.get(0)).isInstanceOf(PropertyAccessJPAEntity.class);
+        assertThat(list.getFirst()).isInstanceOf(PropertyAccessJPAEntity.class);
         assertThat(list.get(1)).isInstanceOf(PropertyAccessJPAEntity.class);
 
         // start process with enhanced and persisted only jpa variables in the
@@ -189,8 +189,8 @@ public class JPAEnhancedVariableTest extends AbstractActivitiTestCase {
         task = getTask(instance);
         list = (List) task.getProcessVariables().get("list");
         assertThat(list.size() == 2).isTrue();
-        assertThat(list.get(0)).isInstanceOf(FieldAccessJPAEntity.class);
-        assertThat(((FieldAccessJPAEntity) list.get(0)).getId().equals(1L)).isTrue();
+        assertThat(list.getFirst()).isInstanceOf(FieldAccessJPAEntity.class);
+        assertThat(((FieldAccessJPAEntity) list.getFirst()).getId().equals(1L)).isTrue();
         assertThat(list.get(1)).isInstanceOf(FieldAccessJPAEntity.class);
         assertThat(((FieldAccessJPAEntity) list.get(1)).getId().equals(2L)).isTrue();
 
@@ -201,8 +201,8 @@ public class JPAEnhancedVariableTest extends AbstractActivitiTestCase {
         task = getTask(instance);
         list = (List) task.getProcessVariables().get("list");
         assertThat(list.size() == 2).isTrue();
-        assertThat(list.get(0)).isInstanceOf(FieldAccessJPAEntity.class);
-        assertThat(((FieldAccessJPAEntity) list.get(0)).getId().equals(2L)).isTrue();
+        assertThat(list.getFirst()).isInstanceOf(FieldAccessJPAEntity.class);
+        assertThat(((FieldAccessJPAEntity) list.getFirst()).getId().equals(2L)).isTrue();
         assertThat(list.get(1)).isInstanceOf(FieldAccessJPAEntity.class);
         assertThat(((FieldAccessJPAEntity) list.get(1)).getId().equals(1L)).isTrue();
 

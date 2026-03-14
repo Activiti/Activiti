@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import java.util.Map;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.impl.ProcessInstanceCreationOptions;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
@@ -39,6 +40,8 @@ public class StartProcessInstanceByMessageCmd implements Command<ProcessInstance
     protected Map<String, Object> processVariables;
     protected Map<String, Object> transientVariables;
     protected String tenantId;
+    protected String linkedProcessInstanceId;
+    protected String linkedProcessInstanceType;
 
     public StartProcessInstanceByMessageCmd(
         String messageName,
@@ -58,7 +61,9 @@ public class StartProcessInstanceByMessageCmd implements Command<ProcessInstance
         this.processVariables = processInstanceBuilder.getVariables();
         this.transientVariables = processInstanceBuilder.getTransientVariables();
         this.tenantId = processInstanceBuilder.getTenantId();
-    }
+        this.linkedProcessInstanceId = processInstanceBuilder.getLinkedProcessInstanceId();
+        this.linkedProcessInstanceType = processInstanceBuilder.getLinkedProcessInstanceType();
+  }
 
     public ProcessInstance execute(CommandContext commandContext) {
         if (messageName == null) {
@@ -102,14 +107,24 @@ public class StartProcessInstanceByMessageCmd implements Command<ProcessInstance
         ProcessInstanceHelper processInstanceHelper = commandContext
             .getProcessEngineConfiguration()
             .getProcessInstanceHelper();
-        ProcessInstance processInstance = processInstanceHelper.createAndStartProcessInstanceByMessage(
-            processDefinition,
-            businessKey,
-            messageName,
-            processVariables,
-            transientVariables
-        );
 
-        return processInstance;
+        ProcessInstanceCreationOptions options = ProcessInstanceCreationOptions
+            .builder(processDefinition)
+            .businessKey(businessKey)
+            .variables(processVariables)
+            .transientVariables(transientVariables)
+            .linkedProcessInstanceId(linkedProcessInstanceId)
+            .linkedProcessInstanceType(linkedProcessInstanceType)
+            .build();
+
+        return processInstanceHelper.createAndStartProcessInstanceByMessage(options, messageName);
+    }
+
+    public String getLinkedProcessInstanceId() {
+        return linkedProcessInstanceId;
+    }
+
+    public String getLinkedProcessInstanceType() {
+        return linkedProcessInstanceType;
     }
 }

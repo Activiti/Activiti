@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+    xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+    xmlns:activiti="http://activiti.org/bpmn"
+    targetNamespace="Examples">
+
+    <error id="error1" errorCode="ERROR_1" />
+    <error id="error123" errorCode="123" />
+
+    <process id="eventSubprocessXMLOrderIndependence">
+
+        <startEvent id="theStart" />
+        <sequenceFlow id="flow1" sourceRef="theStart" targetRef="mainSubProcess" />
+
+        <subProcess id="mainSubProcess">
+            <startEvent id="subProcessStart" />
+            <sequenceFlow id="subFlow1" sourceRef="subProcessStart" targetRef="throwErrorTask" />
+
+            <!-- Script task that throws an error with code "123" -->
+            <scriptTask id="throwErrorTask" scriptFormat="groovy">
+                <script>
+                    throw new org.activiti.engine.delegate.BpmnError("123")
+                </script>
+            </scriptTask>
+
+            <sequenceFlow id="subFlow2" sourceRef="throwErrorTask" targetRef="subProcessEnd" />
+            <endEvent id="subProcessEnd" />
+
+            <!-- Event Subprocess 1: Catch-all (NO error code) - defined FIRST in XML -->
+            <subProcess id="catchAllEventSubProcess" triggeredByEvent="true">
+                <startEvent id="catchAllStart">
+                    <errorEventDefinition />
+                </startEvent>
+                <sequenceFlow id="catchAllFlow" sourceRef="catchAllStart" targetRef="catchAllTask" />
+                <userTask id="catchAllTask" name="Catch All Task" />
+                <sequenceFlow id="catchAllEndFlow" sourceRef="catchAllTask" targetRef="catchAllEnd" />
+                <endEvent id="catchAllEnd" />
+            </subProcess>
+
+            <!-- Event Subprocess 2: Specific error ERROR_1 - won't match -->
+            <subProcess id="error1EventSubProcess" triggeredByEvent="true">
+                <startEvent id="error1Start">
+                    <errorEventDefinition errorRef="error1" />
+                </startEvent>
+                <sequenceFlow id="error1Flow" sourceRef="error1Start" targetRef="error1Task" />
+                <userTask id="error1Task" name="Error 1 Handler Task" />
+                <sequenceFlow id="error1EndFlow" sourceRef="error1Task" targetRef="error1End" />
+                <endEvent id="error1End" />
+            </subProcess>
+
+            <!-- Event Subprocess 3: Specific error code "123" - SHOULD match despite being last -->
+            <subProcess id="error123EventSubProcess" triggeredByEvent="true">
+                <startEvent id="error123Start">
+                    <errorEventDefinition errorRef="error123" />
+                </startEvent>
+                <sequenceFlow id="error123Flow" sourceRef="error123Start" targetRef="eventSubprocessTask123" />
+                <userTask id="eventSubprocessTask123" name="Event Subprocess Task for Error 123" />
+                <sequenceFlow id="error123EndFlow" sourceRef="eventSubprocessTask123" targetRef="error123End" />
+                <endEvent id="error123End" />
+            </subProcess>
+
+        </subProcess>
+
+        <sequenceFlow id="flow2" sourceRef="mainSubProcess" targetRef="theEnd" />
+        <endEvent id="theEnd" />
+
+    </process>
+
+</definitions>

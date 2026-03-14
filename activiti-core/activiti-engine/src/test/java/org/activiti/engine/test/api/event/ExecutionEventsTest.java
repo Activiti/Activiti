@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,9 +45,9 @@ public class ExecutionEventsTest extends PluggableActivitiTestCase {
 
         // Check create-event
         assertThat(listener.getEventsReceived()).hasSize(6);
-        assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiEntityEvent.class);
+        assertThat(listener.getEventsReceived().getFirst()).isInstanceOf(ActivitiEntityEvent.class);
 
-        ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+        ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().getFirst();
         assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
         assertThat(((Execution) event.getEntity()).getProcessInstanceId()).isEqualTo(processInstance.getId());
 
@@ -69,7 +69,7 @@ public class ExecutionEventsTest extends PluggableActivitiTestCase {
         runtimeService.activateProcessInstanceById(processInstance.getId());
 
         assertThat(listener.getEventsReceived()).hasSize(4);
-        event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+        event = (ActivitiEntityEvent) listener.getEventsReceived().getFirst();
         assertThat(((Execution) event.getEntity()).getProcessInstanceId()).isEqualTo(processInstance.getId());
         assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_SUSPENDED);
 
@@ -94,7 +94,7 @@ public class ExecutionEventsTest extends PluggableActivitiTestCase {
 
         assertThat(listener.getEventsReceived()).hasSize(4);
 
-        event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+        event = (ActivitiEntityEvent) listener.getEventsReceived().getFirst();
         assertThat(((Execution) event.getEntity()).getProcessInstanceId()).isEqualTo(processInstance.getId());
         assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_SUSPENDED);
 
@@ -115,7 +115,7 @@ public class ExecutionEventsTest extends PluggableActivitiTestCase {
         // Check update-event when business-key is updated
         runtimeService.updateBusinessKey(processInstance.getId(), "thekey");
         assertThat(listener.getEventsReceived()).hasSize(1);
-        event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+        event = (ActivitiEntityEvent) listener.getEventsReceived().getFirst();
         assertThat(((Execution) event.getEntity()).getId()).isEqualTo(processInstance.getId());
         assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_UPDATED);
         listener.clearEventsReceived();

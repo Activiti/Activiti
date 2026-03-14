@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ public class MybatisDeploymentDataManager
     public DeploymentEntity findLatestDeploymentByName(String deploymentName) {
         List<?> list = getDbSqlSession().selectList("selectDeploymentsByName", deploymentName, 0, 1);
         if (list != null && !list.isEmpty()) {
-            return (DeploymentEntity) list.get(0);
+            return (DeploymentEntity) list.getFirst();
         }
         return null;
     }

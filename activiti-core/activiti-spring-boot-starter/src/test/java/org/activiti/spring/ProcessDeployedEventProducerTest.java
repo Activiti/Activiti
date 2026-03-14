@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -103,9 +103,9 @@ public class ProcessDeployedEventProducerTest {
         assertThat(allValues)
             .extracting(ProcessDeployedEvent::getEntity, ProcessDeployedEvent::getProcessModelContent)
             .containsExactly(
-                tuple(apiProcessDefinitions.get(0), "content1"), //firstListener
+                tuple(apiProcessDefinitions.getFirst(), "content1"), //firstListener
                 tuple(apiProcessDefinitions.get(1), "content2"), //firstListener
-                tuple(apiProcessDefinitions.get(0), "content1"), //secondListener
+                tuple(apiProcessDefinitions.getFirst(), "content1"), //secondListener
                 tuple(apiProcessDefinitions.get(1), "content2")
             ); //secondListener
     }

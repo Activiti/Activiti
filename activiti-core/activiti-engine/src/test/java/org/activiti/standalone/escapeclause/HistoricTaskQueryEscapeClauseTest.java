@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -178,7 +178,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(4);
             List<String> taskIds = new ArrayList<String>(4);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             taskIds.add(list.get(2).getId());
             taskIds.add(list.get(3).getId());
@@ -198,7 +198,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(4);
             taskIds = new ArrayList<String>(4);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             taskIds.add(list.get(2).getId());
             taskIds.add(list.get(3).getId());
@@ -221,7 +221,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             List<String> taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task1.getId())).isTrue();
             assertThat(taskIds.contains(task2.getId())).isTrue();
@@ -234,7 +234,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task3.getId())).isTrue();
             assertThat(taskIds.contains(task4.getId())).isTrue();
@@ -250,7 +250,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task1.getId())).isTrue();
             assertThat(taskIds.contains(task2.getId())).isTrue();
@@ -265,7 +265,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task3.getId())).isTrue();
             assertThat(taskIds.contains(task4.getId())).isTrue();
@@ -284,7 +284,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             List<String> taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task1.getId())).isTrue();
             assertThat(taskIds.contains(task2.getId())).isTrue();
@@ -297,7 +297,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task3.getId())).isTrue();
             assertThat(taskIds.contains(task4.getId())).isTrue();
@@ -313,7 +313,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task1.getId())).isTrue();
             assertThat(taskIds.contains(task2.getId())).isTrue();
@@ -328,7 +328,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task3.getId())).isTrue();
             assertThat(taskIds.contains(task4.getId())).isTrue();
@@ -379,7 +379,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             List<String> taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task1.getId())).isTrue();
             assertThat(taskIds.contains(task3.getId())).isTrue();
@@ -392,7 +392,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task2.getId())).isTrue();
             assertThat(taskIds.contains(task4.getId())).isTrue();
@@ -408,7 +408,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task1.getId())).isTrue();
             assertThat(taskIds.contains(task3.getId())).isTrue();
@@ -423,7 +423,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task2.getId())).isTrue();
             assertThat(taskIds.contains(task4.getId())).isTrue();
@@ -442,7 +442,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             List<String> taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task1.getId())).isTrue();
             assertThat(taskIds.contains(task3.getId())).isTrue();
@@ -455,7 +455,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task2.getId())).isTrue();
             assertThat(taskIds.contains(task4.getId())).isTrue();
@@ -471,7 +471,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task1.getId())).isTrue();
             assertThat(taskIds.contains(task3.getId())).isTrue();
@@ -486,7 +486,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task2.getId())).isTrue();
             assertThat(taskIds.contains(task4.getId())).isTrue();
@@ -505,7 +505,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             List<String> taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task1.getId())).isTrue();
             assertThat(taskIds.contains(task3.getId())).isTrue();
@@ -518,7 +518,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task2.getId())).isTrue();
             assertThat(taskIds.contains(task4.getId())).isTrue();
@@ -534,7 +534,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task1.getId())).isTrue();
             assertThat(taskIds.contains(task3.getId())).isTrue();
@@ -549,7 +549,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task2.getId())).isTrue();
             assertThat(taskIds.contains(task4.getId())).isTrue();
@@ -568,7 +568,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             List<String> taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task1.getId())).isTrue();
             assertThat(taskIds.contains(task3.getId())).isTrue();
@@ -581,7 +581,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task2.getId())).isTrue();
             assertThat(taskIds.contains(task4.getId())).isTrue();
@@ -597,7 +597,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task1.getId())).isTrue();
             assertThat(taskIds.contains(task3.getId())).isTrue();
@@ -612,7 +612,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task2.getId())).isTrue();
             assertThat(taskIds.contains(task4.getId())).isTrue();
@@ -682,7 +682,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             List<String> taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task1.getId())).isTrue();
             assertThat(taskIds.contains(task3.getId())).isTrue();
@@ -695,7 +695,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task2.getId())).isTrue();
             assertThat(taskIds.contains(task4.getId())).isTrue();
@@ -711,7 +711,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task1.getId())).isTrue();
             assertThat(taskIds.contains(task3.getId())).isTrue();
@@ -726,7 +726,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task2.getId())).isTrue();
             assertThat(taskIds.contains(task4.getId())).isTrue();
@@ -745,7 +745,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             List<String> taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task1.getId())).isTrue();
             assertThat(taskIds.contains(task3.getId())).isTrue();
@@ -758,7 +758,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task2.getId())).isTrue();
             assertThat(taskIds.contains(task4.getId())).isTrue();
@@ -774,7 +774,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task1.getId())).isTrue();
             assertThat(taskIds.contains(task3.getId())).isTrue();
@@ -789,7 +789,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task2.getId())).isTrue();
             assertThat(taskIds.contains(task4.getId())).isTrue();
@@ -808,7 +808,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             List<String> taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task1.getId())).isTrue();
             assertThat(taskIds.contains(task3.getId())).isTrue();
@@ -821,7 +821,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task2.getId())).isTrue();
             assertThat(taskIds.contains(task4.getId())).isTrue();
@@ -837,7 +837,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task1.getId())).isTrue();
             assertThat(taskIds.contains(task3.getId())).isTrue();
@@ -852,7 +852,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task2.getId())).isTrue();
             assertThat(taskIds.contains(task4.getId())).isTrue();
@@ -871,7 +871,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             List<String> taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task1.getId())).isTrue();
             assertThat(taskIds.contains(task3.getId())).isTrue();
@@ -884,7 +884,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task2.getId())).isTrue();
             assertThat(taskIds.contains(task4.getId())).isTrue();
@@ -900,7 +900,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task1.getId())).isTrue();
             assertThat(taskIds.contains(task3.getId())).isTrue();
@@ -915,7 +915,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task2.getId())).isTrue();
             assertThat(taskIds.contains(task4.getId())).isTrue();
@@ -934,7 +934,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             List<String> taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task1.getId())).isTrue();
             assertThat(taskIds.contains(task2.getId())).isTrue();
@@ -947,7 +947,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task3.getId())).isTrue();
             assertThat(taskIds.contains(task4.getId())).isTrue();
@@ -963,7 +963,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task1.getId())).isTrue();
             assertThat(taskIds.contains(task2.getId())).isTrue();
@@ -978,7 +978,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task3.getId())).isTrue();
             assertThat(taskIds.contains(task4.getId())).isTrue();
@@ -997,7 +997,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             List<String> taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task1.getId())).isTrue();
             assertThat(taskIds.contains(task3.getId())).isTrue();
@@ -1010,7 +1010,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task2.getId())).isTrue();
             assertThat(taskIds.contains(task4.getId())).isTrue();
@@ -1026,7 +1026,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task1.getId())).isTrue();
             assertThat(taskIds.contains(task3.getId())).isTrue();
@@ -1041,7 +1041,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task2.getId())).isTrue();
             assertThat(taskIds.contains(task4.getId())).isTrue();
@@ -1059,7 +1059,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             List<String> taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task1.getId())).isTrue();
             assertThat(taskIds.contains(task3.getId())).isTrue();
@@ -1072,7 +1072,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task2.getId())).isTrue();
             assertThat(taskIds.contains(task4.getId())).isTrue();
@@ -1088,7 +1088,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task1.getId())).isTrue();
             assertThat(taskIds.contains(task3.getId())).isTrue();
@@ -1103,7 +1103,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
                 .list();
             assertThat(list).hasSize(2);
             taskIds = new ArrayList<String>(2);
-            taskIds.add(list.get(0).getId());
+            taskIds.add(list.getFirst().getId());
             taskIds.add(list.get(1).getId());
             assertThat(taskIds.contains(task2.getId())).isTrue();
             assertThat(taskIds.contains(task4.getId())).isTrue();

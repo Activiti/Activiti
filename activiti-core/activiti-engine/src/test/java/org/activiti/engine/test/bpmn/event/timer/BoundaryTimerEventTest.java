@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -95,7 +95,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
         runtimeService.startProcessInstanceByKey("timerOnNestedSubprocesses");
         List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
         assertThat(tasks).hasSize(2);
-        assertThat(tasks.get(0).getName()).isEqualTo("Inner subprocess task 1");
+        assertThat(tasks.getFirst().getName()).isEqualTo("Inner subprocess task 1");
         assertThat(tasks.get(1).getName()).isEqualTo("Inner subprocess task 2");
 
         // Timer will fire in 2 hours
@@ -344,7 +344,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
         // there should be a userTask waiting for user input
         List<Task> tasks = taskService.createTaskQuery().list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getName()).isEqualTo("First Task");
+        assertThat(tasks.getFirst().getName()).isEqualTo("First Task");
         List<Job> jobList = managementService.createTimerJobQuery().list();
         assertThat(jobList).hasSize(1);
 
@@ -363,7 +363,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
 
         tasks = taskService.createTaskQuery().list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getName()).isEqualTo("First Task");
+        assertThat(tasks.getFirst().getName()).isEqualTo("First Task");
         jobList = managementService.createTimerJobQuery().list();
         assertThat(jobList).hasSize(1);
 
@@ -383,7 +383,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
         // after the boundary event is triggered there should be no active job.
         tasks = taskService.createTaskQuery().list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getName()).isEqualTo("Second Task");
+        assertThat(tasks.getFirst().getName()).isEqualTo("Second Task");
         jobList = managementService.createJobQuery().list();
         assertThat(jobList).hasSize(0);
         jobList = managementService.createTimerJobQuery().list();
@@ -408,7 +408,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
         // there should be a userTask waiting for user input
         List<Task> tasks = taskService.createTaskQuery().list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getName()).isEqualTo("Start");
+        assertThat(tasks.getFirst().getName()).isEqualTo("Start");
         List<Job> jobList = managementService.createTimerJobQuery().list();
         assertThat(jobList).hasSize(1);
 

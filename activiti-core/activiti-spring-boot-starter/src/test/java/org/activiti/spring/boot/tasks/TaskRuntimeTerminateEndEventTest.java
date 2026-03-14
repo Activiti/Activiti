@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,7 +72,7 @@ public class TaskRuntimeTerminateEndEventTest {
         assertThat(taskList).isNotEmpty();
         assertThat(taskList).hasSize(2);
 
-        Task task1 = taskList.get(0);
+        Task task1 = taskList.getFirst();
 
         taskBaseRuntime.completeTask(task1.getId());
 
@@ -101,6 +101,6 @@ public class TaskRuntimeTerminateEndEventTest {
         List<TaskCancelledEvent> taskCancelledEvents = localEventSource.getEvents(TaskCancelledEvent.class);
 
         assertThat(taskCancelledEvents).hasSize(1);
-        assertThat(taskCancelledEvents.get(0).getReason()).contains("Terminated by end event");
+        assertThat(taskCancelledEvents.getFirst().getReason()).contains("Terminated by end event");
     }
 }

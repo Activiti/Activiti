@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -235,13 +235,13 @@ public class ModelQueryTest extends PluggableActivitiTestCase {
     public void testVerifyModelProperties() {
         List<Model> models = repositoryService.createModelQuery().orderByModelName().asc().list();
 
-        Model modelOne = models.get(0);
+        Model modelOne = models.getFirst();
         assertThat(modelOne.getName()).isEqualTo("my model");
         assertThat(modelOne.getId()).isEqualTo(modelOneId);
 
         models = repositoryService.createModelQuery().modelNameLike("%model%").orderByModelName().asc().list();
 
-        assertThat(models.get(0).getName()).isEqualTo("my model");
+        assertThat(models.getFirst().getName()).isEqualTo("my model");
         assertThat(models).hasSize(1);
 
         assertThat(repositoryService.createModelQuery().orderByModelId().asc().list()).hasSize(1);

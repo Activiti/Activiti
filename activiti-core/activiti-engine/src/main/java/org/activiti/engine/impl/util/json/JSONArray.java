@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -827,7 +827,7 @@ public class JSONArray {
         int i;
         StringBuilder sb = new StringBuilder("[");
         if (len == 1) {
-            sb.append(JSONObject.valueToString(this.myArrayList.get(0), indentFactor, indent));
+            sb.append(JSONObject.valueToString(this.myArrayList.getFirst(), indentFactor, indent));
         } else {
             int newindent = indent + indentFactor;
             sb.append('\n');

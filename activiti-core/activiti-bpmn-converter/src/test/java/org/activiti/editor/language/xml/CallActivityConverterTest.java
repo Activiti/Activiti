@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,7 +56,7 @@ public class CallActivityConverterTest extends AbstractConverterTest {
 
         List<IOParameter> parameters = callActivity.getInParameters();
         assertThat(parameters).hasSize(2);
-        IOParameter parameter = parameters.get(0);
+        IOParameter parameter = parameters.getFirst();
         assertThat(parameter.getSource()).isEqualTo("test");
         assertThat(parameter.getTarget()).isEqualTo("test");
         parameter = parameters.get(1);
@@ -65,7 +65,7 @@ public class CallActivityConverterTest extends AbstractConverterTest {
 
         parameters = callActivity.getOutParameters();
         assertThat(parameters).hasSize(1);
-        parameter = parameters.get(0);
+        parameter = parameters.getFirst();
         assertThat(parameter.getSource()).isEqualTo("test");
         assertThat(parameter.getTarget()).isEqualTo("test");
     }

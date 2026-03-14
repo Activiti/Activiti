@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ public class EventListenerConverterTest extends AbstractConverterTest {
         assertThat(process.getEventListeners()).hasSize(8);
 
         // Listener with class
-        EventListener listener = process.getEventListeners().get(0);
+        EventListener listener = process.getEventListeners().getFirst();
         assertThat(listener.getEvents()).isEqualTo("ENTITY_CREATE");
         assertThat(listener.getImplementation()).isEqualTo("org.activiti.test.MyListener");
         assertThat(listener.getImplementationType()).isEqualTo(ImplementationType.IMPLEMENTATION_TYPE_CLASS);

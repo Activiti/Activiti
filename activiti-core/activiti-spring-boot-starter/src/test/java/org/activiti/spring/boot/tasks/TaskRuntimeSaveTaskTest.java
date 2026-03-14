@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -126,7 +126,7 @@ public class TaskRuntimeSaveTaskTest {
         // complete task
         securityUtil.logInAs("garth");
 
-        Task task1 = taskRuntime.tasks(Pageable.of(0, 10), TaskPayloadBuilder.tasks().build()).getContent().get(0);
+        Task task1 = taskRuntime.tasks(Pageable.of(0, 10), TaskPayloadBuilder.tasks().build()).getContent().getFirst();
 
         List<VariableInstance> variables = taskRuntime.variables(
             TaskPayloadBuilder.variables().withTaskId(task1.getId()).build()
@@ -143,7 +143,7 @@ public class TaskRuntimeSaveTaskTest {
         // reject task
         securityUtil.logInAs("user");
 
-        Task task2 = taskRuntime.tasks(Pageable.of(0, 10), TaskPayloadBuilder.tasks().build()).getContent().get(0);
+        Task task2 = taskRuntime.tasks(Pageable.of(0, 10), TaskPayloadBuilder.tasks().build()).getContent().getFirst();
 
         List<VariableInstance> variables1 = taskRuntime.variables(
             TaskPayloadBuilder.variables().withTaskId(task2.getId()).build()
@@ -160,7 +160,7 @@ public class TaskRuntimeSaveTaskTest {
         // fix task
         securityUtil.logInAs("garth");
 
-        Task task3 = taskRuntime.tasks(Pageable.of(0, 10), TaskPayloadBuilder.tasks().build()).getContent().get(0);
+        Task task3 = taskRuntime.tasks(Pageable.of(0, 10), TaskPayloadBuilder.tasks().build()).getContent().getFirst();
 
         taskRuntime.save(
             new SaveTaskPayloadBuilder().withTaskId(task3.getId()).withVariable("name", "correct").build()
@@ -171,7 +171,7 @@ public class TaskRuntimeSaveTaskTest {
         // approve task
         securityUtil.logInAs("user");
 
-        Task task4 = taskRuntime.tasks(Pageable.of(0, 10), TaskPayloadBuilder.tasks().build()).getContent().get(0);
+        Task task4 = taskRuntime.tasks(Pageable.of(0, 10), TaskPayloadBuilder.tasks().build()).getContent().getFirst();
 
         List<VariableInstance> variables2 = taskRuntime.variables(
             TaskPayloadBuilder.variables().withTaskId(task4.getId()).build()

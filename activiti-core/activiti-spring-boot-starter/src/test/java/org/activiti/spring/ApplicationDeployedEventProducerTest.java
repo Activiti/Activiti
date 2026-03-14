@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,7 +76,7 @@ public class ApplicationDeployedEventProducerTest {
     public void shouldPublishEventsWhenApplicationIsDeployed() {
         ArgumentCaptor<ApplicationDeployedEvents> captorPublisher = startEventProducer();
 
-        assertThat(captorPublisher.getValue().getApplicationDeployedEvents().get(0).getEventType()).isEqualTo(
+        assertThat(captorPublisher.getValue().getApplicationDeployedEvents().getFirst().getEventType()).isEqualTo(
             APPLICATION_DEPLOYED
         );
     }
@@ -86,7 +86,7 @@ public class ApplicationDeployedEventProducerTest {
         producer.setAfterRollback(true);
         ArgumentCaptor<ApplicationDeployedEvents> captorPublisher = startEventProducer();
 
-        assertThat(captorPublisher.getValue().getApplicationDeployedEvents().get(0).getEventType()).isEqualTo(
+        assertThat(captorPublisher.getValue().getApplicationDeployedEvents().getFirst().getEventType()).isEqualTo(
             APPLICATION_ROLLBACK
         );
     }

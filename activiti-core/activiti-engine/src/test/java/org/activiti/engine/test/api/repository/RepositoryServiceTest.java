@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
         List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().list();
         assertThat(processDefinitions).hasSize(1);
 
-        ProcessDefinition processDefinition = processDefinitions.get(0);
+        ProcessDefinition processDefinition = processDefinitions.getFirst();
         assertThat(processDefinition.getKey()).isEqualTo("oneTaskProcess");
         assertThat(processDefinition.getId()).isNotNull();
     }
@@ -58,14 +58,14 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
 
         ProcessDefinition processDefinition = repositoryService
             .createProcessDefinitionQuery()
-            .processDefinitionId(definitions.get(0).getId())
+            .processDefinitionId(definitions.getFirst().getId())
             .singleResult();
         runtimeService.startProcessInstanceByKey("oneTaskProcess");
         assertThat(processDefinition).isNotNull();
         assertThat(processDefinition.getKey()).isEqualTo("oneTaskProcess");
         assertThat(processDefinition.getName()).isEqualTo("The One Task Process");
 
-        processDefinition = repositoryService.getProcessDefinition(definitions.get(0).getId());
+        processDefinition = repositoryService.getProcessDefinition(definitions.getFirst().getId());
         assertThat(processDefinition.getDescription()).isEqualTo("This is a process for testing purposes");
     }
 
@@ -73,7 +73,7 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
     public void testDeleteDeploymentWithRunningInstances() {
         List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().list();
         assertThat(processDefinitions).hasSize(1);
-        ProcessDefinition processDefinition = processDefinitions.get(0);
+        ProcessDefinition processDefinition = processDefinitions.getFirst();
 
         runtimeService.startProcessInstanceById(processDefinition.getId());
 
@@ -111,7 +111,7 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
     public void testDeleteDeploymentCascadeWithRunningInstances() {
         List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().list();
         assertThat(processDefinitions).hasSize(1);
-        ProcessDefinition processDefinition = processDefinitions.get(0);
+        ProcessDefinition processDefinition = processDefinitions.getFirst();
 
         runtimeService.startProcessInstanceById(processDefinition.getId());
 
@@ -308,34 +308,34 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
         assertThat(!bpmnModel.getFlowLocationMap().isEmpty()).isTrue();
 
         // Test the flow
-        org.activiti.bpmn.model.Process process = bpmnModel.getProcesses().get(0);
+        org.activiti.bpmn.model.Process process = bpmnModel.getProcesses().getFirst();
         List<StartEvent> startEvents = process.findFlowElementsOfType(StartEvent.class);
         assertThat(startEvents).hasSize(1);
-        StartEvent startEvent = startEvents.get(0);
+        StartEvent startEvent = startEvents.getFirst();
         assertThat(startEvent.getOutgoingFlows()).hasSize(1);
         assertThat(startEvent.getIncomingFlows()).hasSize(0);
 
-        String nextElementId = startEvent.getOutgoingFlows().get(0).getTargetRef();
+        String nextElementId = startEvent.getOutgoingFlows().getFirst().getTargetRef();
         UserTask userTask = (UserTask) process.getFlowElement(nextElementId);
         assertThat(userTask.getName()).isEqualTo("First Task");
 
         assertThat(userTask.getOutgoingFlows()).hasSize(1);
         assertThat(userTask.getIncomingFlows()).hasSize(1);
-        nextElementId = userTask.getOutgoingFlows().get(0).getTargetRef();
+        nextElementId = userTask.getOutgoingFlows().getFirst().getTargetRef();
         ParallelGateway parallelGateway = (ParallelGateway) process.getFlowElement(nextElementId);
         assertThat(parallelGateway.getOutgoingFlows()).hasSize(2);
 
-        nextElementId = parallelGateway.getOutgoingFlows().get(0).getTargetRef();
+        nextElementId = parallelGateway.getOutgoingFlows().getFirst().getTargetRef();
         assertThat(parallelGateway.getIncomingFlows()).hasSize(1);
         userTask = (UserTask) process.getFlowElement(nextElementId);
         assertThat(userTask.getOutgoingFlows()).hasSize(1);
 
-        nextElementId = userTask.getOutgoingFlows().get(0).getTargetRef();
+        nextElementId = userTask.getOutgoingFlows().getFirst().getTargetRef();
         parallelGateway = (ParallelGateway) process.getFlowElement(nextElementId);
         assertThat(parallelGateway.getOutgoingFlows()).hasSize(1);
         assertThat(parallelGateway.getIncomingFlows()).hasSize(2);
 
-        nextElementId = parallelGateway.getOutgoingFlows().get(0).getTargetRef();
+        nextElementId = parallelGateway.getOutgoingFlows().getFirst().getTargetRef();
         EndEvent endEvent = (EndEvent) process.getFlowElement(nextElementId);
         assertThat(endEvent.getOutgoingFlows()).hasSize(0);
         assertThat(endEvent.getIncomingFlows()).hasSize(1);

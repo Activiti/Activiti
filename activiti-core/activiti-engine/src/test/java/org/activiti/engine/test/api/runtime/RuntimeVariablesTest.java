@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -97,7 +97,7 @@ public class RuntimeVariablesTest extends PluggableActivitiTestCase {
         Set<String> executionIds = new HashSet<String>();
         executionIds.add(processInstance1.getId());
         List<VariableInstance> variables = runtimeService.getVariableInstancesByExecutionIds(executionIds);
-        assertThat(variables.get(0).getValue()).isEqualTo(serializableTypeVar);
+        assertThat(variables.getFirst().getValue()).isEqualTo(serializableTypeVar);
 
         variableInstance = runtimeService.getVariableInstance(processInstance1.getId(), "executionVar1");
         assertThat(variableInstance.getValue()).isEqualTo(serializableTypeVar);
@@ -145,8 +145,8 @@ public class RuntimeVariablesTest extends PluggableActivitiTestCase {
             executionIds
         );
         assertThat(2).isEqualTo(executionVariableInstances.size());
-        assertThat("executionVar").isEqualTo(executionVariableInstances.get(0).getName());
-        assertThat("executionVar").isEqualTo(executionVariableInstances.get(0).getValue());
+        assertThat("executionVar").isEqualTo(executionVariableInstances.getFirst().getName());
+        assertThat("executionVar").isEqualTo(executionVariableInstances.getFirst().getValue());
         assertThat("executionVar").isEqualTo(executionVariableInstances.get(1).getName());
         assertThat("executionVar").isEqualTo(executionVariableInstances.get(1).getValue());
 
@@ -154,7 +154,7 @@ public class RuntimeVariablesTest extends PluggableActivitiTestCase {
         executionIds.add(processInstance.getId());
         executionVariableInstances = runtimeService.getVariableInstancesByExecutionIds(executionIds);
         assertThat(1).isEqualTo(executionVariableInstances.size());
-        assertThat("processVar").isEqualTo(executionVariableInstances.get(0).getName());
-        assertThat("processVar").isEqualTo(executionVariableInstances.get(0).getValue());
+        assertThat("processVar").isEqualTo(executionVariableInstances.getFirst().getName());
+        assertThat("processVar").isEqualTo(executionVariableInstances.getFirst().getValue());
     }
 }

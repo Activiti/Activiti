@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ public class LaneExtensionTest extends PluggableActivitiTestCase {
             .singleResult();
         BpmnModel bpmnModel = repositoryService.getBpmnModel(processDefinition.getId());
         byte[] xml = new BpmnXMLConverter().convertToXML(bpmnModel);
-        System.out.println(new String(xml));
+        IO.println(new String(xml));
         Process bpmnProcess = bpmnModel.getMainProcess();
         for (Lane l : bpmnProcess.getLanes()) {
             Map<String, List<ExtensionElement>> extensions = l.getExtensionElements();

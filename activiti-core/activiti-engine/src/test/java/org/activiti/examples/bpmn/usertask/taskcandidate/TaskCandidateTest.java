@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ public class TaskCandidateTest extends PluggableActivitiTestCase {
         // The task should be visible in the candidate task list
         tasks = taskService.createTaskQuery().taskCandidateUser(KERMIT, KERMITSGROUPS).list();
         assertThat(tasks).hasSize(1);
-        Task task = tasks.get(0);
+        Task task = tasks.getFirst();
         assertThat(task.getName()).isEqualTo("Pay out expenses");
 
         // Claim the task
@@ -62,7 +62,7 @@ public class TaskCandidateTest extends PluggableActivitiTestCase {
         // The task will be visible on the personal task list
         tasks = taskService.createTaskQuery().taskAssignee(KERMIT).list();
         assertThat(tasks).hasSize(1);
-        task = tasks.get(0);
+        task = tasks.getFirst();
         assertThat(task.getName()).isEqualTo("Pay out expenses");
 
         // Completing the task ends the process
@@ -95,7 +95,7 @@ public class TaskCandidateTest extends PluggableActivitiTestCase {
 
         // Gonzo claims the task
         tasks = taskService.createTaskQuery().taskCandidateUser(GONZO, GONZOSGROUPS).list();
-        Task task = tasks.get(0);
+        Task task = tasks.getFirst();
         assertThat(task.getName()).isEqualTo("Approve expenses");
         taskService.claim(task.getId(), GONZO);
 
@@ -129,7 +129,7 @@ public class TaskCandidateTest extends PluggableActivitiTestCase {
         List<Task> tasks = taskService.createTaskQuery().taskInvolvedUser(KERMIT).list();
         assertThat(tasks).hasSize(1);
 
-        Task task = tasks.get(0);
+        Task task = tasks.getFirst();
         taskService.setVariableLocal(task.getId(), "taskVar", 123);
         tasks = taskService
             .createTaskQuery()
@@ -137,7 +137,7 @@ public class TaskCandidateTest extends PluggableActivitiTestCase {
             .includeProcessVariables()
             .includeTaskLocalVariables()
             .list();
-        task = tasks.get(0);
+        task = tasks.getFirst();
 
         assertThat(task.getProcessVariables()).hasSize(1);
         assertThat(task.getTaskLocalVariables()).hasSize(1);

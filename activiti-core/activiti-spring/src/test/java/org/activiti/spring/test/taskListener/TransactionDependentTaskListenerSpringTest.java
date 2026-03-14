@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,8 +40,8 @@ public class TransactionDependentTaskListenerSpringTest extends SpringActivitiTe
         Task task = taskService.createTaskQuery().singleResult();
         taskService.complete(task.getId());
 
-        assertThat(listener.getCurrentTasks().get(0).getTaskId()).isEqualTo("task3");
-        assertThat(listener.getCurrentTasks().get(0).getCustomPropertiesMap().get("customProp1")).isEqualTo("task3");
+        assertThat(listener.getCurrentTasks().getFirst().getTaskId()).isEqualTo("task3");
+        assertThat(listener.getCurrentTasks().getFirst().getCustomPropertiesMap().get("customProp1")).isEqualTo("task3");
 
         // Completing second task will trigger the second closed listener (delegate expression custom properties resolver)
         task = taskService.createTaskQuery().singleResult();

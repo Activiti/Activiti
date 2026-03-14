@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,7 +72,7 @@ public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
             .asc()
             .list();
 
-        ProcessDefinition processDefinition = processDefinitions.get(0);
+        ProcessDefinition processDefinition = processDefinitions.getFirst();
         assertThat(processDefinition.getKey()).isEqualTo("one");
         assertThat(processDefinition.getName()).isEqualTo("One");
         assertThat(processDefinition.getId().startsWith("one:1")).isTrue();
@@ -321,8 +321,8 @@ public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
         List<ProcessDefinition> processDefinitions = query.list();
         assertThat(processDefinitions).hasSize(3);
 
-        assertThat(processDefinitions.get(0).getKey()).isEqualTo("one");
-        assertThat(processDefinitions.get(0).getVersion()).isEqualTo(2);
+        assertThat(processDefinitions.getFirst().getKey()).isEqualTo("one");
+        assertThat(processDefinitions.getFirst().getVersion()).isEqualTo(2);
         assertThat(processDefinitions.get(1).getKey()).isEqualTo("one");
         assertThat(processDefinitions.get(1).getVersion()).isEqualTo(1);
         assertThat(processDefinitions.get(2).getKey()).isEqualTo("two");

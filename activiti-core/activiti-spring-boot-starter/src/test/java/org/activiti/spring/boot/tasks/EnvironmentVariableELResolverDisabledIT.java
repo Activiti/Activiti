@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,7 +55,7 @@ class EnvironmentVariableELResolverDisabledIT {
         List<Task> tasks = taskBaseRuntime.getTasksByProcessInstanceId(processInstanceId);
         assertThat(tasks).isNotEmpty();
         assertThat(tasks).hasSize(1);
-        return tasks.get(0);
+        return tasks.getFirst();
     }
 
     @Test

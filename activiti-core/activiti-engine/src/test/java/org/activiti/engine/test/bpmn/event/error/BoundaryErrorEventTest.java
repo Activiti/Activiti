@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -107,7 +107,7 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
 
         List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
         assertThat(tasks).hasSize(2);
-        assertThat(tasks.get(0).getName()).isEqualTo("Inner subprocess task 1");
+        assertThat(tasks.getFirst().getName()).isEqualTo("Inner subprocess task 1");
         assertThat(tasks.get(1).getName()).isEqualTo("Inner subprocess task 2");
 
         // Completing task 2, will cause the end error event to throw error with code 123
@@ -134,9 +134,9 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
         String procId = runtimeService.startProcessInstanceByKey(processDefinitionKey).getId();
         List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
         assertThat(tasks).hasSize(2);
-        assertThat(tasks.get(0).getName()).isEqualTo("task A");
+        assertThat(tasks.getFirst().getName()).isEqualTo("task A");
         assertThat(tasks.get(1).getName()).isEqualTo("task B");
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
         Task task = taskService.createTaskQuery().singleResult();
         assertThat(task.getName()).isEqualTo("task D");
         taskService.complete(task.getId());
@@ -146,13 +146,13 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
         runtimeService.startProcessInstanceByKey(processDefinitionKey).getId();
         tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
         assertThat(tasks).hasSize(2);
-        assertThat(tasks.get(0).getName()).isEqualTo("task A");
+        assertThat(tasks.getFirst().getName()).isEqualTo("task A");
         assertThat(tasks.get(1).getName()).isEqualTo("task B");
         taskService.complete(tasks.get(1).getId());
 
         tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
         assertThat(tasks).hasSize(2);
-        assertThat(tasks.get(0).getName()).isEqualTo("task A");
+        assertThat(tasks.getFirst().getName()).isEqualTo("task A");
         assertThat(tasks.get(1).getName()).isEqualTo("task C");
         taskService.complete(tasks.get(1).getId());
         task = taskService.createTaskQuery().singleResult();

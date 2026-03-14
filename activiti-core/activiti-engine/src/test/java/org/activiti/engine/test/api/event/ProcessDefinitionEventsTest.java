@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,9 +49,9 @@ public class ProcessDefinitionEventsTest extends PluggableActivitiTestCase {
 
         // Check create-event
         assertThat(listener.getEventsReceived()).hasSize(2);
-        assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiEntityEvent.class);
+        assertThat(listener.getEventsReceived().getFirst()).isInstanceOf(ActivitiEntityEvent.class);
 
-        ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+        ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().getFirst();
         assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
         assertThat(((ProcessDefinition) event.getEntity()).getId()).isEqualTo(processDefinition.getId());
 
@@ -63,9 +63,9 @@ public class ProcessDefinitionEventsTest extends PluggableActivitiTestCase {
         // Check update event when category is updated
         repositoryService.setProcessDefinitionCategory(processDefinition.getId(), "test");
         assertThat(listener.getEventsReceived()).hasSize(1);
-        assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiEntityEvent.class);
+        assertThat(listener.getEventsReceived().getFirst()).isInstanceOf(ActivitiEntityEvent.class);
 
-        event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+        event = (ActivitiEntityEvent) listener.getEventsReceived().getFirst();
         assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_UPDATED);
         assertThat(((ProcessDefinition) event.getEntity()).getId()).isEqualTo(processDefinition.getId());
         assertThat(((ProcessDefinition) event.getEntity()).getCategory()).isEqualTo("test");
@@ -76,7 +76,7 @@ public class ProcessDefinitionEventsTest extends PluggableActivitiTestCase {
         repositoryService.activateProcessDefinitionById(processDefinition.getId());
 
         assertThat(listener.getEventsReceived()).hasSize(2);
-        event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+        event = (ActivitiEntityEvent) listener.getEventsReceived().getFirst();
         assertThat(((ProcessDefinition) event.getEntity()).getId()).isEqualTo(processDefinition.getId());
         assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_SUSPENDED);
         event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
@@ -89,9 +89,9 @@ public class ProcessDefinitionEventsTest extends PluggableActivitiTestCase {
         deploymentIdFromDeploymentAnnotation = null;
 
         assertThat(listener.getEventsReceived()).hasSize(1);
-        assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiEntityEvent.class);
+        assertThat(listener.getEventsReceived().getFirst()).isInstanceOf(ActivitiEntityEvent.class);
 
-        event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+        event = (ActivitiEntityEvent) listener.getEventsReceived().getFirst();
         assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_DELETED);
         assertThat(((ProcessDefinition) event.getEntity()).getId()).isEqualTo(processDefinition.getId());
         listener.clearEventsReceived();

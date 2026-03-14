@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -381,9 +381,9 @@ public class ProcessRuntimeIT {
             TaskPayloadBuilder.tasks().withProcessInstanceId(singleTaskProcessCreated.getId()).build()
         );
         assertThat(tasks.getTotalItems()).isEqualTo(1);
-        assertThat(tasks.getContent().get(0).getName()).isEqualTo("my-task");
+        assertThat(tasks.getContent().getFirst().getName()).isEqualTo("my-task");
 
-        assertThat(RuntimeTestConfiguration.createdTasks).contains(tasks.getContent().get(0).getId());
+        assertThat(RuntimeTestConfiguration.createdTasks).contains(tasks.getContent().getFirst().getId());
         assertThat(singleTaskProcessStarted).isNotNull();
         assertThat(singleTaskProcessStarted.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
         assertThat(processRuntime.processInstance(singleTaskProcessStarted.getId()).getStatus()).isEqualTo(
@@ -528,7 +528,7 @@ public class ProcessRuntimeIT {
         assertThat(processInstancePage).isNotNull();
         assertThat(processInstancePage.getContent()).hasSize(1);
 
-        ProcessInstance processInstance = processInstancePage.getContent().get(0);
+        ProcessInstance processInstance = processInstancePage.getContent().getFirst();
 
         ProcessInstance suspendedProcessInstance = processRuntime.suspend(
             ProcessPayloadBuilder.suspend(processInstance)
@@ -662,7 +662,7 @@ public class ProcessRuntimeIT {
         // update a process
         Page<ProcessInstance> processInstancePage = processRuntime.processInstances(PAGEABLE);
 
-        ProcessInstance processInstance = processInstancePage.getContent().get(0);
+        ProcessInstance processInstance = processInstancePage.getContent().getFirst();
 
         UpdateProcessPayload updateProcessPayload = ProcessPayloadBuilder.update()
             .withProcessInstanceId(processInstance.getId())
@@ -679,7 +679,7 @@ public class ProcessRuntimeIT {
         assertThat(processInstancePage).isNotNull();
         assertThat(processInstancePage.getContent()).hasSize(1);
 
-        processInstance = processInstancePage.getContent().get(0);
+        processInstance = processInstancePage.getContent().getFirst();
 
         assertThat(processInstance.getName()).isEqualTo("my process name UPDATED");
         assertThat(processInstance.getBusinessKey()).isEqualTo("my business key UPDATED");
@@ -719,7 +719,7 @@ public class ProcessRuntimeIT {
         // update a process
         Page<ProcessInstance> processInstancePage = processAdminRuntime.processInstances(PAGEABLE);
 
-        ProcessInstance processInstance = processInstancePage.getContent().get(0);
+        ProcessInstance processInstance = processInstancePage.getContent().getFirst();
 
         UpdateProcessPayload updateProcessPayload = ProcessPayloadBuilder.update()
             .withProcessInstanceId(processInstance.getId())
@@ -736,7 +736,7 @@ public class ProcessRuntimeIT {
         assertThat(processInstancePage).isNotNull();
         assertThat(processInstancePage.getContent()).hasSize(1);
 
-        processInstance = processInstancePage.getContent().get(0);
+        processInstance = processInstancePage.getContent().getFirst();
 
         assertThat(processInstance.getName()).isEqualTo("my process name UPDATED");
         assertThat(processInstance.getBusinessKey()).isEqualTo("my business key UPDATED");
@@ -775,7 +775,7 @@ public class ProcessRuntimeIT {
         assertThat(processInstancePage).isNotNull();
         assertThat(processInstancePage.getContent()).hasSize(2);
 
-        assertThat(processInstancePage.getContent().get(0).getProcessDefinitionKey()).isEqualTo(SUPER_PROCESS);
+        assertThat(processInstancePage.getContent().getFirst().getProcessDefinitionKey()).isEqualTo(SUPER_PROCESS);
         assertThat(processInstancePage.getContent().get(1).getProcessDefinitionKey()).isEqualTo(SUB_PROCESS);
 
         //Check that parentProcess has 1 subprocess
@@ -787,7 +787,7 @@ public class ProcessRuntimeIT {
         assertThat(processInstancePage).isNotNull();
         assertThat(processInstancePage.getContent()).hasSize(1);
 
-        subProcess = processInstancePage.getContent().get(0);
+        subProcess = processInstancePage.getContent().getFirst();
 
         assertThat(subProcess.getProcessDefinitionKey()).isEqualTo(SUB_PROCESS);
         assertThat(subProcess.getParentId()).isEqualTo(parentProcess.getId());
@@ -811,7 +811,7 @@ public class ProcessRuntimeIT {
         // then
         assertThat(processInstancePage).isNotNull();
         assertThat(processInstancePage.getContent()).hasSize(1);
-        assertThat(processInstancePage.getContent().get(0).getProcessDefinitionKey()).isEqualTo(
+        assertThat(processInstancePage.getContent().getFirst().getProcessDefinitionKey()).isEqualTo(
             "processWithSignalStart1"
         );
 
@@ -819,13 +819,13 @@ public class ProcessRuntimeIT {
 
         //when
         List<VariableInstance> variables = processRuntime.variables(
-            ProcessPayloadBuilder.variables().withProcessInstance(processInstancePage.getContent().get(0)).build()
+            ProcessPayloadBuilder.variables().withProcessInstance(processInstancePage.getContent().getFirst()).build()
         );
         assertThat(variables)
             .extracting(VariableInstance::getName, VariableInstance::getValue)
             .containsExactly(tuple("signalVar", "from signal"));
 
-        processRuntimeMock.delete(ProcessPayloadBuilder.delete(processInstancePage.getContent().get(0).getId()));
+        processRuntimeMock.delete(ProcessPayloadBuilder.delete(processInstancePage.getContent().getFirst().getId()));
     }
 
     @Test
@@ -840,11 +840,11 @@ public class ProcessRuntimeIT {
         // then
         assertThat(processInstancePage).isNotNull();
         assertThat(processInstancePage.getContent()).hasSize(1);
-        assertThat(processInstancePage.getContent().get(0).getProcessDefinitionKey()).isEqualTo(
+        assertThat(processInstancePage.getContent().getFirst().getProcessDefinitionKey()).isEqualTo(
             "processWithSignalStart1"
         );
 
-        processAdminRuntimeMock.delete(ProcessPayloadBuilder.delete(processInstancePage.getContent().get(0).getId()));
+        processAdminRuntimeMock.delete(ProcessPayloadBuilder.delete(processInstancePage.getContent().getFirst().getId()));
     }
 
     @Test
@@ -867,7 +867,7 @@ public class ProcessRuntimeIT {
             .collect(Collectors.toList());
         assertThat(processDefinitions).hasSize(1);
 
-        ProcessDefinition result = processDefinitions.get(0);
+        ProcessDefinition result = processDefinitions.getFirst();
 
         assertThat(result.getAppVersion()).isEqualTo("1");
     }
@@ -1052,7 +1052,7 @@ public class ProcessRuntimeIT {
         //then
         assertThat(processInstancePage).isNotNull();
         assertThat(processInstancePage.getContent()).hasSize(1);
-        assertThat(processInstancePage.getContent().get(0).getId()).isEqualTo(processInstance.getId());
+        assertThat(processInstancePage.getContent().getFirst().getId()).isEqualTo(processInstance.getId());
     }
 
     @Test
@@ -1070,7 +1070,7 @@ public class ProcessRuntimeIT {
         //then
         assertThat(processInstancePage).isNotNull();
         assertThat(processInstancePage.getContent()).hasSize(1);
-        assertThat(processInstancePage.getContent().get(0).getId()).isEqualTo(processInstance.getId());
+        assertThat(processInstancePage.getContent().getFirst().getId()).isEqualTo(processInstance.getId());
     }
 
     @Test

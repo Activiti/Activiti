@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,11 +58,11 @@ public class SubHistoricTaskQueryTest extends PluggableActivitiTestCase {
             .asc();
         assertThat(query.count()).isEqualTo(7);
         assertThat(query.listPage(0, 1)).hasSize(1);
-        assertThat(query.listPage(0, 1).get(0).getCreateTime()).isEqualTo(sdf.parse("01/02/2008 02:02:02.000"));
+        assertThat(query.listPage(0, 1).getFirst().getCreateTime()).isEqualTo(sdf.parse("01/02/2008 02:02:02.000"));
         assertThat(query.listPage(1, 1)).hasSize(1);
-        assertThat(query.listPage(1, 1).get(0).getCreateTime()).isEqualTo(sdf.parse("05/02/2008 02:02:02.000"));
+        assertThat(query.listPage(1, 1).getFirst().getCreateTime()).isEqualTo(sdf.parse("05/02/2008 02:02:02.000"));
         assertThat(query.listPage(0, 2)).hasSize(2);
-        assertThat(query.listPage(0, 2).get(0).getCreateTime()).isEqualTo(sdf.parse("01/02/2008 02:02:02.000"));
+        assertThat(query.listPage(0, 2).getFirst().getCreateTime()).isEqualTo(sdf.parse("01/02/2008 02:02:02.000"));
         assertThat(query.listPage(0, 2).get(1).getCreateTime()).isEqualTo(sdf.parse("05/02/2008 02:02:02.000"));
 
         // kermit has no root tasks and no subtasks assigned include subtasks

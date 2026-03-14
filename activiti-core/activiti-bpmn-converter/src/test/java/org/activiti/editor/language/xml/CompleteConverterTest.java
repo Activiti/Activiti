@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,8 +58,8 @@ public class CompleteConverterTest extends AbstractConverterTest {
         assertThat(flowElement.getId()).isEqualTo("catchsignal");
         IntermediateCatchEvent catchEvent = (IntermediateCatchEvent) flowElement;
         assertThat(catchEvent.getEventDefinitions()).hasSize(1);
-        assertThat(catchEvent.getEventDefinitions().get(0)).isInstanceOf(SignalEventDefinition.class);
-        SignalEventDefinition signalEvent = (SignalEventDefinition) catchEvent.getEventDefinitions().get(0);
+        assertThat(catchEvent.getEventDefinitions().getFirst()).isInstanceOf(SignalEventDefinition.class);
+        SignalEventDefinition signalEvent = (SignalEventDefinition) catchEvent.getEventDefinitions().getFirst();
         assertThat(signalEvent.getSignalRef()).isEqualTo("testSignal");
 
         flowElement = model.getMainProcess().getFlowElement("subprocess");

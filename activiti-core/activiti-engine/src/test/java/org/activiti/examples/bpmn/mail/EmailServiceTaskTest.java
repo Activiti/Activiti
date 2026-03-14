@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,7 +68,7 @@ public class EmailServiceTaskTest extends PluggableActivitiTestCase {
         List<WiserMessage> messages = wiser.getMessages();
         assertThat(messages).hasSize(1);
 
-        WiserMessage message = messages.get(0);
+        WiserMessage message = messages.getFirst();
         MimeMessage mimeMessage = message.getMimeMessage();
 
         assertThat(mimeMessage.getHeader("Subject", null)).isEqualTo("Your order " + orderId + " has been shipped");

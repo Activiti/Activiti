@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -280,8 +280,8 @@ public class TimerJobEntityManagerImpl extends AbstractEntityManager<TimerJobEnt
     protected int calculateRepeatValue(JobEntity timerEntity) {
         int times = -1;
         List<String> expression = asList(timerEntity.getRepeat().split("/"));
-        if (expression.size() > 1 && expression.get(0).startsWith("R") && expression.get(0).length() > 1) {
-            times = Integer.parseInt(expression.get(0).substring(1));
+        if (expression.size() > 1 && expression.getFirst().startsWith("R") && expression.getFirst().length() > 1) {
+            times = Integer.parseInt(expression.getFirst().substring(1));
             if (times > 0) {
                 times--;
             }

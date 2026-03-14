@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -144,7 +144,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
                 null,
                 "look at this \n       isn't this great? slkdjf sldkfjs ldkfjs ldkfjs ldkfj sldkfj sldkfj sldkjg laksfg sdfgsd;flgkj ksajdhf skjdfh ksjdhf skjdhf kalskjgh lskh dfialurhg kajsh dfuieqpgkja rzvkfnjviuqerhogiuvysbegkjz lkhf ais liasduh flaisduh ajiasudh vaisudhv nsfd"
             );
-            Comment comment = taskService.getTaskComments(taskId).get(0);
+            Comment comment = taskService.getTaskComments(taskId).getFirst();
             assertThat(comment.getUserId()).isEqualTo("johndoe");
             assertThat(comment.getTaskId()).isEqualTo(taskId);
             assertThat(comment.getProcessInstanceId()).isNull();
@@ -196,14 +196,14 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
 
             List<Comment> regularComments = taskService.getTaskComments(taskId);
             assertThat(regularComments).hasSize(1);
-            assertThat(regularComments.get(0).getFullMessage()).isEqualTo("This is a regular comment");
+            assertThat(regularComments.getFirst().getFullMessage()).isEqualTo("This is a regular comment");
 
             List<Event> allComments = taskService.getTaskEvents(taskId);
             assertThat(allComments).hasSize(4);
 
             List<Comment> type2Comments = taskService.getCommentsByType(customType2);
             assertThat(type2Comments).hasSize(1);
-            assertThat(type2Comments.get(0).getFullMessage()).isEqualTo(
+            assertThat(type2Comments.getFirst().getFullMessage()).isEqualTo(
                 "This is another custom comment. Type2 this time!"
             );
 
@@ -231,7 +231,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
                 "temperatures and more",
                 "http://weather.com"
             );
-            Attachment attachment = taskService.getTaskAttachments(taskId).get(0);
+            Attachment attachment = taskService.getTaskAttachments(taskId).getFirst();
             assertThat(attachment.getName()).isEqualTo("weatherforcast");
             assertThat(attachment.getDescription()).isEqualTo("temperatures and more");
             assertThat(attachment.getType()).isEqualTo("web page");
@@ -267,12 +267,12 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
                 "temperatures and more",
                 "http://weather.com"
             );
-            Attachment attachment = taskService.getTaskAttachments(taskId).get(0);
+            Attachment attachment = taskService.getTaskAttachments(taskId).getFirst();
             attachment.setName("UpdatedName");
             taskService.saveAttachment(attachment);
 
             // Refetch and verify
-            attachment = taskService.getTaskAttachments(taskId).get(0);
+            attachment = taskService.getTaskAttachments(taskId).getFirst();
             assertThat(attachment.getName()).isEqualTo("UpdatedName");
 
             // Finally, clean up
@@ -299,7 +299,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
                 "temperatures and more",
                 "http://weather.com"
             );
-            Attachment attachment = taskService.getProcessInstanceAttachments(processInstanceId).get(0);
+            Attachment attachment = taskService.getProcessInstanceAttachments(processInstanceId).getFirst();
             assertThat(attachment.getName()).isEqualTo("weatherforcast");
             assertThat(attachment.getDescription()).isEqualTo("temperatures and more");
             assertThat(attachment.getType()).isEqualTo("web page");
@@ -834,9 +834,9 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         taskService.addCandidateUser(taskId, "kermit");
         List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(taskId);
         assertThat(identityLinks).hasSize(1);
-        assertThat(identityLinks.get(0).getUserId()).isEqualTo("kermit");
-        assertThat(identityLinks.get(0).getGroupId()).isNull();
-        assertThat(identityLinks.get(0).getType()).isEqualTo(IdentityLinkType.CANDIDATE);
+        assertThat(identityLinks.getFirst().getUserId()).isEqualTo("kermit");
+        assertThat(identityLinks.getFirst().getGroupId()).isNull();
+        assertThat(identityLinks.getFirst().getType()).isEqualTo(IdentityLinkType.CANDIDATE);
 
         // cleanup
         taskService.deleteTask(taskId, true);
@@ -850,9 +850,9 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         taskService.addCandidateGroup(taskId, "muppets");
         List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(taskId);
         assertThat(identityLinks).hasSize(1);
-        assertThat(identityLinks.get(0).getGroupId()).isEqualTo("muppets");
-        assertThat(identityLinks.get(0).getUserId()).isNull();
-        assertThat(identityLinks.get(0).getType()).isEqualTo(IdentityLinkType.CANDIDATE);
+        assertThat(identityLinks.getFirst().getGroupId()).isEqualTo("muppets");
+        assertThat(identityLinks.getFirst().getUserId()).isNull();
+        assertThat(identityLinks.getFirst().getType()).isEqualTo(IdentityLinkType.CANDIDATE);
 
         // cleanup
         taskService.deleteTask(taskId, true);
@@ -866,9 +866,9 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         taskService.claim(taskId, "kermit");
         List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(taskId);
         assertThat(identityLinks).hasSize(1);
-        assertThat(identityLinks.get(0).getUserId()).isEqualTo("kermit");
-        assertThat(identityLinks.get(0).getGroupId()).isNull();
-        assertThat(identityLinks.get(0).getType()).isEqualTo(IdentityLinkType.ASSIGNEE);
+        assertThat(identityLinks.getFirst().getUserId()).isEqualTo("kermit");
+        assertThat(identityLinks.getFirst().getGroupId()).isNull();
+        assertThat(identityLinks.getFirst().getType()).isEqualTo(IdentityLinkType.ASSIGNEE);
 
         // cleanup
         taskService.deleteTask(taskId, true);
@@ -882,9 +882,9 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         taskService.claim(taskId, "nonExistingAssignee");
         List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(taskId);
         assertThat(identityLinks).hasSize(1);
-        assertThat(identityLinks.get(0).getUserId()).isEqualTo("nonExistingAssignee");
-        assertThat(identityLinks.get(0).getGroupId()).isNull();
-        assertThat(identityLinks.get(0).getType()).isEqualTo(IdentityLinkType.ASSIGNEE);
+        assertThat(identityLinks.getFirst().getUserId()).isEqualTo("nonExistingAssignee");
+        assertThat(identityLinks.getFirst().getGroupId()).isNull();
+        assertThat(identityLinks.getFirst().getType()).isEqualTo(IdentityLinkType.ASSIGNEE);
 
         // cleanup
         taskService.deleteTask(taskId, true);
@@ -901,7 +901,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(taskId);
         assertThat(identityLinks).hasSize(2);
 
-        IdentityLink assignee = identityLinks.get(0);
+        IdentityLink assignee = identityLinks.getFirst();
         assertThat(assignee.getUserId()).isEqualTo("fozzie");
         assertThat(assignee.getGroupId()).isNull();
         assertThat(assignee.getType()).isEqualTo(IdentityLinkType.ASSIGNEE);
@@ -925,7 +925,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(taskId);
         assertThat(identityLinks).hasSize(2);
 
-        IdentityLink assignee = identityLinks.get(0);
+        IdentityLink assignee = identityLinks.getFirst();
         assertThat(assignee.getUserId()).isEqualTo("nonExistingAssignee");
         assertThat(assignee.getGroupId()).isNull();
         assertThat(assignee.getType()).isEqualTo(IdentityLinkType.ASSIGNEE);

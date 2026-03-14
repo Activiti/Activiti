@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -105,7 +105,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
             currentArtifact.setId(elementId);
 
             if (!activeSubProcessList.isEmpty()) {
-                activeSubProcessList.get(activeSubProcessList.size() - 1).addArtifact(currentArtifact);
+                activeSubProcessList.getLast().addArtifact(currentArtifact);
             } else {
                 activeProcess.addArtifact(currentArtifact);
             }
@@ -139,7 +139,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
 
             if (currentFlowElement instanceof DataObject) {
                 if (!activeSubProcessList.isEmpty()) {
-                    SubProcess subProcess = activeSubProcessList.get(activeSubProcessList.size() - 1);
+                    SubProcess subProcess = activeSubProcessList.getLast();
                     subProcess.getDataObjects().add((ValuedDataObject) parsedElement);
                 } else {
                     activeProcess.getDataObjects().add((ValuedDataObject) parsedElement);
@@ -147,7 +147,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
             }
 
             if (!activeSubProcessList.isEmpty()) {
-                SubProcess subProcess = activeSubProcessList.get(activeSubProcessList.size() - 1);
+                SubProcess subProcess = activeSubProcessList.getLast();
                 subProcess.addFlowElement(currentFlowElement);
             } else {
                 activeProcess.addFlowElement(currentFlowElement);
@@ -285,6 +285,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
     protected ExtensionElement parseExtensionElement(XMLStreamReader xtr) throws Exception {
         ExtensionElement extensionElement = new ExtensionElement();
         extensionElement.setName(xtr.getLocalName());
+        BpmnXMLUtil.addXMLLocation(extensionElement, xtr);
         if (StringUtils.isNotEmpty(xtr.getNamespaceURI())) {
             extensionElement.setNamespace(xtr.getNamespaceURI());
         }

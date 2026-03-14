@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -113,7 +113,7 @@ public class TenancyTest extends PluggableActivitiTestCase {
         assertThat(
             repositoryService
                 .createDeploymentQuery()
-                .deploymentId(autoCleanedUpDeploymentIds.get(0))
+                .deploymentId(autoCleanedUpDeploymentIds.getFirst())
                 .deploymentTenantId(TEST_TENANT_ID)
                 .list()
         ).hasSize(1);
@@ -231,7 +231,7 @@ public class TenancyTest extends PluggableActivitiTestCase {
                 .createProcessInstanceQuery()
                 .processDefinitionId(processDefinitionId)
                 .list()
-                .get(0)
+                .getFirst()
                 .getTenantId()
         ).isEqualTo(TEST_TENANT_ID);
         assertThat(runtimeService.createProcessInstanceQuery().list().size()).isEqualTo(
@@ -266,14 +266,14 @@ public class TenancyTest extends PluggableActivitiTestCase {
         // Check the query results:
         // note: 3 executions per process instance due to parallelism!
         assertThat(
-            runtimeService.createExecutionQuery().processDefinitionId(processDefinitionId).list().get(0).getTenantId()
+            runtimeService.createExecutionQuery().processDefinitionId(processDefinitionId).list().getFirst().getTenantId()
         ).isEqualTo(TEST_TENANT_ID);
         assertThat(
             runtimeService
                 .createExecutionQuery()
                 .processDefinitionId(processDefinitionIdNoTenant)
                 .list()
-                .get(0)
+                .getFirst()
                 .getTenantId()
         ).isEqualTo("");
         assertThat(runtimeService.createExecutionQuery().list().size()).isEqualTo(
@@ -295,7 +295,7 @@ public class TenancyTest extends PluggableActivitiTestCase {
                 .createProcessInstanceQuery()
                 .processDefinitionId(processDefinitionId)
                 .list()
-                .get(0)
+                .getFirst()
                 .getTenantId()
         ).isEqualTo(TEST_TENANT_ID);
         assertThat(runtimeService.createProcessInstanceQuery().list().size()).isEqualTo(
@@ -329,10 +329,10 @@ public class TenancyTest extends PluggableActivitiTestCase {
 
         // Check the query results
         assertThat(
-            taskService.createTaskQuery().processDefinitionId(processDefinitionIdWithTenant).list().get(0).getTenantId()
+            taskService.createTaskQuery().processDefinitionId(processDefinitionIdWithTenant).list().getFirst().getTenantId()
         ).isEqualTo(TEST_TENANT_ID);
         assertThat(
-            taskService.createTaskQuery().processDefinitionId(processDefinitionIdNoTenant).list().get(0).getTenantId()
+            taskService.createTaskQuery().processDefinitionId(processDefinitionIdNoTenant).list().getFirst().getTenantId()
         ).isEqualTo("");
 
         assertThat(taskService.createTaskQuery().list().size()).isEqualTo(14);
@@ -610,7 +610,7 @@ public class TenancyTest extends PluggableActivitiTestCase {
                     .createHistoricProcessInstanceQuery()
                     .processDefinitionId(processDefinitionIdWithTenant)
                     .list()
-                    .get(0)
+                    .getFirst()
                     .getTenantId()
             ).isEqualTo(TEST_TENANT_ID);
             assertThat(
@@ -618,7 +618,7 @@ public class TenancyTest extends PluggableActivitiTestCase {
                     .createHistoricProcessInstanceQuery()
                     .processDefinitionId(processDefinitionIdNoTenant)
                     .list()
-                    .get(0)
+                    .getFirst()
                     .getTenantId()
             ).isEqualTo("");
             assertThat(historyService.createHistoricProcessInstanceQuery().list()).hasSize(
@@ -640,7 +640,7 @@ public class TenancyTest extends PluggableActivitiTestCase {
                     .createHistoricTaskInstanceQuery()
                     .processDefinitionId(processDefinitionIdWithTenant)
                     .list()
-                    .get(0)
+                    .getFirst()
                     .getTenantId()
             ).isEqualTo(TEST_TENANT_ID);
             assertThat(
@@ -648,7 +648,7 @@ public class TenancyTest extends PluggableActivitiTestCase {
                     .createHistoricTaskInstanceQuery()
                     .processDefinitionId(processDefinitionIdNoTenant)
                     .list()
-                    .get(0)
+                    .getFirst()
                     .getTenantId()
             ).isEqualTo("");
             assertThat(historyService.createHistoricTaskInstanceQuery().list()).hasSize(
@@ -677,7 +677,7 @@ public class TenancyTest extends PluggableActivitiTestCase {
                     .createHistoricActivityInstanceQuery()
                     .processDefinitionId(processDefinitionIdNoTenant)
                     .list()
-                    .get(0)
+                    .getFirst()
                     .getTenantId()
             ).isEqualTo("");
             assertThat(historyService.createHistoricActivityInstanceQuery().list()).hasSize(

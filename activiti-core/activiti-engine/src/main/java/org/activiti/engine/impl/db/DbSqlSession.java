@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -143,6 +143,7 @@ public class DbSqlSession implements Session {
         /* Current */
         ACTIVITI_VERSIONS.add(new ActivitiVersion("8.0.0"));
         ACTIVITI_VERSIONS.add(new ActivitiVersion("8.1.0"));
+        ACTIVITI_VERSIONS.add(new ActivitiVersion("8.1.3"));
         ACTIVITI_VERSIONS.add(new ActivitiVersion(ProcessEngine.VERSION));
     }
 
@@ -408,7 +409,7 @@ public class DbSqlSession implements Session {
         if (loadedObjects.isEmpty()) {
             return loadedObjects;
         }
-        if (!(loadedObjects.get(0) instanceof Entity)) {
+        if (!(loadedObjects.getFirst() instanceof Entity)) {
             return loadedObjects;
         }
 
@@ -639,7 +640,7 @@ public class DbSqlSession implements Session {
                     if (parentBeforeChildExecution) {
                         result.add(executionEntities.get(parentId));
                     } else {
-                        result.add(0, executionEntities.get(parentId));
+                        result.addFirst(executionEntities.get(parentId));
                     }
                 }
 
@@ -674,7 +675,7 @@ public class DbSqlSession implements Session {
             if (parentBeforeChildExecution) {
                 result.add(childExecutionEntity);
             } else {
-                result.add(0, childExecutionEntity);
+                result.addFirst(childExecutionEntity);
             }
 
             collectChildExecutionsForInsertion(

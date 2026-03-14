@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -110,7 +110,7 @@ public class ExecutionTreeNode implements Iterable<ExecutionTreeNode> {
                 children.get(i).internalToString(strb, prefix + (isTail ? "    " : "│   "), false);
             }
             if (children.size() > 0) {
-                children.get(children.size() - 1).internalToString(strb, prefix + (isTail ? "    " : "│   "), true);
+                children.getLast().internalToString(strb, prefix + (isTail ? "    " : "│   "), true);
             }
         }
     }

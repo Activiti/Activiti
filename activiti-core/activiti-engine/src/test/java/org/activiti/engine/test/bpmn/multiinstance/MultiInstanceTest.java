@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -139,7 +139,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     private Execution retrieveOuterExecution(String procId) {
         List<Execution> executions = runtimeService.createExecutionQuery().parentId(procId).list();
         assertThat(executions).hasSize(1);
-        Execution outerInstance = executions.get(0);
+        Execution outerInstance = executions.getFirst();
         assertThat(outerInstance.getActivityId()).isEqualTo("miTasks");
         return outerInstance;
     }
@@ -288,18 +288,18 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
 
         List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
         assertThat(tasks).hasSize(3);
-        assertThat(tasks.get(0).getName()).isEqualTo("My Task 0");
+        assertThat(tasks.getFirst().getName()).isEqualTo("My Task 0");
         assertThat(tasks.get(1).getName()).isEqualTo("My Task 1");
         assertThat(tasks.get(2).getName()).isEqualTo("My Task 2");
 
-        checkInnerInstanceVariables(tasks.get(0), 0, LOOP_COUNTER_KEY);
+        checkInnerInstanceVariables(tasks.getFirst(), 0, LOOP_COUNTER_KEY);
         checkInnerInstanceVariables(tasks.get(1), 1, LOOP_COUNTER_KEY);
         checkInnerInstanceVariables(tasks.get(2), 2, LOOP_COUNTER_KEY);
 
         Execution outerExecution = retrieveOuterExecution(procId);
 
         checkBuiltInOuterVariables(outerExecution, 3, 0);
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
 
         checkBuiltInOuterVariables(outerExecution, 2, 1);
         taskService.complete(tasks.get(1).getId());
@@ -365,7 +365,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
         String procId = runtimeService.startProcessInstanceByKey("miParallelUserTasksWithTimer").getId();
 
         List<Task> tasks = taskService.createTaskQuery().list();
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
 
         // Fire timer
         Job timer = managementService.createTimerJobQuery().singleResult();
@@ -524,14 +524,14 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
 
         List<Task> tasks = taskService.createTaskQuery().orderByTaskAssignee().asc().list();
         assertThat(tasks).hasSize(5);
-        assertThat(tasks.get(0).getAssignee()).isEqualTo("bubba");
+        assertThat(tasks.getFirst().getAssignee()).isEqualTo("bubba");
         assertThat(tasks.get(1).getAssignee()).isEqualTo("fozzie");
         assertThat(tasks.get(2).getAssignee()).isEqualTo("gonzo");
         assertThat(tasks.get(3).getAssignee()).isEqualTo("kermit");
         assertThat(tasks.get(4).getAssignee()).isEqualTo("mispiggy");
 
         // Completing 3 tasks will trigger completioncondition
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
         taskService.complete(tasks.get(1).getId());
         taskService.complete(tasks.get(2).getId());
         assertThat(taskService.createTaskQuery().count()).isEqualTo(0);
@@ -556,17 +556,17 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
 
         List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
         assertThat(tasks).hasSize(3);
-        assertThat(tasks.get(0).getName()).isEqualTo("My Task 0");
+        assertThat(tasks.getFirst().getName()).isEqualTo("My Task 0");
         assertThat(tasks.get(1).getName()).isEqualTo("My Task 1");
         assertThat(tasks.get(2).getName()).isEqualTo("My Task 2");
 
         tasks = taskService.createTaskQuery().orderByTaskAssignee().asc().list();
-        assertThat(tasks.get(0).getAssignee()).isEqualTo("fozzie");
+        assertThat(tasks.getFirst().getAssignee()).isEqualTo("fozzie");
         assertThat(tasks.get(1).getAssignee()).isEqualTo("gonzo");
         assertThat(tasks.get(2).getAssignee()).isEqualTo("kermit");
 
         // Completing 3 tasks will trigger completion condition
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
         taskService.complete(tasks.get(1).getId());
         taskService.complete(tasks.get(2).getId());
         assertThat(taskService.createTaskQuery().count()).isEqualTo(0);
@@ -748,10 +748,10 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
             List<Task> tasks = query.list();
             assertThat(tasks).hasSize(2);
 
-            assertThat(tasks.get(0).getName()).isEqualTo("task one");
+            assertThat(tasks.getFirst().getName()).isEqualTo("task one");
             assertThat(tasks.get(1).getName()).isEqualTo("task two");
 
-            taskService.complete(tasks.get(0).getId());
+            taskService.complete(tasks.getFirst().getId());
             taskService.complete(tasks.get(1).getId());
 
             if (i != 3) {
@@ -774,9 +774,9 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
             List<Task> tasks = query.list();
             assertThat(tasks).hasSize(1);
 
-            assertThat(tasks.get(0).getName()).isEqualTo("task one");
+            assertThat(tasks.getFirst().getName()).isEqualTo("task one");
 
-            taskService.complete(tasks.get(0).getId());
+            taskService.complete(tasks.getFirst().getId());
 
             // Last run, the execution no longer exists
             if (i != 3) {
@@ -798,7 +798,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
         runtimeService.startProcessInstanceByKey("miSequentialSubprocess");
         for (int i = 0; i < 4; i++) {
             List<Task> tasks = taskService.createTaskQuery().list();
-            taskService.complete(tasks.get(0).getId());
+            taskService.complete(tasks.getFirst().getId());
             taskService.complete(tasks.get(1).getId());
         }
 
@@ -836,7 +836,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
         // Complete one subprocess
         List<Task> tasks = taskService.createTaskQuery().list();
         assertThat(tasks).hasSize(2);
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
         taskService.complete(tasks.get(1).getId());
         tasks = taskService.createTaskQuery().list();
         assertThat(tasks).hasSize(2);
@@ -862,10 +862,10 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
             List<Task> tasks = query.list();
             assertThat(tasks).hasSize(2);
 
-            assertThat(tasks.get(0).getName()).isEqualTo("task one");
+            assertThat(tasks.getFirst().getName()).isEqualTo("task one");
             assertThat(tasks.get(1).getName()).isEqualTo("task two");
 
-            taskService.complete(tasks.get(0).getId());
+            taskService.complete(tasks.getFirst().getId());
             taskService.complete(tasks.get(1).getId());
         }
 
@@ -878,7 +878,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
 
         for (int i = 0; i < 3; i++) {
             List<Task> tasks = taskService.createTaskQuery().taskAssignee("kermit").list();
-            taskService.complete(tasks.get(0).getId());
+            taskService.complete(tasks.getFirst().getId());
             taskService.complete(tasks.get(1).getId());
         }
 
@@ -891,13 +891,13 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
 
         for (int i = 0; i < 2; i++) {
             List<Task> tasks = taskService.createTaskQuery().taskAssignee("kermit").list();
-            taskService.complete(tasks.get(0).getId());
+            taskService.complete(tasks.getFirst().getId());
             taskService.complete(tasks.get(1).getId());
         }
 
         // Complete one task, to make it a bit more trickier
         List<Task> tasks = taskService.createTaskQuery().taskAssignee("kermit").list();
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
 
         // Fire timer
         Job timer = managementService.createTimerJobQuery().singleResult();
@@ -956,7 +956,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
         assertThat(tasks).hasSize(6);
 
         // Complete two tasks
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
         taskService.complete(tasks.get(1).getId());
 
         // Fire timer
@@ -985,7 +985,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
 
         Execution taskExecution = runtimeService
             .createExecutionQuery()
-            .executionId(subProcessTasks1.get(0).getExecutionId())
+            .executionId(subProcessTasks1.getFirst().getExecutionId())
             .singleResult();
         String parentExecutionId = taskExecution.getParentId();
 
@@ -1002,7 +1002,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
         }
 
         assertThat(subProcessTask2).isNotNull();
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
         taskService.complete(subProcessTask2.getId());
 
         assertProcessEnded(procId);
@@ -1020,7 +1020,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
                 .activityId("subProcessWait")
                 .list();
             assertThat(waitSubExecutions.size() > 0).isTrue();
-            runtimeService.trigger(waitSubExecutions.get(0).getId());
+            runtimeService.trigger(waitSubExecutions.getFirst().getId());
         }
 
         List<Execution> waitSubExecutions = runtimeService.createExecutionQuery().activityId("subProcessWait").list();
@@ -1049,7 +1049,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
                 .activityId("subProcessWait")
                 .list();
             assertThat(waitSubExecutions.size() > 0).isTrue();
-            runtimeService.trigger(waitSubExecutions.get(0).getId());
+            runtimeService.trigger(waitSubExecutions.getFirst().getId());
         }
 
         List<Execution> waitSubExecutions = runtimeService.createExecutionQuery().activityId("subProcessWait").list();
@@ -1108,9 +1108,9 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
         for (int i = 0; i < 3; i++) {
             List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
             assertThat(tasks).hasSize(2);
-            assertThat(tasks.get(0).getName()).isEqualTo("task one");
+            assertThat(tasks.getFirst().getName()).isEqualTo("task one");
             assertThat(tasks.get(1).getName()).isEqualTo("task two");
-            taskService.complete(tasks.get(0).getId());
+            taskService.complete(tasks.getFirst().getId());
             taskService.complete(tasks.get(1).getId());
         }
 
@@ -1165,9 +1165,9 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
         // Complete first subprocess
         List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
         assertThat(tasks).hasSize(2);
-        assertThat(tasks.get(0).getName()).isEqualTo("task one");
+        assertThat(tasks.getFirst().getName()).isEqualTo("task one");
         assertThat(tasks.get(1).getName()).isEqualTo("task two");
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
         taskService.complete(tasks.get(1).getId());
 
         // Fire timer
@@ -1286,9 +1286,9 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
         for (int i = 0; i < 4; i++) {
             List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
             assertThat(tasks).hasSize(2);
-            assertThat(tasks.get(0).getName()).isEqualTo("task one");
+            assertThat(tasks.getFirst().getName()).isEqualTo("task one");
             assertThat(tasks.get(1).getName()).isEqualTo("task two");
-            taskService.complete(tasks.get(0).getId());
+            taskService.complete(tasks.getFirst().getId());
             taskService.complete(tasks.get(1).getId());
         }
 
@@ -1307,15 +1307,15 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
         // first instance
         List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
         assertThat(tasks).hasSize(2);
-        assertThat(tasks.get(0).getName()).isEqualTo("task one");
+        assertThat(tasks.getFirst().getName()).isEqualTo("task one");
         assertThat(tasks.get(1).getName()).isEqualTo("task two");
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
         taskService.complete(tasks.get(1).getId());
 
         // one task of second instance
         tasks = taskService.createTaskQuery().list();
         assertThat(tasks).hasSize(2);
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
 
         // Fire timer
         Job timer = managementService.createTimerJobQuery().singleResult();
@@ -1392,7 +1392,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
                 .createProcessInstanceQuery()
                 .processDefinitionKey("externalSubProcess")
                 .listPage(0, 1)
-                .get(0);
+                .getFirst();
             List<Task> tasks = taskService.createTaskQuery().processInstanceId(nextSubProcessInstance.getId()).list();
             assertThat(tasks).hasSize(2);
             for (Task task : tasks) {
@@ -1484,12 +1484,12 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
         // finish first call activity with error
         variableMap = new HashMap<String, Object>();
         variableMap.put("done", false);
-        taskService.complete(tasks.get(0).getId(), variableMap);
+        taskService.complete(tasks.getFirst().getId(), variableMap);
 
         tasks = taskService.createTaskQuery().list();
         assertThat(tasks).hasSize(1);
 
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
 
         List<ProcessInstance> processInstances = runtimeService
             .createProcessInstanceQuery()
@@ -1517,12 +1517,12 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
         // finish first call activity with error
         variableMap = new HashMap<String, Object>();
         variableMap.put("done", false);
-        taskService.complete(tasks.get(0).getId(), variableMap);
+        taskService.complete(tasks.getFirst().getId(), variableMap);
 
         tasks = taskService.createTaskQuery().list();
         assertThat(tasks).hasSize(1);
 
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
 
         List<ProcessInstance> processInstances = runtimeService
             .createProcessInstanceQuery()
@@ -1883,7 +1883,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
 
         List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
         assertThat(tasks).hasSize(2);
-        assertThat(tasks.get(0).getName()).isEqualTo("User Task 1");
+        assertThat(tasks.getFirst().getName()).isEqualTo("User Task 1");
         assertThat(tasks.get(1).getName()).isEqualTo("User Task 1");
 
         // End time should not be set for the subprocess
@@ -1898,7 +1898,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
         }
 
         // Complete one of the user tasks. This should not trigger setting of end time of the subprocess, but due to a bug it did exactly that
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
         historicActivityInstances = historyService
             .createHistoricActivityInstanceQuery()
             .activityId("subprocess1")

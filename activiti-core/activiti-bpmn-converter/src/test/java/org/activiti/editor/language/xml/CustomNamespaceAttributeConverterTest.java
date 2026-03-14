@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ public class CustomNamespaceAttributeConverterTest extends AbstractConverterTest
         List<ExtensionAttribute> attributes = process.getAttributes().get("version");
         assertThat(attributes).isNotNull();
         assertThat(attributes).hasSize(1);
-        ExtensionAttribute attribute = attributes.get(0);
+        ExtensionAttribute attribute = attributes.getFirst();
         // custom:version = "9"
         assertThat(attribute).isNotNull();
         assertThat(attribute.getNamespace()).isEqualTo("http://custom.org/bpmn");
@@ -76,7 +76,7 @@ public class CustomNamespaceAttributeConverterTest extends AbstractConverterTest
         attributes = attributesMap.get("id");
         assertThat(attributes).isNotNull();
         assertThat(attributes).hasSize(1);
-        ExtensionAttribute a = attributes.get(0);
+        ExtensionAttribute a = attributes.getFirst();
         assertThat(a).isNotNull();
         assertThat(a.getName()).isEqualTo("id");
         assertThat(a.getValue()).isEqualTo("test");
@@ -86,7 +86,7 @@ public class CustomNamespaceAttributeConverterTest extends AbstractConverterTest
         attributes = attributesMap.get("attr");
         assertThat(attributes).isNotNull();
         assertThat(attributes).hasSize(1);
-        a = attributes.get(0);
+        a = attributes.getFirst();
         assertThat(a).isNotNull();
         assertThat(a.getName()).isEqualTo("attr");
         assertThat(a.getValue()).isEqualTo("attrValue");

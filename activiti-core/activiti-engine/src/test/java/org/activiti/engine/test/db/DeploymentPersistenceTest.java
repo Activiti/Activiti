@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ public class DeploymentPersistenceTest extends PluggableActivitiTestCase {
 
         List<Deployment> deployments = repositoryService.createDeploymentQuery().list();
         assertThat(deployments).hasSize(1);
-        deployment = deployments.get(0);
+        deployment = deployments.getFirst();
 
         assertThat(deployment.getName()).isEqualTo("strings");
         assertThat(deployment.getDeploymentTime()).isNotNull();

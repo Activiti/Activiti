@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -167,7 +167,7 @@ public class SubProcessWithExtensionsConverterTest extends AbstractConverterTest
         Map<String, List<ExtensionElement>> extensionElements = dataObj.getExtensionElements();
 
         if (!extensionElements.isEmpty()) {
-            return extensionElements.get(key).get(0).getElementText();
+            return extensionElements.get(key).getFirst().getElementText();
         }
         return null;
     }
@@ -176,7 +176,7 @@ public class SubProcessWithExtensionsConverterTest extends AbstractConverterTest
         Map<String, List<ExtensionElement>> extensionElements = dataObj.getExtensionElements();
 
         if (!extensionElements.isEmpty()) {
-            return extensionElements.get(key).get(0);
+            return extensionElements.get(key).getFirst();
         }
         return null;
     }
@@ -190,7 +190,7 @@ public class SubProcessWithExtensionsConverterTest extends AbstractConverterTest
             if (null != attributesExtension && !attributesExtension.isEmpty()) {
                 attributes = new HashMap<String, String>();
                 List<ExtensionElement> attributeExtensions = attributesExtension
-                    .get(0)
+                    .getFirst()
                     .getChildElements()
                     .get(ELEMENT_ATTRIBUTE);
 
@@ -209,18 +209,18 @@ public class SubProcessWithExtensionsConverterTest extends AbstractConverterTest
         List<ExtensionElement> i18lnExtension = bObj.getExtensionElements().get(ELEMENT_I18LN_LOCALIZATION);
 
         if (!i18lnExtension.isEmpty()) {
-            Map<String, List<ExtensionAttribute>> extensionAttributes = i18lnExtension.get(0).getAttributes();
+            Map<String, List<ExtensionAttribute>> extensionAttributes = i18lnExtension.getFirst().getAttributes();
             localization.setLabeledEntityIdForName(
-                extensionAttributes.get(ATTRIBUTE_LABELED_ENTITY_ID_FOR_NAME).get(0).getValue()
+                extensionAttributes.get(ATTRIBUTE_LABELED_ENTITY_ID_FOR_NAME).getFirst().getValue()
             );
             localization.setLabeledEntityIdForDescription(
-                extensionAttributes.get(ATTRIBUTE_LABELED_ENTITY_ID_FOR_DESCRIPTION).get(0).getValue()
+                extensionAttributes.get(ATTRIBUTE_LABELED_ENTITY_ID_FOR_DESCRIPTION).getFirst().getValue()
             );
             localization.setResourceBundleKeyForName(
-                extensionAttributes.get(ATTRIBUTE_RESOURCE_BUNDLE_KEY_FOR_NAME).get(0).getValue()
+                extensionAttributes.get(ATTRIBUTE_RESOURCE_BUNDLE_KEY_FOR_NAME).getFirst().getValue()
             );
             localization.setResourceBundleKeyForDescription(
-                extensionAttributes.get(ATTRIBUTE_RESOURCE_BUNDLE_KEY_FOR_DESCRIPTION).get(0).getValue()
+                extensionAttributes.get(ATTRIBUTE_RESOURCE_BUNDLE_KEY_FOR_DESCRIPTION).getFirst().getValue()
             );
         }
         return localization;

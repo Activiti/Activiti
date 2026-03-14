@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1014,7 +1014,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         for (int i = 0; i < chain.size() - 1; i++) {
             chain.get(i).setNext(chain.get(i + 1));
         }
-        return chain.get(0);
+        return chain.getFirst();
     }
 
     public abstract CommandInterceptor createTransactionInterceptor();
@@ -1169,10 +1169,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
             switch (databaseVendor) {
                 case DATABASE_TYPE_MYSQL:
                     String databaseProductVersion = databaseMetaData.getDatabaseProductVersion();
-                    // MariaDB has performance penalty when using "withoutJoins" SQL scripts
-                    // example of MariaDB 10.5.4
-                    //     input: vendor=MySQL, version=5.5.5-10.5.24-MariaDB-1:10.5.24+maria~ubu2004
-                    //     output: databaseType=mariadb
                     if (databaseProductVersion.toLowerCase().contains(DATABASE_TYPE_MARIADB)) {
                         databaseType = DATABASE_TYPE_MARIADB;
                     }

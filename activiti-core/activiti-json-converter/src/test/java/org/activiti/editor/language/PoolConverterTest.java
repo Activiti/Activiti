@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,7 +60,7 @@ public class PoolConverterTest extends AbstractConverterTest {
         assertThat(process.isExecutable()).isTrue();
         assertThat(process.getLanes()).hasSize(3);
 
-        Lane lane = process.getLanes().get(0);
+        Lane lane = process.getLanes().getFirst();
         assertThat(lane.getId()).isEqualTo("idLane1");
         assertThat(lane.getName()).isEqualTo("Lane 1");
         assertThat(lane.getFlowReferences()).hasSize(7);

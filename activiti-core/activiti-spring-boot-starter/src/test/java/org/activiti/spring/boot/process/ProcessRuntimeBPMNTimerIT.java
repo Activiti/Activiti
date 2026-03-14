@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -197,7 +197,7 @@ public class ProcessRuntimeBPMNTimerIT {
             TaskPayloadBuilder.tasks().withProcessInstanceId(processInstance.getId()).build()
         );
         assertThat(tasks.getContent()).hasSize(1);
-        assertThat(tasks.getContent().get(0).getName()).isEqualTo("User Task");
+        assertThat(tasks.getContent().getFirst().getName()).isEqualTo("User Task");
     }
 
     @Test
@@ -234,7 +234,7 @@ public class ProcessRuntimeBPMNTimerIT {
         );
         assertThat(tasks.getContent()).hasSize(1);
 
-        Task task = tasks.getContent().get(0);
+        Task task = tasks.getContent().getFirst();
         taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
 
         taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
@@ -286,7 +286,7 @@ public class ProcessRuntimeBPMNTimerIT {
                 assertThat(processInstancePage).isNotNull();
                 assertThat(processInstancePage.getContent()).isNotEmpty();
 
-                ProcessInstance processInstance = processInstancePage.getContent().get(0);
+                ProcessInstance processInstance = processInstancePage.getContent().getFirst();
                 assertThat(processInstance.getProcessDefinitionKey()).isEqualTo(VARIABLE_MAPPING_PROCESS_START_TIME);
 
                 List<VariableInstance> variables = processBaseRuntime.getProcessVariablesByProcessIdAsAdmin(

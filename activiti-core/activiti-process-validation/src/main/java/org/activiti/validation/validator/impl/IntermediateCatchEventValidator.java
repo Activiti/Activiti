@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ public class IntermediateCatchEventValidator extends ProcessLevelValidator {
         for (IntermediateCatchEvent intermediateCatchEvent : intermediateCatchEvents) {
             EventDefinition eventDefinition = null;
             if (!intermediateCatchEvent.getEventDefinitions().isEmpty()) {
-                eventDefinition = intermediateCatchEvent.getEventDefinitions().get(0);
+                eventDefinition = intermediateCatchEvent.getEventDefinitions().getFirst();
             }
 
             if (eventDefinition == null) {

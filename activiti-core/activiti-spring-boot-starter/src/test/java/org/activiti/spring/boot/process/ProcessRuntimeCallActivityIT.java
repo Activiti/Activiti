@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -77,7 +77,7 @@ public class ProcessRuntimeCallActivityIT {
 
         assertThat(taskList).isNotEmpty();
 
-        Task task = taskList.get(0);
+        Task task = taskList.getFirst();
 
         assertThat(task).isNotNull();
         assertThat("my-task-call-activity").isEqualTo(task.getName());
@@ -109,7 +109,7 @@ public class ProcessRuntimeCallActivityIT {
 
         assertThat(parentProcessInstanceList).isNotEmpty();
 
-        ProcessInstance parentProcessInstance = parentProcessInstanceList.get(0);
+        ProcessInstance parentProcessInstance = parentProcessInstanceList.getFirst();
 
         return parentProcessInstance;
     }

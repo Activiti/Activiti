@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ public class TypedEventListenersConfigurationTest extends ResourceActivitiTestCa
         processEngineConfiguration.getEventDispatcher().dispatchEvent(event);
 
         assertThat(listener.getEventsReceived()).hasSize(1);
-        assertThat(listener.getEventsReceived().get(0)).isEqualTo(event);
+        assertThat(listener.getEventsReceived().getFirst()).isEqualTo(event);
         listener.clearEventsReceived();
 
         // Dispatch another event the listener is registered for
@@ -59,7 +59,7 @@ public class TypedEventListenersConfigurationTest extends ResourceActivitiTestCa
         processEngineConfiguration.getEventDispatcher().dispatchEvent(event);
 
         assertThat(listener.getEventsReceived()).hasSize(2);
-        assertThat(listener.getEventsReceived().get(0).getType()).isEqualTo(ActivitiEventType.ENTITY_DELETED);
+        assertThat(listener.getEventsReceived().getFirst().getType()).isEqualTo(ActivitiEventType.ENTITY_DELETED);
         assertThat(listener.getEventsReceived().get(1).getType()).isEqualTo(ActivitiEventType.ENTITY_UPDATED);
         listener.clearEventsReceived();
 

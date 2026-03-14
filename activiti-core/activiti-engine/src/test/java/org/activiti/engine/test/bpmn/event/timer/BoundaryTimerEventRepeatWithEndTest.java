@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,7 +59,7 @@ public class BoundaryTimerEventRepeatWithEndTest extends PluggableActivitiTestCa
         List<Task> tasks = taskService.createTaskQuery().list();
         assertThat(tasks).hasSize(1);
 
-        Task task = tasks.get(0);
+        Task task = tasks.getFirst();
         assertThat(task.getName()).isEqualTo("Task A");
 
         // Test Boundary Events
@@ -70,7 +70,7 @@ public class BoundaryTimerEventRepeatWithEndTest extends PluggableActivitiTestCa
         assertThat(jobs).hasSize(1);
 
         // boundary events
-        Job executableJob = managementService.moveTimerToExecutableJob(jobs.get(0).getId());
+        Job executableJob = managementService.moveTimerToExecutableJob(jobs.getFirst().getId());
         managementService.executeJob(executableJob.getId());
 
         assertThat(managementService.createJobQuery().list()).hasSize(0);
@@ -80,7 +80,7 @@ public class BoundaryTimerEventRepeatWithEndTest extends PluggableActivitiTestCa
         nextTimeCal.add(Calendar.MINUTE, 15); // after 15 minutes
         processEngineConfiguration.getClock().setCurrentTime(nextTimeCal.getTime());
 
-        executableJob = managementService.moveTimerToExecutableJob(jobs.get(0).getId());
+        executableJob = managementService.moveTimerToExecutableJob(jobs.getFirst().getId());
         managementService.executeJob(executableJob.getId());
 
         assertThat(managementService.createJobQuery().list()).hasSize(0);
@@ -91,7 +91,7 @@ public class BoundaryTimerEventRepeatWithEndTest extends PluggableActivitiTestCa
         nextTimeCal.add(Calendar.SECOND, 1);
         processEngineConfiguration.getClock().setCurrentTime(nextTimeCal.getTime());
 
-        executableJob = managementService.moveTimerToExecutableJob(jobs.get(0).getId());
+        executableJob = managementService.moveTimerToExecutableJob(jobs.getFirst().getId());
         managementService.executeJob(executableJob.getId());
 
         jobs = managementService.createTimerJobQuery().list();
@@ -100,7 +100,7 @@ public class BoundaryTimerEventRepeatWithEndTest extends PluggableActivitiTestCa
         assertThat(jobs).hasSize(0);
 
         tasks = taskService.createTaskQuery().list();
-        task = tasks.get(0);
+        task = tasks.getFirst();
         assertThat(task.getName()).isEqualTo("Task B");
         assertThat(tasks).hasSize(1);
         taskService.complete(task.getId());

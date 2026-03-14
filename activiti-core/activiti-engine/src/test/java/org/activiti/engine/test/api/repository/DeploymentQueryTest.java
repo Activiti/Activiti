@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -159,7 +159,7 @@ public class DeploymentQueryTest extends PluggableActivitiTestCase {
     public void testVerifyDeploymentProperties() {
         List<Deployment> deployments = repositoryService.createDeploymentQuery().orderByDeploymentName().asc().list();
 
-        Deployment deploymentOne = deployments.get(0);
+        Deployment deploymentOne = deployments.getFirst();
         assertThat(deploymentOne.getName()).isEqualTo("org/activiti/engine/test/repository/one.bpmn20.xml");
         assertThat(deploymentOne.getId()).isEqualTo(deploymentOneId);
 
@@ -174,7 +174,7 @@ public class DeploymentQueryTest extends PluggableActivitiTestCase {
             .asc()
             .list();
 
-        assertThat(deployments.get(0).getName()).isEqualTo("org/activiti/engine/test/repository/one.bpmn20.xml");
+        assertThat(deployments.getFirst().getName()).isEqualTo("org/activiti/engine/test/repository/one.bpmn20.xml");
         assertThat(deployments).hasSize(1);
 
         assertThat(repositoryService.createDeploymentQuery().orderByDeploymentId().asc().list()).hasSize(2);

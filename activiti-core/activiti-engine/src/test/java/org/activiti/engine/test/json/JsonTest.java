@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -101,8 +101,8 @@ public class JsonTest extends PluggableActivitiTestCase {
                 .list();
             assertThat(historicVariableInstances).hasSize(2);
 
-            assertThat(historicVariableInstances.get(0).getVariableName()).isEqualTo(BIG_JSON_OBJ);
-            value = (ObjectNode) historicVariableInstances.get(0).getValue();
+            assertThat(historicVariableInstances.getFirst().getVariableName()).isEqualTo(BIG_JSON_OBJ);
+            value = (ObjectNode) historicVariableInstances.getFirst().getValue();
             assertThat(value).isNotNull();
             assertThat(value.toString()).isEqualTo(createBigJsonObject().toString());
 

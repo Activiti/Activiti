@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,7 +70,7 @@ public class SimpleConverterTest extends AbstractConverterTest {
         assertThat(flowElement.getId()).isEqualTo("catchEvent");
         IntermediateCatchEvent catchEvent = (IntermediateCatchEvent) flowElement;
         assertThat(catchEvent.getEventDefinitions().size() == 1).isTrue();
-        EventDefinition eventDefinition = catchEvent.getEventDefinitions().get(0);
+        EventDefinition eventDefinition = catchEvent.getEventDefinitions().getFirst();
         assertThat(eventDefinition).isInstanceOf(TimerEventDefinition.class);
         TimerEventDefinition timerDefinition = (TimerEventDefinition) eventDefinition;
         assertThat(timerDefinition.getTimeDuration()).isEqualTo("PT5M");

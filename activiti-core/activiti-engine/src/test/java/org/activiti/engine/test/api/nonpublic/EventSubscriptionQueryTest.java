@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -181,7 +181,7 @@ public class EventSubscriptionQueryTest extends PluggableActivitiTestCase {
         List<EventSubscriptionEntity> list = newEventSubscriptionQuery().activityId("someOtherActivity").list();
         assertThat(list).hasSize(1);
 
-        final EventSubscriptionEntity entity = list.get(0);
+        final EventSubscriptionEntity entity = list.getFirst();
 
         list = newEventSubscriptionQuery().eventSubscriptionId(entity.getId()).list();
 

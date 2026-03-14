@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ public class StartEventValidator extends ProcessLevelValidator {
     ) {
         for (StartEvent startEvent : startEvents) {
             if (startEvent.getEventDefinitions() != null && !startEvent.getEventDefinitions().isEmpty()) {
-                EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
+                EventDefinition eventDefinition = startEvent.getEventDefinitions().getFirst();
                 if (
                     !(eventDefinition instanceof MessageEventDefinition) &&
                     !(eventDefinition instanceof TimerEventDefinition) &&

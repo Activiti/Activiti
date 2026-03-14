@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,8 +60,8 @@ public class ProcessDefinitionScopedEventListenerDefinitionTest extends Resource
         }
 
         // First event received should be creation of Process-instance
-        assertThat(testListenerBean.getEventsReceived().get(0)).isInstanceOf(ActivitiEntityEvent.class);
-        ActivitiEntityEvent event = (ActivitiEntityEvent) testListenerBean.getEventsReceived().get(0);
+        assertThat(testListenerBean.getEventsReceived().getFirst()).isInstanceOf(ActivitiEntityEvent.class);
+        ActivitiEntityEvent event = (ActivitiEntityEvent) testListenerBean.getEventsReceived().getFirst();
         assertThat(event.getEntity()).isInstanceOf(ProcessInstance.class);
         assertThat(((ProcessInstance) event.getEntity()).getId()).isEqualTo(processInstance.getId());
 
@@ -138,7 +138,7 @@ public class ProcessDefinitionScopedEventListenerDefinitionTest extends Resource
 
         taskService.createAttachment("test", task.getId(), processInstance.getId(), "test", "test", "url");
         assertThat(theListener.getEventsReceived()).hasSize(2);
-        assertThat(theListener.getEventsReceived().get(0).getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
+        assertThat(theListener.getEventsReceived().getFirst().getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
         assertThat(theListener.getEventsReceived().get(1).getType()).isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,8 +42,8 @@ public class TransactionDependentExecutionListenerSpringTest extends SpringActiv
         Task task = taskService.createTaskQuery().singleResult();
         taskService.complete(task.getId());
 
-        assertThat(listener.getCurrentActivities().get(0).getActivityId()).isEqualTo("task3");
-        assertThat(listener.getCurrentActivities().get(0).getCustomPropertiesMap().get("customProp1")).isEqualTo(
+        assertThat(listener.getCurrentActivities().getFirst().getActivityId()).isEqualTo("task3");
+        assertThat(listener.getCurrentActivities().getFirst().getCustomPropertiesMap().get("customProp1")).isEqualTo(
             "task3"
         );
 

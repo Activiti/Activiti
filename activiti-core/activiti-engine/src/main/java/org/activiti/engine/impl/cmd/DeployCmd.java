@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -77,7 +77,7 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
             }
 
             if (!existingDeployments.isEmpty()) {
-                DeploymentEntity existingDeployment = (DeploymentEntity) existingDeployments.get(0);
+                DeploymentEntity existingDeployment = (DeploymentEntity) existingDeployments.getFirst();
 
                 if (existingDeployment.getVersion() > newDeployment.getVersion()) {
                     newDeployment.setVersion(existingDeployment.getVersion());

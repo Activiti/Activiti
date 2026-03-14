@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -105,7 +105,7 @@ public class DemoApplication implements CommandLineRunner {
                 List<VariableInstance> variables = taskRuntime.variables(
                     TaskPayloadBuilder.variables().withTaskId(t.getId()).build()
                 );
-                VariableInstance variableInstance = variables.get(0);
+                VariableInstance variableInstance = variables.getFirst();
                 if (variableInstance.getName().equals("content")) {
                     Content contentToProcess = variableInstance.getValue();
                     logger.info("> Content received inside the task to approve: " + contentToProcess);

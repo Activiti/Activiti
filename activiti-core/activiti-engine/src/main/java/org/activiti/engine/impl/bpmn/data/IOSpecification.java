@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -77,12 +77,12 @@ public class IOSpecification {
     }
 
     public String getFirstDataInputName() {
-        return this.dataInputs.get(0).getName();
+        return this.dataInputs.getFirst().getName();
     }
 
     public String getFirstDataOutputName() {
         if (this.dataOutputs != null && !this.dataOutputs.isEmpty()) {
-            return this.dataOutputs.get(0).getName();
+            return this.dataOutputs.getFirst().getName();
         } else {
             return null;
         }

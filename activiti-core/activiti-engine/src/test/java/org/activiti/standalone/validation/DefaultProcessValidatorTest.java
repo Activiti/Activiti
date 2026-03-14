@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,89 +70,89 @@ public class DefaultProcessValidatorTest {
             Problems.ALL_PROCESS_DEFINITIONS_NOT_EXECUTABLE,
             1
         );
-        assertThat(problems.get(0).getValidatorSetName()).isNotNull();
-        assertThat(problems.get(0).getProblem()).isNotNull();
-        assertThat(problems.get(0).getDefaultDescription()).isNotNull();
+        assertThat(problems.getFirst().getValidatorSetName()).isNotNull();
+        assertThat(problems.getFirst().getProblem()).isNotNull();
+        assertThat(problems.getFirst().getDefaultDescription()).isNotNull();
 
         // Event listeners
         problems = findErrors(allErrors, setName, Problems.EVENT_LISTENER_IMPLEMENTATION_MISSING, 1);
-        assertProcessElementError(problems.get(0));
+        assertProcessElementError(problems.getFirst());
         problems = findErrors(allErrors, setName, Problems.EVENT_LISTENER_INVALID_THROW_EVENT_TYPE, 1);
-        assertProcessElementError(problems.get(0));
+        assertProcessElementError(problems.getFirst());
 
         // Execution listeners
         problems = findErrors(allErrors, setName, Problems.EXECUTION_LISTENER_IMPLEMENTATION_MISSING, 2);
-        assertProcessElementError(problems.get(0));
+        assertProcessElementError(problems.getFirst());
         assertCommonProblemFieldForActivity(problems.get(1));
 
         // Association
         problems = findErrors(allErrors, setName, Problems.ASSOCIATION_INVALID_SOURCE_REFERENCE, 1);
-        assertProcessElementError(problems.get(0));
+        assertProcessElementError(problems.getFirst());
         problems = findErrors(allErrors, setName, Problems.ASSOCIATION_INVALID_TARGET_REFERENCE, 1);
-        assertProcessElementError(problems.get(0));
+        assertProcessElementError(problems.getFirst());
 
         // Signals
         problems = findErrors(allErrors, setName, Problems.SIGNAL_MISSING_ID, 1);
-        assertCommonErrorFields(problems.get(0));
+        assertCommonErrorFields(problems.getFirst());
         problems = findErrors(allErrors, setName, Problems.SIGNAL_MISSING_NAME, 2);
-        assertCommonErrorFields(problems.get(0));
+        assertCommonErrorFields(problems.getFirst());
         assertCommonErrorFields(problems.get(1));
         problems = findErrors(allErrors, setName, Problems.SIGNAL_DUPLICATE_NAME, 2);
-        assertCommonErrorFields(problems.get(0));
+        assertCommonErrorFields(problems.getFirst());
         assertCommonErrorFields(problems.get(1));
         problems = findErrors(allErrors, setName, Problems.SIGNAL_INVALID_SCOPE, 1);
-        assertCommonErrorFields(problems.get(0));
+        assertCommonErrorFields(problems.getFirst());
 
         // Start event
         problems = findErrors(allErrors, setName, Problems.START_EVENT_MULTIPLE_FOUND, 2);
-        assertCommonProblemFieldForActivity(problems.get(0));
+        assertCommonProblemFieldForActivity(problems.getFirst());
         assertCommonProblemFieldForActivity(problems.get(1));
         problems = findErrors(allErrors, setName, Problems.START_EVENT_INVALID_EVENT_DEFINITION, 1);
-        assertCommonProblemFieldForActivity(problems.get(0));
+        assertCommonProblemFieldForActivity(problems.getFirst());
 
         // Sequence flow
         problems = findErrors(allErrors, setName, Problems.SEQ_FLOW_INVALID_SRC, 1);
-        assertCommonProblemFieldForActivity(problems.get(0));
+        assertCommonProblemFieldForActivity(problems.getFirst());
         problems = findErrors(allErrors, setName, Problems.SEQ_FLOW_INVALID_TARGET, 1);
-        assertCommonProblemFieldForActivity(problems.get(0));
+        assertCommonProblemFieldForActivity(problems.getFirst());
         problems = findErrors(allErrors, setName, Problems.SEQ_FLOW_INVALID_TARGET_DIFFERENT_SCOPE, 1);
-        assertCommonProblemFieldForActivity(problems.get(0));
+        assertCommonProblemFieldForActivity(problems.getFirst());
 
         // User task
         problems = findErrors(allErrors, setName, Problems.USER_TASK_LISTENER_IMPLEMENTATION_MISSING, 1);
-        assertCommonProblemFieldForActivity(problems.get(0));
+        assertCommonProblemFieldForActivity(problems.getFirst());
 
         // Service task
         problems = findErrors(allErrors, setName, Problems.SERVICE_TASK_RESULT_VAR_NAME_WITH_DELEGATE, 1);
-        assertCommonProblemFieldForActivity(problems.get(0));
+        assertCommonProblemFieldForActivity(problems.getFirst());
         problems = findErrors(allErrors, setName, Problems.SERVICE_TASK_INVALID_TYPE, 1);
-        assertCommonProblemFieldForActivity(problems.get(0));
+        assertCommonProblemFieldForActivity(problems.getFirst());
         problems = findErrors(allErrors, setName, Problems.SERVICE_TASK_WEBSERVICE_INVALID_OPERATION_REF, 1);
-        assertCommonProblemFieldForActivity(problems.get(0));
+        assertCommonProblemFieldForActivity(problems.getFirst());
 
         // Send task
         problems = findErrors(allErrors, setName, Problems.SEND_TASK_INVALID_IMPLEMENTATION, 1);
-        assertCommonProblemFieldForActivity(problems.get(0));
+        assertCommonProblemFieldForActivity(problems.getFirst());
         problems = findErrors(allErrors, setName, Problems.SEND_TASK_INVALID_TYPE, 1);
-        assertCommonProblemFieldForActivity(problems.get(0));
+        assertCommonProblemFieldForActivity(problems.getFirst());
         problems = findErrors(allErrors, setName, Problems.SEND_TASK_WEBSERVICE_INVALID_OPERATION_REF, 1);
-        assertCommonProblemFieldForActivity(problems.get(0));
+        assertCommonProblemFieldForActivity(problems.getFirst());
 
         // Mail task
         problems = findErrors(allErrors, setName, Problems.MAIL_TASK_NO_RECIPIENT, 2);
-        assertCommonProblemFieldForActivity(problems.get(0));
+        assertCommonProblemFieldForActivity(problems.getFirst());
         assertCommonProblemFieldForActivity(problems.get(1));
         problems = findErrors(allErrors, setName, Problems.MAIL_TASK_NO_CONTENT, 4);
-        assertCommonProblemFieldForActivity(problems.get(0));
+        assertCommonProblemFieldForActivity(problems.getFirst());
         assertCommonProblemFieldForActivity(problems.get(1));
 
         // Shell task
         problems = findErrors(allErrors, setName, Problems.SHELL_TASK_NO_COMMAND, 1);
-        assertCommonProblemFieldForActivity(problems.get(0));
+        assertCommonProblemFieldForActivity(problems.getFirst());
 
         // Script task
         problems = findErrors(allErrors, setName, Problems.SCRIPT_TASK_MISSING_SCRIPT, 2);
-        assertCommonProblemFieldForActivity(problems.get(0));
+        assertCommonProblemFieldForActivity(problems.getFirst());
         assertCommonProblemFieldForActivity(problems.get(1));
 
         // Exclusive gateway
@@ -162,89 +162,89 @@ public class DefaultProcessValidatorTest {
             Problems.EXCLUSIVE_GATEWAY_CONDITION_NOT_ALLOWED_ON_SINGLE_SEQ_FLOW,
             1
         );
-        assertCommonProblemFieldForActivity(problems.get(0));
+        assertCommonProblemFieldForActivity(problems.getFirst());
         problems = findErrors(allErrors, setName, Problems.EXCLUSIVE_GATEWAY_CONDITION_ON_DEFAULT_SEQ_FLOW, 1);
-        assertCommonProblemFieldForActivity(problems.get(0));
+        assertCommonProblemFieldForActivity(problems.getFirst());
         problems = findErrors(allErrors, setName, Problems.EXCLUSIVE_GATEWAY_NO_OUTGOING_SEQ_FLOW, 1);
-        assertCommonProblemFieldForActivity(problems.get(0));
+        assertCommonProblemFieldForActivity(problems.getFirst());
         problems = findErrors(allErrors, setName, Problems.EXCLUSIVE_GATEWAY_SEQ_FLOW_WITHOUT_CONDITIONS, 1);
-        assertCommonProblemFieldForActivity(problems.get(0));
+        assertCommonProblemFieldForActivity(problems.getFirst());
 
         // Event gateway
         problems = findErrors(allErrors, setName, Problems.EVENT_GATEWAY_ONLY_CONNECTED_TO_INTERMEDIATE_EVENTS, 1);
-        assertCommonProblemFieldForActivity(problems.get(0));
+        assertCommonProblemFieldForActivity(problems.getFirst());
 
         // Subprocesses
         problems = findErrors(allErrors, setName, Problems.SUBPROCESS_MULTIPLE_START_EVENTS, 1);
-        assertCommonProblemFieldForActivity(problems.get(0));
+        assertCommonProblemFieldForActivity(problems.getFirst());
         problems = findErrors(allErrors, setName, Problems.SUBPROCESS_START_EVENT_EVENT_DEFINITION_NOT_ALLOWED, 1);
-        assertCommonProblemFieldForActivity(problems.get(0));
+        assertCommonProblemFieldForActivity(problems.getFirst());
 
         // Event subprocesses
         problems = findErrors(allErrors, setName, Problems.EVENT_SUBPROCESS_INVALID_START_EVENT_DEFINITION, 1);
-        assertCommonProblemFieldForActivity(problems.get(0));
+        assertCommonProblemFieldForActivity(problems.getFirst());
 
         // Boundary events
         problems = findErrors(allErrors, setName, Problems.BOUNDARY_EVENT_NO_EVENT_DEFINITION, 1);
-        assertCommonProblemFieldForActivity(problems.get(0));
+        assertCommonProblemFieldForActivity(problems.getFirst());
         problems = findErrors(allErrors, setName, Problems.BOUNDARY_EVENT_CANCEL_ONLY_ON_TRANSACTION, 1);
-        assertCommonProblemFieldForActivity(problems.get(0));
+        assertCommonProblemFieldForActivity(problems.getFirst());
         problems = findErrors(allErrors, setName, Problems.BOUNDARY_EVENT_MULTIPLE_CANCEL_ON_TRANSACTION, 1);
-        assertCommonProblemFieldForActivity(problems.get(0));
+        assertCommonProblemFieldForActivity(problems.getFirst());
 
         // Intermediate catch event
         problems = findErrors(allErrors, setName, Problems.INTERMEDIATE_CATCH_EVENT_NO_EVENTDEFINITION, 1);
-        assertCommonProblemFieldForActivity(problems.get(0));
+        assertCommonProblemFieldForActivity(problems.getFirst());
         problems = findErrors(allErrors, setName, Problems.INTERMEDIATE_CATCH_EVENT_INVALID_EVENTDEFINITION, 1);
-        assertCommonProblemFieldForActivity(problems.get(0));
+        assertCommonProblemFieldForActivity(problems.getFirst());
 
         // Intermediate throw event
         problems = findErrors(allErrors, setName, Problems.THROW_EVENT_INVALID_EVENTDEFINITION, 1);
-        assertCommonProblemFieldForActivity(problems.get(0));
+        assertCommonProblemFieldForActivity(problems.getFirst());
 
         // Multi instance
         problems = findErrors(allErrors, setName, Problems.MULTI_INSTANCE_MISSING_COLLECTION, 1);
-        assertCommonProblemFieldForActivity(problems.get(0));
+        assertCommonProblemFieldForActivity(problems.getFirst());
 
         // Message events
         problems = findErrors(allErrors, setName, Problems.MESSAGE_EVENT_MISSING_MESSAGE_REF, 2);
-        assertCommonProblemFieldForActivity(problems.get(0));
+        assertCommonProblemFieldForActivity(problems.getFirst());
         assertCommonProblemFieldForActivity(problems.get(1));
 
         // Signal events
         problems = findErrors(allErrors, setName, Problems.SIGNAL_EVENT_MISSING_SIGNAL_REF, 1);
-        assertCommonProblemFieldForActivity(problems.get(0));
+        assertCommonProblemFieldForActivity(problems.getFirst());
         problems = findErrors(allErrors, setName, Problems.SIGNAL_EVENT_INVALID_SIGNAL_REF, 1);
-        assertCommonProblemFieldForActivity(problems.get(0));
+        assertCommonProblemFieldForActivity(problems.getFirst());
 
         // Compensate event
         problems = findErrors(allErrors, setName, Problems.COMPENSATE_EVENT_INVALID_ACTIVITY_REF, 1);
-        assertCommonProblemFieldForActivity(problems.get(0));
+        assertCommonProblemFieldForActivity(problems.getFirst());
 
         // Timer event
         problems = findErrors(allErrors, setName, Problems.EVENT_TIMER_MISSING_CONFIGURATION, 2);
-        assertCommonProblemFieldForActivity(problems.get(0));
+        assertCommonProblemFieldForActivity(problems.getFirst());
 
         // Data association
         problems = findErrors(allErrors, setName, Problems.DATA_ASSOCIATION_MISSING_TARGETREF, 1);
-        assertCommonProblemFieldForActivity(problems.get(0));
+        assertCommonProblemFieldForActivity(problems.getFirst());
 
         // Data object
         problems = findErrors(allErrors, setName, Problems.DATA_OBJECT_MISSING_NAME, 2);
-        assertCommonErrorFields(problems.get(0));
+        assertCommonErrorFields(problems.getFirst());
         assertCommonErrorFields(problems.get(1));
 
         // End event
         problems = findErrors(allErrors, setName, Problems.END_EVENT_CANCEL_ONLY_INSIDE_TRANSACTION, 1);
-        assertCommonProblemFieldForActivity(problems.get(0));
+        assertCommonProblemFieldForActivity(problems.getFirst());
 
         // Messages
         problems = findErrors(allErrors, setName, Problems.MESSAGE_INVALID_ITEM_REF, 1);
-        assertCommonErrorFields(problems.get(0));
+        assertCommonErrorFields(problems.getFirst());
 
         //Conditional expression
         problems = findErrors(allErrors, setName, Problems.SEQ_FLOW_INVALID_CONDITIONAL_EXPRESSION, 1);
-        assertCommonErrorFields(problems.get(0));
+        assertCommonErrorFields(problems.getFirst());
     }
 
     @Test
@@ -257,7 +257,7 @@ public class DefaultProcessValidatorTest {
         assertThat(bpmnModel).isNotNull();
         List<ValidationError> allErrors = processValidator.validate(bpmnModel);
         assertThat(allErrors).hasSize(1);
-        assertThat(allErrors.get(0).isWarning()).isTrue();
+        assertThat(allErrors.getFirst().isWarning()).isTrue();
     }
 
     @Test
@@ -287,8 +287,8 @@ public class DefaultProcessValidatorTest {
         assertThat(bpmnModel).isNotNull();
         List<ValidationError> allErrors = processValidator.validate(bpmnModel);
         assertThat(allErrors).hasSize(1);
-        assertThat(allErrors.get(0).isWarning()).isTrue();
-        assertThat(allErrors.get(0).getProblem()).isEqualTo("activiti-di-invalid-reference");
+        assertThat(allErrors.getFirst().isWarning()).isTrue();
+        assertThat(allErrors.getFirst().getProblem()).isEqualTo("activiti-di-invalid-reference");
     }
 
     @Test
@@ -312,7 +312,7 @@ public class DefaultProcessValidatorTest {
 
         List<ValidationError> errors = processValidator.validate(bpmnModel);
         assertThat(errors).hasSize(1);
-        assertThat(errors.get(0).getProblem()).isEqualTo("activiti-process-definition-id-duplicated");
+        assertThat(errors.getFirst().getProblem()).isEqualTo("activiti-process-definition-id-duplicated");
     }
 
     @Test

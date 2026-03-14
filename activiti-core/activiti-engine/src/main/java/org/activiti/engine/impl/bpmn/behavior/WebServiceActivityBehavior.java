@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -121,7 +121,7 @@ public class WebServiceActivityBehavior extends AbstractBpmnActivityBehavior {
             if (ioSpecification != null) {
                 initializeIoSpecification(ioSpecification, execution, bpmnModel);
                 if (ioSpecification.getDataInputRefs().size() > 0) {
-                    String firstDataInputName = ioSpecification.getDataInputRefs().get(0);
+                    String firstDataInputName = ioSpecification.getDataInputRefs().getFirst();
                     ItemInstance inputItem = (ItemInstance) execution.getVariable(firstDataInputName);
                     message = new MessageInstance(operation.getInMessage(), inputItem);
                 }
@@ -142,7 +142,7 @@ public class WebServiceActivityBehavior extends AbstractBpmnActivityBehavior {
             execution.setVariable(CURRENT_MESSAGE, receivedMessage);
 
             if (ioSpecification != null && ioSpecification.getDataOutputRefs().size() > 0) {
-                String firstDataOutputName = ioSpecification.getDataOutputRefs().get(0);
+                String firstDataOutputName = ioSpecification.getDataOutputRefs().getFirst();
                 if (firstDataOutputName != null) {
                     ItemInstance outputItem = (ItemInstance) execution.getVariable(firstDataOutputName);
                     outputItem.getStructureInstance().loadFrom(receivedMessage.getStructureInstance().toArray());

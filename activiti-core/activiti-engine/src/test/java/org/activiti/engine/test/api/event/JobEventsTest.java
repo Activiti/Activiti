@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,7 +54,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 
         // Check if create-event has been dispatched
         assertThat(listener.getEventsReceived()).hasSize(3);
-        ActivitiEvent event = listener.getEventsReceived().get(0);
+        ActivitiEvent event = listener.getEventsReceived().getFirst();
         assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
         checkEventContext(event, theJob);
 
@@ -71,7 +71,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
         // Update the job-entity. Check if update event is dispatched with update job entity
         managementService.setTimerJobRetries(theJob.getId(), 5);
         assertThat(listener.getEventsReceived()).hasSize(1);
-        event = listener.getEventsReceived().get(0);
+        event = listener.getEventsReceived().getFirst();
         assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_UPDATED);
         Job updatedJob = (Job) ((ActivitiEntityEvent) event).getEntity();
         assertThat(updatedJob.getRetries()).isEqualTo(5);
@@ -91,7 +91,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
         // Check delete-event has been dispatched
         assertThat(listener.getEventsReceived()).hasSize(6);
 
-        event = listener.getEventsReceived().get(0);
+        event = listener.getEventsReceived().getFirst();
         assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
         checkEventContext(event, theJob);
 
@@ -139,7 +139,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 
         // Check if create-event has been dispatched
         assertThat(listener.getEventsReceived()).hasSize(3);
-        ActivitiEvent event = listener.getEventsReceived().get(0);
+        ActivitiEvent event = listener.getEventsReceived().getFirst();
         assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
         checkEventContext(event, theJob);
 
@@ -182,9 +182,9 @@ public class JobEventsTest extends PluggableActivitiTestCase {
         assertThat(firstTimerInstance.getId() != secondTimerInstance.getId()).isTrue();
 
         checkEventCount(1, ActivitiEventType.TIMER_FIRED);
-        checkEventContext(filterEvents(ActivitiEventType.TIMER_FIRED).get(0), firstTimerInstance);
+        checkEventContext(filterEvents(ActivitiEventType.TIMER_FIRED).getFirst(), firstTimerInstance);
         checkEventCount(1, ActivitiEventType.TIMER_SCHEDULED);
-        checkEventContext(filterEvents(ActivitiEventType.TIMER_SCHEDULED).get(0), secondTimerInstance);
+        checkEventContext(filterEvents(ActivitiEventType.TIMER_SCHEDULED).getFirst(), secondTimerInstance);
 
         listener.clearEventsReceived();
 
@@ -208,7 +208,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
         ).isEqualTo(0);
 
         checkEventCount(1, ActivitiEventType.TIMER_FIRED);
-        checkEventContext(filterEvents(ActivitiEventType.TIMER_FIRED).get(0), secondTimerInstance);
+        checkEventContext(filterEvents(ActivitiEventType.TIMER_FIRED).getFirst(), secondTimerInstance);
         checkEventCount(0, ActivitiEventType.TIMER_SCHEDULED);
 
         listener.clearEventsReceived();
@@ -332,7 +332,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
         assertThat(listener.getEventsReceived()).hasSize(6);
 
         // timer entity created first
-        assertThat(listener.getEventsReceived().get(0).getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
+        assertThat(listener.getEventsReceived().getFirst().getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
         // timer entity initialized
         assertThat(listener.getEventsReceived().get(1).getType()).isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
         // timer entity deleted
@@ -395,7 +395,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
         assertThat(listener.getEventsReceived()).hasSize(8);
 
         // First, the timer was fired
-        ActivitiEvent event = listener.getEventsReceived().get(0);
+        ActivitiEvent event = listener.getEventsReceived().getFirst();
         assertThat(event.getType()).isEqualTo(ActivitiEventType.TIMER_FIRED);
         checkEventContext(event, theJob);
 

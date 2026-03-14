@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -115,8 +115,8 @@ public class ValuedDataObjectConverterTest extends AbstractConverterTest {
         List<ExtensionElement> testValues = dataObj.getExtensionElements().get("testvalue");
         assertThat(testValues).isNotNull();
         assertThat(testValues).hasSize(1);
-        assertThat(testValues.get(0).getName()).isEqualTo("testvalue");
-        assertThat(testValues.get(0).getElementText()).isEqualTo("test");
+        assertThat(testValues.getFirst().getName()).isEqualTo("testvalue");
+        assertThat(testValues.getFirst().getElementText()).isEqualTo("test");
 
         dataObj = objectMap.get("NoData");
         assertThat(dataObj.getId()).isEqualTo("NoData");

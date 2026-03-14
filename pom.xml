@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.activiti</groupId>
   <artifactId>activiti-parent</artifactId>
-  <version>8.8.0-SNAPSHOT</version>
+  <version>9.1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Activiti :: Parent</name>
   <description>${project.name}</description>
@@ -187,29 +187,29 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <project.scm.organization>Activiti</project.scm.organization>
     <project.scm.repository>Activiti</project.scm.repository>
-    <project.year>2025</project.year>
+    <project.year>2026</project.year>
 
     <java.release>${java.version}</java.release>
-    <java.version>21</java.version>
+    <java.version>25</java.version>
     <maven.compiler.release>${java.release}</maven.compiler.release>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
 
     <!-- versions -->
-    <asm.version>9.9</asm.version>
+    <asm.version>9.9.1</asm.version>
     <build-helper-maven-plugin.version>3.6.1</build-helper-maven-plugin.version>
-    <dependency-check-maven.version>12.1.9</dependency-check-maven.version>
-    <exec-maven-plugin.version>3.6.2</exec-maven-plugin.version>
+    <dependency-check-maven.version>12.2.0</dependency-check-maven.version>
+    <exec-maven-plugin.version>3.6.3</exec-maven-plugin.version>
     <extra-enforcer-rules.version>1.11.0</extra-enforcer-rules.version>
     <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
     <license-maven-plugin.version>5.0.0</license-maven-plugin.version>
-    <third-party-license-maven-plugin.version>2.7.0</third-party-license-maven-plugin.version>
+    <third-party-license-maven-plugin.version>2.7.1</third-party-license-maven-plugin.version>
     <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
     <maven-clean-plugin.version>3.5.0</maven-clean-plugin.version>
-    <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
+    <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
     <maven-deploy-plugin.version>3.1.4</maven-deploy-plugin.version>
     <maven-enforcer-plugin.version>3.6.2</maven-enforcer-plugin.version>
-    <maven-failsafe-plugin.version>3.5.4</maven-failsafe-plugin.version>
+    <maven-failsafe-plugin.version>3.5.5</maven-failsafe-plugin.version>
     <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
     <maven-install-plugin.version>3.1.4</maven-install-plugin.version>
     <maven-jar-plugin.version>3.5.0</maven-jar-plugin.version>
@@ -217,17 +217,18 @@
     <maven-jxr-plugin.version>3.6.0</maven-jxr-plugin.version>
     <maven-pmd-plugin.version>3.28.0</maven-pmd-plugin.version>
     <maven-project-info-reports-plugin.version>3.9.0</maven-project-info-reports-plugin.version>
-    <maven-release-plugin.version>3.2.0</maven-release-plugin.version>
-    <maven-resources-plugin.version>3.4.0</maven-resources-plugin.version>
+    <maven-release-plugin.version>3.3.1</maven-release-plugin.version>
+    <maven-resources-plugin.version>3.5.0</maven-resources-plugin.version>
     <maven-site-plugin.version>3.21.0</maven-site-plugin.version>
     <maven-source-plugin.version>3.4.0</maven-source-plugin.version>
-    <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
-    <sonar-maven-plugin.version>5.3.0.6276</sonar-maven-plugin.version>
+    <maven-surefire-plugin.version>3.5.5</maven-surefire-plugin.version>
+    <sonar-maven-plugin.version>5.5.0.6356</sonar-maven-plugin.version>
     <spring-boot.version>3.5.7</spring-boot.version>
     <h2.version>2.4.240</h2.version>
     <jakarta.el-api.version>5.0.1</jakarta.el-api.version>
-    <testcontainers.version>2.0.2</testcontainers.version>
-    <versions-maven-plugin.version>2.20.1</versions-maven-plugin.version>
+    <testcontainers.version>2.0.3</testcontainers.version>
+    <versions-maven-plugin.version>2.21.0</versions-maven-plugin.version>
+    <jackson.version>2.21.1</jackson.version>
 
     <!-- configuration properties for tests -->
     <generated-assertions-folder>
@@ -244,32 +245,13 @@
         <version>3.20.0</version>
       </dependency>
       <!-- temporary security fix -->
-      <!-- temporary security fix AAE-32649 -->
+      <!-- security fix AAE-41710, remove with Spring update -->
       <dependency>
-        <groupId>net.minidev</groupId>
-        <artifactId>json-smart</artifactId>
-        <version>2.6.0</version>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <version>3.27.7</version>
       </dependency>
-      <!-- temporary security fix -->
-      <!-- temporary security fix AAE-33092 -->
-      <dependency>
-        <groupId>org.springframework.security</groupId>
-        <artifactId>spring-security-crypto</artifactId>
-        <version>7.0.0</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.security</groupId>
-        <artifactId>spring-security-core</artifactId>
-        <version>6.5.5</version>
-      </dependency>
-      <!-- temporary security fix -->
-      <!-- temporary security fix AAE-35515-->
-      <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-compress</artifactId>
-        <version>1.28.0</version>
-      </dependency>
-      <!-- temporary security fix -->
+      <!-- security fix AAE-41710 -->
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-dependency-check</artifactId>
@@ -287,6 +269,14 @@
         <groupId>org.testcontainers</groupId>
         <artifactId>testcontainers-bom</artifactId>
         <version>${testcontainers.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <!-- AAE-42877 Update jackson to fix security issue - must come before Spring Boot BOM -->
+      <dependency>
+        <groupId>com.fasterxml.jackson</groupId>
+        <artifactId>jackson-bom</artifactId>
+        <version>${jackson.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -703,6 +693,28 @@ limitations under the License.
                   <findAllDuplicates>true</findAllDuplicates>
                 </banDuplicateClasses>
               </rules>
+            </configuration>
+          </execution>
+          <execution>
+            <id>ban-test-dependencies-in-compile</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <bannedDependencies>
+                  <excludes>
+                    <!-- These should only be test-scoped -->
+                    <exclude>org.assertj:*:*:*:compile</exclude>
+                    <exclude>org.mockito:*:*:*:compile</exclude>
+                    <exclude>org.springframework:spring-test:*:*:compile</exclude>
+                    <exclude>junit:*:*:*:compile</exclude>
+                    <exclude>org.junit.jupiter:*:*:*:compile</exclude>
+                  </excludes>
+                  <searchTransitive>true</searchTransitive>
+                </bannedDependencies>
+              </rules>
+              <fail>true</fail>
             </configuration>
           </execution>
         </executions>

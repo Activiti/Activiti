@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -290,7 +290,7 @@ public class Parser {
             token = scanner.next();
             position = scanner.getPosition();
         } else {
-            LookaheadToken next = lookahead.remove(0);
+            LookaheadToken next = lookahead.removeFirst();
             token = next.token;
             position = next.position;
         }

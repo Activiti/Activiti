@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -194,7 +194,7 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
                 .unfinished()
                 .list();
             assertThat(historicActivities).hasSize(1);
-            assertThat(historicActivities.get(0).getProcessDefinitionId()).isEqualTo(newProcessDefinition.getId());
+            assertThat(historicActivities.getFirst().getProcessDefinitionId()).isEqualTo(newProcessDefinition.getId());
         }
 
         // undeploy "manually" deployed process definition

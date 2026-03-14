@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ public class EndEventValidator extends ProcessLevelValidator {
         List<EndEvent> endEvents = process.findFlowElementsOfType(EndEvent.class);
         for (EndEvent endEvent : endEvents) {
             if (endEvent.getEventDefinitions() != null && !endEvent.getEventDefinitions().isEmpty()) {
-                EventDefinition eventDefinition = endEvent.getEventDefinitions().get(0);
+                EventDefinition eventDefinition = endEvent.getEventDefinitions().getFirst();
 
                 // Error end event
                 if (eventDefinition instanceof CancelEventDefinition) {

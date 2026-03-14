@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -77,11 +77,11 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
         // subprocess again
         taskService.complete(provideDetailsTask.getId());
         List<Task> reviewTasks = taskService.createTaskQuery().orderByTaskName().asc().list();
-        assertThat(reviewTasks.get(0).getName()).isEqualTo("Review customer rating");
+        assertThat(reviewTasks.getFirst().getName()).isEqualTo("Review customer rating");
         assertThat(reviewTasks.get(1).getName()).isEqualTo("Review profitability");
 
         // Completing both tasks normally ends the process
-        taskService.complete(reviewTasks.get(0).getId());
+        taskService.complete(reviewTasks.getFirst().getId());
         variables.put("notEnoughInformation", false);
         taskService.complete(reviewTasks.get(1).getId(), variables);
         assertProcessEnded(procId);

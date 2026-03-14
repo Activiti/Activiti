@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -123,6 +123,39 @@ public class ActivitiEventBuilder {
         );
 
         // In case an execution-context is active, populate the event fields related to the execution
+        populateEventWithCurrentContext(newEvent);
+        return newEvent;
+    }
+
+    /**
+     * @param entity
+     *            the entity this event targets
+     * @param variables
+     *            the variables associated with this entity
+     * @param linkedProcessInstanceId
+     *            the id of the linked process instance
+     * @param linkedProcessInstanceType
+     *            the type of the linked process instance
+     * @return an {@link ActivitiProcessStartedEvent}. In case an {@link ExecutionContext} is active, the execution related
+     *         event fields will be populated. If not, execution details will be retrieved from the {@link Object} if
+     *         possible.
+     */
+    @SuppressWarnings("rawtypes")
+    public static ActivitiProcessStartedEvent createProcessStartedEvent(
+        final Object entity,
+        final Map variables,
+        final boolean localScope,
+        final String linkedProcessInstanceId,
+        final String linkedProcessInstanceType
+    ) {
+        final ActivitiProcessStartedEventImpl newEvent = new ActivitiProcessStartedEventImpl(
+            entity,
+            variables,
+            localScope,
+            linkedProcessInstanceId,
+            linkedProcessInstanceType
+        );
+
         populateEventWithCurrentContext(newEvent);
         return newEvent;
     }

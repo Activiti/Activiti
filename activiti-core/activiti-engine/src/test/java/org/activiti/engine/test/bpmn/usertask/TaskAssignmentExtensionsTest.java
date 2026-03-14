@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ public class TaskAssignmentExtensionsTest extends PluggableActivitiTestCase {
         runtimeService.startProcessInstanceByKey("assigneeExtension");
         List<Task> tasks = taskService.createTaskQuery().taskAssignee(KERMIT).list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getName()).isEqualTo("my task");
+        assertThat(tasks.getFirst().getName()).isEqualTo("my task");
     }
 
     public void testDuplicateAssigneeDeclaration() {
@@ -63,7 +63,7 @@ public class TaskAssignmentExtensionsTest extends PluggableActivitiTestCase {
         runtimeService.startProcessInstanceByKey("ownerExtension");
         List<Task> tasks = taskService.createTaskQuery().taskOwner(GONZO).list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getName()).isEqualTo("my task");
+        assertThat(tasks.getFirst().getName()).isEqualTo("my task");
     }
 
     @Deployment
@@ -83,11 +83,11 @@ public class TaskAssignmentExtensionsTest extends PluggableActivitiTestCase {
         // kermit is a member of the two candidate groups
         List<Task> tasks = taskService.createTaskQuery().taskCandidateUser(KERMIT, KERMITSGROUPS).list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getName()).isEqualTo("make profit");
+        assertThat(tasks.getFirst().getName()).isEqualTo("make profit");
 
         tasks = taskService.createTaskQuery().taskCandidateUser(FOZZIE, FOZZIESGROUPS).list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getName()).isEqualTo("make profit");
+        assertThat(tasks.getFirst().getName()).isEqualTo("make profit");
 
         // Test the task query find-by-candidate-group operation
         TaskQuery query = taskService.createTaskQuery();

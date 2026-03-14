@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,18 +47,18 @@ public class StandaloneTaskTest extends PluggableActivitiTestCase {
         // Retrieve task list for kermit
         List<Task> tasks = taskService.createTaskQuery().taskCandidateUser("kermit").list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getName()).isEqualTo("testTask");
+        assertThat(tasks.getFirst().getName()).isEqualTo("testTask");
 
         // Retrieve task list for gonzo
         tasks = taskService.createTaskQuery().taskCandidateUser("gonzo").list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getName()).isEqualTo("testTask");
+        assertThat(tasks.getFirst().getName()).isEqualTo("testTask");
 
         task.setName("Update name");
         taskService.saveTask(task);
         tasks = taskService.createTaskQuery().taskCandidateUser("kermit").list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getName()).isEqualTo("Update name");
+        assertThat(tasks.getFirst().getName()).isEqualTo("Update name");
 
         // Claim task
         taskService.claim(taskId, "kermit");
@@ -159,7 +159,7 @@ public class StandaloneTaskTest extends PluggableActivitiTestCase {
                 .taskId(task.getId())
                 .list();
             assertThat(hisVarList).hasSize(1);
-            assertThat(hisVarList.get(0).getValue()).isEqualTo(40);
+            assertThat(hisVarList.getFirst().getValue()).isEqualTo(40);
 
             // Cleanup
             historyService.deleteHistoricTaskInstance(task.getId());

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,6 +62,7 @@ public class SpringProcessEngineConfiguration
         deploymentStrategies.add(new ResourceParentFolderAutoDeploymentStrategy(applicationUpgradeContextService));
         deploymentStrategies.add(new FailOnNoProcessAutoDeploymentStrategy(applicationUpgradeContextService));
         deploymentStrategies.add(new NeverFailAutoDeploymentStrategy(applicationUpgradeContextService));
+        deploymentStrategies.add(new NoneAutoDeploymentStrategy(applicationUpgradeContextService));
         if (applicationUpgradeContextService != null) {
             this.isRollbackDeployment = applicationUpgradeContextService.isRollbackDeployment();
         }
@@ -107,10 +108,8 @@ public class SpringProcessEngineConfiguration
     @Override
     public void initTransactionContextFactory() {
         if (transactionContextFactory == null && transactionManager != null) {
-            transactionContextFactory = new SpringTransactionContextFactory(
-                transactionManager,
-                transactionSynchronizationAdapterOrder
-            );
+            transactionContextFactory =
+                new SpringTransactionContextFactory(transactionManager, transactionSynchronizationAdapterOrder);
         }
     }
 

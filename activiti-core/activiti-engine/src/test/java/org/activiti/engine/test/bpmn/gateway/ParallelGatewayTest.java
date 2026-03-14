@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,35 +73,35 @@ public class ParallelGatewayTest extends PluggableActivitiTestCase {
         TaskQuery query = taskService.createTaskQuery().orderByTaskName().asc();
         List<Task> tasks = query.list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getName()).isEqualTo("Task 0");
+        assertThat(tasks.getFirst().getName()).isEqualTo("Task 0");
 
         // Completing task 0 will create Task A and B
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
         tasks = query.list();
         assertThat(tasks).hasSize(2);
-        assertThat(tasks.get(0).getName()).isEqualTo("Task A");
+        assertThat(tasks.getFirst().getName()).isEqualTo("Task A");
         assertThat(tasks.get(1).getName()).isEqualTo("Task B");
 
         // Completing task A should not trigger any new tasks
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
         tasks = query.list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getName()).isEqualTo("Task B");
+        assertThat(tasks.getFirst().getName()).isEqualTo("Task B");
 
         // Completing task B creates tasks B1 and B2
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
         tasks = query.list();
         assertThat(tasks).hasSize(2);
-        assertThat(tasks.get(0).getName()).isEqualTo("Task B1");
+        assertThat(tasks.getFirst().getName()).isEqualTo("Task B1");
         assertThat(tasks.get(1).getName()).isEqualTo("Task B2");
 
         // Completing B1 and B2 will activate both joins, and process reaches
         // task C
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
         taskService.complete(tasks.get(1).getId());
         tasks = query.list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getName()).isEqualTo("Task C");
+        assertThat(tasks.getFirst().getName()).isEqualTo("Task C");
     }
 
     /**
@@ -116,7 +116,7 @@ public class ParallelGatewayTest extends PluggableActivitiTestCase {
         TaskQuery query = taskService.createTaskQuery().orderByTaskName().asc();
         List<Task> tasks = query.list();
         assertThat(tasks).hasSize(2);
-        assertThat(tasks.get(0).getName()).isEqualTo("Another task");
+        assertThat(tasks.getFirst().getName()).isEqualTo("Another task");
         assertThat(tasks.get(1).getName()).isEqualTo("Some Task");
 
         // we complete the task from the parent process, the root execution is
@@ -124,11 +124,11 @@ public class ParallelGatewayTest extends PluggableActivitiTestCase {
         taskService.complete(tasks.get(1).getId());
         tasks = query.list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getName()).isEqualTo("Another task");
+        assertThat(tasks.getFirst().getName()).isEqualTo("Another task");
 
         // we end the task in the sub process and the sub process instance end
         // is propagated to the parent process
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
         assertThat(taskService.createTaskQuery().count()).isEqualTo(0);
 
         // There is a QA config without history, so we cannot work with this:

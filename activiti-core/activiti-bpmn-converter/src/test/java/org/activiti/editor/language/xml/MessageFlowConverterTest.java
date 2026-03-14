@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,7 +63,7 @@ public class MessageFlowConverterTest extends AbstractConverterTest {
         assertThat(messageFlow.getTargetRef()).isEqualTo("task3");
 
         assertThat(model.getPools()).hasSize(2);
-        Pool pool = model.getPools().get(0);
+        Pool pool = model.getPools().getFirst();
         assertThat(pool.getId()).isEqualTo("participant1");
         assertThat(pool.getName()).isEqualTo("Participant 1");
         assertThat(pool.getProcessRef()).isEqualTo("PROCESS_1");

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,7 +54,7 @@ public class BoundaryEventValidator extends ProcessLevelValidator {
             BoundaryEvent boundaryEvent = boundaryEvents.get(i);
 
             if (boundaryEvent.getEventDefinitions() != null && !boundaryEvent.getEventDefinitions().isEmpty()) {
-                EventDefinition eventDefinition = boundaryEvent.getEventDefinitions().get(0);
+                EventDefinition eventDefinition = boundaryEvent.getEventDefinitions().getFirst();
                 if (
                     !(eventDefinition instanceof TimerEventDefinition) &&
                     !(eventDefinition instanceof ErrorEventDefinition) &&
@@ -103,7 +103,7 @@ public class BoundaryEventValidator extends ProcessLevelValidator {
                                 ) {
                                     EventDefinition otherEventDefinition = otherBoundaryEvent
                                         .getEventDefinitions()
-                                        .get(0);
+                                        .getFirst();
                                     if (otherEventDefinition instanceof MessageEventDefinition) {
                                         MessageEventDefinition currentMessageEventDefinition =
                                             (MessageEventDefinition) eventDefinition;

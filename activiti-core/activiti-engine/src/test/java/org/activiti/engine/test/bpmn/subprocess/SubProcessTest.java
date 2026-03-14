@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -113,7 +113,7 @@ public class SubProcessTest extends PluggableActivitiTestCase {
 
         List<Task> tasksAfterTimer = taskQuery.list();
         assertThat(tasksAfterTimer).hasSize(2);
-        Task taskAfterTimer1 = tasksAfterTimer.get(0);
+        Task taskAfterTimer1 = tasksAfterTimer.getFirst();
         Task taskAfterTimer2 = tasksAfterTimer.get(1);
         assertThat(taskAfterTimer1.getName()).isEqualTo("Task after timer 1");
         assertThat(taskAfterTimer2.getName()).isEqualTo("Task after timer 2");
@@ -207,7 +207,7 @@ public class SubProcessTest extends PluggableActivitiTestCase {
             .list();
 
         // Tasks are ordered by name (see query)
-        Task taskA = subProcessTasks.get(0);
+        Task taskA = subProcessTasks.getFirst();
         Task taskB = subProcessTasks.get(1);
         assertThat(taskA.getName()).isEqualTo("Task A");
         assertThat(taskB.getName()).isEqualTo("Task B");
@@ -232,7 +232,7 @@ public class SubProcessTest extends PluggableActivitiTestCase {
             .list();
 
         // Tasks are ordered by name (see query)
-        Task taskA = subProcessTasks.get(0);
+        Task taskA = subProcessTasks.getFirst();
         Task taskB = subProcessTasks.get(1);
         assertThat(taskA.getName()).isEqualTo("Task A");
         assertThat(taskB.getName()).isEqualTo("Task B");
@@ -259,26 +259,26 @@ public class SubProcessTest extends PluggableActivitiTestCase {
         List<Task> tasks = taskQuery.list();
 
         // After process start, both tasks in the subprocesses should be active
-        assertThat(tasks.get(0).getName()).isEqualTo("Task in subprocess A");
+        assertThat(tasks.getFirst().getName()).isEqualTo("Task in subprocess A");
         assertThat(tasks.get(1).getName()).isEqualTo("Task in subprocess B");
 
         // Completing both tasks should active the tasks outside the
         // subprocesses
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
 
         tasks = taskQuery.list();
-        assertThat(tasks.get(0).getName()).isEqualTo("Task after subprocess A");
+        assertThat(tasks.getFirst().getName()).isEqualTo("Task after subprocess A");
         assertThat(tasks.get(1).getName()).isEqualTo("Task in subprocess B");
 
         taskService.complete(tasks.get(1).getId());
 
         tasks = taskQuery.list();
 
-        assertThat(tasks.get(0).getName()).isEqualTo("Task after subprocess A");
+        assertThat(tasks.getFirst().getName()).isEqualTo("Task after subprocess A");
         assertThat(tasks.get(1).getName()).isEqualTo("Task after subprocess B");
 
         // Completing these tasks should end the process
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
         taskService.complete(tasks.get(1).getId());
 
         assertProcessEnded(pi.getId());
@@ -291,7 +291,7 @@ public class SubProcessTest extends PluggableActivitiTestCase {
         List<Task> tasks = taskQuery.list();
 
         // After process start, both tasks in the subprocesses should be active
-        Task taskA = tasks.get(0);
+        Task taskA = tasks.getFirst();
         Task taskB = tasks.get(1);
         assertThat(taskA.getName()).isEqualTo("Task in subprocess A");
         assertThat(taskB.getName()).isEqualTo("Task in subprocess B");
@@ -317,7 +317,7 @@ public class SubProcessTest extends PluggableActivitiTestCase {
         List<Task> tasks = taskQuery.list();
 
         // After process start, both tasks in the subprocesses should be active
-        Task taskA = tasks.get(0);
+        Task taskA = tasks.getFirst();
         Task taskB = tasks.get(1);
         assertThat(taskA.getName()).isEqualTo("Task in subprocess A");
         assertThat(taskB.getName()).isEqualTo("Task in subprocess B");

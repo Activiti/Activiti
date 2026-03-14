@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,10 +57,10 @@ public class TaskListenerOnTransactionTest extends PluggableActivitiTestCase {
             CurrentTaskTransactionDependentTaskListener.getCurrentTasks();
         assertThat(currentTasks).hasSize(1);
 
-        assertThat(currentTasks.get(0).getTaskId()).isEqualTo("usertask1");
-        assertThat(currentTasks.get(0).getTaskName()).isEqualTo("User Task 1");
-        assertThat(currentTasks.get(0).getProcessInstanceId()).isEqualTo(processInstance.getId());
-        assertThat(currentTasks.get(0).getProcessInstanceId()).isNotNull();
+        assertThat(currentTasks.getFirst().getTaskId()).isEqualTo("usertask1");
+        assertThat(currentTasks.getFirst().getTaskName()).isEqualTo("User Task 1");
+        assertThat(currentTasks.getFirst().getProcessInstanceId()).isEqualTo(processInstance.getId());
+        assertThat(currentTasks.getFirst().getProcessInstanceId()).isNotNull();
     }
 
     @Deployment
@@ -96,10 +96,10 @@ public class TaskListenerOnTransactionTest extends PluggableActivitiTestCase {
             CurrentTaskTransactionDependentTaskListener.getCurrentTasks();
         assertThat(currentTasks).hasSize(2);
 
-        assertThat(currentTasks.get(0).getTaskId()).isEqualTo("usertask1");
-        assertThat(currentTasks.get(0).getTaskName()).isEqualTo("User Task 1");
-        assertThat(currentTasks.get(0).getProcessInstanceId()).isEqualTo(processInstance.getId());
-        assertThat(currentTasks.get(0).getProcessInstanceId()).isNotNull();
+        assertThat(currentTasks.getFirst().getTaskId()).isEqualTo("usertask1");
+        assertThat(currentTasks.getFirst().getTaskName()).isEqualTo("User Task 1");
+        assertThat(currentTasks.getFirst().getProcessInstanceId()).isEqualTo(processInstance.getId());
+        assertThat(currentTasks.getFirst().getProcessInstanceId()).isNotNull();
 
         assertThat(currentTasks.get(1).getTaskId()).isEqualTo("usertask3");
         assertThat(currentTasks.get(1).getTaskName()).isEqualTo("User Task 3");
@@ -125,10 +125,10 @@ public class TaskListenerOnTransactionTest extends PluggableActivitiTestCase {
             CurrentTaskTransactionDependentTaskListener.getCurrentTasks();
         assertThat(currentTasks).hasSize(2);
 
-        assertThat(currentTasks.get(0).getTaskId()).isEqualTo("usertask1");
-        assertThat(currentTasks.get(0).getTaskName()).isEqualTo("User Task 1");
+        assertThat(currentTasks.getFirst().getTaskId()).isEqualTo("usertask1");
+        assertThat(currentTasks.getFirst().getTaskName()).isEqualTo("User Task 1");
         assertThat(currentTasks.get(1).getExecutionVariables()).hasSize(1);
-        assertThat(currentTasks.get(0).getExecutionVariables().get("injectedExecutionVariable")).isEqualTo("test1");
+        assertThat(currentTasks.getFirst().getExecutionVariables().get("injectedExecutionVariable")).isEqualTo("test1");
 
         assertThat(currentTasks.get(1).getTaskId()).isEqualTo("usertask2");
         assertThat(currentTasks.get(1).getTaskName()).isEqualTo("User Task 2");
@@ -150,7 +150,7 @@ public class TaskListenerOnTransactionTest extends PluggableActivitiTestCase {
                 .createHistoricProcessInstanceQuery()
                 .list();
             assertThat(historicProcessInstances).hasSize(1);
-            assertThat(historicProcessInstances.get(0).getProcessDefinitionKey()).isEqualTo(
+            assertThat(historicProcessInstances.getFirst().getProcessDefinitionKey()).isEqualTo(
                 "transactionDependentTaskListenerProcess"
             );
         }
@@ -170,7 +170,7 @@ public class TaskListenerOnTransactionTest extends PluggableActivitiTestCase {
                 .createHistoricProcessInstanceQuery()
                 .list();
             assertThat(historicProcessInstances).hasSize(1);
-            assertThat(historicProcessInstances.get(0).getProcessDefinitionKey()).isEqualTo(
+            assertThat(historicProcessInstances.getFirst().getProcessDefinitionKey()).isEqualTo(
                 "secondTransactionDependentTaskListenerProcess"
             );
         }
@@ -179,8 +179,8 @@ public class TaskListenerOnTransactionTest extends PluggableActivitiTestCase {
             MyTransactionalOperationTransactionDependentTaskListener.getCurrentTasks();
         assertThat(currentTasks).hasSize(1);
 
-        assertThat(currentTasks.get(0).getTaskId()).isEqualTo("usertask1");
-        assertThat(currentTasks.get(0).getTaskName()).isEqualTo("User Task 1");
+        assertThat(currentTasks.getFirst().getTaskId()).isEqualTo("usertask1");
+        assertThat(currentTasks.getFirst().getTaskName()).isEqualTo("User Task 1");
     }
 
     @Deployment
@@ -196,9 +196,9 @@ public class TaskListenerOnTransactionTest extends PluggableActivitiTestCase {
             CurrentTaskTransactionDependentTaskListener.getCurrentTasks();
         assertThat(currentTasks).hasSize(1);
 
-        assertThat(currentTasks.get(0).getTaskId()).isEqualTo("usertask1");
-        assertThat(currentTasks.get(0).getTaskName()).isEqualTo("User Task 1");
-        assertThat(currentTasks.get(0).getCustomPropertiesMap()).hasSize(1);
-        assertThat(currentTasks.get(0).getCustomPropertiesMap().get("customProp1")).isEqualTo("usertask1");
+        assertThat(currentTasks.getFirst().getTaskId()).isEqualTo("usertask1");
+        assertThat(currentTasks.getFirst().getTaskName()).isEqualTo("User Task 1");
+        assertThat(currentTasks.getFirst().getCustomPropertiesMap()).hasSize(1);
+        assertThat(currentTasks.getFirst().getCustomPropertiesMap().get("customProp1")).isEqualTo("usertask1");
     }
 }

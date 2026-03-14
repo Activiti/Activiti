@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,16 +43,12 @@ public class SetRandomVariablesTaskListener implements TaskListener {
     }
 
     protected Object getRandomValue() {
-        switch (new Random().nextInt(4)) {
-            case 0:
-                return new Random().nextLong();
-            case 1:
-                return new Random().nextDouble();
-            case 2:
-                return "Activiti is a light-weight workflow and Business Process Management (BPM) Platform";
-            default:
-                return new Random().nextBoolean();
+        return switch (new Random().nextInt(4)) {
+            case 0 -> new Random().nextLong();
+            case 1 -> new Random().nextDouble();
+            case 2 -> "Activiti is a light-weight workflow and Business Process Management (BPM) Platform";
+            default -> new Random().nextBoolean();
             // return "Some bytearray".getBytes();
-        }
+        };
     }
 }

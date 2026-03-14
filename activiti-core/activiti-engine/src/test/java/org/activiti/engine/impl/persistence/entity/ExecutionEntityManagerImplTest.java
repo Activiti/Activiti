@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -146,8 +146,7 @@ public class ExecutionEntityManagerImplTest {
             processDefinition,
             businessKey,
             tenantId,
-            null
-        );
+            null);
 
         assertThat(processInstanceResult.getProcessDefinitionId()).isEqualTo("processDefinitionId");
         assertThat(processInstanceResult.getProcessDefinitionKey()).isEqualTo("processDefinitionKey");
@@ -338,8 +337,7 @@ public class ExecutionEntityManagerImplTest {
             processDefinition,
             businessKey,
             tenantId,
-            null
-        );
+            null);
         assertThat(processInstanceResult.getStartTime()).isNull();
 
         ExecutionEntity processInstanceUpdated = executionEntityManager.updateProcessInstanceStartDate(

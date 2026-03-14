@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -74,7 +74,7 @@ public class SubProcessConverterNoDITest extends AbstractConverterTest {
         assertThat(subProcess.getFlowElements().size() == 5).isTrue();
 
         assertThat(subProcess.getExecutionListeners()).hasSize(1);
-        ActivitiListener listenerSubProcess = subProcess.getExecutionListeners().get(0);
+        ActivitiListener listenerSubProcess = subProcess.getExecutionListeners().getFirst();
         assertThat(listenerSubProcess.getImplementation()).isEqualTo("SubProcessTestClass");
         assertThat(listenerSubProcess.getImplementationType()).isEqualTo(ImplementationType.IMPLEMENTATION_TYPE_CLASS);
         assertThat(listenerSubProcess.getEvent()).isEqualTo("start");
@@ -87,10 +87,10 @@ public class SubProcessConverterNoDITest extends AbstractConverterTest {
         assertThat(boundaryEvent.getAttachedToRef()).isNotNull();
         assertThat(boundaryEvent.getAttachedToRef().getId()).isEqualTo("subprocess1");
         assertThat(boundaryEvent.getEventDefinitions()).hasSize(1);
-        assertThat(boundaryEvent.getEventDefinitions().get(0)).isInstanceOf(TimerEventDefinition.class);
+        assertThat(boundaryEvent.getEventDefinitions().getFirst()).isInstanceOf(TimerEventDefinition.class);
 
         assertThat(model.getMainProcess().getExecutionListeners()).hasSize(1);
-        ActivitiListener listenerMainProcess = model.getMainProcess().getExecutionListeners().get(0);
+        ActivitiListener listenerMainProcess = model.getMainProcess().getExecutionListeners().getFirst();
         assertThat(listenerMainProcess.getImplementation()).isEqualTo("TestClass");
         assertThat(listenerMainProcess.getImplementationType()).isEqualTo(ImplementationType.IMPLEMENTATION_TYPE_CLASS);
         assertThat(listenerMainProcess.getEvent()).isEqualTo("start");

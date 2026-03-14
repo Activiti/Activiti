@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,7 +70,7 @@ public class JPAEntityListVariableType implements VariableType, CacheableVariabl
                 // list of JPA entities. In case the
                 // list is empty, we don't store it.
                 canStore = true;
-                Class<?> entityClass = mappings.getEntityMetaData(list.get(0).getClass()).getEntityClass();
+                Class<?> entityClass = mappings.getEntityMetaData(list.getFirst().getClass()).getEntityClass();
 
                 for (Object entity : list) {
                     canStore =
@@ -106,7 +106,7 @@ public class JPAEntityListVariableType implements VariableType, CacheableVariabl
             List<?> list = (List<?>) value;
             List<String> ids = new ArrayList<String>();
 
-            String type = mappings.getJPAClassString(list.get(0));
+            String type = mappings.getJPAClassString(list.getFirst());
             for (Object entry : list) {
                 ids.add(mappings.getJPAIdString(entry));
             }

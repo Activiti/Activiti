@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,7 +71,7 @@ public class HistoricActivityEventsTest extends PluggableActivitiTestCase {
             List<ActivitiEvent> events = listener.getEventsReceived();
 
             // Process instance start
-            assertThat(events.get(0).getType()).isEqualTo(ActivitiEventType.HISTORIC_PROCESS_INSTANCE_CREATED);
+            assertThat(events.getFirst().getType()).isEqualTo(ActivitiEventType.HISTORIC_PROCESS_INSTANCE_CREATED);
 
             // main start
             assertThat(events.get(1).getType()).isEqualTo(ActivitiEventType.HISTORIC_ACTIVITY_INSTANCE_CREATED);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -391,6 +391,8 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
             .processDefinitionKey(processDefinition.getKey())
             .businessKey(startProcessPayload.getBusinessKey())
             .variables(startProcessPayload.getVariables())
+            .linkedProcessInstanceId(startProcessPayload.getLinkedProcessInstanceId())
+            .linkedProcessInstanceType(startProcessPayload.getLinkedProcessInstanceType())
             .name(startProcessPayload.getName());
     }
 

@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-core-dependencies</artifactId>
-    <version>8.8.0-SNAPSHOT</version>
+    <version>9.1.0-SNAPSHOT</version>
     <relativePath>../activiti-core-dependencies</relativePath>
   </parent>
 
@@ -15,7 +15,7 @@
 
   <properties>
     <activiti-engine.unpack.version>7.2.0</activiti-engine.unpack.version>
-    <postgresql.version>42.7.8</postgresql.version>
+    <postgresql.version>42.7.10</postgresql.version>
   </properties>
 
   <dependencies>
@@ -45,7 +45,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
-      <artifactId>commons-email</artifactId>
+      <artifactId>commons-email2-jakarta</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -233,7 +233,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
-        <version>3.9.0</version>
+        <version>3.10.0</version>
         <executions>
           <execution>
             <id>resource-dependencies</id>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -206,7 +206,7 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
                 );
                 execution.setCurrentFlowElement(node);
             } else {
-                SequenceFlow sequenceFlow = outgoingSequenceFlows.get(0);
+                SequenceFlow sequenceFlow = outgoingSequenceFlows.getFirst();
                 // Reuse existing one
                 execution.setCurrentFlowElement(sequenceFlow);
             }
@@ -331,7 +331,7 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
                 for (BoundaryEvent event : activity.getBoundaryEvents()) {
                     if (
                         CollectionUtil.isNotEmpty(event.getEventDefinitions()) &&
-                        event.getEventDefinitions().get(0) instanceof CancelEventDefinition
+                        event.getEventDefinitions().getFirst() instanceof CancelEventDefinition
                     ) {
                         notToDeleteEvents.add(event.getId());
                     }

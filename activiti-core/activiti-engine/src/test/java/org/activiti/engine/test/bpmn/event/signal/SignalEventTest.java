@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -247,7 +247,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
 
         List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getProcessInstanceId()).list();
         assertThat(tasks).hasSize(1);
-        Task currentTask = tasks.get(0);
+        Task currentTask = tasks.getFirst();
         assertThat(currentTask.getName()).isEqualTo("My User Task");
 
         runtimeService.signalEventReceived("alert");
@@ -263,7 +263,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
 
         tasks = taskService.createTaskQuery().processInstanceId(pi.getProcessInstanceId()).list();
         assertThat(tasks).hasSize(1);
-        currentTask = tasks.get(0);
+        currentTask = tasks.getFirst();
         assertThat(currentTask.getName()).isEqualTo("My Second User Task");
     }
 
@@ -276,7 +276,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
         List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getProcessInstanceId()).list();
         assertThat(tasks).hasSize(1);
 
-        Task currentTask = tasks.get(0);
+        Task currentTask = tasks.getFirst();
         assertThat(currentTask.getName()).isEqualTo("Approve");
 
         runtimeService.signalEventReceived("alert");
@@ -293,7 +293,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
         tasks = taskService.createTaskQuery().processInstanceId(pi.getProcessInstanceId()).list();
         assertThat(tasks).hasSize(1);
 
-        currentTask = tasks.get(0);
+        currentTask = tasks.getFirst();
         assertThat(currentTask.getName()).isEqualTo("Review");
 
         taskService.complete(taskService.createTaskQuery().taskName("Review").singleResult().getId());

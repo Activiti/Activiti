@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -391,33 +391,33 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
         assertThat(fieldAccessResult).isInstanceOf(List.class);
         List<?> list = (List<?>) fieldAccessResult;
         assertThat(list).hasSize(3);
-        assertThat(list.get(0)).isInstanceOf(FieldAccessJPAEntity.class);
-        assertThat(simpleEntityFieldAccess.getId()).isEqualTo(((FieldAccessJPAEntity) list.get(0)).getId());
+        assertThat(list.getFirst()).isInstanceOf(FieldAccessJPAEntity.class);
+        assertThat(simpleEntityFieldAccess.getId()).isEqualTo(((FieldAccessJPAEntity) list.getFirst()).getId());
 
         // Read entity with @Id on property
         Object propertyAccessResult = runtimeService.getVariable(processInstance.getId(), "simpleEntityPropertyAccess");
         assertThat(propertyAccessResult).isInstanceOf(List.class);
         list = (List<?>) propertyAccessResult;
         assertThat(list).hasSize(3);
-        assertThat(list.get(0)).isInstanceOf(PropertyAccessJPAEntity.class);
-        assertThat(simpleEntityPropertyAccess.getId()).isEqualTo(((PropertyAccessJPAEntity) list.get(0)).getId());
+        assertThat(list.getFirst()).isInstanceOf(PropertyAccessJPAEntity.class);
+        assertThat(simpleEntityPropertyAccess.getId()).isEqualTo(((PropertyAccessJPAEntity) list.getFirst()).getId());
 
         // Read entity with @Id on field of mapped superclass
         Object subclassFieldResult = runtimeService.getVariable(processInstance.getId(), "subclassFieldAccess");
         assertThat(subclassFieldResult).isInstanceOf(List.class);
         list = (List<?>) subclassFieldResult;
         assertThat(list).hasSize(3);
-        assertThat(list.get(0)).isInstanceOf(SubclassFieldAccessJPAEntity.class);
-        assertThat(simpleEntityPropertyAccess.getId()).isEqualTo(((SubclassFieldAccessJPAEntity) list.get(0)).getId());
+        assertThat(list.getFirst()).isInstanceOf(SubclassFieldAccessJPAEntity.class);
+        assertThat(simpleEntityPropertyAccess.getId()).isEqualTo(((SubclassFieldAccessJPAEntity) list.getFirst()).getId());
 
         // Read entity with @Id on property of mapped superclass
         Object subclassPropertyResult = runtimeService.getVariable(processInstance.getId(), "subclassPropertyAccess");
         assertThat(subclassPropertyResult).isInstanceOf(List.class);
         list = (List<?>) subclassPropertyResult;
         assertThat(list).hasSize(3);
-        assertThat(list.get(0)).isInstanceOf(SubclassPropertyAccessJPAEntity.class);
+        assertThat(list.getFirst()).isInstanceOf(SubclassPropertyAccessJPAEntity.class);
         assertThat(simpleEntityPropertyAccess.getId()).isEqualTo(
-            ((SubclassPropertyAccessJPAEntity) list.get(0)).getId()
+            ((SubclassPropertyAccessJPAEntity) list.getFirst()).getId()
         );
     }
 
@@ -452,14 +452,14 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
             asList(simpleEntityFieldAccess, simpleEntityFieldAccess)
         );
         assertThat(((List<?>) runtimeService.getVariable(processInstance.getId(), "list"))).hasSize(2);
-        assertThat(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).get(0)).isInstanceOf(
+        assertThat(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).getFirst()).isInstanceOf(
             FieldAccessJPAEntity.class
         );
 
         // Test updating to list of Strings
         runtimeService.setVariable(processInstance.getId(), "list", asList("TEST", "TESTING"));
         assertThat(((List<?>) runtimeService.getVariable(processInstance.getId(), "list"))).hasSize(2);
-        assertThat(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).get(0)).isInstanceOf(
+        assertThat(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).getFirst()).isInstanceOf(
             String.class
         );
 
@@ -469,7 +469,7 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
             asList(simpleEntityFieldAccess, simpleEntityFieldAccess)
         );
         assertThat(((List<?>) runtimeService.getVariable(processInstance.getId(), "list"))).hasSize(2);
-        assertThat(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).get(0)).isInstanceOf(
+        assertThat(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).getFirst()).isInstanceOf(
             FieldAccessJPAEntity.class
         );
 
@@ -483,7 +483,7 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
             asList(simpleEntityFieldAccess, simpleEntityFieldAccess)
         );
         assertThat(((List<?>) runtimeService.getVariable(processInstance.getId(), "list"))).hasSize(2);
-        assertThat(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).get(0)).isInstanceOf(
+        assertThat(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).getFirst()).isInstanceOf(
             FieldAccessJPAEntity.class
         );
     }

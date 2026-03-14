@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -79,7 +79,7 @@ public class ProcessDefinitionCacheTest extends AbstractTestCase {
         // Start a new Process instance
         ProcessInstance processInstance = processEngine
             .getRuntimeService()
-            .startProcessInstanceById(processDefinitions.get(0).getId());
+            .startProcessInstanceById(processDefinitions.getFirst().getId());
         String processInstanceId = processInstance.getId();
         assertThat(processInstance).isNotNull();
 
@@ -106,7 +106,7 @@ public class ProcessDefinitionCacheTest extends AbstractTestCase {
 
         // Complete the task. That will end the process instance
         TaskService taskService = processEngine.getTaskService();
-        Task task = taskService.createTaskQuery().list().get(0);
+        Task task = taskService.createTaskQuery().list().getFirst();
         taskService.complete(task.getId());
 
         // Check if the process instance has really ended. This means that the
@@ -121,7 +121,7 @@ public class ProcessDefinitionCacheTest extends AbstractTestCase {
         assertThat(processInstance).isNull();
 
         // Extra check to see if a new process instance can be started as well
-        processInstance = processEngine.getRuntimeService().startProcessInstanceById(processDefinitions.get(0).getId());
+        processInstance = processEngine.getRuntimeService().startProcessInstanceById(processDefinitions.getFirst().getId());
         assertThat(processInstance).isNotNull();
 
         // close the process engine

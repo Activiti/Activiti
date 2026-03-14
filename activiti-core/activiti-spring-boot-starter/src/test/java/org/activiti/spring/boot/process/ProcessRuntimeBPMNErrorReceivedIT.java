@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package org.activiti.spring.boot.process;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.activiti.api.process.model.ProcessInstance;
@@ -37,7 +36,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ProcessRuntimeBPMNErrorReceivedIT {
@@ -211,6 +209,6 @@ public class ProcessRuntimeBPMNErrorReceivedIT {
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50), getTasksPayload);
 
         assertThat(tasks.getContent()).hasSize(1);
-        assertThat(tasks.getContent().get(0).getName()).isEqualTo(taskName);
+        assertThat(tasks.getContent().getFirst().getName()).isEqualTo(taskName);
     }
 }

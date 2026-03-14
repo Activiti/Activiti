@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,11 +56,11 @@ public class RuntimeConfigurationTest {
         List<String> userRoles = userGroupManager.getUserRoles("user");
         assertThat(userRoles).isNotNull();
         assertThat(userRoles).hasSize(1);
-        assertThat(userRoles.get(0)).isEqualTo("ACTIVITI_USER");
+        assertThat(userRoles.getFirst()).isEqualTo("ACTIVITI_USER");
         List<String> userGroups = userGroupManager.getUserGroups("user");
         assertThat(userGroups).isNotNull();
         assertThat(userGroups).hasSize(1);
-        assertThat(userGroups.get(0)).isEqualTo("activitiTeam");
+        assertThat(userGroups.getFirst()).isEqualTo("activitiTeam");
     }
 
     @Test
@@ -75,7 +75,7 @@ public class RuntimeConfigurationTest {
         List<String> userRoles = userGroupManager.getUserRoles("admin");
         assertThat(userRoles).isNotNull();
         assertThat(userRoles).hasSize(1);
-        assertThat(userRoles.get(0)).isEqualTo("ACTIVITI_ADMIN");
+        assertThat(userRoles.getFirst()).isEqualTo("ACTIVITI_ADMIN");
         List<String> userGroups = userGroupManager.getUserGroups("admin");
         assertThat(userGroups).isNotNull();
         assertThat(userGroups).hasSize(0);

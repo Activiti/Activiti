@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ public class SubProcessMultiDiagramConverterTest extends AbstractConverterTest {
     @Override
     protected BpmnModel exportAndReadXMLFile(BpmnModel bpmnModel) throws Exception {
         byte[] xml = new SubprocessXMLConverter().convertToXML(bpmnModel);
-        System.out.println("xml " + new String(xml, "UTF-8"));
+        IO.println("xml " + new String(xml, "UTF-8"));
         XMLInputFactory xif = XMLInputFactory.newInstance();
         InputStreamReader in = new InputStreamReader(new ByteArrayInputStream(xml), "UTF-8");
         XMLStreamReader xtr = xif.createXMLStreamReader(in);

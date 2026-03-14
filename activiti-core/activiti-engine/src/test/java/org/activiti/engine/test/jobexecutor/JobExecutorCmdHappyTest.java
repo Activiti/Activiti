@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,7 +55,7 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
 
         managementService.executeJob(job.getId());
 
-        assertThat(tweetHandler.getMessages().get(0)).isEqualTo("i'm coding a test");
+        assertThat(tweetHandler.getMessages().getFirst()).isEqualTo("i'm coding a test");
         assertThat(tweetHandler.getMessages()).hasSize(1);
     }
 
@@ -96,7 +96,7 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
         Job executableJob = managementService.moveTimerToExecutableJob(jobId);
         commandExecutor.execute(new ExecuteAsyncJobCmd(executableJob.getId()));
 
-        assertThat(tweetHandler.getMessages().get(0)).isEqualTo("i'm coding a test");
+        assertThat(tweetHandler.getMessages().getFirst()).isEqualTo("i'm coding a test");
         assertThat(tweetHandler.getMessages()).hasSize(1);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,9 +47,9 @@ public class DeploymentEventsTest extends PluggableActivitiTestCase {
 
             // Check create-event
             assertThat(listener.getEventsReceived()).hasSize(2);
-            assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiEntityEvent.class);
+            assertThat(listener.getEventsReceived().getFirst()).isInstanceOf(ActivitiEntityEvent.class);
 
-            ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+            ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().getFirst();
             assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
             assertThat(((Deployment) event.getEntity()).getId()).isEqualTo(deployment.getId());
 
@@ -63,9 +63,9 @@ public class DeploymentEventsTest extends PluggableActivitiTestCase {
             // Check update event when category is updated
             repositoryService.setDeploymentCategory(deployment.getId(), "test");
             assertThat(listener.getEventsReceived()).hasSize(1);
-            assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiEntityEvent.class);
+            assertThat(listener.getEventsReceived().getFirst()).isInstanceOf(ActivitiEntityEvent.class);
 
-            event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+            event = (ActivitiEntityEvent) listener.getEventsReceived().getFirst();
             assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_UPDATED);
             assertThat(((Deployment) event.getEntity()).getId()).isEqualTo(deployment.getId());
             assertThat(((Deployment) event.getEntity()).getCategory()).isEqualTo("test");
@@ -74,9 +74,9 @@ public class DeploymentEventsTest extends PluggableActivitiTestCase {
             // Check delete event when category is updated
             repositoryService.deleteDeployment(deployment.getId(), true);
             assertThat(listener.getEventsReceived()).hasSize(1);
-            assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiEntityEvent.class);
+            assertThat(listener.getEventsReceived().getFirst()).isInstanceOf(ActivitiEntityEvent.class);
 
-            event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+            event = (ActivitiEntityEvent) listener.getEventsReceived().getFirst();
             assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_DELETED);
             assertThat(((Deployment) event.getEntity()).getId()).isEqualTo(deployment.getId());
             listener.clearEventsReceived();

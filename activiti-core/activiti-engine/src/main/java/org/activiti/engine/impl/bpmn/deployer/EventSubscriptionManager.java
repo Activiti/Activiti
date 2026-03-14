@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -105,7 +105,7 @@ public class EventSubscriptionManager {
                 if (element instanceof StartEvent) {
                     StartEvent startEvent = (StartEvent) element;
                     if (CollectionUtil.isNotEmpty(startEvent.getEventDefinitions())) {
-                        EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
+                        EventDefinition eventDefinition = startEvent.getEventDefinitions().getFirst();
                         if (eventDefinition instanceof MessageEventDefinition) {
                             MessageEventDefinition messageEventDefinition = (MessageEventDefinition) eventDefinition;
                             insertMessageEvent(messageEventDefinition, startEvent, processDefinition, bpmnModel);
@@ -181,7 +181,7 @@ public class EventSubscriptionManager {
                 if (element instanceof StartEvent) {
                     StartEvent startEvent = (StartEvent) element;
                     if (CollectionUtil.isNotEmpty(startEvent.getEventDefinitions())) {
-                        EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
+                        EventDefinition eventDefinition = startEvent.getEventDefinitions().getFirst();
                         if (eventDefinition instanceof SignalEventDefinition) {
                             SignalEventDefinition signalEventDefinition = (SignalEventDefinition) eventDefinition;
                             SignalEventSubscriptionEntity subscriptionEntity = commandContext

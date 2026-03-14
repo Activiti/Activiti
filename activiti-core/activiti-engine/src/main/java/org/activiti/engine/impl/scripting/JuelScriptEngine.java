@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -156,7 +156,7 @@ public class JuelScriptEngine extends AbstractScriptEngine implements Compilable
         // Built-in function are added to ScriptCtx
         scriptCtx.setAttribute("out:print", getPrintMethod(), ScriptContext.ENGINE_SCOPE);
 
-        SecurityManager securityManager = System.getSecurityManager();
+        SecurityManager securityManager = null;
         if (securityManager == null) {
             scriptCtx.setAttribute("lang:import", getImportMethod(), ScriptContext.ENGINE_SCOPE);
         }
@@ -196,7 +196,7 @@ public class JuelScriptEngine extends AbstractScriptEngine implements Compilable
     }
 
     public static void print(Object object) {
-        System.out.print(object);
+        IO.print(object);
     }
 
     private static Method getImportMethod() {
@@ -318,7 +318,7 @@ public class JuelScriptEngine extends AbstractScriptEngine implements Compilable
             if (scope != -1) {
                 // Methods are added as variables in the ScriptScope
                 Object attributeValue = scriptContext.getAttribute(functionName);
-                return (attributeValue instanceof Method) ? (Method) attributeValue : null;
+                return attributeValue instanceof Method ? (Method) attributeValue : null;
             } else {
                 return null;
             }

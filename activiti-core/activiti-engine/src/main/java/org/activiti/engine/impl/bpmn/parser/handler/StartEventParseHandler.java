@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ public class StartEventParseHandler extends AbstractActivityBpmnParseHandler<Sta
     protected void executeParse(BpmnParse bpmnParse, StartEvent element) {
         if (element.getSubProcess() != null && element.getSubProcess() instanceof EventSubProcess) {
             if (CollectionUtil.isNotEmpty(element.getEventDefinitions())) {
-                EventDefinition eventDefinition = element.getEventDefinitions().get(0);
+                EventDefinition eventDefinition = element.getEventDefinitions().getFirst();
                 if (eventDefinition instanceof MessageEventDefinition) {
                     MessageEventDefinition messageDefinition = (MessageEventDefinition) eventDefinition;
                     BpmnModel bpmnModel = bpmnParse.getBpmnModel();

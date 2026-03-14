@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ public class CommentEventsTest extends PluggableActivitiTestCase {
             // Create link-comment
             Comment comment = taskService.addComment(task.getId(), task.getProcessInstanceId(), "comment");
             assertThat(listener.getEventsReceived()).hasSize(2);
-            ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+            ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().getFirst();
             assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
             assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
             assertThat(event.getExecutionId()).isEqualTo(processInstance.getId());
@@ -64,7 +64,7 @@ public class CommentEventsTest extends PluggableActivitiTestCase {
             // Finally, delete comment
             taskService.deleteComment(comment.getId());
             assertThat(listener.getEventsReceived()).hasSize(1);
-            event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+            event = (ActivitiEntityEvent) listener.getEventsReceived().getFirst();
             assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_DELETED);
             assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
             assertThat(event.getExecutionId()).isEqualTo(processInstance.getId());
@@ -85,7 +85,7 @@ public class CommentEventsTest extends PluggableActivitiTestCase {
                 // Create link-comment
                 Comment comment = taskService.addComment(task.getId(), null, "comment");
                 assertThat(listener.getEventsReceived()).hasSize(2);
-                ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+                ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().getFirst();
                 assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
                 assertThat(event.getProcessInstanceId()).isNull();
                 assertThat(event.getExecutionId()).isNull();
@@ -100,7 +100,7 @@ public class CommentEventsTest extends PluggableActivitiTestCase {
                 // Finally, delete comment
                 taskService.deleteComment(comment.getId());
                 assertThat(listener.getEventsReceived()).hasSize(1);
-                event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+                event = (ActivitiEntityEvent) listener.getEventsReceived().getFirst();
                 assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_DELETED);
                 assertThat(event.getProcessInstanceId()).isNull();
                 assertThat(event.getExecutionId()).isNull();

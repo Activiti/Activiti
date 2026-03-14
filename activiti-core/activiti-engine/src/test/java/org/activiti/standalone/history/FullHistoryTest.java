@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,7 @@ import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.history.HistoricTaskInstanceQuery;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.history.HistoricVariableInstanceQuery;
 import org.activiti.engine.history.HistoricVariableUpdate;
@@ -95,7 +96,7 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
 
         assertThat(historicDetails).hasSize(10);
 
-        HistoricVariableUpdate historicVariableUpdate = (HistoricVariableUpdate) historicDetails.get(0);
+        HistoricVariableUpdate historicVariableUpdate = (HistoricVariableUpdate) historicDetails.getFirst();
         assertThat(historicVariableUpdate.getVariableName()).isEqualTo("bytes");
         assertThat(new String((byte[]) historicVariableUpdate.getValue())).isEqualTo(":-(");
         assertThat(historicVariableUpdate.getRevision()).isEqualTo(0);
@@ -188,7 +189,7 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
         List<HistoricVariableInstance> historicVariables = historicProcessVariableQuery.list();
 
         // Variable status when process is finished
-        HistoricVariableInstance historicVariable = historicVariables.get(0);
+        HistoricVariableInstance historicVariable = historicVariables.getFirst();
         assertThat(historicVariable.getVariableName()).isEqualTo("bytes");
         assertThat(new String((byte[]) historicVariable.getValue())).isEqualTo(":-)");
         assertThat(historicVariable.getCreateTime()).isNotNull();
@@ -384,7 +385,7 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
         assertThat(details).hasSize(9);
 
         // Since we order by varName, first entry should be aVariable update from startTask
-        HistoricVariableUpdate startVarUpdate = (HistoricVariableUpdate) details.get(0);
+        HistoricVariableUpdate startVarUpdate = (HistoricVariableUpdate) details.getFirst();
         assertThat(startVarUpdate.getVariableName()).isEqualTo("aVariable");
         assertThat(startVarUpdate.getValue()).isEqualTo("initial value");
         assertThat(startVarUpdate.getRevision()).isEqualTo(0);
@@ -444,7 +445,7 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
         // end process instance
         List<Task> tasks = taskService.createTaskQuery().list();
         assertThat(tasks).hasSize(1);
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
         assertProcessEnded(processInstance.getId());
 
         // check for historic process variables set
@@ -458,7 +459,7 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
         List<HistoricVariableInstance> historicVariables = historicProcessVariableQuery.list();
 
         // Variable status when process is finished
-        HistoricVariableInstance historicVariable = historicVariables.get(0);
+        HistoricVariableInstance historicVariable = historicVariables.getFirst();
         assertThat(historicVariable.getVariableName()).isEqualTo("aVariable");
         assertThat(historicVariable.getValue()).isEqualTo("updated value");
         assertThat(historicVariable.getProcessInstanceId()).isEqualTo(processInstance.getId());
@@ -541,7 +542,7 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
         // end process instance
         List<Task> tasks = taskService.createTaskQuery().list();
         assertThat(tasks.size()).isEqualTo(1);
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
         assertProcessEnded(processInstance.getId());
 
         assertThat(historyService.createHistoricVariableInstanceQuery().count()).isEqualTo(2);
@@ -714,6 +715,21 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
         assertThatExceptionOfType(ActivitiIllegalArgumentException.class).isThrownBy(() ->
             historyService.createHistoricDetailQuery().orderByVariableType().list()
         );
+    }
+
+    @Deployment(resources = {"org/activiti/standalone/history/FullHistoryTest.testHistoricTaskInstanceVariableUpdates.bpmn20.xml"})
+    public void testHistoricTaskInstanceWithMaxResults() {
+        // GIVEN: 5 running process
+        for (int i=0;i<5;i++) {
+            runtimeService.startProcessInstanceByKey("HistoricTaskInstanceTest");
+        }
+
+        final HistoricTaskInstanceQuery query = historyService.createHistoricTaskInstanceQuery();
+        // WHEN: listing, at most, 3 running process instances
+        // THEN: the result must have 3 results
+        assertThat(query.listPage(0,3)).hasSize(3);
+        // THEN: total number of process instances is 5
+        assertThat(query.count()).isEqualTo(5);
     }
 
     @Deployment
@@ -1411,7 +1427,7 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
         assertThat(updates.size()).isEqualTo(2);
 
         Map<String, HistoricVariableUpdate> updatesMap = new HashMap<String, HistoricVariableUpdate>();
-        HistoricVariableUpdate update = (HistoricVariableUpdate) updates.get(0);
+        HistoricVariableUpdate update = (HistoricVariableUpdate) updates.getFirst();
         updatesMap.put((String) update.getValue(), update);
         update = (HistoricVariableUpdate) updates.get(1);
         updatesMap.put((String) update.getValue(), update);
@@ -1478,7 +1494,7 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
             .list();
 
         assertThat(variableUpdates.size()).isEqualTo(1);
-        HistoricVariableUpdate update = (HistoricVariableUpdate) variableUpdates.get(0);
+        HistoricVariableUpdate update = (HistoricVariableUpdate) variableUpdates.getFirst();
         assertThat(update.getValue()).isNotNull();
         assertThat(update.getValue()).isInstanceOf(FieldAccessJPAEntity.class);
 

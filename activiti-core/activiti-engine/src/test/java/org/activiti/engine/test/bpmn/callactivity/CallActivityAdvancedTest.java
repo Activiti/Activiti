@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -168,7 +168,7 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
         List<Task> tasks = taskQuery.list();
         assertThat(tasks).hasSize(2);
 
-        Task taskA = tasks.get(0);
+        Task taskA = tasks.getFirst();
         Task taskB = tasks.get(1);
         assertThat(taskA.getName()).isEqualTo("Task A");
         assertThat(taskB.getName()).isEqualTo("Task B");

@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-parent</artifactId>
-    <version>8.8.0-SNAPSHOT</version>
+    <version>9.1.0-SNAPSHOT</version>
   </parent>
   <groupId>org.activiti</groupId>
   <artifactId>activiti-core</artifactId>
@@ -13,14 +13,14 @@
   <name>Activiti :: Core :: Parent</name>
   <properties>
     <batik.version>1.19</batik.version>
-    <commons-email.version>1.6.0</commons-email.version>
+    <commons-email2-jakarta.version>2.0.0-M1</commons-email2-jakarta.version>
     <commons-io.version>2.21.0</commons-io.version>
-    <commons-text.version>1.14.0</commons-text.version>
+    <commons-text.version>1.15.0</commons-text.version>
     <jakarta-enterprise-concurrent.version>3.1.1</jakarta-enterprise-concurrent.version>
-    <java-uuid-generator.version>5.1.1</java-uuid-generator.version>
+    <java-uuid-generator.version>5.2.0</java-uuid-generator.version>
     <javaGeom.version>0.11.1</javaGeom.version>
     <jgraphx.version>4.2.2</jgraphx.version>
-    <joda-time.version>2.14.0</joda-time.version>
+    <joda-time.version>2.14.1</joda-time.version>
     <json-unit.version>4.1.1</json-unit.version>
     <mybatis.version>3.5.19</mybatis.version>
     <subethasmtp-wiser.version>1.2</subethasmtp-wiser.version>
@@ -54,8 +54,8 @@
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
-        <artifactId>commons-email</artifactId>
-        <version>${commons-email.version}</version>
+        <artifactId>commons-email2-jakarta</artifactId>
+        <version>${commons-email2-jakarta.version}</version>
       </dependency>
       <dependency>
         <groupId>commons-io</groupId>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ public class SkipExpressionUserTaskTest extends PluggableActivitiTestCase {
         ProcessInstance pi = runtimeService.startProcessInstanceByKey("skipExpressionUserTask");
         List<Task> tasks = taskService.createTaskQuery().list();
         assertThat(tasks).hasSize(1);
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
         assertThat(taskService.createTaskQuery().list()).hasSize(0);
 
         Map<String, Object> variables2 = new HashMap<String, Object>();
@@ -41,7 +41,7 @@ public class SkipExpressionUserTaskTest extends PluggableActivitiTestCase {
         runtimeService.startProcessInstanceByKey("skipExpressionUserTask", variables2);
         List<Task> tasks2 = taskService.createTaskQuery().list();
         assertThat(tasks2).hasSize(1);
-        taskService.complete(tasks2.get(0).getId());
+        taskService.complete(tasks2.getFirst().getId());
         assertThat(taskService.createTaskQuery().list()).hasSize(0);
 
         Map<String, Object> variables3 = new HashMap<String, Object>();
@@ -72,6 +72,6 @@ public class SkipExpressionUserTaskTest extends PluggableActivitiTestCase {
         runtimeService.startProcessInstanceByKey("skipExpressionUserTask-testSkipMultipleTasks", variables);
         List<Task> tasks = taskService.createTaskQuery().list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getName()).isEqualTo("Task3");
+        assertThat(tasks.getFirst().getName()).isEqualTo("Task3");
     }
 }

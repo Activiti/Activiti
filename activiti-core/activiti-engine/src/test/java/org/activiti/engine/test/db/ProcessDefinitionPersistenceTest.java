@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,17 +70,17 @@ public class ProcessDefinitionPersistenceTest extends PluggableActivitiTestCase 
         assertThat(startElement.getDocumentation()).isEqualTo("the start event");
         List<SequenceFlow> outgoingFlows = startElement.getOutgoingFlows();
         assertThat(outgoingFlows).hasSize(1);
-        assertThat(outgoingFlows.get(0).getConditionExpression()).isEqualTo("${a == b}");
+        assertThat(outgoingFlows.getFirst().getConditionExpression()).isEqualTo("${a == b}");
 
         EndEvent endElement = (EndEvent) process.getFlowElement("end");
         assertThat(endElement).isNotNull();
         assertThat(endElement.getId()).isEqualTo("end");
 
-        assertThat(outgoingFlows.get(0).getId()).isEqualTo("flow1");
-        assertThat(outgoingFlows.get(0).getName()).isEqualTo("Flow One");
-        assertThat(outgoingFlows.get(0).getDocumentation()).isEqualTo("The only transitions in the process");
-        assertThat(outgoingFlows.get(0).getSourceFlowElement()).isSameAs(startElement);
-        assertThat(outgoingFlows.get(0).getTargetFlowElement()).isSameAs(endElement);
+        assertThat(outgoingFlows.getFirst().getId()).isEqualTo("flow1");
+        assertThat(outgoingFlows.getFirst().getName()).isEqualTo("Flow One");
+        assertThat(outgoingFlows.getFirst().getDocumentation()).isEqualTo("The only transitions in the process");
+        assertThat(outgoingFlows.getFirst().getSourceFlowElement()).isSameAs(startElement);
+        assertThat(outgoingFlows.getFirst().getTargetFlowElement()).isSameAs(endElement);
 
         repositoryService.deleteDeployment(deploymentId);
     }

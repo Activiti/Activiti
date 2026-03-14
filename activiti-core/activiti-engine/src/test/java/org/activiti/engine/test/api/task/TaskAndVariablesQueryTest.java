@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -105,14 +105,14 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
             .taskCandidateUser(KERMIT, KERMITSGROUPS)
             .list();
         assertThat(tasks).hasSize(2);
-        assertThat(tasks.get(0).getTaskLocalVariables()).hasSize(2);
-        assertThat(tasks.get(0).getTaskLocalVariables().get("test")).isEqualTo("test");
-        assertThat(tasks.get(0).getProcessVariables()).hasSize(0);
+        assertThat(tasks.getFirst().getTaskLocalVariables()).hasSize(2);
+        assertThat(tasks.getFirst().getTaskLocalVariables().get("test")).isEqualTo("test");
+        assertThat(tasks.getFirst().getProcessVariables()).hasSize(0);
 
         tasks = taskService.createTaskQuery().includeProcessVariables().taskCandidateUser(KERMIT, KERMITSGROUPS).list();
         assertThat(tasks).hasSize(2);
-        assertThat(tasks.get(0).getProcessVariables()).hasSize(0);
-        assertThat(tasks.get(0).getTaskLocalVariables()).hasSize(0);
+        assertThat(tasks.getFirst().getProcessVariables()).hasSize(0);
+        assertThat(tasks.getFirst().getTaskLocalVariables()).hasSize(0);
 
         task = taskService
             .createTaskQuery()
@@ -160,7 +160,7 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
             .desc()
             .listPage(0, 1);
         assertThat(tasks).hasSize(1);
-        Task task = tasks.get(0);
+        Task task = tasks.getFirst();
         Map<String, Object> variableMap = task.getTaskLocalVariables();
         assertThat(variableMap).hasSize(3);
         assertThat(variableMap.get("testVar")).isEqualTo("someVariable");
@@ -190,7 +190,7 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
             .asc()
             .listPage(2, 4);
         assertThat(tasks).hasSize(1);
-        task = tasks.get(0);
+        task = tasks.getFirst();
         variableMap = task.getTaskLocalVariables();
         assertThat(variableMap).hasSize(3);
         assertThat(variableMap.get("testVar")).isEqualTo("someVariable");

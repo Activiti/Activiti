@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,7 +66,7 @@ public class StartEventJsonConverter
     protected String getStencilId(BaseElement baseElement) {
         Event event = (Event) baseElement;
         if (event.getEventDefinitions().size() > 0) {
-            EventDefinition eventDefinition = event.getEventDefinitions().get(0);
+            EventDefinition eventDefinition = event.getEventDefinitions().getFirst();
             if (eventDefinition instanceof TimerEventDefinition) {
                 return STENCIL_EVENT_START_TIMER;
             } else if (eventDefinition instanceof ErrorEventDefinition) {

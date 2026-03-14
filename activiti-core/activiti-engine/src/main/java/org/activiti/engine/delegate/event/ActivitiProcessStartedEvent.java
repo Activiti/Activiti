@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,4 +33,14 @@ public interface ActivitiProcessStartedEvent extends ActivitiEntityWithVariables
      *         if the current process instance is not started into a nested process.
      */
     String getNestedProcessDefinitionId();
+
+    /**
+     * @return the id of the linked process instance, or null if there is no linked process instance.
+     */
+    String getLinkedProcessInstanceId();
+
+    /**
+     * @return the type of the linked process instance, or null if there is no linked process instance.
+     */
+    String getLinkedProcessInstanceType();
 }

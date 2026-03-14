@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,7 +66,7 @@ public class TaskBatchDeleteTest extends PluggableActivitiTestCase {
             .processInstanceId(processInstance.getId())
             .taskDefinitionKey("multiInstance")
             .listPage(4, 1)
-            .get(0);
+            .getFirst();
 
         taskService.addCandidateGroup(lastTask.getId(), "sales");
 
@@ -75,7 +75,7 @@ public class TaskBatchDeleteTest extends PluggableActivitiTestCase {
             .processInstanceId(processInstance.getId())
             .taskDefinitionKey("multiInstance")
             .listPage(0, 1)
-            .get(0);
+            .getFirst();
         assertThat(firstTask).isNotNull();
 
         taskService.complete(firstTask.getId());

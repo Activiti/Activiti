@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -146,33 +146,33 @@ public class TaskVariablesTest extends PluggableActivitiTestCase {
 
         // only 1 process
         Set<String> taskIds = new HashSet<String>();
-        taskIds.add(taskList1.get(0).getId());
+        taskIds.add(taskList1.getFirst().getId());
         taskIds.add(taskList1.get(1).getId());
         List<VariableInstance> variables = taskService.getVariableInstancesLocalByTaskIds(taskIds);
         assertThat(variables).hasSize(2);
-        checkVariable(taskList1.get(0).getId(), "taskVar1", "sayHello1", variables);
+        checkVariable(taskList1.getFirst().getId(), "taskVar1", "sayHello1", variables);
         checkVariable(taskList1.get(1).getId(), "taskVar2", "sayHello2", variables);
 
         // 2 process
         taskIds = new HashSet<String>();
-        taskIds.add(taskList1.get(0).getId());
+        taskIds.add(taskList1.getFirst().getId());
         taskIds.add(taskList1.get(1).getId());
-        taskIds.add(taskList2.get(0).getId());
+        taskIds.add(taskList2.getFirst().getId());
         taskIds.add(taskList2.get(1).getId());
         variables = taskService.getVariableInstancesLocalByTaskIds(taskIds);
         assertThat(variables).hasSize(4);
-        checkVariable(taskList1.get(0).getId(), "taskVar1", "sayHello1", variables);
+        checkVariable(taskList1.getFirst().getId(), "taskVar1", "sayHello1", variables);
         checkVariable(taskList1.get(1).getId(), "taskVar2", "sayHello2", variables);
-        checkVariable(taskList2.get(0).getId(), "taskVar3", "sayHello3", variables);
+        checkVariable(taskList2.getFirst().getId(), "taskVar3", "sayHello3", variables);
         checkVariable(taskList2.get(1).getId(), "taskVar4", "sayHello4", variables);
 
         // mixture 2 process
         taskIds = new HashSet<String>();
-        taskIds.add(taskList1.get(0).getId());
+        taskIds.add(taskList1.getFirst().getId());
         taskIds.add(taskList2.get(1).getId());
         variables = taskService.getVariableInstancesLocalByTaskIds(taskIds);
         assertThat(variables).hasSize(2);
-        checkVariable(taskList1.get(0).getId(), "taskVar1", "sayHello1", variables);
+        checkVariable(taskList1.getFirst().getId(), "taskVar1", "sayHello1", variables);
         checkVariable(taskList2.get(1).getId(), "taskVar4", "sayHello4", variables);
     }
 
@@ -237,7 +237,7 @@ public class TaskVariablesTest extends PluggableActivitiTestCase {
         Set<String> taskIds = new HashSet<String>();
         taskIds.add(taskId);
         List<VariableInstance> variables = taskService.getVariableInstancesLocalByTaskIds(taskIds);
-        assertThat(variables.get(0).getValue()).isEqualTo(serializableTypeVar);
+        assertThat(variables.getFirst().getValue()).isEqualTo(serializableTypeVar);
     }
 
     @Deployment(resources = { "org/activiti/engine/test/api/runtime/variableScope.bpmn20.xml" })
@@ -267,8 +267,8 @@ public class TaskVariablesTest extends PluggableActivitiTestCase {
 
         List<VariableInstance> variableInstances = taskService.getVariableInstancesLocalByTaskIds(taskIds);
         assertThat(2).isEqualTo(variableInstances.size());
-        assertThat("taskVar").isEqualTo(variableInstances.get(0).getName());
-        assertThat("taskVar").isEqualTo(variableInstances.get(0).getValue());
+        assertThat("taskVar").isEqualTo(variableInstances.getFirst().getName());
+        assertThat("taskVar").isEqualTo(variableInstances.getFirst().getValue());
         assertThat("taskVar").isEqualTo(variableInstances.get(1).getName());
         assertThat("taskVar").isEqualTo(variableInstances.get(1).getValue());
     }

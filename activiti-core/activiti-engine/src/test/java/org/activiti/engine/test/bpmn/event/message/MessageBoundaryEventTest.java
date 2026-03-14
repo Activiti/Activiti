@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -519,7 +519,7 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
 
         // if we complete the outer message event, all inner executions are
         // removed
-        Execution outerScopeExecution = executions.get(0);
+        Execution outerScopeExecution = executions.getFirst();
         runtimeService.messageEventReceived("messageName2", outerScopeExecution.getId());
 
         executions = runtimeService.createExecutionQuery().messageEventSubscriptionName("messageName").list();
@@ -667,7 +667,7 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
         final List<Task> tasks = taskService.createTaskQuery().taskDefinitionKey("taskAfterTaskTimer").list();
         assertThat(tasks).hasSize(2);
 
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
         taskService.complete(tasks.get(1).getId());
 
         // ///////////////////////////////////

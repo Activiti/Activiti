@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -584,7 +584,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 
         List<EventLogEntry> events = managementService.getEventLogEntries(null, null);
         assertThat(events).hasSize(4);
-        assertThat(events.get(0).getType()).isEqualTo("TASK_CREATED");
+        assertThat(events.getFirst().getType()).isEqualTo("TASK_CREATED");
         assertThat(events.get(1).getType()).isEqualTo("TASK_ASSIGNED");
         assertThat(events.get(2).getType()).isEqualTo("TASK_ASSIGNED");
         assertThat(events.get(3).getType()).isEqualTo("TASK_ASSIGNED");

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,7 +63,7 @@ public class TaskDueDateTest extends PluggableActivitiTestCase {
             assertThat(tasks.get(i).getDueDate()).isNotNull();
         }
 
-        assertThat(tasks.get(0).getName()).isEqualTo("task3");
+        assertThat(tasks.getFirst().getName()).isEqualTo("task3");
         assertThat(tasks.get(1).getName()).isEqualTo("task1");
         assertThat(tasks.get(2).getName()).isEqualTo("task2");
         assertThat(tasks.get(3).getName()).isEqualTo("task0");
@@ -77,7 +77,7 @@ public class TaskDueDateTest extends PluggableActivitiTestCase {
             assertThat(tasks.get(i).getDueDate()).isNotNull();
         }
 
-        assertThat(tasks.get(0).getName()).isEqualTo("task0");
+        assertThat(tasks.getFirst().getName()).isEqualTo("task0");
         assertThat(tasks.get(1).getName()).isEqualTo("task2");
         assertThat(tasks.get(2).getName()).isEqualTo("task1");
         assertThat(tasks.get(3).getName()).isEqualTo("task3");
@@ -87,7 +87,7 @@ public class TaskDueDateTest extends PluggableActivitiTestCase {
         // The same but now nulls first
         tasks = taskService.createTaskQuery().orderByDueDateNullsFirst().asc().list();
 
-        assertThat(tasks.get(0).getDueDate()).isNull();
+        assertThat(tasks.getFirst().getDueDate()).isNull();
         assertThat(tasks.get(1).getDueDate()).isNull();
         assertThat(tasks.get(2).getName()).isEqualTo("task3");
         assertThat(tasks.get(3).getName()).isEqualTo("task1");
@@ -97,7 +97,7 @@ public class TaskDueDateTest extends PluggableActivitiTestCase {
         // And now desc
         tasks = taskService.createTaskQuery().orderByDueDateNullsFirst().desc().list();
 
-        assertThat(tasks.get(0).getDueDate()).isNull();
+        assertThat(tasks.getFirst().getDueDate()).isNull();
         assertThat(tasks.get(1).getDueDate()).isNull();
         assertThat(tasks.get(2).getName()).isEqualTo("task0");
         assertThat(tasks.get(3).getName()).isEqualTo("task2");
@@ -116,7 +116,7 @@ public class TaskDueDateTest extends PluggableActivitiTestCase {
                 assertThat(historicTasks.get(i).getDueDate()).isNotNull();
             }
 
-            assertThat(historicTasks.get(0).getName()).isEqualTo("task3");
+            assertThat(historicTasks.getFirst().getName()).isEqualTo("task3");
             assertThat(historicTasks.get(1).getName()).isEqualTo("task1");
             assertThat(historicTasks.get(2).getName()).isEqualTo("task2");
             assertThat(historicTasks.get(3).getName()).isEqualTo("task0");
@@ -130,7 +130,7 @@ public class TaskDueDateTest extends PluggableActivitiTestCase {
                 assertThat(historicTasks.get(i).getDueDate()).isNotNull();
             }
 
-            assertThat(historicTasks.get(0).getName()).isEqualTo("task0");
+            assertThat(historicTasks.getFirst().getName()).isEqualTo("task0");
             assertThat(historicTasks.get(1).getName()).isEqualTo("task2");
             assertThat(historicTasks.get(2).getName()).isEqualTo("task1");
             assertThat(historicTasks.get(3).getName()).isEqualTo("task3");
@@ -140,7 +140,7 @@ public class TaskDueDateTest extends PluggableActivitiTestCase {
             // The same but now nulls first
             historicTasks = historyService.createHistoricTaskInstanceQuery().orderByDueDateNullsFirst().asc().list();
 
-            assertThat(historicTasks.get(0).getDueDate()).isNull();
+            assertThat(historicTasks.getFirst().getDueDate()).isNull();
             assertThat(historicTasks.get(1).getDueDate()).isNull();
             assertThat(historicTasks.get(2).getName()).isEqualTo("task3");
             assertThat(historicTasks.get(3).getName()).isEqualTo("task1");
@@ -150,7 +150,7 @@ public class TaskDueDateTest extends PluggableActivitiTestCase {
             // And now desc
             historicTasks = historyService.createHistoricTaskInstanceQuery().orderByDueDateNullsFirst().desc().list();
 
-            assertThat(historicTasks.get(0).getDueDate()).isNull();
+            assertThat(historicTasks.getFirst().getDueDate()).isNull();
             assertThat(historicTasks.get(1).getDueDate()).isNull();
             assertThat(historicTasks.get(2).getName()).isEqualTo("task0");
             assertThat(historicTasks.get(3).getName()).isEqualTo("task2");

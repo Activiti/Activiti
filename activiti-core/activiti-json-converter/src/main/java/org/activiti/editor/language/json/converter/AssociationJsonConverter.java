@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -91,7 +91,7 @@ public class AssociationJsonConverter extends BaseBpmnJsonConverter {
         }
 
         GraphicInfo targetGraphicInfo = model.getGraphicInfo(association.getTargetRef());
-        GraphicInfo flowGraphicInfo = graphicInfoList.get(graphicInfoList.size() - 1);
+        GraphicInfo flowGraphicInfo = graphicInfoList.getLast();
 
         double diffTopY = Math.abs(flowGraphicInfo.getY() - targetGraphicInfo.getY());
         double diffRightX = Math.abs(

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -99,7 +99,7 @@ public class ValuedDataObjectXMLConverter extends BaseBpmnXMLConverter {
 
             List<ExtensionElement> valuesElement = dataObject.getExtensionElements().get("value");
             if (valuesElement != null && !valuesElement.isEmpty()) {
-                ExtensionElement valueElement = valuesElement.get(0);
+                ExtensionElement valueElement = valuesElement.getFirst();
                 if (StringUtils.isNotEmpty(valueElement.getElementText())) {
                     if (dataObject instanceof DateDataObject) {
                         try {

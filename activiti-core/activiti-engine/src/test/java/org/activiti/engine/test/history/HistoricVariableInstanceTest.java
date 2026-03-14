@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -90,7 +90,7 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
             List<HistoricVariableInstance> variables = historyService.createHistoricVariableInstanceQuery().list();
             assertThat(variables).hasSize(1);
 
-            HistoricVariableInstanceEntity historicVariable = (HistoricVariableInstanceEntity) variables.get(0);
+            HistoricVariableInstanceEntity historicVariable = (HistoricVariableInstanceEntity) variables.getFirst();
             assertThat(historicVariable.getTextValue()).isEqualTo("test456");
 
             assertThat(historyService.createHistoricActivityInstanceQuery().count()).isEqualTo(5);
@@ -107,7 +107,7 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
             List<HistoricVariableInstance> variables = historyService.createHistoricVariableInstanceQuery().list();
             assertThat(variables).hasSize(1);
 
-            HistoricVariableInstanceEntity historicVariable = (HistoricVariableInstanceEntity) variables.get(0);
+            HistoricVariableInstanceEntity historicVariable = (HistoricVariableInstanceEntity) variables.getFirst();
             assertThat(historicVariable.getTextValue()).isEqualTo("test456");
 
             assertThat(historyService.createHistoricActivityInstanceQuery().count()).isEqualTo(4);
@@ -134,7 +134,7 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
                 .list();
             assertThat(variables).hasSize(2);
 
-            HistoricVariableInstanceEntity historicVariable = (HistoricVariableInstanceEntity) variables.get(0);
+            HistoricVariableInstanceEntity historicVariable = (HistoricVariableInstanceEntity) variables.getFirst();
             assertThat(historicVariable.getName()).isEqualTo("myVar");
             assertThat(historicVariable.getTextValue()).isEqualTo("test789");
 
@@ -156,7 +156,7 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
             List<HistoricVariableInstance> variables = historyService.createHistoricVariableInstanceQuery().list();
             assertThat(variables).hasSize(1);
 
-            HistoricVariableInstanceEntity historicVariable = (HistoricVariableInstanceEntity) variables.get(0);
+            HistoricVariableInstanceEntity historicVariable = (HistoricVariableInstanceEntity) variables.getFirst();
             assertThat(historicVariable.getTextValue()).isEqualTo("test456");
 
             assertThat(historyService.createHistoricActivityInstanceQuery().count()).isEqualTo(7);
@@ -179,7 +179,7 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
                 .list();
             assertThat(variables).hasSize(2);
 
-            HistoricVariableInstanceEntity historicVariable = (HistoricVariableInstanceEntity) variables.get(0);
+            HistoricVariableInstanceEntity historicVariable = (HistoricVariableInstanceEntity) variables.getFirst();
             assertThat(historicVariable.getName()).isEqualTo("myVar");
             assertThat(historicVariable.getTextValue()).isEqualTo("test101112");
 
@@ -302,12 +302,12 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
         // by execution id
         historicVariableInstances = historyService
             .createHistoricVariableInstanceQuery()
-            .executionId(tasks.get(0).getExecutionId())
+            .executionId(tasks.getFirst().getExecutionId())
             .orderByVariableName()
             .asc()
             .list();
         assertThat(historicVariableInstances).hasSize(2);
-        assertThat(historicVariableInstances.get(0).getVariableName()).isEqualTo("executionVar0");
+        assertThat(historicVariableInstances.getFirst().getVariableName()).isEqualTo("executionVar0");
         assertThat(historicVariableInstances.get(1).getVariableName()).isEqualTo("taskVar0");
         historicVariableInstances = historyService
             .createHistoricVariableInstanceQuery()
@@ -316,19 +316,19 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
             .asc()
             .list();
         assertThat(historicVariableInstances).hasSize(2);
-        assertThat(historicVariableInstances.get(0).getVariableName()).isEqualTo("executionVar1");
+        assertThat(historicVariableInstances.getFirst().getVariableName()).isEqualTo("executionVar1");
         assertThat(historicVariableInstances.get(1).getVariableName()).isEqualTo("taskVar1");
 
         // By process instance id and execution id
         historicVariableInstances = historyService
             .createHistoricVariableInstanceQuery()
             .processInstanceId(processInstanceId)
-            .executionId(tasks.get(0).getExecutionId())
+            .executionId(tasks.getFirst().getExecutionId())
             .orderByVariableName()
             .asc()
             .list();
         assertThat(historicVariableInstances).hasSize(2);
-        assertThat(historicVariableInstances.get(0).getVariableName()).isEqualTo("executionVar0");
+        assertThat(historicVariableInstances.getFirst().getVariableName()).isEqualTo("executionVar0");
         assertThat(historicVariableInstances.get(1).getVariableName()).isEqualTo("taskVar0");
         historicVariableInstances = historyService
             .createHistoricVariableInstanceQuery()
@@ -338,38 +338,38 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
             .asc()
             .list();
         assertThat(historicVariableInstances).hasSize(2);
-        assertThat(historicVariableInstances.get(0).getVariableName()).isEqualTo("executionVar1");
+        assertThat(historicVariableInstances.getFirst().getVariableName()).isEqualTo("executionVar1");
         assertThat(historicVariableInstances.get(1).getVariableName()).isEqualTo("taskVar1");
 
         // By task id
         historicVariableInstances = historyService
             .createHistoricVariableInstanceQuery()
-            .taskId(tasks.get(0).getId())
+            .taskId(tasks.getFirst().getId())
             .list();
         assertThat(historicVariableInstances).hasSize(1);
-        assertThat(historicVariableInstances.get(0).getVariableName()).isEqualTo("taskVar0");
+        assertThat(historicVariableInstances.getFirst().getVariableName()).isEqualTo("taskVar0");
         historicVariableInstances = historyService
             .createHistoricVariableInstanceQuery()
             .taskId(tasks.get(1).getId())
             .list();
         assertThat(historicVariableInstances).hasSize(1);
-        assertThat(historicVariableInstances.get(0).getVariableName()).isEqualTo("taskVar1");
+        assertThat(historicVariableInstances.getFirst().getVariableName()).isEqualTo("taskVar1");
 
         // By task id and process instance id
         historicVariableInstances = historyService
             .createHistoricVariableInstanceQuery()
             .processInstanceId(processInstanceId)
-            .taskId(tasks.get(0).getId())
+            .taskId(tasks.getFirst().getId())
             .list();
         assertThat(historicVariableInstances).hasSize(1);
-        assertThat(historicVariableInstances.get(0).getVariableName()).isEqualTo("taskVar0");
+        assertThat(historicVariableInstances.getFirst().getVariableName()).isEqualTo("taskVar0");
         historicVariableInstances = historyService
             .createHistoricVariableInstanceQuery()
             .processInstanceId(processInstanceId)
             .taskId(tasks.get(1).getId())
             .list();
         assertThat(historicVariableInstances).hasSize(1);
-        assertThat(historicVariableInstances.get(0).getVariableName()).isEqualTo("taskVar1");
+        assertThat(historicVariableInstances.getFirst().getVariableName()).isEqualTo("taskVar1");
     }
 
     public void testHistoricVariableQueryByExecutionIds() {
@@ -454,8 +454,8 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
             .executionIds(processInstanceIds)
             .list();
         assertThat(1).isEqualTo(historicVariableInstances.size());
-        assertThat("processVar").isEqualTo(historicVariableInstances.get(0).getVariableName());
-        assertThat("processVar").isEqualTo(historicVariableInstances.get(0).getValue());
+        assertThat("processVar").isEqualTo(historicVariableInstances.getFirst().getVariableName());
+        assertThat("processVar").isEqualTo(historicVariableInstances.getFirst().getValue());
 
         historicVariableInstances = historyService
             .createHistoricVariableInstanceQuery()
@@ -463,8 +463,8 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
             .excludeTaskVariables()
             .list();
         assertThat(2).isEqualTo(historicVariableInstances.size());
-        assertThat("executionVar").isEqualTo(historicVariableInstances.get(0).getVariableName());
-        assertThat("executionVar").isEqualTo(historicVariableInstances.get(0).getValue());
+        assertThat("executionVar").isEqualTo(historicVariableInstances.getFirst().getVariableName());
+        assertThat("executionVar").isEqualTo(historicVariableInstances.getFirst().getValue());
         assertThat("executionVar").isEqualTo(historicVariableInstances.get(1).getVariableName());
         assertThat("executionVar").isEqualTo(historicVariableInstances.get(1).getValue());
     }
@@ -474,11 +474,11 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
         // Generate data
         String processInstanceId = runtimeService.startProcessInstanceByKey("twoTasksProcess").getId();
         List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstanceId).list();
-        taskService.setVariableLocal(tasks.get(0).getId(), "taskVar1", "hello1");
+        taskService.setVariableLocal(tasks.getFirst().getId(), "taskVar1", "hello1");
         taskService.setVariableLocal(tasks.get(1).getId(), "taskVar2", "hello2");
 
         Set<String> taskIds = new HashSet<String>();
-        taskIds.add(tasks.get(0).getId());
+        taskIds.add(tasks.getFirst().getId());
         taskIds.add(tasks.get(1).getId());
         List<HistoricVariableInstance> historicVariableInstances = historyService
             .createHistoricVariableInstanceQuery()
@@ -486,18 +486,18 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
             .list();
         assertThat(historyService.createHistoricVariableInstanceQuery().taskIds(taskIds).count()).isEqualTo(2);
         assertThat(historicVariableInstances).hasSize(2);
-        assertThat(historicVariableInstances.get(0).getVariableName()).isEqualTo("taskVar1");
-        assertThat(historicVariableInstances.get(0).getValue()).isEqualTo("hello1");
+        assertThat(historicVariableInstances.getFirst().getVariableName()).isEqualTo("taskVar1");
+        assertThat(historicVariableInstances.getFirst().getValue()).isEqualTo("hello1");
         assertThat(historicVariableInstances.get(1).getVariableName()).isEqualTo("taskVar2");
         assertThat(historicVariableInstances.get(1).getValue()).isEqualTo("hello2");
 
         taskIds = new HashSet<String>();
-        taskIds.add(tasks.get(0).getId());
+        taskIds.add(tasks.getFirst().getId());
         historicVariableInstances = historyService.createHistoricVariableInstanceQuery().taskIds(taskIds).list();
         assertThat(historyService.createHistoricVariableInstanceQuery().taskIds(taskIds).count()).isEqualTo(1);
         assertThat(historicVariableInstances).hasSize(1);
-        assertThat(historicVariableInstances.get(0).getVariableName()).isEqualTo("taskVar1");
-        assertThat(historicVariableInstances.get(0).getValue()).isEqualTo("hello1");
+        assertThat(historicVariableInstances.getFirst().getVariableName()).isEqualTo("taskVar1");
+        assertThat(historicVariableInstances.getFirst().getValue()).isEqualTo("hello1");
     }
 
     @Deployment(resources = { "org/activiti/engine/test/api/runtime/variableScope.bpmn20.xml" })
@@ -530,8 +530,8 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
             .taskIds(taskIds)
             .list();
         assertThat(2).isEqualTo(historicVariableInstances.size());
-        assertThat("taskVar").isEqualTo(historicVariableInstances.get(0).getVariableName());
-        assertThat("taskVar").isEqualTo(historicVariableInstances.get(0).getValue());
+        assertThat("taskVar").isEqualTo(historicVariableInstances.getFirst().getVariableName());
+        assertThat("taskVar").isEqualTo(historicVariableInstances.getFirst().getValue());
         assertThat("taskVar").isEqualTo(historicVariableInstances.get(1).getVariableName());
         assertThat("taskVar").isEqualTo(historicVariableInstances.get(1).getValue());
     }
@@ -584,7 +584,7 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
             assertThat(updates).hasSize(2);
 
             Map<String, HistoricVariableUpdate> updatesMap = new HashMap<String, HistoricVariableUpdate>();
-            HistoricVariableUpdate update = (HistoricVariableUpdate) updates.get(0);
+            HistoricVariableUpdate update = (HistoricVariableUpdate) updates.getFirst();
             updatesMap.put((String) update.getValue(), update);
             update = (HistoricVariableUpdate) updates.get(1);
             updatesMap.put((String) update.getValue(), update);
@@ -798,7 +798,7 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
                 .list();
             assertThat(variables).hasSize(1);
 
-            HistoricVariableInstanceEntity historicVariable = (HistoricVariableInstanceEntity) variables.get(0);
+            HistoricVariableInstanceEntity historicVariable = (HistoricVariableInstanceEntity) variables.getFirst();
             assertThat(historicVariable.getTextValue()).isEqualTo("test456");
 
             assertThat(historyService.createHistoricActivityInstanceQuery().count()).isEqualTo(5);

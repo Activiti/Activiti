@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ public class ExclusiveGatewayValidator extends ProcessLevelValidator {
         if (exclusiveGateway.getOutgoingFlows().isEmpty()) {
             addError(errors, Problems.EXCLUSIVE_GATEWAY_NO_OUTGOING_SEQ_FLOW, process, exclusiveGateway);
         } else if (exclusiveGateway.getOutgoingFlows().size() == 1) {
-            SequenceFlow sequenceFlow = exclusiveGateway.getOutgoingFlows().get(0);
+            SequenceFlow sequenceFlow = exclusiveGateway.getOutgoingFlows().getFirst();
             if (StringUtils.isNotEmpty(sequenceFlow.getConditionExpression())) {
                 addError(
                     errors,

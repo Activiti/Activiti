@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ public class VariableEventsStoreTest extends PluggableActivitiTestCase {
         );
 
         assertThat(listener.getEventsReceived()).hasSize(1);
-        assertThat(listener.getEventsReceived().get(0).getType()).isEqualTo(ActivitiEventType.VARIABLE_CREATED);
+        assertThat(listener.getEventsReceived().getFirst().getType()).isEqualTo(ActivitiEventType.VARIABLE_CREATED);
         assertThat(managementService.getEventLogEntries(null, null)).hasSize(1);
 
         Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
@@ -62,7 +62,7 @@ public class VariableEventsStoreTest extends PluggableActivitiTestCase {
         taskService.setVariableLocal(task.getId(), "myVar", "value");
 
         assertThat(listener.getEventsReceived()).hasSize(1);
-        assertThat(listener.getEventsReceived().get(0).getType()).isEqualTo(ActivitiEventType.VARIABLE_CREATED);
+        assertThat(listener.getEventsReceived().getFirst().getType()).isEqualTo(ActivitiEventType.VARIABLE_CREATED);
         assertThat(managementService.getEventLogEntries(null, null)).hasSize(1);
 
         taskService.removeVariableLocal(task.getId(), "myVar");

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ public class TaskAssigneeTest extends PluggableActivitiTestCase {
         // Get task list
         List<Task> tasks = taskService.createTaskQuery().taskAssignee("kermit").list();
         assertThat(tasks).hasSize(1);
-        Task myTask = tasks.get(0);
+        Task myTask = tasks.getFirst();
         assertThat(myTask.getName()).isEqualTo("Schedule meeting");
         assertThat(myTask.getDescription()).isEqualTo(
             "Schedule an engineering meeting for next week with the new hire."

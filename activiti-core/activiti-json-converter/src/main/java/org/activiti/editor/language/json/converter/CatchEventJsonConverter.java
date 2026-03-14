@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,7 +59,7 @@ public class CatchEventJsonConverter extends BaseBpmnJsonConverter {
             return STENCIL_EVENT_CATCH_TIMER;
         }
 
-        EventDefinition eventDefinition = eventDefinitions.get(0);
+        EventDefinition eventDefinition = eventDefinitions.getFirst();
         if (eventDefinition instanceof MessageEventDefinition) {
             return STENCIL_EVENT_CATCH_MESSAGE;
         } else if (eventDefinition instanceof SignalEventDefinition) {

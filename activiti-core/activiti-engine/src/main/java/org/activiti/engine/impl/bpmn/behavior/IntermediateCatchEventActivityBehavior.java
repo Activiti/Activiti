@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,7 +75,7 @@ public class IntermediateCatchEventActivityBehavior extends AbstractBpmnActivity
 
             // If behind an event based gateway, there is only one incoming sequence flow that originates from said gateway
             if (incomingSequenceFlow != null && incomingSequenceFlow.size() == 1) {
-                SequenceFlow sequenceFlow = incomingSequenceFlow.get(0);
+                SequenceFlow sequenceFlow = incomingSequenceFlow.getFirst();
                 FlowElement sourceFlowElement = sequenceFlow.getSourceFlowElement();
                 if (sourceFlowElement instanceof EventGateway) {
                     return (EventGateway) sourceFlowElement;

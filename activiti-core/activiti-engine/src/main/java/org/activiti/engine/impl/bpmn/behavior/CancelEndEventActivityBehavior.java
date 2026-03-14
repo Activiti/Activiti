@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,7 +76,7 @@ public class CancelEndEventActivityBehavior extends FlowNodeActivityBehavior {
             for (BoundaryEvent boundaryEvent : subProcess.getBoundaryEvents()) {
                 if (
                     CollectionUtil.isNotEmpty(boundaryEvent.getEventDefinitions()) &&
-                    boundaryEvent.getEventDefinitions().get(0) instanceof CancelEventDefinition
+                    boundaryEvent.getEventDefinitions().getFirst() instanceof CancelEventDefinition
                 ) {
                     cancelBoundaryEvent = boundaryEvent;
                     break;

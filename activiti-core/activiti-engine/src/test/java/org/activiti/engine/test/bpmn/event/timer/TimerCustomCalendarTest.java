@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,22 +43,22 @@ public class TimerCustomCalendarTest extends ResourceActivitiTestCase {
         List<Job> jobs = this.managementService.createTimerJobQuery().list();
 
         assertThat(jobs).as("One job is scheduled").hasSize(1);
-        assertThat(jobs.get(0).getDuedate())
+        assertThat(jobs.getFirst().getDuedate())
             .as("Job must be scheduled by custom business calendar to Date(0)")
             .isEqualTo(new Date(0));
 
-        managementService.moveTimerToExecutableJob(jobs.get(0).getId());
-        managementService.executeJob(jobs.get(0).getId());
+        managementService.moveTimerToExecutableJob(jobs.getFirst().getId());
+        managementService.executeJob(jobs.getFirst().getId());
 
         jobs = this.managementService.createTimerJobQuery().list();
 
         assertThat(jobs).as("One job is scheduled (repetition is 2x)").hasSize(1);
-        assertThat(jobs.get(0).getDuedate())
+        assertThat(jobs.getFirst().getDuedate())
             .as("Job must be scheduled by custom business calendar to Date(0)")
             .isEqualTo(new Date(0));
 
-        managementService.moveTimerToExecutableJob(jobs.get(0).getId());
-        managementService.executeJob(jobs.get(0).getId());
+        managementService.moveTimerToExecutableJob(jobs.getFirst().getId());
+        managementService.executeJob(jobs.getFirst().getId());
 
         jobs = this.managementService.createTimerJobQuery().list();
         assertThat(jobs).as("There must be no job.").isEmpty();
@@ -71,12 +71,12 @@ public class TimerCustomCalendarTest extends ResourceActivitiTestCase {
         List<Job> jobs = this.managementService.createTimerJobQuery().list();
 
         assertThat(jobs).as("One job is scheduled").hasSize(1);
-        assertThat(jobs.get(0).getDuedate())
+        assertThat(jobs.getFirst().getDuedate())
             .as("Job must be scheduled by custom business calendar to Date(0)")
             .isEqualTo(new Date(0));
 
-        managementService.moveTimerToExecutableJob(jobs.get(0).getId());
-        managementService.executeJob(jobs.get(0).getId());
+        managementService.moveTimerToExecutableJob(jobs.getFirst().getId());
+        managementService.executeJob(jobs.getFirst().getId());
         waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(10000, 200);
 
         Execution execution = runtimeService
@@ -101,12 +101,12 @@ public class TimerCustomCalendarTest extends ResourceActivitiTestCase {
 
         List<Job> jobs = this.managementService.createTimerJobQuery().list();
         assertThat(jobs).as("One job is scheduled").hasSize(1);
-        assertThat(jobs.get(0).getDuedate())
+        assertThat(jobs.getFirst().getDuedate())
             .as("Job must be scheduled by custom business calendar to Date(0)")
             .isEqualTo(new Date(0));
 
-        managementService.moveTimerToExecutableJob(jobs.get(0).getId());
-        managementService.executeJob(jobs.get(0).getId());
+        managementService.moveTimerToExecutableJob(jobs.getFirst().getId());
+        managementService.executeJob(jobs.getFirst().getId());
         waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(10000, 200);
     }
 

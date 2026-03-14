@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ public class SignalAndMessageDefinitionExport implements BpmnXMLConstants {
             for (FlowElement flowElement : process.findFlowElementsOfType(Event.class)) {
                 Event event = (Event) flowElement;
                 if (!event.getEventDefinitions().isEmpty()) {
-                    EventDefinition eventDefinition = event.getEventDefinitions().get(0);
+                    EventDefinition eventDefinition = event.getEventDefinitions().getFirst();
                     if (eventDefinition instanceof SignalEventDefinition) {
                         SignalEventDefinition signalEvent = (SignalEventDefinition) eventDefinition;
                         if (StringUtils.isNotEmpty(signalEvent.getSignalRef())) {

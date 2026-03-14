@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -437,7 +437,7 @@ public class BpmnAutoLayout {
             // closest rhombus corner point.
             FlowElement sourceElement = handledFlowElements.get(sequenceFlows.get(sequenceFlowId).getSourceRef());
             if (sourceElement instanceof Gateway && ((Gateway) sourceElement).getOutgoingFlows().size() > 1) {
-                mxPoint startPoint = points.get(0);
+                mxPoint startPoint = points.getFirst();
                 Object gatewayVertex = generatedVertices.get(sourceElement.getId());
                 mxCellState gatewayState = graph.getView().getState(gatewayVertex);
 

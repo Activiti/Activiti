@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -141,7 +141,7 @@ public class Builder implements TreeBuilder {
         try {
             tree = new Builder(Feature.METHOD_INVOCATIONS).build(args[0]);
         } catch (TreeBuilderException e) {
-            System.out.println(e.getMessage());
+            IO.println(e.getMessage());
             System.exit(0);
         }
         NodePrinter.dump(out, tree.getRoot());

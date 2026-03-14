@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -194,7 +194,9 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
         CommandContext commandContext,
         Map<String, Object> variables,
         FlowElement initialFlowElement,
-        Map<String, Object> transientVariables
+        Map<String, Object> transientVariables,
+        String linkedProcessInstanceId,
+        String linkedProcessInstanceType
     ) {
         ProcessDefinition processDefinition = ProcessDefinitionUtil.getProcessDefinition(
             processInstance.getProcessDefinitionId()
@@ -209,7 +211,9 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
             commandContext,
             calculatedVariables,
             initialFlowElement,
-            transientVariables
+            transientVariables,
+            linkedProcessInstanceId,
+            linkedProcessInstanceType
         );
     }
 }

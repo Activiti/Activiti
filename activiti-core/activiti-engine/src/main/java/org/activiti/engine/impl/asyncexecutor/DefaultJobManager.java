@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -416,10 +416,10 @@ public class DefaultJobManager implements JobManager {
     protected int calculateMaxIterationsValue(String originalExpression) {
         int times = Integer.MAX_VALUE;
         List<String> expression = asList(originalExpression.split("/"));
-        if (expression.size() > 1 && expression.get(0).startsWith("R")) {
+        if (expression.size() > 1 && expression.getFirst().startsWith("R")) {
             times = Integer.MAX_VALUE;
-            if (expression.get(0).length() > 1) {
-                times = Integer.parseInt(expression.get(0).substring(1));
+            if (expression.getFirst().length() > 1) {
+                times = Integer.parseInt(expression.getFirst().substring(1));
             }
         }
         return times;

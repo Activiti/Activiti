@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,7 +59,7 @@ public class StartEventConverterTest extends AbstractConverterTest {
         assertThat(startEvent.getDocumentation()).isEqualTo("startDoc");
 
         assertThat(startEvent.getExecutionListeners()).hasSize(2);
-        ActivitiListener executionListener = startEvent.getExecutionListeners().get(0);
+        ActivitiListener executionListener = startEvent.getExecutionListeners().getFirst();
         assertThat(executionListener.getEvent()).isEqualTo("start");
         assertThat(executionListener.getImplementation()).isEqualTo("org.test.TestClass");
         assertThat(executionListener.getImplementationType()).isEqualTo(ImplementationType.IMPLEMENTATION_TYPE_CLASS);
@@ -74,7 +74,7 @@ public class StartEventConverterTest extends AbstractConverterTest {
         List<FormProperty> formProperties = startEvent.getFormProperties();
         assertThat(formProperties).hasSize(2);
 
-        FormProperty formProperty = formProperties.get(0);
+        FormProperty formProperty = formProperties.getFirst();
         assertThat(formProperty.getId()).isEqualTo("startFormProp1");
         assertThat(formProperty.getName()).isEqualTo("startFormProp1");
         assertThat(formProperty.getType()).isEqualTo("string");

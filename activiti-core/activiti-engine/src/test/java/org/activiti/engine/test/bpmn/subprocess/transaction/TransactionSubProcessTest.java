@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -375,7 +375,7 @@ public class TransactionSubProcessTest extends PluggableActivitiTestCase {
         // there are 10 compensation event subscriptions
         assertThat(eventSubscriptionEntities).hasSize(10);
 
-        Task task = taskService.createTaskQuery().listPage(0, 1).get(0);
+        Task task = taskService.createTaskQuery().listPage(0, 1).getFirst();
 
         // canceling one instance triggers compensation for all other instances:
         taskService.setVariable(task.getId(), "confirmed", false);

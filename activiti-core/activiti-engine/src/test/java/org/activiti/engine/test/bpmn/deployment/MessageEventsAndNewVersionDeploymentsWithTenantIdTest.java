@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -123,7 +123,7 @@ public class MessageEventsAndNewVersionDeploymentsWithTenantIdTest extends Plugg
 
         runtimeService.messageEventReceived(
             "myMessage",
-            getExecutionIdsForMessageEventSubscription("myMessage").get(0)
+            getExecutionIdsForMessageEventSubscription("myMessage").getFirst()
         );
         assertThat(getAllEventSubscriptions()).hasSize(0);
         assertThat(taskService.createTaskQuery().singleResult().getName()).isEqualTo("Task after message");
@@ -178,7 +178,7 @@ public class MessageEventsAndNewVersionDeploymentsWithTenantIdTest extends Plugg
         repositoryService.deleteDeployment(deploymentId1, true);
         eventSubscriptions = getAllEventSubscriptions();
         assertThat(eventSubscriptions).hasSize(1);
-        assertThat(eventSubscriptions.get(0).getProcessDefinitionId()).isEqualTo(
+        assertThat(eventSubscriptions.getFirst().getProcessDefinitionId()).isEqualTo(
             repositoryService.createProcessDefinitionQuery().deploymentId(deploymentId2).singleResult().getId()
         );
 
@@ -216,7 +216,7 @@ public class MessageEventsAndNewVersionDeploymentsWithTenantIdTest extends Plugg
         assertEventSubscriptionsCount(1);
 
         List<EventSubscriptionEntity> eventSubscriptions = getAllEventSubscriptions();
-        assertThat(eventSubscriptions.get(0).getProcessDefinitionId()).isEqualTo(
+        assertThat(eventSubscriptions.getFirst().getProcessDefinitionId()).isEqualTo(
             repositoryService.createProcessDefinitionQuery().deploymentId(deploymentId3).singleResult().getId()
         );
 

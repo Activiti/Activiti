@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -96,7 +96,7 @@ public class ProcessRuntimeTerminatedEndEventIT {
         List<ProcessCancelledEvent> processCancelledEvents = localEventSource.getEvents(ProcessCancelledEvent.class);
 
         assertThat(processCancelledEvents).hasSize(1);
-        ProcessCancelledEvent processCancelledEvent = processCancelledEvents.get(0);
+        ProcessCancelledEvent processCancelledEvent = processCancelledEvents.getFirst();
         assertThat(processCancelledEvent.getCause()).contains("Terminated by end event");
         assertThat(processCancelledEvent.getEntity().getId()).isEqualTo(processInstance.getId());
         assertThat(processCancelledEvent.getEntity().getProcessDefinitionId()).isEqualTo(

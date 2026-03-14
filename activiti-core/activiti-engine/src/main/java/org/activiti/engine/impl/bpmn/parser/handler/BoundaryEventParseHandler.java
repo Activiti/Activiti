@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ public class BoundaryEventParseHandler extends AbstractFlowNodeBpmnParseHandler<
 
         EventDefinition eventDefinition = null;
         if (boundaryEvent.getEventDefinitions().size() > 0) {
-            eventDefinition = boundaryEvent.getEventDefinitions().get(0);
+            eventDefinition = boundaryEvent.getEventDefinitions().getFirst();
         }
 
         if (

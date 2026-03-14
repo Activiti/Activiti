@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -320,13 +320,13 @@ public class VerifyDatabaseOperationsTest extends PluggableActivitiTestCase {
     // ---------------------------------
 
     protected void assertExecutedCommands(String... commands) {
-        ProfileSession profileSession = ActivitiProfiler.getInstance().getProfileSessions().get(0);
+        ProfileSession profileSession = ActivitiProfiler.getInstance().getProfileSessions().getFirst();
         Map<String, CommandStats> allStats = profileSession.calculateSummaryStatistics();
 
         if (commands.length != allStats.size()) {
-            System.out.println("Following commands were found: ");
+            IO.println("Following commands were found: ");
             for (String command : allStats.keySet()) {
-                System.out.println(command);
+                IO.println(command);
             }
         }
         assertThat(allStats).hasSize(commands.length);
@@ -408,7 +408,7 @@ public class VerifyDatabaseOperationsTest extends PluggableActivitiTestCase {
     }
 
     protected CommandStats getStats(String commandClass) {
-        ProfileSession profileSession = ActivitiProfiler.getInstance().getProfileSessions().get(0);
+        ProfileSession profileSession = ActivitiProfiler.getInstance().getProfileSessions().getFirst();
         Map<String, CommandStats> allStats = profileSession.calculateSummaryStatistics();
         CommandStats stats = getStatsForCommand(commandClass, allStats);
         return stats;

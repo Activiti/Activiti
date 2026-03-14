@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,7 +71,7 @@ public class ExecutionTreeStringBuilder {
                 internalToString(children.get(i), strb, prefix + (isTail ? "    " : "│   "), false);
             }
             if (children.size() > 0) {
-                internalToString(children.get(children.size() - 1), strb, prefix + (isTail ? "    " : "│   "), true);
+                internalToString(children.getLast(), strb, prefix + (isTail ? "    " : "│   "), true);
             }
         }
     }

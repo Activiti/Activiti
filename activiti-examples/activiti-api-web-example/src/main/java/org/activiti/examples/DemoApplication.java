@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,7 +55,7 @@ public class DemoApplication implements CommandLineRunner {
                 .build()
         );
         String message = ">>> Created Process Instance: " + processInstance;
-        System.out.println(message);
+        IO.println(message);
         return message;
     }
 
@@ -88,7 +88,7 @@ public class DemoApplication implements CommandLineRunner {
             String contentToTag = (String) integrationContext.getInBoundVariables().get("fileContent");
             contentToTag += " :) ";
             integrationContext.addOutBoundVariable("fileContent", contentToTag);
-            System.out.println("Final Content: " + contentToTag);
+            IO.println("Final Content: " + contentToTag);
             return integrationContext;
         };
     }
@@ -99,7 +99,7 @@ public class DemoApplication implements CommandLineRunner {
             String contentToDiscard = (String) integrationContext.getInBoundVariables().get("fileContent");
             contentToDiscard += " :( ";
             integrationContext.addOutBoundVariable("fileContent", contentToDiscard);
-            System.out.println("Final Content: " + contentToDiscard);
+            IO.println("Final Content: " + contentToDiscard);
             return integrationContext;
         };
     }

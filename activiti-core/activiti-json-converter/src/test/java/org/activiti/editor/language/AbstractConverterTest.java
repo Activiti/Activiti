@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,7 +63,7 @@ public abstract class AbstractConverterTest {
         assertThat(flowElement).isInstanceOf(Event.class);
         Event event = (Event) flowElement;
         assertThat(event.getEventDefinitions().isEmpty()).isFalse();
-        return event.getEventDefinitions().get(0);
+        return event.getEventDefinitions().getFirst();
     }
 
     protected abstract String getResource();

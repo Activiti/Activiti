@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,8 @@ public class ProcessStartedEventImpl
 
     private String nestedProcessDefinitionId;
     private String nestedProcessInstanceId;
+    private String linkedProcessInstanceId;
+    private String linkedProcessInstanceType;
 
     public ProcessStartedEventImpl(ProcessInstance entity) {
         super(entity);
@@ -49,6 +51,24 @@ public class ProcessStartedEventImpl
         return nestedProcessInstanceId;
     }
 
+    public void setLinkedProcessInstanceId(String linkedProcessInstanceId) {
+        this.linkedProcessInstanceId = linkedProcessInstanceId;
+    }
+
+    @Override
+    public String getLinkedProcessInstanceId() {
+        return linkedProcessInstanceId;
+    }
+
+    public void setLinkedProcessInstanceType(String linkedProcessInstanceType) {
+        this.linkedProcessInstanceType = linkedProcessInstanceType;
+    }
+
+    @Override
+    public String getLinkedProcessInstanceType() {
+        return linkedProcessInstanceType;
+    }
+
     @Override
     public ProcessEvents getEventType() {
         return ProcessEvents.PROCESS_STARTED;
@@ -64,6 +84,12 @@ public class ProcessStartedEventImpl
             '\'' +
             ", nestedProcessInstanceId='" +
             nestedProcessInstanceId +
+            '\'' +
+            ", linkedProcessInstanceId='" +
+            linkedProcessInstanceId +
+            '\'' +
+            ", linkedProcessInstanceType='" +
+            linkedProcessInstanceType +
             '\'' +
             '}'
         );

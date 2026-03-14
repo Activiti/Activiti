@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -147,7 +147,7 @@ public class DuplicateVariableInsertTest extends PluggableActivitiTestCase {
 
         // One of the 2 threads should get an optimistic lock exception
         assertThat(exceptions).hasSize(1);
-        assertThat(exceptions.get(0)).isInstanceOf(ActivitiOptimisticLockingException.class);
+        assertThat(exceptions.getFirst()).isInstanceOf(ActivitiOptimisticLockingException.class);
 
         // One variable should be set
         Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
         repositoryService.addCandidateStarterGroup(processDefinition.getId(), "sales");
         assertThat(listener.getEventsReceived()).hasSize(4);
 
-        ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+        ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().getFirst();
         assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
         assertThat(event.getEntity()).isInstanceOf(IdentityLink.class);
         assertThat(event.getProcessDefinitionId()).isEqualTo(processDefinition.getId());
@@ -78,7 +78,7 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
         repositoryService.deleteCandidateStarterUser(processDefinition.getId(), "kermit");
         repositoryService.deleteCandidateStarterGroup(processDefinition.getId(), "sales");
         assertThat(listener.getEventsReceived()).hasSize(2);
-        event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+        event = (ActivitiEntityEvent) listener.getEventsReceived().getFirst();
         assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_DELETED);
         assertThat(event.getEntity()).isInstanceOf(IdentityLink.class);
         assertThat(event.getProcessDefinitionId()).isEqualTo(processDefinition.getId());
@@ -103,7 +103,7 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
         runtimeService.addUserIdentityLink(processInstance.getId(), "kermit", "test");
         assertThat(listener.getEventsReceived()).hasSize(2);
 
-        ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+        ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().getFirst();
         assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
         assertThat(event.getEntity()).isInstanceOf(IdentityLink.class);
         assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
@@ -122,7 +122,7 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
         runtimeService.deleteProcessInstance(processInstance.getId(), "test");
         assertThat(listener.getEventsReceived()).hasSize(1);
 
-        event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+        event = (ActivitiEntityEvent) listener.getEventsReceived().getFirst();
         assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_DELETED);
         assertThat(event.getEntity()).isInstanceOf(IdentityLink.class);
         link = (IdentityLink) event.getEntity();
@@ -148,7 +148,7 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
         // creates an involvement in the process
         assertThat(listener.getEventsReceived()).hasSize(6);
 
-        ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+        ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().getFirst();
         assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
         assertThat(event.getEntity()).isInstanceOf(IdentityLink.class);
         IdentityLink link = (IdentityLink) event.getEntity();
@@ -185,7 +185,7 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
         runtimeService.deleteProcessInstance(processInstance.getId(), "test");
         assertThat(listener.getEventsReceived()).hasSize(3);
 
-        event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+        event = (ActivitiEntityEvent) listener.getEventsReceived().getFirst();
         assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_DELETED);
         event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
         assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_DELETED);

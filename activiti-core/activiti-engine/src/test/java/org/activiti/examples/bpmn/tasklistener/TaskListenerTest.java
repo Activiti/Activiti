@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -206,10 +206,10 @@ public class TaskListenerTest extends PluggableActivitiTestCase {
         assertThat(tasks).hasSize(0);
 
         assertThat(TaskDeleteListener.getCurrentMessages()).hasSize(1);
-        assertThat(TaskDeleteListener.getCurrentMessages().get(0)).isEqualTo("Delete Task Listener executed.");
+        assertThat(TaskDeleteListener.getCurrentMessages().getFirst()).isEqualTo("Delete Task Listener executed.");
 
         assertThat(TaskSimpleCompleteListener.getCurrentMessages()).hasSize(1);
-        assertThat(TaskSimpleCompleteListener.getCurrentMessages().get(0)).isEqualTo(
+        assertThat(TaskSimpleCompleteListener.getCurrentMessages().getFirst()).isEqualTo(
             "Complete Task Listener executed."
         );
     }
@@ -239,7 +239,7 @@ public class TaskListenerTest extends PluggableActivitiTestCase {
         assertThat(tasks).hasSize(0);
 
         assertThat(TaskDeleteListener.getCurrentMessages()).hasSize(1);
-        assertThat(TaskDeleteListener.getCurrentMessages().get(0)).isEqualTo("Delete Task Listener executed.");
+        assertThat(TaskDeleteListener.getCurrentMessages().getFirst()).isEqualTo("Delete Task Listener executed.");
 
         assertThat(TaskSimpleCompleteListener.getCurrentMessages()).hasSize(0);
     }

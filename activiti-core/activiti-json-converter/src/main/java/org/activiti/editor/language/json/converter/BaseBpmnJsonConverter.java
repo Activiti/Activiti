@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -510,7 +510,7 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
     protected void addEventProperties(Event event, ObjectNode propertiesNode) {
         List<EventDefinition> eventDefinitions = event.getEventDefinitions();
         if (eventDefinitions.size() == 1) {
-            EventDefinition eventDefinition = eventDefinitions.get(0);
+            EventDefinition eventDefinition = eventDefinitions.getFirst();
             if (eventDefinition instanceof ErrorEventDefinition) {
                 ErrorEventDefinition errorDefinition = (ErrorEventDefinition) eventDefinition;
                 if (StringUtils.isNotEmpty(errorDefinition.getErrorRef())) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ public class CustomFlowExecutionListenerTest extends ResourceActivitiTestCase {
         @SuppressWarnings("unchecked")
         List<String> conditions = (List<String>) variable.getValue();
         assertThat(conditions).hasSize(2);
-        assertThat(conditions.get(0)).isEqualTo("hello");
+        assertThat(conditions.getFirst()).isEqualTo("hello");
         assertThat(conditions.get(1)).isEqualTo("world");
     }
 }

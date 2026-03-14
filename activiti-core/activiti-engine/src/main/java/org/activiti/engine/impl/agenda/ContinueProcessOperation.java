@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -281,7 +281,7 @@ public class ContinueProcessOperation extends AbstractOperation {
         for (BoundaryEvent boundaryEvent : boundaryEvents) {
             if (
                 CollectionUtil.isEmpty(boundaryEvent.getEventDefinitions()) ||
-                (boundaryEvent.getEventDefinitions().get(0) instanceof CompensateEventDefinition)
+                (boundaryEvent.getEventDefinitions().getFirst() instanceof CompensateEventDefinition)
             ) {
                 continue;
             }

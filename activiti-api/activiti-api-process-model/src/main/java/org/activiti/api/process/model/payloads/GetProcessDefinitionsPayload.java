@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package org.activiti.api.process.model.payloads;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import org.activiti.api.model.shared.Payload;
@@ -22,7 +23,7 @@ import org.activiti.api.model.shared.Payload;
 public class GetProcessDefinitionsPayload implements Payload {
 
     private String id;
-    private String processDefinitionId;
+    private Set<String> processDefinitionIds;
     private Set<String> processDefinitionKeys;
     private boolean latestVersionOnly;
 
@@ -30,10 +31,25 @@ public class GetProcessDefinitionsPayload implements Payload {
         this.id = UUID.randomUUID().toString();
     }
 
-    public GetProcessDefinitionsPayload(String processDefinitionId, Set<String> processDefinitionKeys) {
+    public GetProcessDefinitionsPayload(Set<String> processDefinitionIds, Set<String> processDefinitionKeys) {
         this();
-        this.processDefinitionId = processDefinitionId;
+        this.processDefinitionIds = processDefinitionIds;
         this.processDefinitionKeys = processDefinitionKeys;
+    }
+
+    public GetProcessDefinitionsPayload(
+        Set<String> processDefinitionIds,
+        Set<String> processDefinitionKeys,
+        boolean latestVersionOnly
+    ) {
+        this();
+        this.processDefinitionIds = processDefinitionIds;
+        this.processDefinitionKeys = processDefinitionKeys;
+        this.latestVersionOnly = latestVersionOnly;
+    }
+
+    public GetProcessDefinitionsPayload(String processDefinitionId, Set<String> processDefinitionKeys) {
+        this(new HashSet<>(Set.of(processDefinitionId)), processDefinitionKeys);
     }
 
     public GetProcessDefinitionsPayload(
@@ -41,10 +57,7 @@ public class GetProcessDefinitionsPayload implements Payload {
         Set<String> processDefinitionKeys,
         boolean latestVersionOnly
     ) {
-        this();
-        this.processDefinitionId = processDefinitionId;
-        this.processDefinitionKeys = processDefinitionKeys;
-        this.latestVersionOnly = latestVersionOnly;
+        this(new HashSet<>(Set.of(processDefinitionId)), processDefinitionKeys, latestVersionOnly);
     }
 
     @Override
@@ -52,8 +65,25 @@ public class GetProcessDefinitionsPayload implements Payload {
         return id;
     }
 
+
+
+    /**
+     * @deprecated Use {@link #getProcessDefinitionIds()} instead
+     */
+    @Deprecated(since = "Use getProcessDefinitionIds() instead")
     public String getProcessDefinitionId() {
-        return processDefinitionId;
+        if (processDefinitionIds == null) {
+            return null;
+        }
+        return processDefinitionIds.stream().findFirst().orElse(null);
+    }
+
+    public Set<String> getProcessDefinitionIds() {
+        return processDefinitionIds;
+    }
+
+    public void setProcessDefinitionIds(Set<String> processDefinitionIds) {
+        this.processDefinitionIds = processDefinitionIds;
     }
 
     public Set<String> getProcessDefinitionKeys() {
@@ -62,6 +92,10 @@ public class GetProcessDefinitionsPayload implements Payload {
 
     public boolean hasDefinitionKeys() {
         return processDefinitionKeys != null && !processDefinitionKeys.isEmpty();
+    }
+
+    public boolean hasDefinitionIds() {
+        return processDefinitionIds != null && !processDefinitionIds.isEmpty();
     }
 
     public void setProcessDefinitionKeys(Set<String> processDefinitionKeys) {

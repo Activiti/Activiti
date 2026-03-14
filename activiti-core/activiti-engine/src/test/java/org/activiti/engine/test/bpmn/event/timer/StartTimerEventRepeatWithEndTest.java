@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -87,7 +87,7 @@ public class StartTimerEventRepeatWithEndTest extends PluggableActivitiTestCase 
         dueDateCalendar.set(2025, Calendar.DECEMBER, 11, 0, 0, 0);
 
         // check the due date is inside the 2 seconds range
-        assertThat(Math.abs(dueDateCalendar.getTime().getTime() - jobs.get(0).getDuedate().getTime()) < 2000).isEqualTo(
+        assertThat(Math.abs(dueDateCalendar.getTime().getTime() - jobs.getFirst().getDuedate().getTime()) < 2000).isEqualTo(
             true
         );
 
@@ -123,7 +123,7 @@ public class StartTimerEventRepeatWithEndTest extends PluggableActivitiTestCase 
         dueDateCalendar = Calendar.getInstance();
         dueDateCalendar.set(2025, Calendar.DECEMBER, 12, 0, 0, 0);
 
-        assertThat(Math.abs(dueDateCalendar.getTime().getTime() - jobs.get(0).getDuedate().getTime()) < 2000).isEqualTo(
+        assertThat(Math.abs(dueDateCalendar.getTime().getTime() - jobs.getFirst().getDuedate().getTime()) < 2000).isEqualTo(
             true
         );
 
@@ -186,7 +186,7 @@ public class StartTimerEventRepeatWithEndTest extends PluggableActivitiTestCase 
         // complete the processes.
         for (ProcessInstance processInstance : processInstances) {
             tasks = taskService.createTaskQuery().processInstanceId(processInstance.getProcessInstanceId()).list();
-            Task task = tasks.get(0);
+            Task task = tasks.getFirst();
             assertThat(task.getName()).isEqualTo("Task A");
             assertThat(tasks).hasSize(1);
             taskService.complete(task.getId());

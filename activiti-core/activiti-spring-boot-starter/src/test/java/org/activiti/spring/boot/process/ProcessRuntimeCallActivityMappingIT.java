@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -194,7 +194,7 @@ public class ProcessRuntimeCallActivityMappingIT {
             .getContent();
 
         assertThat(taskList).isNotEmpty();
-        Task task = taskList.get(0);
+        Task task = taskList.getFirst();
 
         assertThat(task.getAssignee()).isNull();
         assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
@@ -211,7 +211,7 @@ public class ProcessRuntimeCallActivityMappingIT {
 
         assertThat(subProcessInstanceList).isNotEmpty();
 
-        ProcessInstance subProcessInstance = subProcessInstanceList.get(0);
+        ProcessInstance subProcessInstance = subProcessInstanceList.getFirst();
 
         assertThat(subProcessInstance).isNotNull();
         assertThat(subProcessInstance.getParentId()).isEqualTo(processInstance.getId());
