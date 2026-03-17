@@ -229,6 +229,7 @@
     <testcontainers.version>2.0.3</testcontainers.version>
     <versions-maven-plugin.version>2.21.0</versions-maven-plugin.version>
     <jackson.version>2.21.1</jackson.version>
+    <tomcat-embed-core.version>10.1.52</tomcat-embed-core.version>
 
     <!-- configuration properties for tests -->
     <generated-assertions-folder>
@@ -287,6 +288,13 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+      <!-- Security fix AAE-42677 -->
+      <dependency>
+        <groupId>org.apache.tomcat.embed</groupId>
+        <artifactId>tomcat-embed-core</artifactId>
+        <version>${tomcat-embed-core.version}</version>
+      </dependency>
+      <!-- Security fix AAE-42677 -->
     </dependencies>
   </dependencyManagement>
   <pluginRepositories>
