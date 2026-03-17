@@ -15,6 +15,7 @@
  */
 package org.activiti.spring.process.variable.types;
 
+import tools.jackson.core.JacksonException;
 import tools.jackson.databind.json.JsonMapper;
 import java.util.List;
 import org.activiti.engine.ActivitiException;
@@ -49,19 +50,19 @@ public class JsonObjectVariableType extends VariableType {
         String json = null;
         try {
             json = jsonMapper.writeValueAsString(var);
-        } catch (Exception e) {
+        } catch (JacksonException e) {
             String message = var.getClass() + " is not serializable as json";
             errors.add(new ActivitiException(message));
-            logger.error(message);
+            logger.error(message, e);
         }
 
         if (json != null) {
             try {
                 jsonMapper.readValue(json, var.getClass());
-            } catch (Exception e) {
+            } catch (JacksonException e) {
                 String message = var.getClass() + " is not deserializable as json";
                 errors.add(new ActivitiException(message));
-                logger.error(message);
+                logger.error(message, e);
             }
         }
     }
