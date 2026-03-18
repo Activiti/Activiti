@@ -227,11 +227,8 @@
     <spring-boot.version>4.0.4</spring-boot.version>
     <spring-framework.version>7.0.5</spring-framework.version>
     <h2.version>2.4.240</h2.version>
-    <jakarta.el-api.version>5.0.1</jakarta.el-api.version>
-    <testcontainers.version>2.0.4</testcontainers.version>
+    <jakarta.el-api.version>6.0.1</jakarta.el-api.version>
     <versions-maven-plugin.version>2.21.0</versions-maven-plugin.version>
-    <jackson.version>3.0.4</jackson.version>
-    <tomcat-embed-core.version>10.1.54</tomcat-embed-core.version>
 
     <!-- configuration properties for tests -->
     <generated-assertions-folder>
@@ -241,19 +238,6 @@
   </properties>
   <dependencyManagement>
     <dependencies>
-      <!-- temporary security fix AAE-36930 -->
-      <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-lang3</artifactId>
-        <version>3.20.0</version>
-      </dependency>
-      <!-- temporary security fix -->
-      <!-- security fix AAE-41710, remove with Spring update -->
-      <dependency>
-        <groupId>org.assertj</groupId>
-        <artifactId>assertj-core</artifactId>
-        <version>3.27.7</version>
-      </dependency>
       <!-- security fix AAE-41710 -->
       <dependency>
         <groupId>org.activiti</groupId>
@@ -283,26 +267,12 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <!-- AAE-43503: Temporary fix for CVE-2026-22732. Remove after Spring Boot upgrade -->
-      <dependency>
-        <groupId>org.springframework.security</groupId>
-        <artifactId>spring-security-bom</artifactId>
-        <version>6.5.9</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
       <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
         <version>${spring-boot.version}</version>
         <type>pom</type>
         <scope>import</scope>
-      </dependency>
-      <!-- AAE-43504: security fix: remove after Spring Boot upgrade -->
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-webmvc</artifactId>
-        <version>${spring-webmvc.version}</version>
       </dependency>
       <!-- Security fix AAE-42677 -->
       <dependency>
