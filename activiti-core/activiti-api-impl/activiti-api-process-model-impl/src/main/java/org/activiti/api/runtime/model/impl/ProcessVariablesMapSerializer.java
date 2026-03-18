@@ -22,20 +22,20 @@ import static org.activiti.api.runtime.model.impl.ProcessVariablesMapTypeRegistr
 
 import tools.jackson.core.JsonGenerator;
 import tools.jackson.databind.ser.std.StdSerializer;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 import org.springframework.core.convert.ConversionService;
 import tools.jackson.databind.SerializationContext;
 
 public class ProcessVariablesMapSerializer extends StdSerializer<ProcessVariablesMap<String, Object>> {
 
     private static final long serialVersionUID = 1L;
-    private final ConversionService conversionService;
+    private final Supplier<ConversionService> conversionServiceSupplier;
 
-    public ProcessVariablesMapSerializer(ConversionService conversionService) {
+    public ProcessVariablesMapSerializer(Supplier<ConversionService> conversionServiceSupplier) {
         super(ProcessVariablesMap.class, true);
-        this.conversionService = conversionService;
+        this.conversionServiceSupplier = conversionServiceSupplier;
     }
 
     @Override
@@ -65,8 +65,8 @@ public class ProcessVariablesMapSerializer extends StdSerializer<ProcessVariable
                 value = new ObjectValue(value);
             }
 
+            ConversionService conversionService = this.conversionServiceSupplier.get();
             String entryValue = conversionService.convert(value, String.class);
-
             variableValue = new ProcessVariableValue(entryType, entryValue);
         }
 

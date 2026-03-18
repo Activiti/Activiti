@@ -15,6 +15,7 @@
  */
 package org.activiti.api.runtime.model.impl;
 
+import java.util.function.Supplier;
 import tools.jackson.core.JsonParser;
 import tools.jackson.databind.DeserializationContext;
 import tools.jackson.databind.JsonNode;
@@ -32,10 +33,10 @@ public class ProcessVariablesMapDeserializer extends ValueDeserializer<ProcessVa
     private static final String VALUE = "value";
     private static final String TYPE = "type";
     private static final JsonMapper jsonMapper = new JsonMapper();
-    private final ConversionService conversionService;
+    private final Supplier<ConversionService> conversionServiceSupplier;
 
-    public ProcessVariablesMapDeserializer(ConversionService conversionService) {
-        this.conversionService = conversionService;
+    public ProcessVariablesMapDeserializer(Supplier<ConversionService> conversionServiceSupplier) {
+        this.conversionServiceSupplier = conversionServiceSupplier;
     }
 
     @Override
@@ -55,13 +56,16 @@ public class ProcessVariablesMapDeserializer extends ValueDeserializer<ProcessVa
                         String value = entryValue.get(VALUE).asString();
 
                         Class<?> clazz = ProcessVariablesMapTypeRegistry.forType(type);
+
+                        ConversionService conversionService = conversionServiceSupplier.get();
+
                         Object result = conversionService.convert(value, clazz);
 
                         if (ObjectValue.class.isInstance(result)) {
                             result = ObjectValue.class.cast(result).getObject();
                         }
-
                         map.put(name, result);
+
                     } else {
                         Object value = null;
                         try {

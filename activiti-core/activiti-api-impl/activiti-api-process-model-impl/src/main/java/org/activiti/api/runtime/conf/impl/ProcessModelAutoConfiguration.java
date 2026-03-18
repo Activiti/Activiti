@@ -24,7 +24,9 @@ import tools.jackson.databind.jsontype.NamedType;
 import tools.jackson.databind.module.SimpleAbstractTypeResolver;
 import tools.jackson.databind.module.SimpleModule;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Set;
+import java.util.function.Supplier;
 import org.activiti.api.process.model.BPMNActivity;
 import org.activiti.api.process.model.BPMNError;
 import org.activiti.api.process.model.BPMNMessage;
@@ -175,11 +177,10 @@ public class ProcessModelAutoConfiguration {
         module.registerSubtypes(new NamedType(MessageEventPayload.class, MessageEventPayload.class.getSimpleName()));
         module.setAbstractTypes(resolver);
 
-        ConversionService conversionService = conversionServiceProvider.getIfUnique(this::conversionService);
+        Supplier<ConversionService> conversionServiceSupplier = () -> Objects.requireNonNullElse(conversionServiceProvider.getIfUnique(), this.conversionService());
+        module.addSerializer(new ProcessVariablesMapSerializer(conversionServiceSupplier));
 
-        module.addSerializer(new ProcessVariablesMapSerializer(conversionService));
-
-        module.addDeserializer(ProcessVariablesMap.class, new ProcessVariablesMapDeserializer(conversionService));
+        module.addDeserializer(ProcessVariablesMap.class, new ProcessVariablesMapDeserializer(conversionServiceSupplier));
 
         return module;
     }
