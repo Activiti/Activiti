@@ -17,9 +17,6 @@ package org.activiti.core.el;
 
 import jakarta.el.ELContext;
 import jakarta.el.ELResolver;
-import java.beans.FeatureDescriptor;
-import java.util.Iterator;
-
 /**
  * Generic Decorator for {@link ELResolver} implementations.
  */
@@ -54,11 +51,6 @@ public abstract class ELResolverDecorator extends ELResolver {
     @Override
     public boolean isReadOnly(ELContext context, Object base, Object property) {
         return decoratedResolver.isReadOnly(context, base, property);
-    }
-
-    @Override
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
-        return decoratedResolver.getFeatureDescriptors(context, base);
     }
 
     @Override

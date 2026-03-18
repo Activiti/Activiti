@@ -23,9 +23,7 @@ import jakarta.el.ELContext;
 import jakarta.el.ELException;
 import jakarta.el.ELResolver;
 import jakarta.el.PropertyNotWritableException;
-import java.beans.FeatureDescriptor;
 import java.math.BigDecimal;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -70,65 +68,6 @@ public class JsonNodeELResolver extends ELResolver {
     @Override
     public Class<?> getCommonPropertyType(ELContext context, Object base) {
         return isResolvable(base) ? Object.class : null;
-    }
-
-    /**
-     * If the base object is not null, returns an Iterator containing the set of
-     * JavaBeans properties available on the given object. Otherwise, returns
-     * null. The Iterator returned must contain zero or more instances of
-     * java.beans.FeatureDescriptor. Each info object contains information about
-     * a property in the bean, as obtained by calling the
-     * BeanInfo.getPropertyDescriptors method. The FeatureDescriptor is
-     * initialized using the same fields as are present in the
-     * PropertyDescriptor, with the additional required named attributes "type"
-     * and "resolvableAtDesignTime" set as follows:
-     * <ul>
-     * <li>{@link ELResolver#TYPE} - The runtime type of the property, from
-     * PropertyDescriptor.getPropertyType().</li>
-     * <li>{@link ELResolver#RESOLVABLE_AT_DESIGN_TIME} - true.</li>
-     * </ul>
-     *
-     * @param context
-     *            The context of this evaluation.
-     * @param base
-     *            The bean to analyze.
-     * @return An Iterator containing zero or more FeatureDescriptor objects,
-     *         each representing a property on this bean, or null if the base
-     *         object is null.
-     */
-    @Override
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
-        if (isResolvable(base)) {
-            JsonNode node = (JsonNode) base;
-            final Iterator<String> keys = node.propertyNames().iterator();
-            return new Iterator<FeatureDescriptor>() {
-                @Override
-                public boolean hasNext() {
-                    return keys.hasNext();
-                }
-
-                @Override
-                public FeatureDescriptor next() {
-                    Object key = keys.next();
-                    FeatureDescriptor feature = new FeatureDescriptor();
-                    feature.setDisplayName(key == null ? "null" : key.toString());
-                    feature.setName(feature.getDisplayName());
-                    feature.setShortDescription("");
-                    feature.setExpert(true);
-                    feature.setHidden(false);
-                    feature.setPreferred(true);
-                    feature.setValue(TYPE, key == null ? "null" : key.getClass());
-                    feature.setValue(RESOLVABLE_AT_DESIGN_TIME, true);
-                    return feature;
-                }
-
-                @Override
-                public void remove() {
-                    throw new UnsupportedOperationException("cannot remove");
-                }
-            };
-        }
-        return null;
     }
 
     /**
