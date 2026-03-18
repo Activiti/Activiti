@@ -16,9 +16,6 @@
 package org.activiti.api.task.conf.impl;
 
 import tools.jackson.core.Version;
-import tools.jackson.databind.BeanDescription;
-import tools.jackson.databind.DeserializationConfig;
-import tools.jackson.databind.JavaType;
 import tools.jackson.databind.jsontype.NamedType;
 import tools.jackson.databind.module.SimpleAbstractTypeResolver;
 import tools.jackson.databind.module.SimpleModule;
