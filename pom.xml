@@ -281,7 +281,7 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <!-- AAE-43509: Temporary fix for CVE-2026-22732. Remove after Spring Boot upgrade -->
+      <!-- AAE-43503: Temporary fix for CVE-2026-22732. Remove after Spring Boot upgrade -->
       <dependency>
         <groupId>org.springframework.security</groupId>
         <artifactId>spring-security-bom</artifactId>
