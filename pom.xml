@@ -226,7 +226,7 @@
     <spring-boot.version>3.5.7</spring-boot.version>
     <h2.version>2.4.240</h2.version>
     <jakarta.el-api.version>5.0.1</jakarta.el-api.version>
-    <testcontainers.version>2.0.3</testcontainers.version>
+    <testcontainers.version>2.0.4</testcontainers.version>
     <versions-maven-plugin.version>2.21.0</versions-maven-plugin.version>
     <jackson.version>2.21.1</jackson.version>
     <tomcat-embed-core.version>10.1.52</tomcat-embed-core.version>
