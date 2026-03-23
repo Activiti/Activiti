@@ -434,6 +434,7 @@ limitations under the License.
                     <module name="TreeWalker">
                       <!-- Import settings: getting rid of redundant import, forbid star notation, defined order of imports. -->
                       <module name="RedundantImport"/>
+                      <module name="UnusedImports"/>
                       <module name="AvoidStarImport">
                         <property name="excludes"
                                   value="org.junit.Assert,org.assertj.core.api.Assertions,org.mockito.Mockito"/>
