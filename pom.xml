@@ -281,6 +281,14 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+      <!-- AAE-43503: Temporary fix for CVE-2026-22732. Remove after Spring Boot upgrade -->
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-bom</artifactId>
+        <version>6.5.9</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
       <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
