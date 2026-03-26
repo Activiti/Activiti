@@ -297,7 +297,7 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <!-- Temporary security fix: remove once Spring Boot BOM includes spring-webmvc 6.2.17+ -->
+      <!-- AAE-43504: security fix: remove after Spring Boot upgrade -->
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-webmvc</artifactId>

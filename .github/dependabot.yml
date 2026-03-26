@@ -15,6 +15,7 @@ updates:
           - "minor"
           - "patch"
     ignore:
+      # Security updates, can be removed with later versions of spring, see AAE-43504
       - dependency-name: "org.springframework:spring-webmvc"
         update-types:
           - "version-update:semver-major"
