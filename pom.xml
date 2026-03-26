@@ -229,6 +229,7 @@
     <testcontainers.version>2.0.4</testcontainers.version>
     <versions-maven-plugin.version>2.21.0</versions-maven-plugin.version>
     <jackson.version>2.21.2</jackson.version>
+    <spring-webmvc.version>6.2.17</spring-webmvc.version>
     <tomcat-embed-core.version>10.1.52</tomcat-embed-core.version>
 
     <!-- configuration properties for tests -->
@@ -295,6 +296,12 @@
         <version>${spring-boot.version}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+      <!-- AAE-43504: security fix: remove after Spring Boot upgrade -->
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-webmvc</artifactId>
+        <version>${spring-webmvc.version}</version>
       </dependency>
       <!-- Security fix AAE-42677 -->
       <dependency>
