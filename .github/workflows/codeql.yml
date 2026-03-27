@@ -36,7 +36,7 @@ jobs:
     steps:
       - name: Check dependabot build
         if: github.secret_source == 'Dependabot' || (github.secret_source == 'None' && github.event.action != 'milestoned')
-        uses: Alfresco/alfresco-build-tools/.github/actions/github-require-secrets@0f483aca096ad614dbee2a4b0c9222437c285d1c # v15.12.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/github-require-secrets@661ab6a0d23f6a269da039831907cffad37cc061 # v15.12.1
         with:
           dependabot-error-message: "This PR requires additional validation, please set the milestone to 'Validating' or ask a reviewer to approve it."
           none-error-message: "This PR requires additional validation, please set the milestone to 'Validating'."
