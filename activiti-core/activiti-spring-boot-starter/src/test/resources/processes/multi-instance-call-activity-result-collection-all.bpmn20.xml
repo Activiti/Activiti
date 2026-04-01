@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="processDefinitions"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:activiti="http://activiti.org/bpmn"
+             targetNamespace="processDefinitions">
+
+    <process id="multi-instance-call-activity-result-collection-all">
+        <startEvent id="start"/>
+        <sequenceFlow id="flow1" sourceRef="start" targetRef="callActivity"/>
+        <callActivity id="callActivity" calledElement="multi-instance-call-activity-result-sub-process">
+          <multiInstanceLoopCharacteristics isSequential="false">
+            <loopCardinality>2</loopCardinality>
+            <loopDataOutputRef>miResult</loopDataOutputRef>
+          </multiInstanceLoopCharacteristics>
+        </callActivity>
+        <sequenceFlow id="flow2" sourceRef="callActivity" targetRef="userTask"/>
+        <userTask id="userTask" name="My user task" activiti:candidateUsers="user"/>
+        <sequenceFlow id="flow3" sourceRef="userTask" targetRef="end"/>
+        <endEvent id="end"/>
+    </process>
+
+    <process id="multi-instance-call-activity-result-sub-process">
+        <startEvent id="subStart"/>
+        <sequenceFlow id="subFlow" sourceRef="subStart" targetRef="subEnd"/>
+        <endEvent id="subEnd"/>
+    </process>
+
+</definitions>

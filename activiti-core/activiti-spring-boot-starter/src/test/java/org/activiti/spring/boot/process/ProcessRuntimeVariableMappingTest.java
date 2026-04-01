@@ -17,6 +17,7 @@ package org.activiti.spring.boot.process;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.assertj.core.api.Assertions.tuple;
 
@@ -26,7 +27,16 @@ import java.util.List;
 import java.util.Map;
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessInstance;
+import org.activiti.api.runtime.shared.NotFoundException;
+import org.activiti.api.task.model.Task;
+import org.activiti.api.task.model.builders.ClaimTaskPayloadBuilder;
+import org.activiti.api.task.model.builders.CompleteTaskPayloadBuilder;
+import org.activiti.api.task.model.payloads.ClaimTaskPayload;
+import org.activiti.api.task.model.payloads.CompleteTaskPayload;
+import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.engine.ActivitiException;
+import org.activiti.spring.boot.security.util.SecurityUtil;
+import org.activiti.spring.boot.tasks.TaskBaseRuntime;
 import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -51,6 +61,14 @@ public class ProcessRuntimeVariableMappingTest {
 
     @Autowired
     private ProcessCleanUpUtil processCleanUpUtil;
+
+    @Autowired
+    private TaskBaseRuntime taskBaseRuntime;
+
+    @Autowired
+    private SecurityUtil securityUtil;
+    @Autowired
+    private TaskRuntime taskRuntime;
 
     @BeforeEach
     public void setUp() {
@@ -139,4 +157,36 @@ public class ProcessRuntimeVariableMappingTest {
                 tuple("outVarFromJsonExpression", "Tower of London")
             );
     }
+
+    @Test
+    public void should_mapTaskAssignee_when_mappingToVariable_multi_instances() {
+        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(
+            "multi-instance-call-activity-result-collection-all"
+        );
+
+        List<VariableInstance> procVariables = processBaseRuntime.getProcessVariablesByProcessId(
+            processInstance.getId()
+        );
+
+        assertThat(procVariables)
+            .isNotNull()
+            .extracting(VariableInstance::getName, VariableInstance::getValue)
+            .contains(
+                tuple(
+                    "miResult",
+                    asList(Map.of("childVar", "From child"), Map.of("childVar", "From child"))
+                )
+            );
+
+        final var task = taskBaseRuntime.getTasks(processInstance).getFirst();
+
+        securityUtil.logInAs("user");
+
+        taskRuntime.claim(new ClaimTaskPayloadBuilder().withTaskId(task.getId()).withAssignee("user").build());
+
+        taskRuntime.complete(new CompleteTaskPayloadBuilder().withTaskId(task.getId()).build());
+
+        assertThatThrownBy(() -> processBaseRuntime.getProcessRuntime().processInstance(processInstance.getId())).isInstanceOf(NotFoundException.class);
+    }
+
 }

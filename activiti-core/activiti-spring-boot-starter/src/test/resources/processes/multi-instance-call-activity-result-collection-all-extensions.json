@@ -1,0 +1,28 @@
+{
+  "id": "multi-instance-call-activity-result-collection-all-model",
+  "name": "multi-instance-call-activity-result-collection-all",
+  "extensions": {
+    "multi-instance-call-activity-result-collection-all": {
+      "mappings": {
+        "callActivity": {
+          "inputs": {},
+          "outputs": {}
+        }
+      }
+    },
+    "multi-instance-call-activity-result-sub-process": {
+      "constants": {},
+      "mappings": {},
+      "properties": {
+        "de3a01c7-e2cc-4f16-b322-d04477288a0b": {
+          "id": "de3a01c7-e2cc-4f16-b322-d04477288a0b",
+          "name": "childVar",
+          "type": "string",
+          "required": false,
+          "value": "From child"
+        }
+      },
+      "assignments": {}
+    }
+  }
+}
