@@ -507,7 +507,6 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
     ) {
         BpmnModel bpmnModel = new BpmnModel();
 
-        bpmnModel.setTargetNamespace("http://activiti.org/test");
         Map<String, JsonNode> shapeMap = new HashMap<String, JsonNode>();
         Map<String, JsonNode> sourceRefMap = new HashMap<String, JsonNode>();
         Map<String, JsonNode> edgeMap = new HashMap<String, JsonNode>();
