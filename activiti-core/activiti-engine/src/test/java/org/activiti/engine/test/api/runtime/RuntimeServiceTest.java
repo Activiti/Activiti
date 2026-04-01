@@ -1166,23 +1166,28 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         builder.linkedProcessInstanceType("myLinkType");
 
         // Spy on the command executor to capture the command
+        CommandExecutor originalExecutor = runtimeService.getCommandExecutor();
         CommandExecutor commandExecutor = spy(processEngineConfiguration.getCommandExecutor());
         runtimeService.setCommandExecutor(commandExecutor);
 
-        ProcessInstance processInstance = runtimeService.startProcessInstance(builder);
+        try {
+            ProcessInstance processInstance = runtimeService.startProcessInstance(builder);
 
-        // Capture the StartProcessInstanceCmd
-        ArgumentCaptor<StartProcessInstanceCmd> commandCaptor = ArgumentCaptor.forClass(StartProcessInstanceCmd.class);
-        verify(commandExecutor).execute(commandCaptor.capture());
+            // Capture the StartProcessInstanceCmd
+            ArgumentCaptor<StartProcessInstanceCmd> commandCaptor = ArgumentCaptor.forClass(StartProcessInstanceCmd.class);
+            verify(commandExecutor).execute(commandCaptor.capture());
 
-        StartProcessInstanceCmd capturedCommand = commandCaptor.getValue();
-        assertThat(capturedCommand.getLinkedProcessInstanceId()).isEqualTo("linkedProcess123");
+            StartProcessInstanceCmd capturedCommand = commandCaptor.getValue();
+            assertThat(capturedCommand.getLinkedProcessInstanceId()).isEqualTo("linkedProcess123");
 
-        assertThat(capturedCommand.getLinkedProcessInstanceType()).isEqualTo("myLinkType");
+            assertThat(capturedCommand.getLinkedProcessInstanceType()).isEqualTo("myLinkType");
 
-        assertThat(processInstance).isNotNull();
-        assertThat(processInstance.getProcessDefinitionId()).isEqualTo(processDefinition.getId());
-        assertThat(processInstance.getBusinessKey()).isEqualTo("businessKey456");
+            assertThat(processInstance).isNotNull();
+            assertThat(processInstance.getProcessDefinitionId()).isEqualTo(processDefinition.getId());
+            assertThat(processInstance.getBusinessKey()).isEqualTo("businessKey456");
+        } finally {
+            runtimeService.setCommandExecutor(originalExecutor);
+        }
     }
 
     @Deployment(resources = { "org/activiti/engine/test/api/messageStartEvent.bpmn20.xml" })
@@ -1196,23 +1201,28 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         builder.linkedProcessInstanceId("linkedProcess123");
         builder.linkedProcessInstanceType("myLinkType");
 
+        CommandExecutor originalExecutor = runtimeService.getCommandExecutor();
         CommandExecutor commandExecutor = spy(processEngineConfiguration.getCommandExecutor());
         runtimeService.setCommandExecutor(commandExecutor);
 
-        ProcessInstance processInstance = runtimeService.startProcessInstance(builder);
+        try {
+            ProcessInstance processInstance = runtimeService.startProcessInstance(builder);
 
-        // Capture the StartProcessInstanceByMessageCmd
-        ArgumentCaptor<StartProcessInstanceByMessageCmd> commandCaptor = ArgumentCaptor.forClass(StartProcessInstanceByMessageCmd.class);
-        verify(commandExecutor).execute(commandCaptor.capture());
+            // Capture the StartProcessInstanceByMessageCmd
+            ArgumentCaptor<StartProcessInstanceByMessageCmd> commandCaptor = ArgumentCaptor.forClass(StartProcessInstanceByMessageCmd.class);
+            verify(commandExecutor).execute(commandCaptor.capture());
 
-        StartProcessInstanceByMessageCmd capturedCommand = commandCaptor.getValue();
-        assertThat(capturedCommand.getLinkedProcessInstanceId()).isEqualTo("linkedProcess123");
+            StartProcessInstanceByMessageCmd capturedCommand = commandCaptor.getValue();
+            assertThat(capturedCommand.getLinkedProcessInstanceId()).isEqualTo("linkedProcess123");
 
-        assertThat(capturedCommand.getLinkedProcessInstanceType()).isEqualTo("myLinkType");
+            assertThat(capturedCommand.getLinkedProcessInstanceType()).isEqualTo("myLinkType");
 
-        assertThat(processInstance).isNotNull();
-        assertThat(processInstance.getProcessDefinitionId()).isEqualTo(processDefinition.getId());
-        assertThat(processInstance.getBusinessKey()).isEqualTo("businessKey456");
+            assertThat(processInstance).isNotNull();
+            assertThat(processInstance.getProcessDefinitionId()).isEqualTo(processDefinition.getId());
+            assertThat(processInstance.getBusinessKey()).isEqualTo("businessKey456");
+        } finally {
+            runtimeService.setCommandExecutor(originalExecutor);
+        }
     }
 
 
