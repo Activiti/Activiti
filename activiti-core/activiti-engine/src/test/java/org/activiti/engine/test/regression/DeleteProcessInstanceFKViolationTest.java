@@ -41,10 +41,11 @@ class DeleteProcessInstanceFKViolationTest {
 
     @BeforeEach
     void setUp() {
+        String processEngineName = "activiti-fk-test-" + UUID.randomUUID();
         processEngine =
             ProcessEngineConfiguration.createStandaloneProcessEngineConfiguration()
-                .setProcessEngineName("activiti-fk-test-" + UUID.randomUUID())
-                .setJdbcUrl("jdbc:h2:mem:activiti-fk-test-" + UUID.randomUUID() + ";DB_CLOSE_DELAY=1000")
+                .setProcessEngineName(processEngineName)
+                .setJdbcUrl("jdbc:h2:mem:" + processEngineName + ";DB_CLOSE_DELAY=1000")
                 .setJdbcUsername("sa")
                 .setJdbcPassword("")
                 .setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_CREATE_DROP)
