@@ -16,7 +16,6 @@
 package org.activiti.engine.test.regression;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatNoException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -103,16 +102,16 @@ class DeleteProcessInstanceFKViolationTest {
         runtimeService.deleteProcessInstance(processInstance.getId(), "test");
 
         assertThat(runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count())
-            .isEqualTo(0);
+            .isZero();
 
         try (Connection conn = getConnection()) {
             assertThat(countVariablesByProcessInstance(conn, executionId))
                 .as("No variables should remain after deletion")
-                .isEqualTo(0);
+                .isZero();
 
             assertThat(countByteArraysByName(conn, "var:duplicateVar"))
                 .as("No byte arrays should remain after deletion")
-                .isEqualTo(0);
+                .isZero();
         }
     }
 
