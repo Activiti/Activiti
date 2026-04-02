@@ -20,9 +20,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import java.util.Properties;
-import javax.mail.NoSuchProviderException;
-import javax.mail.Provider;
-import javax.mail.Session;
+import jakarta.mail.NoSuchProviderException;
+import jakarta.mail.Provider;
+import jakarta.mail.Session;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import org.activiti.engine.runtime.ProcessInstance;

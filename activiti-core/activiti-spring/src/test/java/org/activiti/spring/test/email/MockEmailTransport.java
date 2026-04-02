@@ -16,12 +16,12 @@
 package org.activiti.spring.test.email;
 
 import java.io.IOException;
-import javax.mail.Address;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.URLName;
+import jakarta.mail.Address;
+import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Session;
+import jakarta.mail.Transport;
+import jakarta.mail.URLName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
