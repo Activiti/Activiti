@@ -759,29 +759,7 @@ public class ExecutionEntityManagerImpl
             }
         }
 
-        // Get variables related to execution and delete them
-        if (
-            !enableExecutionRelationshipCounts ||
-                (enableExecutionRelationshipCounts && ((CountingExecutionEntity) executionEntity).getVariableCount() > 0)
-        ) {
-            Collection<VariableInstance> executionVariables = executionEntity.getVariableInstancesLocal().values();
-            for (VariableInstance variableInstance : executionVariables) {
-                if (variableInstance instanceof VariableInstanceEntity) {
-                    VariableInstanceEntity variableInstanceEntity = (VariableInstanceEntity) variableInstance;
-
-                    VariableInstanceEntityManager variableInstanceEntityManager = getVariableInstanceEntityManager();
-                    variableInstanceEntityManager.delete(variableInstanceEntity);
-                    if (
-                        variableInstanceEntity.getByteArrayRef() != null &&
-                            variableInstanceEntity.getByteArrayRef().getId() != null
-                    ) {
-                        getByteArrayEntityManager().deleteByteArrayById(
-                            variableInstanceEntity.getByteArrayRef().getId()
-                        );
-                    }
-                }
-            }
-        }
+        deleteVariables(executionEntity, enableExecutionRelationshipCounts);
 
         // Delete jobs
 
@@ -868,6 +846,29 @@ public class ExecutionEntityManagerImpl
             for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
                 eventSubscriptionEntityManager.delete(eventSubscription);
             }
+        }
+
+    }
+
+    private void deleteVariables(ExecutionEntity executionEntity, boolean enableExecutionRelationshipCounts) {
+        if (
+            !enableExecutionRelationshipCounts || ((CountingExecutionEntity) executionEntity).getVariableCount() > 0
+        ) {
+            List<VariableInstanceEntity> executionVariables =
+                getVariableInstanceEntityManager().findVariableInstancesByExecutionId(executionEntity.getId());
+            for (VariableInstanceEntity variableInstanceEntity : executionVariables) {
+                VariableInstanceEntityManager variableInstanceEntityManager = getVariableInstanceEntityManager();
+                variableInstanceEntityManager.delete(variableInstanceEntity);
+                if (
+                    variableInstanceEntity.getByteArrayRef() != null &&
+                        variableInstanceEntity.getByteArrayRef().getId() != null
+                ) {
+                    getByteArrayEntityManager().deleteByteArrayById(
+                        variableInstanceEntity.getByteArrayRef().getId()
+                    );
+                }
+            }
+
         }
     }
 

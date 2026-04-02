@@ -229,13 +229,19 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
             .collect(Collectors.toList());
         assertThat(variableEvents)
             .extracting(ActivitiVariableEvent::getType, ActivitiVariableEvent::getVariableName)
-            .containsExactly(
+            .startsWith(
                 tuple(ActivitiEventType.VARIABLE_CREATED, "parentVar1"),
                 tuple(ActivitiEventType.VARIABLE_CREATED, "subVar1"),
                 tuple(ActivitiEventType.VARIABLE_CREATED, "parentVar2"),
-                tuple(ActivitiEventType.VARIABLE_DELETED, "subVar1"),
-                tuple(ActivitiEventType.VARIABLE_DELETED, "parentVar2"),
-                tuple(ActivitiEventType.VARIABLE_DELETED, "parentVar1")
+                tuple(ActivitiEventType.VARIABLE_DELETED, "subVar1")
+            );
+        // The deletion order of parentVar1 and parentVar2 is not guaranteed
+        // because they belong to the same execution and the DB query has no ORDER BY
+        assertThat(variableEvents.subList(4, 6))
+            .extracting(ActivitiVariableEvent::getType, ActivitiVariableEvent::getVariableName)
+            .containsExactlyInAnyOrder(
+                tuple(ActivitiEventType.VARIABLE_DELETED, "parentVar1"),
+                tuple(ActivitiEventType.VARIABLE_DELETED, "parentVar2")
             );
     }
 

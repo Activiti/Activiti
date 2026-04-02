@@ -101,6 +101,9 @@ public class ExecutionEntityManagerImplTest {
     private EventSubscriptionEntityManager eventSubscriptionEntityManager;
 
     @Mock
+    private VariableInstanceEntityManager variableInstanceEntityManager;
+
+    @Mock
     private HistoricProcessInstanceEntityManager historicProcessInstanceEntityManager;
 
     @Before
@@ -120,6 +123,7 @@ public class ExecutionEntityManagerImplTest {
         given(processEngineConfiguration.getEventSubscriptionEntityManager()).willReturn(
             eventSubscriptionEntityManager
         );
+        given(processEngineConfiguration.getVariableInstanceEntityManager()).willReturn(variableInstanceEntityManager);
         given(processEngineConfiguration.getHistoricProcessInstanceEntityManager()).willReturn(
             historicProcessInstanceEntityManager
         );
@@ -485,7 +489,7 @@ public class ExecutionEntityManagerImplTest {
         ));
 
         given(executionEntityManager.findById("validProcessInstanceId")).willReturn(processInstanceEntity);
-        given(commandContext.getVariableInstanceEntityManager()).willReturn(mock(VariableInstanceEntityManager.class));
+
         executionEntityManager.deleteProcessInstanceExecutionEntity(
             "validProcessInstanceId",
             "currentFlowElementId",
@@ -533,7 +537,7 @@ public class ExecutionEntityManagerImplTest {
         ));
 
         given(executionEntityManager.findById("validProcessInstanceId")).willReturn(processInstanceEntity);
-        given(commandContext.getVariableInstanceEntityManager()).willReturn(mock(VariableInstanceEntityManager.class));
+
         executionEntityManager.deleteProcessInstanceExecutionEntity(
             "validProcessInstanceId",
             "currentFlowElementId",
