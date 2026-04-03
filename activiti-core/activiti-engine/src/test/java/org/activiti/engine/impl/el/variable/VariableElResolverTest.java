@@ -24,7 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Arrays;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class VariableElResolverTest {
 

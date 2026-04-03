@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.activiti.engine.impl.persistence.entity.TaskEntityImpl;
 import org.activiti.engine.task.TaskInfo;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TaskComparatorTest {
 

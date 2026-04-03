@@ -31,9 +31,9 @@ import org.activiti.bpmn.model.Activity;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.cmd.CompleteTaskCmd;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
@@ -55,13 +55,13 @@ public class ParallelMultiInstanceBehaviorTest {
 
     private AutoCloseable autoCloseable;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         autoCloseable = openMocks(this);
         doReturn(commandContext).when(multiInstanceBehavior).getCommandContext();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         autoCloseable.close();
     }

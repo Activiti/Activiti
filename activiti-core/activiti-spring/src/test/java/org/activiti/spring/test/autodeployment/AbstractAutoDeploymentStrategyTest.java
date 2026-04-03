@@ -24,15 +24,18 @@ import org.activiti.core.common.spring.project.ApplicationUpgradeContextService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
-import org.junit.Before;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ContextResource;
 import org.springframework.core.io.Resource;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public abstract class AbstractAutoDeploymentStrategyTest {
 
     @Mock
@@ -85,7 +88,7 @@ public abstract class AbstractAutoDeploymentStrategyTest {
     protected final String resourceName4 = "/opt/processes/resourceName4.zip";
     protected final String resourceName5 = "/opt/processes/resourceName5.jar";
 
-    @Before
+    @BeforeEach
     public void before() throws Exception {
         when(resourceMock1.getPathWithinContext()).thenReturn(resourceName1);
         when(resourceMock2.getDescription()).thenReturn(resourceName2);
