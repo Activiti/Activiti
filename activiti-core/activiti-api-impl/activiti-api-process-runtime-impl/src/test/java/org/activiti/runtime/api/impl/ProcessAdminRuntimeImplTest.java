@@ -235,6 +235,8 @@ class ProcessAdminRuntimeImplTest {
             "businessKey",
             Map.of("var1", "value1")
         );
+        startPayload.setLinkedProcessInstanceId("linkedProcessId");
+        startPayload.setLinkedProcessInstanceType("linkedProcessType");
 
         var processDefinitionImpl = new ProcessDefinitionImpl();
         processDefinitionImpl.setId("procDefId");
@@ -251,6 +253,8 @@ class ProcessAdminRuntimeImplTest {
         given(processInstanceBuilder.businessKey("businessKey")).willReturn(processInstanceBuilder);
         given(processInstanceBuilder.variables(Map.of("var1", "value1"))).willReturn(processInstanceBuilder);
         given(processInstanceBuilder.name("processName")).willReturn(processInstanceBuilder);
+        given(processInstanceBuilder.linkedProcessInstanceId("linkedProcessId")).willReturn(processInstanceBuilder);
+        given(processInstanceBuilder.linkedProcessInstanceType("linkedProcessType")).willReturn(processInstanceBuilder);
         given(processInstanceBuilder.start()).willReturn(internalProcessInstance);
         given(processInstanceConverter.from(internalProcessInstance)).willReturn(apiProcessInstance);
 
@@ -278,6 +282,8 @@ class ProcessAdminRuntimeImplTest {
         given(processInstanceBuilder.businessKey(null)).willReturn(processInstanceBuilder);
         given(processInstanceBuilder.variables(null)).willReturn(processInstanceBuilder);
         given(processInstanceBuilder.name(null)).willReturn(processInstanceBuilder);
+        given(processInstanceBuilder.linkedProcessInstanceId(null)).willReturn(processInstanceBuilder);
+        given(processInstanceBuilder.linkedProcessInstanceType(null)).willReturn(processInstanceBuilder);
         given(processInstanceBuilder.start()).willReturn(internalProcessInstance);
         given(processInstanceConverter.from(internalProcessInstance)).willReturn(apiProcessInstance);
 
