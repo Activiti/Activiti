@@ -15,12 +15,13 @@
  */
 package org.activiti.core.el.juel.tree.impl;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import org.activiti.core.el.juel.test.TestCase;
+import org.activiti.core.el.juel.tree.TreeBuilderException;
 import org.activiti.core.el.juel.tree.Tree;
 import org.activiti.core.el.juel.tree.impl.ast.AstBinary;
 import org.junit.jupiter.api.Test;
@@ -150,10 +151,8 @@ public class ParserTest extends TestCase {
         verifyCompositeExpression("a${a}a");
         verifyCompositeExpression("a ${a} a");
         verifyCompositeExpression("${a}${a}");
-        try {
-            parse("#{a}${a}");
-            fail();
-        } catch (Exception e) {}
+        assertThatExceptionOfType(TreeBuilderException.class)
+            .isThrownBy(() -> parse("#{a}${a}"));
     }
 
     @Test
@@ -198,10 +197,8 @@ public class ParserTest extends TestCase {
         verifyEvalExpression("${a ? f() : a}", "${a?f():a}");
         verifyEvalExpression("${a ? a : a:f()}", "${a?a:a:f()}");
         verifyEvalExpression("${a ? a:f() : a}", "${a?a:f():a}");
-        try {
-            parse("${a?a:f()}");
-            fail();
-        } catch (Exception e) {}
+        assertThatExceptionOfType(TreeBuilderException.class)
+            .isThrownBy(() -> parse("${a?a:f()}"));
     }
 
     @Test
