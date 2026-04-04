@@ -743,7 +743,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         "java.io.Serializable",
         "java.net.URI",
         "java.net.URL",
-        "[*"
+        "[*",
+        "org.activiti.**"
     );
 
     protected boolean serializePOJOsInVariablesToJson = false;

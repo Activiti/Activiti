@@ -48,7 +48,8 @@ public class SerializableType extends ByteArrayType {
         "java.io.Serializable",
         "java.net.URI",
         "java.net.URL",
-        "[*"
+        "[*",
+        "org.activiti.**"
     );
 
     protected boolean trackDeserializedObjects;
