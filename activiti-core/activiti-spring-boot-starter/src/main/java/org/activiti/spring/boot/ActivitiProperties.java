@@ -234,7 +234,9 @@ public class ActivitiProperties {
         return serializableVariableTypeAllowedClassPatterns;
     }
 
-    public void setSerializableVariableTypeAllowedClassPatterns(List<String> serializableVariableTypeAllowedClassPatterns) {
+    public void setSerializableVariableTypeAllowedClassPatterns(
+        List<String> serializableVariableTypeAllowedClassPatterns
+    ) {
         this.serializableVariableTypeAllowedClassPatterns = serializableVariableTypeAllowedClassPatterns;
     }
 

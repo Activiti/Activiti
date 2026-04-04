@@ -2064,7 +2064,12 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
             //if java serliazation needed together with json defaulting then add to customPostVariableTypes
             if (!serializePOJOsInVariablesToJson) {
                 variableTypes.addType(new ByteArrayType());
-                variableTypes.addType(new SerializableType(serializableVariableTypeTrackDeserializedObjects, serializableVariableTypeAllowedClassPatterns));
+                variableTypes.addType(
+                    new SerializableType(
+                        serializableVariableTypeTrackDeserializedObjects,
+                        serializableVariableTypeAllowedClassPatterns
+                    )
+                );
                 variableTypes.addType(new CustomObjectType("item", ItemInstance.class));
                 variableTypes.addType(new CustomObjectType("message", MessageInstance.class));
             }
