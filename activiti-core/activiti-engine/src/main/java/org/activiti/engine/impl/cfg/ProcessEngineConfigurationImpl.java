@@ -735,6 +735,17 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
      */
     protected boolean serializableVariableTypeTrackDeserializedObjects = true;
 
+    protected List<String> serializableVariableTypeAllowedClassPatterns = List.of(
+        "java.lang.**",
+        "java.util.**",
+        "java.math.**",
+        "java.time.**",
+        "java.io.Serializable",
+        "java.net.URI",
+        "java.net.URL",
+        "[*"
+    );
+
     protected boolean serializePOJOsInVariablesToJson = false;
     protected String javaClassFieldForJackson = JsonTypeInfo.Id.CLASS.getDefaultPropertyName();
 
@@ -2052,7 +2063,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
             //if java serliazation needed together with json defaulting then add to customPostVariableTypes
             if (!serializePOJOsInVariablesToJson) {
                 variableTypes.addType(new ByteArrayType());
-                variableTypes.addType(new SerializableType(serializableVariableTypeTrackDeserializedObjects));
+                variableTypes.addType(new SerializableType(serializableVariableTypeTrackDeserializedObjects, serializableVariableTypeAllowedClassPatterns));
                 variableTypes.addType(new CustomObjectType("item", ItemInstance.class));
                 variableTypes.addType(new CustomObjectType("message", MessageInstance.class));
             }
@@ -2583,6 +2594,16 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         boolean serializableVariableTypeTrackDeserializedObjects
     ) {
         this.serializableVariableTypeTrackDeserializedObjects = serializableVariableTypeTrackDeserializedObjects;
+    }
+
+    public List<String> getSerializableVariableTypeAllowedClassPatterns() {
+        return serializableVariableTypeAllowedClassPatterns;
+    }
+
+    public void setSerializableVariableTypeAllowedClassPatterns(
+        List<String> serializableVariableTypeAllowedClassPatterns
+    ) {
+        this.serializableVariableTypeAllowedClassPatterns = serializableVariableTypeAllowedClassPatterns;
     }
 
     public boolean isSerializePOJOsInVariablesToJson() {
