@@ -44,7 +44,7 @@ public class TimerEventHandler {
             ObjectNode cfgJson = (ObjectNode) objectMapper.readTree(jobHandlerConfiguration);
             cfgJson.put(PROPERTYNAME_TIMER_ACTIVITY_ID, activityId);
             return cfgJson.toString();
-        } catch (JsonProcessingException ex) {
+        } catch (JsonProcessingException | ClassCastException ex) {
             return jobHandlerConfiguration;
         }
     }
@@ -69,7 +69,7 @@ public class TimerEventHandler {
         ObjectNode cfgJson;
         try {
             cfgJson = (ObjectNode) objectMapper.readTree(jobHandlerConfiguration);
-        } catch (JsonProcessingException ex) {
+        } catch (JsonProcessingException | ClassCastException ex) {
             cfgJson = objectMapper.createObjectNode();
             cfgJson.put(PROPERTYNAME_TIMER_ACTIVITY_ID, jobHandlerConfiguration);
         }
