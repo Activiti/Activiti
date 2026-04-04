@@ -48,6 +48,7 @@ public class ActivitiProperties {
     private boolean copyVariablesToLocalForTasks = true;
     private String deploymentMode = "default";
     private boolean serializePOJOsInVariablesToJson = true;
+    private List<String> serializableVariableTypeAllowedClassPatterns;
     private String javaClassFieldForJackson = JsonTypeInfo.Id.CLASS.getDefaultPropertyName();
     private Integer processDefinitionCacheLimit;
     private String processDefinitionCacheName;
@@ -227,6 +228,14 @@ public class ActivitiProperties {
 
     public void setSerializePOJOsInVariablesToJson(boolean serializePOJOsInVariablesToJson) {
         this.serializePOJOsInVariablesToJson = serializePOJOsInVariablesToJson;
+    }
+
+    public List<String> getSerializableVariableTypeAllowedClassPatterns() {
+        return serializableVariableTypeAllowedClassPatterns;
+    }
+
+    public void setSerializableVariableTypeAllowedClassPatterns(List<String> serializableVariableTypeAllowedClassPatterns) {
+        this.serializableVariableTypeAllowedClassPatterns = serializableVariableTypeAllowedClassPatterns;
     }
 
     public String getJavaClassFieldForJackson() {
