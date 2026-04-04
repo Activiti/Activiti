@@ -15,17 +15,20 @@
  */
 package org.activiti.engine.impl.jobexecutor;
 
-import org.activiti.engine.impl.util.json.JSONException;
-import org.activiti.engine.impl.util.json.JSONObject;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class TimerEventHandler {
+
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     public static final String PROPERTYNAME_TIMER_ACTIVITY_ID = "activityId";
     public static final String PROPERTYNAME_END_DATE_EXPRESSION = "timerEndDate";
     public static final String PROPERTYNAME_CALENDAR_NAME_EXPRESSION = "calendarName";
 
     public static String createConfiguration(String id, String endDate, String calendarName) {
-        JSONObject cfgJson = new JSONObject();
+        ObjectNode cfgJson = objectMapper.createObjectNode();
         cfgJson.put(PROPERTYNAME_TIMER_ACTIVITY_ID, id);
         if (endDate != null) {
             cfgJson.put(PROPERTYNAME_END_DATE_EXPRESSION, endDate);
@@ -38,54 +41,48 @@ public class TimerEventHandler {
 
     public static String setActivityIdToConfiguration(String jobHandlerConfiguration, String activityId) {
         try {
-            JSONObject cfgJson = new JSONObject(jobHandlerConfiguration);
+            ObjectNode cfgJson = (ObjectNode) objectMapper.readTree(jobHandlerConfiguration);
             cfgJson.put(PROPERTYNAME_TIMER_ACTIVITY_ID, activityId);
             return cfgJson.toString();
-        } catch (JSONException ex) {
+        } catch (JsonProcessingException ex) {
             return jobHandlerConfiguration;
         }
     }
 
     public static String getActivityIdFromConfiguration(String jobHandlerConfiguration) {
         try {
-            JSONObject cfgJson = new JSONObject(jobHandlerConfiguration);
-            return cfgJson.get(PROPERTYNAME_TIMER_ACTIVITY_ID).toString();
-        } catch (JSONException ex) {
+            return objectMapper.readTree(jobHandlerConfiguration).get(PROPERTYNAME_TIMER_ACTIVITY_ID).asText();
+        } catch (JsonProcessingException | NullPointerException ex) {
             return jobHandlerConfiguration;
         }
     }
 
     public static String geCalendarNameFromConfiguration(String jobHandlerConfiguration) {
         try {
-            JSONObject cfgJson = new JSONObject(jobHandlerConfiguration);
-            return cfgJson.get(PROPERTYNAME_CALENDAR_NAME_EXPRESSION).toString();
-        } catch (JSONException ex) {
-            // calendar name is not specified
+            return objectMapper.readTree(jobHandlerConfiguration).get(PROPERTYNAME_CALENDAR_NAME_EXPRESSION).asText();
+        } catch (JsonProcessingException | NullPointerException ex) {
             return "";
         }
     }
 
     public static String setEndDateToConfiguration(String jobHandlerConfiguration, String endDate) {
-        JSONObject cfgJson = null;
+        ObjectNode cfgJson;
         try {
-            cfgJson = new JSONObject(jobHandlerConfiguration);
-        } catch (JSONException ex) {
-            // create the json config
-            cfgJson = new JSONObject();
+            cfgJson = (ObjectNode) objectMapper.readTree(jobHandlerConfiguration);
+        } catch (JsonProcessingException ex) {
+            cfgJson = objectMapper.createObjectNode();
             cfgJson.put(PROPERTYNAME_TIMER_ACTIVITY_ID, jobHandlerConfiguration);
         }
         if (endDate != null) {
             cfgJson.put(PROPERTYNAME_END_DATE_EXPRESSION, endDate);
         }
-
         return cfgJson.toString();
     }
 
     public static String getEndDateFromConfiguration(String jobHandlerConfiguration) {
         try {
-            JSONObject cfgJson = new JSONObject(jobHandlerConfiguration);
-            return cfgJson.get(PROPERTYNAME_END_DATE_EXPRESSION).toString();
-        } catch (JSONException ex) {
+            return objectMapper.readTree(jobHandlerConfiguration).get(PROPERTYNAME_END_DATE_EXPRESSION).asText();
+        } catch (JsonProcessingException | NullPointerException ex) {
             return null;
         }
     }
