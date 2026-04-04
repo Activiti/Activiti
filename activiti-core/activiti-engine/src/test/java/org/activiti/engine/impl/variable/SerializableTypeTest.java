@@ -19,8 +19,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.InvalidClassException;
 import java.io.ObjectOutputStream;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -87,22 +89,33 @@ public class SerializableTypeTest {
     public void deserialize_should_allowCustomPatternsWhenConfigured() {
         SerializableType customType = new SerializableType(false, List.of(
             "java.lang.**",
-            "java.util.**",
-            "javax.naming.**"
+            "java.io.**"
         ));
-        Reference ref = new Reference("allowed");
-        byte[] bytes = serializeObject(ref);
+        File file = new File("/tmp/test");
+        byte[] bytes = serializeObject(file);
         VariableInstanceEntityImpl valueFields = new VariableInstanceEntityImpl();
         valueFields.setName("testVar");
 
         Object result = customType.deserialize(bytes, valueFields);
 
-        assertThat(result).isInstanceOf(Reference.class);
+        assertThat(result).isEqualTo(file);
     }
 
     @Test
-    public void deserialize_should_handleArrayTypes() {
-        int[] original = {1, 2, 3};
+    public void deserialize_should_rejectFileWithDefaultPatterns() {
+        File file = new File("/tmp/test");
+        byte[] bytes = serializeObject(file);
+        VariableInstanceEntityImpl valueFields = new VariableInstanceEntityImpl();
+        valueFields.setName("testVar");
+
+        assertThatThrownBy(() -> serializableType.deserialize(bytes, valueFields))
+            .isInstanceOf(ActivitiException.class)
+            .hasCauseInstanceOf(InvalidClassException.class);
+    }
+
+    @Test
+    public void deserialize_should_allowJavaNetTypes() {
+        URI original = URI.create("https://example.com/path");
         byte[] bytes = serializeObject(original);
         VariableInstanceEntityImpl valueFields = new VariableInstanceEntityImpl();
         valueFields.setName("testVar");
