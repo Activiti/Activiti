@@ -19,11 +19,13 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputFilter;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamClass;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.util.List;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
@@ -38,16 +40,40 @@ public class SerializableType extends ByteArrayType {
 
     public static final String TYPE_NAME = "serializable";
 
+    private static final List<String> DEFAULT_ALLOWED_CLASS_PATTERNS = List.of(
+        "java.lang.**",
+        "java.util.**",
+        "java.math.**",
+        "java.time.**",
+        "java.io.Serializable",
+        "java.net.URI",
+        "java.net.URL",
+        "[*"
+    );
+
     protected boolean trackDeserializedObjects;
+    protected ObjectInputFilter objectInputFilter;
 
     public String getTypeName() {
         return TYPE_NAME;
     }
 
-    public SerializableType() {}
+    public SerializableType() {
+        this(false, DEFAULT_ALLOWED_CLASS_PATTERNS);
+    }
 
     public SerializableType(boolean trackDeserializedObjects) {
+        this(trackDeserializedObjects, DEFAULT_ALLOWED_CLASS_PATTERNS);
+    }
+
+    public SerializableType(boolean trackDeserializedObjects, List<String> allowedClassPatterns) {
         this.trackDeserializedObjects = trackDeserializedObjects;
+        this.objectInputFilter = createAllowedClassFilter(allowedClassPatterns);
+    }
+
+    private ObjectInputFilter createAllowedClassFilter(List<String> allowedClassPatterns) {
+        String filterPattern = String.join(";", allowedClassPatterns) + ";!*";
+        return ObjectInputFilter.Config.createFilter(filterPattern);
     }
 
     public Object getValue(ValueFields valueFields) {
@@ -139,11 +165,13 @@ public class SerializableType extends ByteArrayType {
     }
 
     protected ObjectInputStream createObjectInputStream(InputStream is) throws IOException {
-        return new ObjectInputStream(is) {
+        ObjectInputStream ois = new ObjectInputStream(is) {
             protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException, ClassNotFoundException {
                 return ReflectUtil.loadClass(desc.getName());
             }
         };
+        ois.setObjectInputFilter(objectInputFilter);
+        return ois;
     }
 
     protected ObjectOutputStream createObjectOutputStream(OutputStream os) throws IOException {
