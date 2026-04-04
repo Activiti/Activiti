@@ -15,22 +15,23 @@
  */
 package org.activiti.engine.impl.jobexecutor;
 
-import org.activiti.engine.impl.util.json.JSONObject;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
-/**
-
- */
 public abstract class TimerChangeProcessDefinitionSuspensionStateJobHandler implements JobHandler {
+
+    protected static final ObjectMapper objectMapper = new ObjectMapper();
 
     private static final String JOB_HANDLER_CFG_INCLUDE_PROCESS_INSTANCES = "includeProcessInstances";
 
     public static String createJobHandlerConfiguration(boolean includeProcessInstances) {
-        JSONObject json = new JSONObject();
+        ObjectNode json = objectMapper.createObjectNode();
         json.put(JOB_HANDLER_CFG_INCLUDE_PROCESS_INSTANCES, includeProcessInstances);
         return json.toString();
     }
 
-    public static boolean getIncludeProcessInstances(JSONObject jobHandlerCfgJson) {
-        return jobHandlerCfgJson.getBoolean(JOB_HANDLER_CFG_INCLUDE_PROCESS_INSTANCES);
+    public static boolean getIncludeProcessInstances(JsonNode jobHandlerCfgJson) {
+        return jobHandlerCfgJson.get(JOB_HANDLER_CFG_INCLUDE_PROCESS_INSTANCES).asBoolean();
     }
 }
