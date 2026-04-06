@@ -22,6 +22,7 @@ import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.scripting.ScriptContentValidator;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -76,6 +77,7 @@ public class ScriptTaskActivityBehavior extends TaskActivityBehavior {
             if (taskElementProperties != null && taskElementProperties.has(DynamicBpmnConstants.SCRIPT_TASK_SCRIPT)) {
                 String overrideScript = taskElementProperties.get(DynamicBpmnConstants.SCRIPT_TASK_SCRIPT).asText();
                 if (StringUtils.isNotEmpty(overrideScript) && !overrideScript.equals(script)) {
+                    ScriptContentValidator.validate(overrideScript);
                     script = overrideScript;
                 }
             }

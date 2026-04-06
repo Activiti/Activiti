@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<definitions id="definitions"
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+
+  <process id="testSecureDynamicScript">
+
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="safeScriptTask" />
+
+    <scriptTask id="safeScriptTask" scriptFormat="JavaScript" activiti:autoStoreVariables="false">
+      <script>
+      	<![CDATA[
+        var sum = a + b;
+        execution.setVariable("result", sum);
+        ]]>
+      </script>
+    </scriptTask>
+    <sequenceFlow id="flow2" sourceRef="safeScriptTask" targetRef="task1" />
+
+    <userTask id="task1" />
+    <sequenceFlow id="flow3" sourceRef="task1" targetRef="theEnd" />
+
+    <endEvent id="theEnd" />
+
+  </process>
+
+</definitions>

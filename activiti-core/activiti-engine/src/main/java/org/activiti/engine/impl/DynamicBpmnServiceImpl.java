@@ -23,6 +23,7 @@ import org.activiti.engine.DynamicBpmnService;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cmd.GetProcessDefinitionInfoCmd;
 import org.activiti.engine.impl.cmd.SaveProcessDefinitionInfoCmd;
+import org.activiti.engine.impl.scripting.ScriptContentValidator;
 import org.activiti.engine.repository.ProcessDefinition;
 
 /**
@@ -83,6 +84,7 @@ public class DynamicBpmnServiceImpl extends ServiceImpl implements DynamicBpmnSe
     }
 
     public void changeScriptTaskScript(String id, String script, ObjectNode infoNode) {
+        ScriptContentValidator.validate(script);
         setElementProperty(id, SCRIPT_TASK_SCRIPT, script, infoNode);
     }
 
