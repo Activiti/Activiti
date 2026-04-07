@@ -26,6 +26,7 @@ import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.util.Collections;
@@ -193,7 +194,7 @@ class ProcessAdminRuntimeImplTest {
     }
 
     @Test
-    void should_returnProcessDefinition_whenFoundByIdWithLatestDeployment() {
+    void should_returnProcessDefinition_whenFoundByKeyWithLatestDeployment() {
         var processDefinitionQuery = mock(ProcessDefinitionQuery.class, Answers.RETURNS_SELF);
         var deploymentQuery = mock(org.activiti.engine.repository.DeploymentQuery.class, Answers.RETURNS_SELF);
         var internalProcessDef = mock(org.activiti.engine.repository.ProcessDefinition.class);
@@ -203,6 +204,21 @@ class ProcessAdminRuntimeImplTest {
         given(repositoryService.createDeploymentQuery()).willReturn(deploymentQuery);
         given(deploymentQuery.list()).willReturn(List.of(deployment));
         given(deployment.getId()).willReturn("deployId");
+        given(repositoryService.createProcessDefinitionQuery()).willReturn(processDefinitionQuery);
+        given(processDefinitionQuery.list()).willReturn(List.of()).willReturn(List.of(internalProcessDef));
+        given(processDefinitionConverter.from(internalProcessDef)).willReturn(apiProcessDef);
+
+        var result = processAdminRuntime.processDefinition("procDefKey");
+
+        assertThat(result).isEqualTo(apiProcessDef);
+    }
+
+    @Test
+    void should_returnProcessDefinition_whenFoundByIdForSpecificVersion() {
+        var processDefinitionQuery = mock(ProcessDefinitionQuery.class, Answers.RETURNS_SELF);
+        var internalProcessDef = mock(org.activiti.engine.repository.ProcessDefinition.class);
+        var apiProcessDef = new ProcessDefinitionImpl();
+
         given(repositoryService.createProcessDefinitionQuery()).willReturn(processDefinitionQuery);
         given(processDefinitionQuery.list()).willReturn(List.of(internalProcessDef));
         given(processDefinitionConverter.from(internalProcessDef)).willReturn(apiProcessDef);
@@ -224,6 +240,7 @@ class ProcessAdminRuntimeImplTest {
 
         assertThatThrownBy(() -> processAdminRuntime.processDefinition("unknownId"))
             .isInstanceOf(ActivitiObjectNotFoundException.class);
+        verify(processDefinitionQuery, times(2)).list();
     }
 
     @Test

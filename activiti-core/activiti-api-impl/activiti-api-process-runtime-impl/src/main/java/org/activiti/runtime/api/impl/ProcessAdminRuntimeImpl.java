@@ -90,18 +90,28 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
 
     @Override
     public ProcessDefinition processDefinition(String processDefinitionId) {
-        org.activiti.engine.repository.ProcessDefinition processDefinition = repositoryService
+        org.activiti.engine.repository.ProcessDefinition processDefinition;
+        processDefinition = repositoryService
             .createProcessDefinitionQuery()
-            .processDefinitionIdOrKey(processDefinitionId)
-            .deploymentIds(latestDeploymentIds())
+            .processDefinitionId(processDefinitionId)
             .orderByProcessDefinitionVersion()
             .asc()
             .list()
             .stream()
             .findFirst()
-            .orElseThrow(() ->
-                new ActivitiObjectNotFoundException(
-                    "Unable to find process definition for the given id or key:'" + processDefinitionId + "'"
+            .orElseGet(() -> repositoryService
+                .createProcessDefinitionQuery()
+                .processDefinitionIdOrKey(processDefinitionId)
+                .deploymentIds(latestDeploymentIds())
+                .orderByProcessDefinitionVersion()
+                .asc()
+                .list()
+                .stream()
+                .findFirst()
+                .orElseThrow(() ->
+                    new ActivitiObjectNotFoundException(
+                        "Unable to find process definition for the given id or key:'" + processDefinitionId + "'"
+                    )
                 )
             );
 
@@ -211,13 +221,13 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
         if (getProcessInstancesPayload != null) {
             if (
                 getProcessInstancesPayload.getProcessDefinitionKeys() != null &&
-                !getProcessInstancesPayload.getProcessDefinitionKeys().isEmpty()
+                    !getProcessInstancesPayload.getProcessDefinitionKeys().isEmpty()
             ) {
                 internalQuery.processDefinitionKeys(getProcessInstancesPayload.getProcessDefinitionKeys());
             }
             if (
                 getProcessInstancesPayload.getBusinessKey() != null &&
-                !getProcessInstancesPayload.getBusinessKey().isEmpty()
+                    !getProcessInstancesPayload.getBusinessKey().isEmpty()
             ) {
                 internalQuery.processInstanceBusinessKey(getProcessInstancesPayload.getBusinessKey());
             }
