@@ -221,13 +221,13 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
         if (getProcessInstancesPayload != null) {
             if (
                 getProcessInstancesPayload.getProcessDefinitionKeys() != null &&
-                    !getProcessInstancesPayload.getProcessDefinitionKeys().isEmpty()
+                !getProcessInstancesPayload.getProcessDefinitionKeys().isEmpty()
             ) {
                 internalQuery.processDefinitionKeys(getProcessInstancesPayload.getProcessDefinitionKeys());
             }
             if (
                 getProcessInstancesPayload.getBusinessKey() != null &&
-                    !getProcessInstancesPayload.getBusinessKey().isEmpty()
+                !getProcessInstancesPayload.getBusinessKey().isEmpty()
             ) {
                 internalQuery.processInstanceBusinessKey(getProcessInstancesPayload.getBusinessKey());
             }
