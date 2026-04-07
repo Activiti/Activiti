@@ -205,7 +205,7 @@ class ProcessAdminRuntimeImplTest {
         given(deploymentQuery.list()).willReturn(List.of(deployment));
         given(deployment.getId()).willReturn("deployId");
         given(repositoryService.createProcessDefinitionQuery()).willReturn(processDefinitionQuery);
-        given(processDefinitionQuery.list()).willReturn(List.of()).willReturn(List.of(internalProcessDef));
+        given(processDefinitionQuery.list()).willReturn(List.of(internalProcessDef));
         given(processDefinitionConverter.from(internalProcessDef)).willReturn(apiProcessDef);
 
         var result = processAdminRuntime.processDefinition("procDefKey");
@@ -220,7 +220,7 @@ class ProcessAdminRuntimeImplTest {
         var apiProcessDef = new ProcessDefinitionImpl();
 
         given(repositoryService.createProcessDefinitionQuery()).willReturn(processDefinitionQuery);
-        given(processDefinitionQuery.list()).willReturn(List.of(internalProcessDef));
+        given(processDefinitionQuery.singleResult()).willReturn(internalProcessDef);
         given(processDefinitionConverter.from(internalProcessDef)).willReturn(apiProcessDef);
 
         var result = processAdminRuntime.processDefinition("procDefId");
@@ -240,7 +240,8 @@ class ProcessAdminRuntimeImplTest {
 
         assertThatThrownBy(() -> processAdminRuntime.processDefinition("unknownId"))
             .isInstanceOf(ActivitiObjectNotFoundException.class);
-        verify(processDefinitionQuery, times(2)).list();
+        verify(processDefinitionQuery).singleResult();
+        verify(processDefinitionQuery).list();
     }
 
     @Test

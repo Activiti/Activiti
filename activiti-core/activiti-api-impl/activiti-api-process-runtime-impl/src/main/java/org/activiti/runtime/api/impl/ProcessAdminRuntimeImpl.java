@@ -17,6 +17,7 @@ package org.activiti.runtime.api.impl;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.activiti.api.model.shared.model.VariableInstance;
@@ -91,14 +92,10 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
     @Override
     public ProcessDefinition processDefinition(String processDefinitionId) {
         org.activiti.engine.repository.ProcessDefinition processDefinition;
-        processDefinition = repositoryService
-            .createProcessDefinitionQuery()
-            .processDefinitionId(processDefinitionId)
-            .orderByProcessDefinitionVersion()
-            .asc()
-            .list()
-            .stream()
-            .findFirst()
+        processDefinition = Optional.ofNullable(repositoryService
+                .createProcessDefinitionQuery()
+                .processDefinitionId(processDefinitionId)
+                .singleResult())
             .orElseGet(() -> repositoryService
                 .createProcessDefinitionQuery()
                 .processDefinitionIdOrKey(processDefinitionId)
