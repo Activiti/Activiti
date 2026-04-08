@@ -17,6 +17,7 @@ package org.activiti.runtime.api.impl;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.activiti.api.model.shared.model.VariableInstance;
@@ -90,18 +91,24 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
 
     @Override
     public ProcessDefinition processDefinition(String processDefinitionId) {
-        org.activiti.engine.repository.ProcessDefinition processDefinition = repositoryService
-            .createProcessDefinitionQuery()
-            .processDefinitionIdOrKey(processDefinitionId)
-            .deploymentIds(latestDeploymentIds())
-            .orderByProcessDefinitionVersion()
-            .asc()
-            .list()
-            .stream()
-            .findFirst()
-            .orElseThrow(() ->
-                new ActivitiObjectNotFoundException(
-                    "Unable to find process definition for the given id or key:'" + processDefinitionId + "'"
+        org.activiti.engine.repository.ProcessDefinition processDefinition;
+        processDefinition = Optional.ofNullable(repositoryService
+                .createProcessDefinitionQuery()
+                .processDefinitionId(processDefinitionId)
+                .singleResult())
+            .orElseGet(() -> repositoryService
+                .createProcessDefinitionQuery()
+                .processDefinitionIdOrKey(processDefinitionId)
+                .deploymentIds(latestDeploymentIds())
+                .orderByProcessDefinitionVersion()
+                .asc()
+                .list()
+                .stream()
+                .findFirst()
+                .orElseThrow(() ->
+                    new ActivitiObjectNotFoundException(
+                        "Unable to find process definition for the given id or key:'" + processDefinitionId + "'"
+                    )
                 )
             );
 
