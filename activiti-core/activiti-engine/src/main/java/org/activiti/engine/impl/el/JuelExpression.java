@@ -15,7 +15,7 @@
  */
 package org.activiti.engine.impl.el;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import tools.jackson.databind.JsonNode;
 import jakarta.el.ELContext;
 import jakarta.el.MethodNotFoundException;
 import jakarta.el.PropertyNotFoundException;
