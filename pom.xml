@@ -223,8 +223,8 @@
     <maven-source-plugin.version>3.4.0</maven-source-plugin.version>
     <maven-surefire-plugin.version>3.5.5</maven-surefire-plugin.version>
     <sonar-maven-plugin.version>5.5.0.6356</sonar-maven-plugin.version>
-    <junit.version>5.12.2</junit.version>
     <spring-boot.version>4.0.4</spring-boot.version>
+    <junit-jupiter.version>6.0.3</junit-jupiter.version>
     <jakarta.el-api.version>6.0.1</jakarta.el-api.version>
     <versions-maven-plugin.version>2.21.0</versions-maven-plugin.version>
 
@@ -700,7 +700,7 @@ limitations under the License.
           <dependency>
             <groupId>org.junit.vintage</groupId>
             <artifactId>junit-vintage-engine</artifactId>
-            <version>${junit.version}</version>
+            <version>${junit-jupiter.version}</version>
           </dependency>
         </dependencies>
       </plugin>
