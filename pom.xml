@@ -231,7 +231,7 @@
     <versions-maven-plugin.version>2.21.0</versions-maven-plugin.version>
     <jackson.version>2.21.2</jackson.version>
     <spring-webmvc.version>6.2.17</spring-webmvc.version>
-    <tomcat-embed-core.version>10.1.53</tomcat-embed-core.version>
+    <tomcat-embed-core.version>10.1.52</tomcat-embed-core.version>
 
     <!-- configuration properties for tests -->
     <generated-assertions-folder>
