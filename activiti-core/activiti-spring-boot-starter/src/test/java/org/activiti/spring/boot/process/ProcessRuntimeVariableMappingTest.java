@@ -38,6 +38,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.activiti.spring.boot.tasks.TaskBaseRuntime;
 import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
+import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -159,7 +160,7 @@ public class ProcessRuntimeVariableMappingTest {
     }
 
     @Test
-    public void should_mapTaskAssignee_when_mappingToVariable_multi_instances() {
+    public void should_map_output_variables_from_call_activity_to_output_collection_for_multi_instances() {
         ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(
             "multi-instance-call-activity-result-collection-all"
         );
@@ -174,7 +175,7 @@ public class ProcessRuntimeVariableMappingTest {
             .contains(
                 tuple(
                     "miResult",
-                    asList(Map.of("childVar", "From child"), Map.of("childVar", "From child"))
+                    asList(Map.of("childVar", "From child 1"), Map.of("childVar", "From child 0"))
                 )
             );
 

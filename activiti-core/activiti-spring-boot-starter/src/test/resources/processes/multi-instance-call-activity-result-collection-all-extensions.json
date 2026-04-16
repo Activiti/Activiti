@@ -5,7 +5,12 @@
     "multi-instance-call-activity-result-collection-all": {
       "mappings": {
         "callActivity": {
-          "inputs": {},
+          "inputs": {
+            "loopCounter": {
+              "type": "VARIABLE",
+              "value": "loopCounter"
+            }
+          },
           "outputs": {}
         }
       }
@@ -19,7 +24,7 @@
           "name": "childVar",
           "type": "string",
           "required": false,
-          "value": "From child"
+          "value": "From child ${loopCounter}"
         }
       },
       "assignments": {}
