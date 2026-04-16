@@ -189,7 +189,11 @@ public abstract class MultiInstanceActivityBehavior
     }
 
     // required for supporting external subprocesses
-    public void completing(DelegateExecution execution, DelegateExecution subProcessInstance) throws Exception {}
+    public void completing(DelegateExecution execution, DelegateExecution subProcessInstance) throws Exception {
+        if (innerActivityBehavior instanceof SubProcessActivityBehavior subProcessActivityBehavior) {
+            subProcessActivityBehavior.completing(execution, subProcessInstance);
+        }
+    }
 
     // required for supporting external subprocesses
     public void completed(DelegateExecution execution) throws Exception {
