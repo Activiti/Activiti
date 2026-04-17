@@ -68,6 +68,7 @@ public class ProcessRuntimeVariableMappingTest {
 
     @Autowired
     private SecurityUtil securityUtil;
+
     @Autowired
     private TaskRuntime taskRuntime;
 
@@ -172,11 +173,8 @@ public class ProcessRuntimeVariableMappingTest {
         assertThat(procVariables)
             .isNotNull()
             .extracting(VariableInstance::getName, VariableInstance::getValue)
-            .contains(
-                tuple(
-                    "miResult",
-                    asList(Map.of("childVar", "From child 1"), Map.of("childVar", "From child 0"))
-                )
+            .containsOnly(
+                tuple("miResult", List.of(Map.of("childVar", "From child 1"), Map.of("childVar", "From child 0")))
             );
 
         final var task = taskBaseRuntime.getTasks(processInstance).getFirst();
@@ -187,7 +185,7 @@ public class ProcessRuntimeVariableMappingTest {
 
         taskRuntime.complete(new CompleteTaskPayloadBuilder().withTaskId(task.getId()).build());
 
-        assertThatThrownBy(() -> processBaseRuntime.getProcessRuntime().processInstance(processInstance.getId())).isInstanceOf(NotFoundException.class);
+        assertThatThrownBy(() -> processBaseRuntime.getProcessRuntime().processInstance(processInstance.getId()))
+            .isInstanceOf(NotFoundException.class);
     }
-
 }
