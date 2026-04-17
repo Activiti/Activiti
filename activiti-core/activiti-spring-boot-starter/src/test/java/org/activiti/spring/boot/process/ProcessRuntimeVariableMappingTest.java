@@ -63,15 +63,6 @@ public class ProcessRuntimeVariableMappingTest {
     @Autowired
     private ProcessCleanUpUtil processCleanUpUtil;
 
-    @Autowired
-    private TaskBaseRuntime taskBaseRuntime;
-
-    @Autowired
-    private SecurityUtil securityUtil;
-
-    @Autowired
-    private TaskRuntime taskRuntime;
-
     @BeforeEach
     public void setUp() {
         processCleanUpUtil.cleanUpWithAdmin();
@@ -158,34 +149,5 @@ public class ProcessRuntimeVariableMappingTest {
                 tuple("outVar", "Resolved expression: value-set-in-connector"),
                 tuple("outVarFromJsonExpression", "Tower of London")
             );
-    }
-
-    @Test
-    public void should_map_output_variables_from_call_activity_to_output_collection_for_multi_instances() {
-        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(
-            "multi-instance-call-activity-result-collection-all"
-        );
-
-        List<VariableInstance> procVariables = processBaseRuntime.getProcessVariablesByProcessId(
-            processInstance.getId()
-        );
-
-        assertThat(procVariables)
-            .isNotNull()
-            .extracting(VariableInstance::getName, VariableInstance::getValue)
-            .containsOnly(
-                tuple("miResult", List.of(Map.of("childVar", "From child 1"), Map.of("childVar", "From child 0")))
-            );
-
-        final var task = taskBaseRuntime.getTasks(processInstance).getFirst();
-
-        securityUtil.logInAs("user");
-
-        taskRuntime.claim(new ClaimTaskPayloadBuilder().withTaskId(task.getId()).withAssignee("user").build());
-
-        taskRuntime.complete(new CompleteTaskPayloadBuilder().withTaskId(task.getId()).build());
-
-        assertThatThrownBy(() -> processBaseRuntime.getProcessRuntime().processInstance(processInstance.getId()))
-            .isInstanceOf(NotFoundException.class);
     }
 }

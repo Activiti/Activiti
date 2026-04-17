@@ -2,13 +2,34 @@
   "id": "multi-instance-call-activity-result-collection-all-model",
   "name": "multi-instance-call-activity-result-collection-all",
   "extensions": {
-    "multi-instance-call-activity-result-collection-all": {
+    "multi-instance-parallel-call-activity-result-collection-all": {
       "mappings": {
-        "callActivity": {
+        "parallel-callActivity": {
           "inputs": {
             "loopCounter": {
               "type": "VARIABLE",
               "value": "loopCounter"
+            },
+            "multiInstanceLoopCharacteristics": {
+              "type": "value",
+              "value": "parallel"
+            }
+          },
+          "outputs": {}
+        }
+      }
+    },
+    "multi-instance-sequential-call-activity-result-collection-all": {
+      "mappings": {
+        "sequential-callActivity": {
+          "inputs": {
+            "loopCounter": {
+              "type": "VARIABLE",
+              "value": "loopCounter"
+            },
+            "multiInstanceLoopCharacteristics": {
+              "type": "value",
+              "value": "sequential"
             }
           },
           "outputs": {}
@@ -21,10 +42,17 @@
       "properties": {
         "de3a01c7-e2cc-4f16-b322-d04477288a0b": {
           "id": "de3a01c7-e2cc-4f16-b322-d04477288a0b",
-          "name": "childVar",
+          "name": "result",
           "type": "string",
           "required": false,
-          "value": "From child ${loopCounter}"
+          "value": "Result ${loopCounter}"
+        },
+        "de3a01c7-e2cc-4f16-b322-d04477288a0c": {
+          "id": "de3a01c7-e2cc-4f16-b322-d04477288a0c",
+          "name": "index",
+          "type": "integer",
+          "required": false,
+          "value": "${loopCounter}"
         }
       },
       "assignments": {}

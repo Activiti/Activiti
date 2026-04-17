@@ -16,6 +16,7 @@
 package org.activiti.spring.boot.process;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.HashMap;
@@ -25,8 +26,11 @@ import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.runtime.ProcessRuntime;
+import org.activiti.api.runtime.shared.NotFoundException;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
+import org.activiti.api.task.model.builders.ClaimTaskPayloadBuilder;
+import org.activiti.api.task.model.builders.CompleteTaskPayloadBuilder;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.spring.boot.security.util.SecurityUtil;
@@ -223,7 +227,8 @@ public class ProcessRuntimeCallActivityMappingIT {
         securityUtil.logInAs("user");
 
         ProcessInstance processInstance = processRuntime.start(
-            ProcessPayloadBuilder.start()
+            ProcessPayloadBuilder
+                .start()
                 .withProcessDefinitionKey(PARENT_PROCESS_CALL_ACTIVITY_NO_MAPPING_WITH_TASK)
                 .build()
         );
@@ -272,6 +277,84 @@ public class ProcessRuntimeCallActivityMappingIT {
                 tuple("name", "inName"),
                 tuple("age", 20)
             );
+    }
+
+    @Test
+    public void should_map_output_variables_from_multi_instance_parallel_call_activity_result_collection() {
+        securityUtil.logInAs("user");
+
+        ProcessInstance processInstance = processRuntime.start(
+            ProcessPayloadBuilder
+                .start()
+                .withProcessDefinitionKey("multi-instance-parallel-call-activity-result-collection-all")
+                .build()
+        );
+        assertThat(processInstance).isNotNull();
+
+        List<VariableInstance> procVariables = processRuntime.variables(
+            ProcessPayloadBuilder.variables().withProcessInstanceId(processInstance.getId()).build()
+        );
+
+        assertThat(procVariables)
+            .isNotNull()
+            .extracting(VariableInstance::getName, VariableInstance::getValue)
+            .containsOnly(
+                tuple(
+                    "miResult",
+                    List.of(
+                        Map.of("result", "Result 0", "index", 0, "multiInstanceLoopCharacteristics", "parallel"),
+                        Map.of("result", "Result 1", "index", 1, "multiInstanceLoopCharacteristics", "parallel")
+                    )
+                )
+            );
+
+        final Task task = getTask(processInstance);
+
+        taskRuntime.claim(new ClaimTaskPayloadBuilder().withTaskId(task.getId()).withAssignee("user").build());
+
+        taskRuntime.complete(new CompleteTaskPayloadBuilder().withTaskId(task.getId()).build());
+
+        assertThatThrownBy(() -> processRuntime.processInstance(processInstance.getId()))
+            .isInstanceOf(NotFoundException.class);
+    }
+
+    @Test
+    public void should_map_output_variables_from_multi_instance_sequential_call_activity_result_collection() {
+        securityUtil.logInAs("user");
+
+        ProcessInstance processInstance = processRuntime.start(
+            ProcessPayloadBuilder
+                .start()
+                .withProcessDefinitionKey("multi-instance-sequential-call-activity-result-collection-all")
+                .build()
+        );
+        assertThat(processInstance).isNotNull();
+
+        List<VariableInstance> procVariables = processRuntime.variables(
+            ProcessPayloadBuilder.variables().withProcessInstanceId(processInstance.getId()).build()
+        );
+
+        assertThat(procVariables)
+            .isNotNull()
+            .extracting(VariableInstance::getName, VariableInstance::getValue)
+            .containsOnly(
+                tuple(
+                    "miResult",
+                    List.of(
+                        Map.of("result", "Result 0", "index", 0, "multiInstanceLoopCharacteristics", "sequential"),
+                        Map.of("result", "Result 1", "index", 1, "multiInstanceLoopCharacteristics", "sequential")
+                    )
+                )
+            );
+
+        final Task task = getTask(processInstance);
+
+        taskRuntime.claim(new ClaimTaskPayloadBuilder().withTaskId(task.getId()).withAssignee("user").build());
+
+        taskRuntime.complete(new CompleteTaskPayloadBuilder().withTaskId(task.getId()).build());
+
+        assertThatThrownBy(() -> processRuntime.processInstance(processInstance.getId()))
+            .isInstanceOf(NotFoundException.class);
     }
 
     public void completeTask(String taskId, Map<String, Object> variables) {

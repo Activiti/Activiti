@@ -4,20 +4,35 @@
              xmlns:activiti="http://activiti.org/bpmn"
              targetNamespace="processDefinitions">
 
-    <process id="multi-instance-call-activity-result-collection-all">
-        <startEvent id="start"/>
-        <sequenceFlow id="flow1" sourceRef="start" targetRef="callActivity"/>
-        <callActivity id="callActivity" calledElement="multi-instance-call-activity-result-sub-process">
+    <process id="multi-instance-parallel-call-activity-result-collection-all">
+        <startEvent id="parallel-start"/>
+        <sequenceFlow id="parallel-flow1" sourceRef="parallel-start" targetRef="parallel-callActivity"/>
+        <callActivity id="parallel-callActivity" calledElement="multi-instance-call-activity-result-sub-process">
           <multiInstanceLoopCharacteristics isSequential="false">
             <loopCardinality>2</loopCardinality>
             <loopDataOutputRef>miResult</loopDataOutputRef>
           </multiInstanceLoopCharacteristics>
         </callActivity>
-        <sequenceFlow id="flow2" sourceRef="callActivity" targetRef="userTask"/>
-        <userTask id="userTask" name="My user task" activiti:candidateUsers="user"/>
-        <sequenceFlow id="flow3" sourceRef="userTask" targetRef="end"/>
-        <endEvent id="end"/>
+        <sequenceFlow id="parallel-flow2" sourceRef="parallel-callActivity" targetRef="parallel-userTask"/>
+        <userTask id="parallel-userTask" name="My user task" activiti:candidateUsers="user"/>
+        <sequenceFlow id="parallel-flow3" sourceRef="parallel-userTask" targetRef="parallel-end"/>
+        <endEvent id="parallel-end"/>
     </process>
+
+  <process id="multi-instance-sequential-call-activity-result-collection-all">
+    <startEvent id="sequential-start"/>
+    <sequenceFlow id="sequential-flow1" sourceRef="sequential-start" targetRef="sequential-callActivity"/>
+    <callActivity id="sequential-callActivity" calledElement="multi-instance-call-activity-result-sub-process">
+      <multiInstanceLoopCharacteristics isSequential="true">
+        <loopCardinality>2</loopCardinality>
+        <loopDataOutputRef>miResult</loopDataOutputRef>
+      </multiInstanceLoopCharacteristics>
+    </callActivity>
+    <sequenceFlow id="sequential-flow2" sourceRef="sequential-callActivity" targetRef="sequential-userTask"/>
+    <userTask id="sequential-userTask" name="My user task" activiti:candidateUsers="user"/>
+    <sequenceFlow id="sequential-flow3" sourceRef="sequential-userTask" targetRef="sequential-end"/>
+    <endEvent id="sequential-end"/>
+  </process>
 
     <process id="multi-instance-call-activity-result-sub-process">
         <startEvent id="subStart"/>
