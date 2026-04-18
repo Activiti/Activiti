@@ -302,8 +302,8 @@ public class ProcessRuntimeCallActivityMappingIT {
                 tuple(
                     "miResult",
                     List.of(
-                        Map.of("result", "Result 0", "index", 0, "multiInstanceLoopCharacteristics", "parallel"),
-                        Map.of("result", "Result 1", "index", 1, "multiInstanceLoopCharacteristics", "parallel")
+                        Map.of("result", "Result 0", "resultIndex", 0, "multiInstanceLoopCharacteristics", "parallel"),
+                        Map.of("result", "Result 1", "resultIndex", 1, "multiInstanceLoopCharacteristics", "parallel")
                     )
                 )
             );
@@ -341,8 +341,15 @@ public class ProcessRuntimeCallActivityMappingIT {
                 tuple(
                     "miResult",
                     List.of(
-                        Map.of("result", "Result 0", "index", 0, "multiInstanceLoopCharacteristics", "sequential"),
-                        Map.of("result", "Result 1", "index", 1, "multiInstanceLoopCharacteristics", "sequential")
+                        Map.of(
+                            "result",
+                            "Result 0",
+                            "resultIndex",
+                            0,
+                            "multiInstanceLoopCharacteristics",
+                            "sequential"
+                        ),
+                        Map.of("result", "Result 1", "resultIndex", 1, "multiInstanceLoopCharacteristics", "sequential")
                     )
                 )
             );

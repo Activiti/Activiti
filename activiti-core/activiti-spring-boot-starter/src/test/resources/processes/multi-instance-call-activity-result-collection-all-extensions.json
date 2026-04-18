@@ -6,8 +6,8 @@
       "mappings": {
         "parallel-callActivity": {
           "inputs": {
-            "loopCounter": {
-              "type": "VARIABLE",
+            "resultIndex": {
+              "type": "variable",
               "value": "loopCounter"
             },
             "multiInstanceLoopCharacteristics": {
@@ -23,8 +23,8 @@
       "mappings": {
         "sequential-callActivity": {
           "inputs": {
-            "loopCounter": {
-              "type": "VARIABLE",
+            "resultIndex": {
+              "type": "variable",
               "value": "loopCounter"
             },
             "multiInstanceLoopCharacteristics": {
@@ -45,14 +45,14 @@
           "name": "result",
           "type": "string",
           "required": false,
-          "value": "Result ${loopCounter}"
+          "value": "Result ${resultIndex}"
         },
         "de3a01c7-e2cc-4f16-b322-d04477288a0c": {
           "id": "de3a01c7-e2cc-4f16-b322-d04477288a0c",
-          "name": "index",
+          "name": "resultIndex",
           "type": "integer",
           "required": false,
-          "value": "${loopCounter}"
+          "value": "${resultIndex}"
         }
       },
       "assignments": {}
