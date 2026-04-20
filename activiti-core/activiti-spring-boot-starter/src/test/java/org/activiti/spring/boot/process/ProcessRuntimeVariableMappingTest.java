@@ -17,7 +17,6 @@ package org.activiti.spring.boot.process;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.assertj.core.api.Assertions.tuple;
 
@@ -27,18 +26,8 @@ import java.util.List;
 import java.util.Map;
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessInstance;
-import org.activiti.api.runtime.shared.NotFoundException;
-import org.activiti.api.task.model.Task;
-import org.activiti.api.task.model.builders.ClaimTaskPayloadBuilder;
-import org.activiti.api.task.model.builders.CompleteTaskPayloadBuilder;
-import org.activiti.api.task.model.payloads.ClaimTaskPayload;
-import org.activiti.api.task.model.payloads.CompleteTaskPayload;
-import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.engine.ActivitiException;
-import org.activiti.spring.boot.security.util.SecurityUtil;
-import org.activiti.spring.boot.tasks.TaskBaseRuntime;
 import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
-import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
