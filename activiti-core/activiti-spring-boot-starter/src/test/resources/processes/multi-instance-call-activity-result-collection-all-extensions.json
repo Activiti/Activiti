@@ -15,7 +15,20 @@
               "value": "parallel"
             }
           },
-          "outputs": {}
+          "outputs": {
+            "result": {
+              "type": "variable",
+              "value": "result"
+            },
+            "resultIndex": {
+              "type": "variable",
+              "value": "resultIndex"
+            },
+            "multiInstanceLoopCharacteristics": {
+              "type": "variable",
+              "value": "multiInstanceLoopCharacteristics"
+            }
+          }
         }
       }
     },
@@ -32,7 +45,20 @@
               "value": "sequential"
             }
           },
-          "outputs": {}
+          "outputs": {
+            "result": {
+              "type": "variable",
+              "value": "result"
+            },
+            "resultIndex": {
+              "type": "variable",
+              "value": "resultIndex"
+            },
+            "multiInstanceLoopCharacteristics": {
+              "type": "variable",
+              "value": "multiInstanceLoopCharacteristics"
+            }
+          }
         }
       }
     },

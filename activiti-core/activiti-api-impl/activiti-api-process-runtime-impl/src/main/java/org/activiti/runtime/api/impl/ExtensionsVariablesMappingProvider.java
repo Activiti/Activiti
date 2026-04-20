@@ -394,8 +394,9 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
         for (Map.Entry<String, Mapping> mappingEntry : outputMappings.entrySet()) {
             String name = mappingEntry.getKey();
 
-            if (isTargetProcessVariableDefined(extensions, execution, name)) {
-                calculateOutPutMappedValue(mappingEntry, availableVariables, execution, extensions).ifPresent(value -> {
+            if (isTargetProcessVariableDefined(extensions, execution, name) || execution.isMultiInstanceRoot()) {
+                calculateOutPutMappedValue(mappingEntry, availableVariables, execution, extensions)
+                    .ifPresent(value -> {
                         extensions
                             .getProperties()
                             .values()
