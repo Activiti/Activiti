@@ -23,7 +23,7 @@
     <startEvent id="sequential-start"/>
     <sequenceFlow id="sequential-flow1" sourceRef="sequential-start" targetRef="sequential-callActivity"/>
     <callActivity id="sequential-callActivity" calledElement="multi-instance-call-activity-result-sub-process">
-      <multiInstanceLoopCharacteristics isSequential="true">
+      <multiInstanceLoopCharacteristics isSequential="false">
         <loopCardinality>2</loopCardinality>
         <loopDataOutputRef>miResult</loopDataOutputRef>
       </multiInstanceLoopCharacteristics>
