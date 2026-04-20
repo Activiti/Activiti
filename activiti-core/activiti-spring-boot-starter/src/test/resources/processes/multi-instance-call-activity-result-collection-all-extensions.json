@@ -79,6 +79,14 @@
           "type": "integer",
           "required": false,
           "value": "${resultIndex}"
+        },
+        "de3a01c7-e2cc-4f16-b322-d04477288a0d": {
+          "id": "de3a01c7-e2cc-4f16-b322-d04477288a0d",
+          "name": "foo",
+          "type": "string",
+          "required": false,
+          "value": "bar",
+          "category": "local"
         }
       },
       "assignments": {}
