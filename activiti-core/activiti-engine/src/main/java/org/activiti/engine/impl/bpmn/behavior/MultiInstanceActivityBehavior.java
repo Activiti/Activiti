@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BoundaryEvent;
+import org.activiti.bpmn.model.CallActivity;
 import org.activiti.bpmn.model.CompensateEventDefinition;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
@@ -36,7 +37,6 @@ import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
-import org.activiti.engine.impl.cmd.CompleteTaskCmd;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.engine.impl.delegate.SubProcessActivityBehavior;
@@ -190,7 +190,10 @@ public abstract class MultiInstanceActivityBehavior
 
     // required for supporting external subprocesses
     public void completing(DelegateExecution execution, DelegateExecution subProcessInstance) throws Exception {
-        if (innerActivityBehavior instanceof SubProcessActivityBehavior subProcessActivityBehavior) {
+        if (
+            execution.getCurrentFlowElement() instanceof CallActivity &&
+            innerActivityBehavior instanceof SubProcessActivityBehavior subProcessActivityBehavior
+        ) {
             subProcessActivityBehavior.completing(execution, subProcessInstance);
         }
     }
