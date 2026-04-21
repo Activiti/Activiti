@@ -32,6 +32,20 @@ public class VariablesPropagator {
         this.variablesCalculator = variablesCalculator;
     }
 
+    protected Map<String, Object> calculateMultiInstanceCallActivityLocalVariables(DelegateExecution execution,
+                                                                                    Map<String, Object> availableVariables) {
+        Map<String, Object> outputVariables = variablesCalculator.calculateOutPutVariables(
+            MappingExecutionContext.buildMappingExecutionContext(execution),
+            availableVariables
+        );
+
+        if (outputVariables == null || outputVariables.isEmpty()) {
+            return availableVariables;
+        }
+
+        return outputVariables;
+    }
+
     public void propagate(DelegateExecution execution, Map<String, Object> availableVariables) {
         if (availableVariables != null && !availableVariables.isEmpty()) {
             // in the case of a multi instance we need to set the available variables in the local execution scope so that
@@ -39,10 +53,7 @@ public class VariablesPropagator {
             if (execution.getParent().isMultiInstanceRoot()) {
                 if (execution.getCurrentFlowElement() instanceof CallActivity) {
                     execution.setVariablesLocal(
-                        variablesCalculator.calculateOutPutVariables(
-                            MappingExecutionContext.buildMappingExecutionContext(execution),
-                            availableVariables
-                        )
+                        calculateMultiInstanceCallActivityLocalVariables(execution, availableVariables)
                     );
                 } else {
                     execution.setVariablesLocal(availableVariables);
