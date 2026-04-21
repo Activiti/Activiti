@@ -395,13 +395,7 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
         for (Map.Entry<String, Mapping> mappingEntry : outputMappings.entrySet()) {
             String name = mappingEntry.getKey();
 
-            if (
-                isTargetProcessVariableDefined(extensions, execution, name) ||
-                (
-                    execution.getParent().isMultiInstanceRoot() &&
-                    execution.getCurrentFlowElement() instanceof CallActivity
-                )
-            ) {
+            if (isTargetProcessVariableDefined(extensions, execution, name) || isMultiInstanceCallActivity(execution)) {
                 calculateOutPutMappedValue(mappingEntry, availableVariables, execution, extensions)
                     .ifPresent(value -> {
                         extensions
@@ -470,6 +464,15 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
         return expressionResolver.resolveExpressionsMap(
             new VariableScopeExpressionEvaluator(mappingExecutionContext.getExecution()),
             outboundVariables
+        );
+    }
+
+    private boolean isMultiInstanceCallActivity(DelegateExecution execution) {
+        return (
+            execution != null &&
+            execution.getParent() != null &&
+            execution.getParent().isMultiInstanceRoot() &&
+            execution.getCurrentFlowElement() instanceof CallActivity
         );
     }
 
