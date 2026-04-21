@@ -26,6 +26,7 @@ import com.flipkart.zjsonpatch.Jackson3JsonPatch;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.activiti.bpmn.model.CallActivity;
@@ -109,10 +110,8 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
         }
 
         Map<String, Object> inboundVariables = calculateInputVariables(execution, extensions);
-        inboundVariables = expressionResolver.resolveExpressionsMap(
-            new VariableScopeExpressionEvaluator(execution),
-            inboundVariables
-        );
+        inboundVariables =
+            expressionResolver.resolveExpressionsMap(new VariableScopeExpressionEvaluator(execution), inboundVariables);
         inboundVariables.putAll(constants);
         return inboundVariables;
     }
@@ -121,7 +120,8 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
         String processDefinitionId = execution.getProcessDefinitionId();
         String activityId = execution.getCurrentActivityId();
 
-        return Optional.ofNullable(processExtensionService.getExtensionsForId(processDefinitionId))
+        return Optional
+            .ofNullable(processExtensionService.getExtensionsForId(processDefinitionId))
             .map(Extension::getMappings)
             .map(mappings -> mappings.get(activityId))
             .map(ProcessVariablesMapping::isEphemeral)
@@ -304,10 +304,9 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
 
             for (int i = 1; i < properties.length; i++) {
                 String property = properties[i];
-                if(isArrayElementPath(i, properties, property)) {
+                if (isArrayElementPath(i, properties, property)) {
                     prepareArrayElementForReplace((ObjectNode) patch, currentNode, property);
-                }
-                else if (isArrayProperty(currentNode, property)) {
+                } else if (isArrayProperty(currentNode, property)) {
                     currentNode = handleArrayPath(property, currentNode);
                 } else {
                     if (!currentNode.has(property) || !currentNode.get(property).isObject()) {
@@ -468,12 +467,16 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
     }
 
     private boolean isMultiInstanceCallActivity(DelegateExecution execution) {
-        return (
-            execution != null &&
-            execution.getParent() != null &&
-            execution.getParent().isMultiInstanceRoot() &&
-            execution.getCurrentFlowElement() instanceof CallActivity
-        );
+        return Optional.of(execution).filter(isMultiInstanceRootParent().and(isCallActivityFlowElement())).isPresent();
+    }
+
+    private Predicate<DelegateExecution> isMultiInstanceRootParent() {
+        return execution ->
+            Optional.ofNullable(execution.getParent()).filter(DelegateExecution::isMultiInstanceRoot).isPresent();
+    }
+
+    private Predicate<DelegateExecution> isCallActivityFlowElement() {
+        return execution -> execution.getCurrentFlowElement() instanceof CallActivity;
     }
 
     private boolean isTargetProcessVariableDefined(
