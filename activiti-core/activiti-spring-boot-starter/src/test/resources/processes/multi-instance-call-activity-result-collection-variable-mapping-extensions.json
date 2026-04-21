@@ -76,6 +76,28 @@
         }
       }
     },
+    "multi-instance-parallel-call-activity-result-collection-loop-variables": {
+      "mappings": {
+        "loop-variables-callActivity": {
+          "inputs": {
+            "resultIndex": {
+              "type": "variable",
+              "value": "elementIndex"
+            }
+          },
+          "outputs": {
+            "result": {
+              "type": "variable",
+              "value": "result"
+            },
+            "resultIndex": {
+              "type": "variable",
+              "value": "resultIndex"
+            }
+          }
+        }
+      }
+    },
     "multi-instance-call-activity-result-sub-process": {
       "constants": {},
       "mappings": {},

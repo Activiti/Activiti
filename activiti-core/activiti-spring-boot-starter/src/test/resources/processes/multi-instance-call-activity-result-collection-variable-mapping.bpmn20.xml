@@ -49,10 +49,24 @@
     <endEvent id="empty-outputs-end"/>
   </process>
 
-    <process id="multi-instance-call-activity-result-sub-process">
-        <startEvent id="subStart"/>
-        <sequenceFlow id="subFlow" sourceRef="subStart" targetRef="subEnd"/>
-        <endEvent id="subEnd"/>
-    </process>
+  <process id="multi-instance-parallel-call-activity-result-collection-loop-variables">
+    <startEvent id="loop-variables-start"/>
+    <sequenceFlow id="loop-variables-flow1" sourceRef="loop-variables-start" targetRef="loop-variables-callActivity"/>
+    <callActivity id="loop-variables-callActivity" calledElement="multi-instance-call-activity-result-sub-process">
+      <multiInstanceLoopCharacteristics activiti:collection="${list(0,1)}" activiti:elementVariable="result" activiti:elementIndexVariable="elementIndex">
+        <loopDataOutputRef>miResult</loopDataOutputRef>
+      </multiInstanceLoopCharacteristics>
+    </callActivity>
+    <sequenceFlow id="loop-variables-flow2" sourceRef="loop-variables-callActivity" targetRef="loop-variables-userTask"/>
+    <userTask id="loop-variables-userTask" name="My user task" activiti:candidateUsers="user"/>
+    <sequenceFlow id="loop-variables-flow3" sourceRef="loop-variables-userTask" targetRef="loop-variables-end"/>
+    <endEvent id="loop-variables-end"/>
+  </process>
+
+  <process id="multi-instance-call-activity-result-sub-process">
+    <startEvent id="subStart"/>
+    <sequenceFlow id="subFlow" sourceRef="subStart" targetRef="subEnd"/>
+    <endEvent id="subEnd"/>
+  </process>
 
 </definitions>
