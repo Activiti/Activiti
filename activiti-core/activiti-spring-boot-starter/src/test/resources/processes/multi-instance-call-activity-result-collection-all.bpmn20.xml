@@ -34,6 +34,21 @@
     <endEvent id="sequential-end"/>
   </process>
 
+  <process id="multi-instance-parallel-call-activity-result-collection-empty-outputs">
+    <startEvent id="empty-outputs-start"/>
+    <sequenceFlow id="empty-outputs-flow1" sourceRef="empty-outputs-start" targetRef="empty-outputs-callActivity"/>
+    <callActivity id="empty-outputs-callActivity" calledElement="multi-instance-call-activity-result-sub-process">
+      <multiInstanceLoopCharacteristics isSequential="false">
+        <loopCardinality>2</loopCardinality>
+        <loopDataOutputRef>miResult</loopDataOutputRef>
+      </multiInstanceLoopCharacteristics>
+    </callActivity>
+    <sequenceFlow id="empty-outputs-flow2" sourceRef="empty-outputs-callActivity" targetRef="empty-outputs-userTask"/>
+    <userTask id="empty-outputs-userTask" name="My user task" activiti:candidateUsers="user"/>
+    <sequenceFlow id="empty-outputs-flow3" sourceRef="empty-outputs-userTask" targetRef="empty-outputs-end"/>
+    <endEvent id="empty-outputs-end"/>
+  </process>
+
     <process id="multi-instance-call-activity-result-sub-process">
         <startEvent id="subStart"/>
         <sequenceFlow id="subFlow" sourceRef="subStart" targetRef="subEnd"/>

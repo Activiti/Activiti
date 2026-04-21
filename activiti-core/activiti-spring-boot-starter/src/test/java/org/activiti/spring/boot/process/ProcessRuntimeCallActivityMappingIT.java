@@ -364,6 +364,45 @@ public class ProcessRuntimeCallActivityMappingIT {
             .isInstanceOf(NotFoundException.class);
     }
 
+    @Test
+    public void should_map_output_variables_from_multi_instance_parallel_call_activity_result_collection_for_empty_outputs() {
+        securityUtil.logInAs("user");
+
+        ProcessInstance processInstance = processRuntime.start(
+            ProcessPayloadBuilder
+                .start()
+                .withProcessDefinitionKey("multi-instance-parallel-call-activity-result-collection-empty-outputs")
+                .build()
+        );
+        assertThat(processInstance).isNotNull();
+
+        List<VariableInstance> procVariables = processRuntime.variables(
+            ProcessPayloadBuilder.variables().withProcessInstanceId(processInstance.getId()).build()
+        );
+
+        assertThat(procVariables)
+            .isNotNull()
+            .extracting(VariableInstance::getName, VariableInstance::getValue)
+            .containsOnly(
+                tuple(
+                    "miResult",
+                    List.of(
+                        Map.of("result", "Result 1", "resultIndex", 1, "foo", "bar"),
+                        Map.of("result", "Result 0", "resultIndex", 0, "foo", "bar")
+                    )
+                )
+            );
+
+        final Task task = getTask(processInstance);
+
+        taskRuntime.claim(new ClaimTaskPayloadBuilder().withTaskId(task.getId()).withAssignee("user").build());
+
+        taskRuntime.complete(new CompleteTaskPayloadBuilder().withTaskId(task.getId()).build());
+
+        assertThatThrownBy(() -> processRuntime.processInstance(processInstance.getId()))
+            .isInstanceOf(NotFoundException.class);
+    }
+
     public void completeTask(String taskId, Map<String, Object> variables) {
         Task completeTask = taskRuntime.complete(
             TaskPayloadBuilder.complete().withTaskId(taskId).withVariables(variables).build()

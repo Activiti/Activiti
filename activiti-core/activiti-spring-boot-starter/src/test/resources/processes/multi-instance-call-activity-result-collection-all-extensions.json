@@ -62,6 +62,20 @@
         }
       }
     },
+    "multi-instance-parallel-call-activity-result-collection-empty-outputs": {
+      "mappings": {
+        "empty-outputs-callActivity": {
+          "inputs": {
+            "resultIndex": {
+              "type": "variable",
+              "value": "loopCounter"
+            }
+          },
+          "outputs": {
+          }
+        }
+      }
+    },
     "multi-instance-call-activity-result-sub-process": {
       "constants": {},
       "mappings": {},
