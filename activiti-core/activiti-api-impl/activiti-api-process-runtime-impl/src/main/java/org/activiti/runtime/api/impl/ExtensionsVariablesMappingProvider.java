@@ -467,7 +467,9 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
     }
 
     private boolean isMultiInstanceCallActivity(DelegateExecution execution) {
-        return Optional.of(execution).filter(isMultiInstanceRootParent().and(isCallActivityFlowElement())).isPresent();
+        return Optional.ofNullable(execution)
+            .filter(isMultiInstanceRootParent().and(isCallActivityFlowElement()))
+            .isPresent();
     }
 
     private Predicate<DelegateExecution> isMultiInstanceRootParent() {

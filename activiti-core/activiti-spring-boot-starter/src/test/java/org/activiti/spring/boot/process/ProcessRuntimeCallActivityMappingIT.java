@@ -29,12 +29,11 @@ import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.runtime.shared.NotFoundException;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
-import org.activiti.api.task.model.builders.ClaimTaskPayloadBuilder;
-import org.activiti.api.task.model.builders.CompleteTaskPayloadBuilder;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
+import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -280,7 +279,7 @@ public class ProcessRuntimeCallActivityMappingIT {
     }
 
     @Test
-    public void should_map_output_variables_from_multi_instance_parallel_call_activity_result_collection() {
+    public void shouldMapOutputVariablesFromMultiInstanceParallelCallActivityResultCollection() {
         securityUtil.logInAs("user");
 
         ProcessInstance processInstance = processRuntime.start(
@@ -297,29 +296,27 @@ public class ProcessRuntimeCallActivityMappingIT {
 
         assertThat(procVariables)
             .isNotNull()
-            .extracting(VariableInstance::getName, VariableInstance::getValue)
-            .containsOnly(
-                tuple(
-                    "miResult",
-                    List.of(
-                        Map.of("result", "Result 0", "resultIndex", 0, "multiInstanceLoopCharacteristics", "parallel"),
-                        Map.of("result", "Result 1", "resultIndex", 1, "multiInstanceLoopCharacteristics", "parallel")
-                    )
-                )
+            .singleElement(InstanceOfAssertFactories.type(VariableInstance.class))
+            .satisfies(variable -> assertThat(variable.getName()).isEqualTo("miResult"))
+            .extracting(VariableInstance::getValue)
+            .asInstanceOf(InstanceOfAssertFactories.list(Map.class))
+            .containsExactlyInAnyOrder(
+                Map.of("result", "Result 0", "resultIndex", 0, "multiInstanceLoopCharacteristics", "parallel"),
+                Map.of("result", "Result 1", "resultIndex", 1, "multiInstanceLoopCharacteristics", "parallel")
             );
 
         final Task task = getTask(processInstance);
 
-        taskRuntime.claim(new ClaimTaskPayloadBuilder().withTaskId(task.getId()).withAssignee("user").build());
+        taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).withAssignee("user").build());
 
-        taskRuntime.complete(new CompleteTaskPayloadBuilder().withTaskId(task.getId()).build());
+        taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
 
         assertThatThrownBy(() -> processRuntime.processInstance(processInstance.getId()))
             .isInstanceOf(NotFoundException.class);
     }
 
     @Test
-    public void should_map_output_variables_from_multi_instance_sequential_call_activity_result_collection() {
+    public void shouldMapOutputVariablesFromMultiInstanceSequentialCallActivityResultCollection() {
         securityUtil.logInAs("user");
 
         ProcessInstance processInstance = processRuntime.start(
@@ -336,36 +333,27 @@ public class ProcessRuntimeCallActivityMappingIT {
 
         assertThat(procVariables)
             .isNotNull()
-            .extracting(VariableInstance::getName, VariableInstance::getValue)
-            .containsOnly(
-                tuple(
-                    "miResult",
-                    List.of(
-                        Map.of(
-                            "result",
-                            "Result 0",
-                            "resultIndex",
-                            0,
-                            "multiInstanceLoopCharacteristics",
-                            "sequential"
-                        ),
-                        Map.of("result", "Result 1", "resultIndex", 1, "multiInstanceLoopCharacteristics", "sequential")
-                    )
-                )
+            .singleElement(InstanceOfAssertFactories.type(VariableInstance.class))
+            .satisfies(variable -> assertThat(variable.getName()).isEqualTo("miResult"))
+            .extracting(VariableInstance::getValue)
+            .asInstanceOf(InstanceOfAssertFactories.list(Map.class))
+            .containsExactlyInAnyOrder(
+                Map.of("result", "Result 0", "resultIndex", 0, "multiInstanceLoopCharacteristics", "sequential"),
+                Map.of("result", "Result 1", "resultIndex", 1, "multiInstanceLoopCharacteristics", "sequential")
             );
 
         final Task task = getTask(processInstance);
 
-        taskRuntime.claim(new ClaimTaskPayloadBuilder().withTaskId(task.getId()).withAssignee("user").build());
+        taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).withAssignee("user").build());
 
-        taskRuntime.complete(new CompleteTaskPayloadBuilder().withTaskId(task.getId()).build());
+        taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
 
         assertThatThrownBy(() -> processRuntime.processInstance(processInstance.getId()))
             .isInstanceOf(NotFoundException.class);
     }
 
     @Test
-    public void should_map_output_variables_from_multi_instance_parallel_call_activity_result_collection_for_empty_outputs() {
+    public void shouldMapOutputVariablesFromMultiInstanceParallelCallActivityResultCollectionForEmptyOutputs() {
         securityUtil.logInAs("user");
 
         ProcessInstance processInstance = processRuntime.start(
@@ -382,22 +370,20 @@ public class ProcessRuntimeCallActivityMappingIT {
 
         assertThat(procVariables)
             .isNotNull()
-            .extracting(VariableInstance::getName, VariableInstance::getValue)
-            .containsOnly(
-                tuple(
-                    "miResult",
-                    List.of(
-                        Map.of("result", "Result 1", "resultIndex", 1, "foo", "bar"),
-                        Map.of("result", "Result 0", "resultIndex", 0, "foo", "bar")
-                    )
-                )
+            .singleElement(InstanceOfAssertFactories.type(VariableInstance.class))
+            .satisfies(variable -> assertThat(variable.getName()).isEqualTo("miResult"))
+            .extracting(VariableInstance::getValue)
+            .asInstanceOf(InstanceOfAssertFactories.list(Map.class))
+            .containsExactlyInAnyOrder(
+                Map.of("result", "Result 1", "resultIndex", 1, "foo", "bar"),
+                Map.of("result", "Result 0", "resultIndex", 0, "foo", "bar")
             );
 
         final Task task = getTask(processInstance);
 
-        taskRuntime.claim(new ClaimTaskPayloadBuilder().withTaskId(task.getId()).withAssignee("user").build());
+        taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).withAssignee("user").build());
 
-        taskRuntime.complete(new CompleteTaskPayloadBuilder().withTaskId(task.getId()).build());
+        taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
 
         assertThatThrownBy(() -> processRuntime.processInstance(processInstance.getId()))
             .isInstanceOf(NotFoundException.class);
