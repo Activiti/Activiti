@@ -63,12 +63,12 @@ public class ProcessRuntimeCallActivityMappingIT {
     private ProcessCleanUpUtil processCleanUpUtil;
 
     @AfterEach
-    public void cleanUp() {
+    void cleanUp() {
         processCleanUpUtil.cleanUpWithAdmin();
     }
 
     @Test
-    public void basicCallActivityMappingTest() {
+    void basicCallActivityMappingTest() {
         securityUtil.logInAs("user");
 
         ProcessInstance processInstance = processRuntime.start(
@@ -126,7 +126,7 @@ public class ProcessRuntimeCallActivityMappingIT {
     }
 
     @Test
-    public void haveToPassAllVariablesCallActivityEmptyMappingNoTaskTest() {
+    void haveToPassAllVariablesCallActivityEmptyMappingNoTaskTest() {
         securityUtil.logInAs("user");
         // After the process has started, the subProcess task should be active
         ProcessInstance processInstance = processRuntime.start(
@@ -222,7 +222,7 @@ public class ProcessRuntimeCallActivityMappingIT {
     }
 
     @Test
-    public void haveToPassNoVariablesCallActivityEmptyMappingWithTaskTest() {
+    void haveToPassNoVariablesCallActivityEmptyMappingWithTaskTest() {
         securityUtil.logInAs("user");
 
         ProcessInstance processInstance = processRuntime.start(
@@ -279,7 +279,7 @@ public class ProcessRuntimeCallActivityMappingIT {
     }
 
     @Test
-    public void shouldMapOutputVariablesFromMultiInstanceParallelCallActivityResultCollection() {
+    void shouldMapOutputVariablesFromMultiInstanceParallelCallActivityResultCollection() {
         securityUtil.logInAs("user");
 
         ProcessInstance processInstance = processRuntime.start(
@@ -316,7 +316,7 @@ public class ProcessRuntimeCallActivityMappingIT {
     }
 
     @Test
-    public void shouldMapOutputVariablesFromMultiInstanceSequentialCallActivityResultCollection() {
+    void shouldMapOutputVariablesFromMultiInstanceSequentialCallActivityResultCollection() {
         securityUtil.logInAs("user");
 
         ProcessInstance processInstance = processRuntime.start(
@@ -353,7 +353,7 @@ public class ProcessRuntimeCallActivityMappingIT {
     }
 
     @Test
-    public void shouldMapOutputVariablesFromMultiInstanceParallelCallActivityResultCollectionForEmptyOutputs() {
+    void shouldMapOutputVariablesFromMultiInstanceParallelCallActivityResultCollectionForEmptyOutputs() {
         securityUtil.logInAs("user");
 
         ProcessInstance processInstance = processRuntime.start(
@@ -390,7 +390,7 @@ public class ProcessRuntimeCallActivityMappingIT {
     }
 
     @Test
-    public void shouldMapOutputVariablesFromMultiInstanceCallActivityResultCollectionWithLoopVariables() {
+    void shouldMapOutputVariablesFromMultiInstanceCallActivityResultCollectionWithLoopVariables() {
         securityUtil.logInAs("user");
 
         ProcessInstance processInstance = processRuntime.start(
@@ -426,7 +426,7 @@ public class ProcessRuntimeCallActivityMappingIT {
             .isInstanceOf(NotFoundException.class);
     }
 
-    public void completeTask(String taskId, Map<String, Object> variables) {
+    void completeTask(String taskId, Map<String, Object> variables) {
         Task completeTask = taskRuntime.complete(
             TaskPayloadBuilder.complete().withTaskId(taskId).withVariables(variables).build()
         );
