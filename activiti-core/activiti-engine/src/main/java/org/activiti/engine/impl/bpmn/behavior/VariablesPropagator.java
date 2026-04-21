@@ -16,6 +16,7 @@
 package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.Map;
+import org.activiti.bpmn.model.CallActivity;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -36,12 +37,16 @@ public class VariablesPropagator {
             // in the case of a multi instance we need to set the available variables in the local execution scope so that
             // MultiInstanceBehaviour will manage to aggregate the results inside the result collection. Otherwise, the mapping logic is applied.
             if (execution.getParent().isMultiInstanceRoot()) {
-                execution.setVariablesLocal(
-                    variablesCalculator.calculateOutPutVariables(
-                        MappingExecutionContext.buildMappingExecutionContext(execution.getParent()),
-                        availableVariables
-                    )
-                );
+                if (execution.getCurrentFlowElement() instanceof CallActivity) {
+                    execution.setVariablesLocal(
+                        variablesCalculator.calculateOutPutVariables(
+                            MappingExecutionContext.buildMappingExecutionContext(execution),
+                            availableVariables
+                        )
+                    );
+                } else {
+                    execution.setVariablesLocal(availableVariables);
+                }
             } else if (execution.getProcessInstanceId() != null) {
                 final ExecutionEntity processInstanceEntity = getExecutionEntityManager()
                     .findById(execution.getProcessInstanceId());

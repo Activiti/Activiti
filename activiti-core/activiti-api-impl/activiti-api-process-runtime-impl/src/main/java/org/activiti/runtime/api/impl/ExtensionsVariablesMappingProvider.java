@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.activiti.bpmn.model.CallActivity;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.behavior.MappingExecutionContext;
@@ -394,7 +395,13 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
         for (Map.Entry<String, Mapping> mappingEntry : outputMappings.entrySet()) {
             String name = mappingEntry.getKey();
 
-            if (isTargetProcessVariableDefined(extensions, execution, name) || execution.isMultiInstanceRoot()) {
+            if (
+                isTargetProcessVariableDefined(extensions, execution, name) ||
+                (
+                    execution.getParent().isMultiInstanceRoot() &&
+                    execution.getCurrentFlowElement() instanceof CallActivity
+                )
+            ) {
                 calculateOutPutMappedValue(mappingEntry, availableVariables, execution, extensions)
                     .ifPresent(value -> {
                         extensions
