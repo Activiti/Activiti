@@ -25,12 +25,12 @@ import org.activiti.engine.impl.interceptor.CommandConfig;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.PropertyEntity;
 import org.activiti.engine.impl.test.AbstractTestCase;
-import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.postgresql.PostgreSQLContainer;
 import org.testcontainers.utility.MountableFile;
 
 public class DbSchemaUpdateTest extends AbstractTestCase {
 
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15-alpine")
+    static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:15-alpine")
         .withCopyFileToContainer(
             MountableFile.forHostPath(
                 Path.of("target/activiti-engine/org/activiti/db/create/activiti.postgres.create.engine.sql")

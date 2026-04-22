@@ -23,7 +23,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import jakarta.el.ELContext;
 import java.util.Arrays;
 import java.util.List;
@@ -111,7 +111,7 @@ public class VariableScopeElResolverTest {
     public void getVariableScopeItemELResolvers_should_return_defaultItemResolvers() {
         //given
         ProcessEngineConfigurationImpl processEngineConfiguration = mock(ProcessEngineConfigurationImpl.class);
-        given(processEngineConfiguration.getObjectMapper()).willReturn(new ObjectMapper());
+        given(processEngineConfiguration.getObjectMapper()).willReturn(new JsonMapper());
         Context.setProcessEngineConfiguration(processEngineConfiguration);
         doCallRealMethod().when(variableScopeElResolver).getVariableScopeItemELResolvers();
 

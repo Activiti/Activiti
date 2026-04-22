@@ -15,8 +15,8 @@
  */
 package org.activiti.engine.impl.el.variable;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
 import java.util.List;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
@@ -25,10 +25,10 @@ import org.activiti.engine.impl.variable.LongJsonType;
 
 public class VariableElResolver implements VariableScopeItemELResolver {
 
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
 
-    public VariableElResolver(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
+    public VariableElResolver(JsonMapper jsonMapper) {
+        this.jsonMapper = jsonMapper;
     }
 
     @Override
@@ -41,7 +41,7 @@ public class VariableElResolver implements VariableScopeItemELResolver {
         VariableInstance variableInstance = variableScope.getVariableInstance(property);
         Object value = variableInstance.getValue();
         if (hasJsonType(variableInstance) && (value instanceof JsonNode) && ((JsonNode) value).isArray()) {
-            return objectMapper.convertValue(value, List.class);
+            return jsonMapper.convertValue(value, List.class);
         } else {
             return value;
         }

@@ -17,9 +17,9 @@ package org.activiti.editor.language;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.ObjectNode;
 import java.io.InputStream;
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.converter.util.InputStreamProvider;
@@ -33,7 +33,7 @@ public abstract class AbstractConverterTest {
 
     protected BpmnModel readJsonFile() throws Exception {
         InputStream jsonStream = this.getClass().getClassLoader().getResourceAsStream(getResource());
-        JsonNode modelNode = new ObjectMapper().readTree(jsonStream);
+        JsonNode modelNode = new JsonMapper().readTree(jsonStream);
         BpmnModel bpmnModel = new BpmnJsonConverter().convertToBpmnModel(modelNode);
         return bpmnModel;
     }

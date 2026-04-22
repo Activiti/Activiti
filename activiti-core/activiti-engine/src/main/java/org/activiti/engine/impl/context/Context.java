@@ -15,7 +15,7 @@
  */
 package org.activiti.engine.impl.context;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.node.ObjectNode;
 import java.util.*;
 import org.activiti.engine.ActivitiEngineAgenda;
 import org.activiti.engine.impl.ProcessDefinitionHelper;

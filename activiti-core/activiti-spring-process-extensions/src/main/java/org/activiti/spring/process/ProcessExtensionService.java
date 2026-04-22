@@ -19,7 +19,7 @@ import java.util.Optional;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.spring.process.model.Extension;
 import org.activiti.spring.process.model.VariableDefinition;
-import org.springframework.lang.NonNull;
+import org.jspecify.annotations.NonNull;
 
 public class ProcessExtensionService {
 

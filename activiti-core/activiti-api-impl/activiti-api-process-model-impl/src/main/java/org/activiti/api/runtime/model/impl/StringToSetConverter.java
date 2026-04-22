@@ -15,25 +15,25 @@
  */
 package org.activiti.api.runtime.model.impl;
 
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JavaType;
+import tools.jackson.databind.json.JsonMapper;
 import java.util.Set;
 import org.springframework.core.convert.converter.Converter;
 
 @ProcessVariableTypeConverter
 public class StringToSetConverter implements Converter<String, Set<Object>> {
 
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
 
-    public StringToSetConverter(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
+    public StringToSetConverter(JsonMapper jsonMapper) {
+        this.jsonMapper = jsonMapper;
     }
 
     @Override
     public Set<Object> convert(String source) {
-        JavaType javaType = objectMapper.getTypeFactory().constructParametricType(Set.class, Object.class);
+        JavaType javaType = jsonMapper.getTypeFactory().constructParametricType(Set.class, Object.class);
         try {
-            return objectMapper.readValue(source, javaType);
+            return jsonMapper.readValue(source, javaType);
         } catch (Exception cause) {
             throw new RuntimeException(cause);
         }

@@ -15,14 +15,10 @@
  */
 package org.activiti.api.task.conf.impl;
 
-import com.fasterxml.jackson.core.Version;
-import com.fasterxml.jackson.databind.BeanDescription;
-import com.fasterxml.jackson.databind.DeserializationConfig;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.Module;
-import com.fasterxml.jackson.databind.jsontype.NamedType;
-import com.fasterxml.jackson.databind.module.SimpleAbstractTypeResolver;
-import com.fasterxml.jackson.databind.module.SimpleModule;
+import tools.jackson.core.Version;
+import tools.jackson.databind.jsontype.NamedType;
+import tools.jackson.databind.module.SimpleAbstractTypeResolver;
+import tools.jackson.databind.module.SimpleModule;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.TaskCandidateGroup;
 import org.activiti.api.task.model.TaskCandidateUser;
@@ -41,25 +37,19 @@ import org.activiti.api.task.model.payloads.UpdateTaskPayload;
 import org.activiti.api.task.model.results.TaskResult;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
-import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
+import org.springframework.boot.jackson.autoconfigure.JacksonAutoConfiguration;
 import org.springframework.context.annotation.Bean;
+import tools.jackson.databind.JacksonModule;
 
 @AutoConfiguration
 @AutoConfigureBefore({ JacksonAutoConfiguration.class })
 public class TaskModelAutoConfiguration {
 
-    //this bean will be automatically injected inside boot's ObjectMapper
+    //this bean will be automatically injected inside boot's jsonMapper
     @Bean
-    public Module customizeTaskModelObjectMapper() {
+    public JacksonModule customizeTaskModelObjectMapper() {
         SimpleModule module = new SimpleModule("mapTaskRuntimeInterfaces", Version.unknownVersion());
-        SimpleAbstractTypeResolver resolver = new SimpleAbstractTypeResolver() {
-            //this is a workaround for https://github.com/FasterXML/jackson-databind/issues/2019
-            //once version 2.9.6 is related we can remove this @override method
-            @Override
-            public JavaType resolveAbstractType(DeserializationConfig config, BeanDescription typeDesc) {
-                return findTypeMapping(config, typeDesc.getType());
-            }
-        };
+        SimpleAbstractTypeResolver resolver = new SimpleAbstractTypeResolver();
         resolver.addMapping(Task.class, TaskImpl.class);
         resolver.addMapping(TaskCandidateUser.class, TaskCandidateUserImpl.class);
         resolver.addMapping(TaskCandidateGroup.class, TaskCandidateGroupImpl.class);

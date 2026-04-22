@@ -15,25 +15,25 @@
  */
 package org.activiti.api.runtime.model.impl;
 
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JavaType;
+import tools.jackson.databind.json.JsonMapper;
 import java.util.List;
 import org.springframework.core.convert.converter.Converter;
 
 @ProcessVariableTypeConverter
 public class StringToListConverter implements Converter<String, List<Object>> {
 
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
 
-    public StringToListConverter(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
+    public StringToListConverter(JsonMapper jsonMapper) {
+        this.jsonMapper = jsonMapper;
     }
 
     @Override
     public List<Object> convert(String source) {
-        JavaType javaType = objectMapper.getTypeFactory().constructParametricType(List.class, Object.class);
+        JavaType javaType = jsonMapper.getTypeFactory().constructParametricType(List.class, Object.class);
         try {
-            return objectMapper.readValue(source, javaType);
+            return jsonMapper.readValue(source, javaType);
         } catch (Exception cause) {
             throw new RuntimeException(cause);
         }

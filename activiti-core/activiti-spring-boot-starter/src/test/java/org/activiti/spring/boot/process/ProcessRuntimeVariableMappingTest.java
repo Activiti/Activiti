@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.assertj.core.api.Assertions.tuple;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +47,7 @@ public class ProcessRuntimeVariableMappingTest {
     private ProcessBaseRuntime processBaseRuntime;
 
     @Autowired
-    private ObjectMapper mapper;
+    private JsonMapper mapper;
 
     @Autowired
     private ProcessCleanUpUtil processCleanUpUtil;

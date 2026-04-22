@@ -15,9 +15,9 @@
  */
 package org.activiti.editor.language.json.converter;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.ObjectNode;
 import java.util.Map;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
@@ -73,8 +73,8 @@ public class MessageFlowJsonConverter extends BaseBpmnJsonConverter {
             128,
             212
         );
-        ArrayNode dockersArrayNode = objectMapper.createArrayNode();
-        ObjectNode dockNode = objectMapper.createObjectNode();
+        ArrayNode dockersArrayNode = jsonMapper.createArrayNode();
+        ObjectNode dockNode = jsonMapper.createObjectNode();
         dockNode.put(EDITOR_BOUNDS_X, model.getGraphicInfo(messageFlow.getSourceRef()).getWidth() / 2.0);
         dockNode.put(EDITOR_BOUNDS_Y, model.getGraphicInfo(messageFlow.getSourceRef()).getHeight() / 2.0);
         dockersArrayNode.add(dockNode);
@@ -82,24 +82,24 @@ public class MessageFlowJsonConverter extends BaseBpmnJsonConverter {
         if (model.getFlowLocationGraphicInfo(messageFlow.getId()).size() > 2) {
             for (int i = 1; i < model.getFlowLocationGraphicInfo(messageFlow.getId()).size() - 1; i++) {
                 GraphicInfo graphicInfo = model.getFlowLocationGraphicInfo(messageFlow.getId()).get(i);
-                dockNode = objectMapper.createObjectNode();
+                dockNode = jsonMapper.createObjectNode();
                 dockNode.put(EDITOR_BOUNDS_X, graphicInfo.getX());
                 dockNode.put(EDITOR_BOUNDS_Y, graphicInfo.getY());
                 dockersArrayNode.add(dockNode);
             }
         }
 
-        dockNode = objectMapper.createObjectNode();
+        dockNode = jsonMapper.createObjectNode();
         dockNode.put(EDITOR_BOUNDS_X, model.getGraphicInfo(messageFlow.getTargetRef()).getWidth() / 2.0);
         dockNode.put(EDITOR_BOUNDS_Y, model.getGraphicInfo(messageFlow.getTargetRef()).getHeight() / 2.0);
         dockersArrayNode.add(dockNode);
         flowNode.set("dockers", dockersArrayNode);
-        ArrayNode outgoingArrayNode = objectMapper.createArrayNode();
+        ArrayNode outgoingArrayNode = jsonMapper.createArrayNode();
         outgoingArrayNode.add(BpmnJsonConverterUtil.createResourceNode(messageFlow.getTargetRef()));
         flowNode.set("outgoing", outgoingArrayNode);
         flowNode.set("target", BpmnJsonConverterUtil.createResourceNode(messageFlow.getTargetRef()));
 
-        ObjectNode propertiesNode = objectMapper.createObjectNode();
+        ObjectNode propertiesNode = jsonMapper.createObjectNode();
         propertiesNode.put(PROPERTY_OVERRIDE_ID, messageFlow.getId());
         if (StringUtils.isNotEmpty(messageFlow.getName())) {
             propertiesNode.put(PROPERTY_NAME, messageFlow.getName());
@@ -123,14 +123,14 @@ public class MessageFlowJsonConverter extends BaseBpmnJsonConverter {
         MessageFlow flow = new MessageFlow();
 
         String sourceRef = BpmnJsonConverterUtil.lookForSourceRef(
-            elementNode.get(EDITOR_SHAPE_ID).asText(),
+            elementNode.get(EDITOR_SHAPE_ID).asString(),
             modelNode.get(EDITOR_CHILD_SHAPES)
         );
         if (sourceRef != null) {
             flow.setSourceRef(sourceRef);
             JsonNode targetNode = elementNode.get("target");
             if (targetNode != null && !targetNode.isNull()) {
-                String targetId = targetNode.get(EDITOR_SHAPE_ID).asText();
+                String targetId = targetNode.get(EDITOR_SHAPE_ID).asString();
                 if (shapeMap.get(targetId) != null) {
                     flow.setTargetRef(BpmnJsonConverterUtil.getElementId(shapeMap.get(targetId)));
                 }

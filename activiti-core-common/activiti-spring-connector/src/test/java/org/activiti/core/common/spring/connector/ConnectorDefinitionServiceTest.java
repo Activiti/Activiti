@@ -20,7 +20,7 @@ import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import org.activiti.core.common.model.connector.ConnectorDefinition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,14 +35,14 @@ public class ConnectorDefinitionServiceTest {
     private ConnectorDefinitionService connectorDefinitionService;
 
     @Mock
-    private ObjectMapper objectMapper;
+    private JsonMapper jsonMapper;
 
     @Mock
     private ResourcePatternResolver resourceLoader;
 
     @BeforeEach
     public void setUp() {
-        connectorDefinitionService = new ConnectorDefinitionService("/connectors", objectMapper, resourceLoader);
+        connectorDefinitionService = new ConnectorDefinitionService("/connectors", jsonMapper, resourceLoader);
     }
 
     @Test

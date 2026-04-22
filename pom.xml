@@ -223,15 +223,9 @@
     <maven-source-plugin.version>3.4.0</maven-source-plugin.version>
     <maven-surefire-plugin.version>3.5.5</maven-surefire-plugin.version>
     <sonar-maven-plugin.version>5.5.0.6356</sonar-maven-plugin.version>
-    <junit.version>5.12.2</junit.version>
-    <spring-boot.version>3.5.7</spring-boot.version>
-    <h2.version>2.4.240</h2.version>
-    <jakarta.el-api.version>5.0.1</jakarta.el-api.version>
-    <testcontainers.version>2.0.4</testcontainers.version>
+    <spring-boot.version>4.0.4</spring-boot.version>
+    <jakarta.el-api.version>6.0.1</jakarta.el-api.version>
     <versions-maven-plugin.version>2.21.0</versions-maven-plugin.version>
-    <jackson.version>2.21.2</jackson.version>
-    <spring-webmvc.version>6.2.17</spring-webmvc.version>
-    <tomcat-embed-core.version>10.1.54</tomcat-embed-core.version>
 
     <!-- configuration properties for tests -->
     <generated-assertions-folder>
@@ -241,20 +235,6 @@
   </properties>
   <dependencyManagement>
     <dependencies>
-      <!-- temporary security fix AAE-36930 -->
-      <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-lang3</artifactId>
-        <version>3.20.0</version>
-      </dependency>
-      <!-- temporary security fix -->
-      <!-- security fix AAE-41710, remove with Spring update -->
-      <dependency>
-        <groupId>org.assertj</groupId>
-        <artifactId>assertj-core</artifactId>
-        <version>3.27.7</version>
-      </dependency>
-      <!-- security fix AAE-41710 -->
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-dependency-check</artifactId>
@@ -263,54 +243,12 @@
         <classifier>suppression</classifier>
       </dependency>
       <dependency>
-        <groupId>com.h2database</groupId>
-        <artifactId>h2</artifactId>
-        <version>${h2.version}</version>
-      </dependency>
-      <!-- AAE-40315 Override testcontainers version to fix Docker compatibility issue -->
-      <dependency>
-        <groupId>org.testcontainers</groupId>
-        <artifactId>testcontainers-bom</artifactId>
-        <version>${testcontainers.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <!-- AAE-42877 Update jackson to fix security issue - must come before Spring Boot BOM -->
-      <dependency>
-        <groupId>com.fasterxml.jackson</groupId>
-        <artifactId>jackson-bom</artifactId>
-        <version>${jackson.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <!-- AAE-43503: Temporary fix for CVE-2026-22732. Remove after Spring Boot upgrade -->
-      <dependency>
-        <groupId>org.springframework.security</groupId>
-        <artifactId>spring-security-bom</artifactId>
-        <version>6.5.9</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
         <version>${spring-boot.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <!-- AAE-43504: security fix: remove after Spring Boot upgrade -->
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-webmvc</artifactId>
-        <version>${spring-webmvc.version}</version>
-      </dependency>
-      <!-- Security fix AAE-42677 -->
-      <dependency>
-        <groupId>org.apache.tomcat.embed</groupId>
-        <artifactId>tomcat-embed-core</artifactId>
-        <version>${tomcat-embed-core.version}</version>
-      </dependency>
-      <!-- Security fix AAE-42677 -->
     </dependencies>
   </dependencyManagement>
   <pluginRepositories>
@@ -673,9 +611,6 @@ limitations under the License.
               <rules>
                 <bannedDependencies>
                   <excludes combine.children="append">
-                    <!-- Ban blacklisted logging deps (we only use SLF4J + Logback) -->
-                    <!-- In case of transitive dependency, exclude it and use 'org.slf4j:jcl-over-slf4j' instead -->
-                    <exclude>commons-logging:commons-log*</exclude>
                     <!-- In case of transitive dependency, exclude it and use 'org.slf4j:log4j-over-slf4j' instead -->
                     <exclude>log4j:log4j</exclude>
                     <!-- In case of transitive dependency, exclude it and use 'org.javassist:javassist' instead -->
@@ -760,13 +695,6 @@ limitations under the License.
           </excludes>
           <runOrder>alphabetical</runOrder>
         </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>org.junit.vintage</groupId>
-            <artifactId>junit-vintage-engine</artifactId>
-            <version>${junit.version}</version>
-          </dependency>
-        </dependencies>
       </plugin>
       <plugin>
         <groupId>org.jacoco</groupId>

@@ -17,7 +17,7 @@ package org.activiti.spring.process;
 
 import java.util.Optional;
 import org.activiti.spring.process.model.Extension;
-import org.springframework.lang.NonNull;
+import org.jspecify.annotations.NonNull;
 
 public interface ProcessExtensionRepository {
     Optional<Extension> getExtensionsForId(@NonNull String processDefinitionId);

@@ -26,10 +26,10 @@
     <subethasmtp-wiser.version>1.2</subethasmtp-wiser.version>
     <xmlgraphics-commons.version>2.11</xmlgraphics-commons.version>
     <nashorn-core.version>15.7</nashorn-core.version>
-    <groovy.version>3.0.25</groovy.version>
     <simple-jndi.version>0.25.0</simple-jndi.version>
-    <zjsonpatch.version>0.4.16</zjsonpatch.version>
+
     <system.stubs.jupiter.version>2.1.8</system.stubs.jupiter.version>
+    <zjsonpatch.version>0.6.2</zjsonpatch.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -88,16 +88,6 @@
         <version>${jgraphx.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.codehaus.groovy</groupId>
-        <artifactId>groovy</artifactId>
-        <version>${groovy.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.codehaus.groovy</groupId>
-        <artifactId>groovy-jsr223</artifactId>
-        <version>${groovy.version}</version>
-      </dependency>
-      <dependency>
         <groupId>jakarta.el</groupId>
         <artifactId>jakarta.el-api</artifactId>
         <version>${jakarta.el-api.version}</version>
@@ -112,12 +102,6 @@
         <groupId>org.apache.xmlgraphics</groupId>
         <artifactId>xmlgraphics-commons</artifactId>
         <version>${xmlgraphics-commons.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.apache.xmlgraphics</groupId>
@@ -184,12 +168,6 @@
         <artifactId>subethasmtp-wiser</artifactId>
         <version>${subethasmtp-wiser.version}</version>
         <scope>test</scope>
-        <exclusions>
-          <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
       <dependency>
         <groupId>joda-time</groupId>
@@ -217,7 +195,7 @@
       <type>pom</type>
     </dependency>
     <dependency>
-      <groupId>com.flipkart.zjsonpatch</groupId>
+      <groupId>io.github.vishwakarma</groupId>
       <artifactId>zjsonpatch</artifactId>
       <version>${zjsonpatch.version}</version>
     </dependency>

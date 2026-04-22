@@ -15,10 +15,10 @@
  */
 package org.activiti.editor.language.json.converter;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.ObjectNode;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -60,7 +60,7 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConsta
     private static final Logger logger = LoggerFactory.getLogger(BpmnJsonConverterUtil.class);
 
     private static DateTimeFormatter dateTimeFormatter = ISODateTimeFormat.dateTimeParser();
-    private static ObjectMapper objectMapper = new ObjectMapper();
+    private static JsonMapper jsonMapper = new JsonMapper();
 
     public static ObjectNode createChildShape(
         String id,
@@ -70,12 +70,12 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConsta
         double upperLeftX,
         double upperLeftY
     ) {
-        ObjectNode shapeNode = objectMapper.createObjectNode();
+        ObjectNode shapeNode = jsonMapper.createObjectNode();
         shapeNode.set(EDITOR_BOUNDS, createBoundsNode(lowerRightX, lowerRightY, upperLeftX, upperLeftY));
         shapeNode.put(EDITOR_SHAPE_ID, id);
-        ArrayNode shapesArrayNode = objectMapper.createArrayNode();
+        ArrayNode shapesArrayNode = jsonMapper.createArrayNode();
         shapeNode.set(EDITOR_CHILD_SHAPES, shapesArrayNode);
-        ObjectNode stencilNode = objectMapper.createObjectNode();
+        ObjectNode stencilNode = jsonMapper.createObjectNode();
         stencilNode.put(EDITOR_STENCIL_ID, type);
         shapeNode.set(EDITOR_STENCIL, stencilNode);
         return shapeNode;
@@ -87,21 +87,21 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConsta
         double upperLeftX,
         double upperLeftY
     ) {
-        ObjectNode boundsNode = objectMapper.createObjectNode();
+        ObjectNode boundsNode = jsonMapper.createObjectNode();
         boundsNode.set(EDITOR_BOUNDS_LOWER_RIGHT, createPositionNode(lowerRightX, lowerRightY));
         boundsNode.set(EDITOR_BOUNDS_UPPER_LEFT, createPositionNode(upperLeftX, upperLeftY));
         return boundsNode;
     }
 
     public static ObjectNode createPositionNode(double x, double y) {
-        ObjectNode positionNode = objectMapper.createObjectNode();
+        ObjectNode positionNode = jsonMapper.createObjectNode();
         positionNode.put(EDITOR_BOUNDS_X, x);
         positionNode.put(EDITOR_BOUNDS_Y, y);
         return positionNode;
     }
 
     public static ObjectNode createResourceNode(String id) {
-        ObjectNode resourceNode = objectMapper.createObjectNode();
+        ObjectNode resourceNode = jsonMapper.createObjectNode();
         resourceNode.put(EDITOR_SHAPE_ID, id);
         return resourceNode;
     }
@@ -110,7 +110,7 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConsta
         String stencilId = null;
         JsonNode stencilNode = objectNode.get(EDITOR_STENCIL);
         if (stencilNode != null && stencilNode.get(EDITOR_STENCIL_ID) != null) {
-            stencilId = stencilNode.get(EDITOR_STENCIL_ID).asText();
+            stencilId = stencilNode.get(EDITOR_STENCIL_ID).asString();
         }
         return stencilId;
     }
@@ -120,7 +120,7 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConsta
         if (StringUtils.isNotEmpty(getPropertyValueAsString(PROPERTY_OVERRIDE_ID, objectNode))) {
             elementId = getPropertyValueAsString(PROPERTY_OVERRIDE_ID, objectNode).trim();
         } else {
-            elementId = objectNode.get(EDITOR_SHAPE_ID).asText();
+            elementId = objectNode.get(EDITOR_SHAPE_ID).asString();
         }
 
         return elementId;
@@ -129,9 +129,9 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConsta
     public static void convertMessagesToJson(Collection<Message> messages, ObjectNode propertiesNode) {
         String propertyName = "messages";
 
-        ArrayNode messagesNode = objectMapper.createArrayNode();
+        ArrayNode messagesNode = jsonMapper.createArrayNode();
         for (Message message : messages) {
-            ObjectNode propertyItemNode = objectMapper.createObjectNode();
+            ObjectNode propertyItemNode = jsonMapper.createObjectNode();
 
             propertyItemNode.put(PROPERTY_MESSAGE_ID, message.getId());
             propertyItemNode.put(PROPERTY_MESSAGE_NAME, message.getName());
@@ -158,10 +158,10 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConsta
             valueName = "taskListeners";
         }
 
-        ObjectNode listenersNode = objectMapper.createObjectNode();
-        ArrayNode itemsNode = objectMapper.createArrayNode();
+        ObjectNode listenersNode = jsonMapper.createObjectNode();
+        ArrayNode itemsNode = jsonMapper.createArrayNode();
         for (ActivitiListener listener : listeners) {
-            ObjectNode propertyItemNode = objectMapper.createObjectNode();
+            ObjectNode propertyItemNode = jsonMapper.createObjectNode();
 
             propertyItemNode.put(PROPERTY_LISTENER_EVENT, listener.getEvent());
 
@@ -176,9 +176,9 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConsta
             }
 
             if (CollectionUtils.isNotEmpty(listener.getFieldExtensions())) {
-                ArrayNode fieldsArray = objectMapper.createArrayNode();
+                ArrayNode fieldsArray = jsonMapper.createArrayNode();
                 for (FieldExtension fieldExtension : listener.getFieldExtensions()) {
-                    ObjectNode fieldNode = objectMapper.createObjectNode();
+                    ObjectNode fieldNode = jsonMapper.createObjectNode();
                     fieldNode.put(PROPERTY_FIELD_NAME, fieldExtension.getFieldName());
                     if (StringUtils.isNotEmpty(fieldExtension.getStringValue())) {
                         fieldNode.put(PROPERTY_FIELD_STRING_VALUE, fieldExtension.getStringValue());
@@ -199,17 +199,17 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConsta
     }
 
     public static void convertEventListenersToJson(List<EventListener> listeners, ObjectNode propertiesNode) {
-        ObjectNode listenersNode = objectMapper.createObjectNode();
-        ArrayNode itemsNode = objectMapper.createArrayNode();
+        ObjectNode listenersNode = jsonMapper.createObjectNode();
+        ArrayNode itemsNode = jsonMapper.createArrayNode();
         for (EventListener listener : listeners) {
-            ObjectNode propertyItemNode = objectMapper.createObjectNode();
+            ObjectNode propertyItemNode = jsonMapper.createObjectNode();
 
             if (StringUtils.isNotEmpty(listener.getEvents())) {
-                ArrayNode eventArrayNode = objectMapper.createArrayNode();
+                ArrayNode eventArrayNode = jsonMapper.createArrayNode();
                 String[] eventArray = listener.getEvents().split(",");
                 for (String eventValue : eventArray) {
                     if (StringUtils.isNotEmpty(eventValue.trim())) {
-                        ObjectNode eventNode = objectMapper.createObjectNode();
+                        ObjectNode eventNode = jsonMapper.createObjectNode();
                         eventNode.put(PROPERTY_EVENTLISTENER_EVENT, eventValue.trim());
                         eventArrayNode.add(eventNode);
                     }
@@ -276,7 +276,7 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConsta
 
     public static void convertSignalDefinitionsToJson(BpmnModel bpmnModel, ObjectNode propertiesNode) {
         if (bpmnModel.getSignals() != null) {
-            ArrayNode signalDefinitions = objectMapper.createArrayNode();
+            ArrayNode signalDefinitions = jsonMapper.createArrayNode();
             for (Signal signal : bpmnModel.getSignals()) {
                 ObjectNode signalNode = signalDefinitions.addObject();
                 signalNode.put(PROPERTY_SIGNAL_DEFINITION_ID, signal.getId());
@@ -289,7 +289,7 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConsta
 
     public static void convertMessagesToJson(BpmnModel bpmnModel, ObjectNode propertiesNode) {
         if (bpmnModel.getMessages() != null) {
-            ArrayNode messageDefinitions = objectMapper.createArrayNode();
+            ArrayNode messageDefinitions = jsonMapper.createArrayNode();
             for (Message message : bpmnModel.getMessages()) {
                 ObjectNode messageNode = messageDefinitions.addObject();
                 messageNode.put(PROPERTY_MESSAGE_DEFINITION_ID, message.getId());
@@ -331,9 +331,9 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConsta
         for (JsonNode listenerNode : listenersNode) {
             listenerNode = validateIfNodeIsTextual(listenerNode);
             JsonNode eventNode = listenerNode.get(PROPERTY_LISTENER_EVENT);
-            if (eventNode != null && !eventNode.isNull() && StringUtils.isNotEmpty(eventNode.asText())) {
+            if (eventNode != null && !eventNode.isNull() && StringUtils.isNotEmpty(eventNode.asString())) {
                 ActivitiListener listener = new ActivitiListener();
-                listener.setEvent(eventNode.asText());
+                listener.setEvent(eventNode.asString());
                 if (StringUtils.isNotEmpty(getValueAsString(PROPERTY_LISTENER_CLASS_NAME, listenerNode))) {
                     listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_CLASS);
                     listener.setImplementation(getValueAsString(PROPERTY_LISTENER_CLASS_NAME, listenerNode));
@@ -351,9 +351,9 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConsta
                 if (fieldsNode != null) {
                     for (JsonNode fieldNode : fieldsNode) {
                         JsonNode nameNode = fieldNode.get(PROPERTY_FIELD_NAME);
-                        if (nameNode != null && !nameNode.isNull() && StringUtils.isNotEmpty(nameNode.asText())) {
+                        if (nameNode != null && !nameNode.isNull() && StringUtils.isNotEmpty(nameNode.asString())) {
                             FieldExtension fieldExtension = new FieldExtension();
-                            fieldExtension.setFieldName(nameNode.asText());
+                            fieldExtension.setFieldName(nameNode.asString());
                             fieldExtension.setStringValue(getValueAsString(PROPERTY_FIELD_STRING_VALUE, fieldNode));
                             if (StringUtils.isEmpty(fieldExtension.getStringValue())) {
                                 fieldExtension.setStringValue(getValueAsString(PROPERTY_FIELD_STRING, fieldNode));
@@ -421,12 +421,12 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConsta
                     if (
                         eventValueNode != null &&
                         !eventValueNode.isNull() &&
-                        StringUtils.isNotEmpty(eventValueNode.asText())
+                        StringUtils.isNotEmpty(eventValueNode.asString())
                     ) {
                         if (eventsBuilder.length() > 0) {
                             eventsBuilder.append(",");
                         }
-                        eventsBuilder.append(eventValueNode.asText());
+                        eventsBuilder.append(eventValueNode.asString());
                     }
                 }
 
@@ -438,7 +438,7 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConsta
                 if (rethrowEventNode != null && rethrowEventNode.asBoolean()) {
                     JsonNode rethrowTypeNode = listenerNode.get("rethrowType");
                     if (rethrowTypeNode != null) {
-                        if ("error".equalsIgnoreCase(rethrowTypeNode.asText())) {
+                        if ("error".equalsIgnoreCase(rethrowTypeNode.asString())) {
                             String errorCode = getValueAsString("errorcode", listenerNode);
                             if (StringUtils.isNotEmpty(errorCode)) {
                                 listener.setImplementationType(
@@ -446,7 +446,7 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConsta
                                 );
                                 listener.setImplementation(errorCode);
                             }
-                        } else if ("message".equalsIgnoreCase(rethrowTypeNode.asText())) {
+                        } else if ("message".equalsIgnoreCase(rethrowTypeNode.asString())) {
                             String messageName = getValueAsString("messagename", listenerNode);
                             if (StringUtils.isNotEmpty(messageName)) {
                                 listener.setImplementationType(
@@ -454,7 +454,7 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConsta
                                 );
                                 listener.setImplementation(messageName);
                             }
-                        } else if ("signal".equalsIgnoreCase(rethrowTypeNode.asText())) {
+                        } else if ("signal".equalsIgnoreCase(rethrowTypeNode.asString())) {
                             String signalName = getValueAsString("signalname", listenerNode);
                             if (StringUtils.isNotEmpty(signalName)) {
                                 listener.setImplementationType(
@@ -462,7 +462,7 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConsta
                                 );
                                 listener.setImplementation(signalName);
                             }
-                        } else if ("globalSignal".equalsIgnoreCase(rethrowTypeNode.asText())) {
+                        } else if ("globalSignal".equalsIgnoreCase(rethrowTypeNode.asString())) {
                             String signalName = getValueAsString("signalname", listenerNode);
                             if (StringUtils.isNotEmpty(signalName)) {
                                 listener.setImplementationType(
@@ -514,7 +514,7 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConsta
                 if (outgoingNode != null && outgoingNode.size() > 0) {
                     for (JsonNode outgoingChildNode : outgoingNode) {
                         JsonNode resourceNode = outgoingChildNode.get(EDITOR_SHAPE_ID);
-                        if (resourceNode != null && flowId.equals(resourceNode.asText())) {
+                        if (resourceNode != null && flowId.equals(resourceNode.asString())) {
                             sourceRef = BpmnJsonConverterUtil.getElementId(childNode);
                             break;
                         }
@@ -538,9 +538,9 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConsta
         List<ValuedDataObject> dataObjects = new ArrayList<ValuedDataObject>();
 
         if (objectNode != null) {
-            if (objectNode.isValueNode() && StringUtils.isNotEmpty(objectNode.asText())) {
+            if (objectNode.isValueNode() && StringUtils.isNotEmpty(objectNode.asString())) {
                 try {
-                    objectNode = objectMapper.readTree(objectNode.asText());
+                    objectNode = jsonMapper.readTree(objectNode.asString());
                 } catch (Exception e) {
                     logger.info("Data properties node cannot be read", e);
                 }
@@ -550,10 +550,10 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConsta
             if (itemsArrayNode != null) {
                 for (JsonNode dataNode : itemsArrayNode) {
                     JsonNode dataIdNode = dataNode.get(PROPERTY_DATA_ID);
-                    if (dataIdNode != null && StringUtils.isNotEmpty(dataIdNode.asText())) {
+                    if (dataIdNode != null && StringUtils.isNotEmpty(dataIdNode.asString())) {
                         ValuedDataObject dataObject = null;
                         ItemDefinition itemSubjectRef = new ItemDefinition();
-                        String dataType = dataNode.get(PROPERTY_DATA_TYPE).asText();
+                        String dataType = dataNode.get(PROPERTY_DATA_TYPE).asString();
 
                         if (dataType.equals("string")) {
                             dataObject = new StringDataObject();
@@ -568,12 +568,12 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConsta
                         } else if (dataType.equals("datetime")) {
                             dataObject = new DateDataObject();
                         } else {
-                            logger.error("Error converting {}", dataIdNode.asText());
+                            logger.error("Error converting {}", dataIdNode.asString());
                         }
 
                         if (null != dataObject) {
-                            dataObject.setId(dataIdNode.asText());
-                            dataObject.setName(dataNode.get(PROPERTY_DATA_NAME).asText());
+                            dataObject.setId(dataIdNode.asString());
+                            dataObject.setName(dataNode.get(PROPERTY_DATA_NAME).asString());
 
                             itemSubjectRef.setStructureRef("xsd:" + dataType);
                             dataObject.setItemSubjectRef(itemSubjectRef);
@@ -582,14 +582,14 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConsta
                                 try {
                                     dataObject.setValue(
                                         dateTimeFormatter
-                                            .parseDateTime(dataNode.get(PROPERTY_DATA_VALUE).asText())
+                                            .parseDateTime(dataNode.get(PROPERTY_DATA_VALUE).asString())
                                             .toDate()
                                     );
                                 } catch (Exception e) {
                                     logger.error("Error converting {}", dataObject.getName(), e);
                                 }
                             } else {
-                                dataObject.setValue(dataNode.get(PROPERTY_DATA_VALUE).asText());
+                                dataObject.setValue(dataNode.get(PROPERTY_DATA_VALUE).asString());
                             }
 
                             dataObjects.add(dataObject);
@@ -602,11 +602,11 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConsta
     }
 
     public static void convertDataPropertiesToJson(List<ValuedDataObject> dataObjects, ObjectNode propertiesNode) {
-        ObjectNode dataPropertiesNode = objectMapper.createObjectNode();
-        ArrayNode itemsNode = objectMapper.createArrayNode();
+        ObjectNode dataPropertiesNode = jsonMapper.createObjectNode();
+        ArrayNode itemsNode = jsonMapper.createArrayNode();
 
         for (ValuedDataObject dObj : dataObjects) {
-            ObjectNode propertyItemNode = objectMapper.createObjectNode();
+            ObjectNode propertyItemNode = jsonMapper.createObjectNode();
             propertyItemNode.put(PROPERTY_DATA_ID, dObj.getId());
             propertyItemNode.put(PROPERTY_DATA_NAME, dObj.getName());
 
@@ -636,9 +636,9 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConsta
     }
 
     public static JsonNode validateIfNodeIsTextual(JsonNode node) {
-        if (node != null && !node.isNull() && node.isTextual() && StringUtils.isNotEmpty(node.asText())) {
+        if (node != null && !node.isNull() && node.isString() && StringUtils.isNotEmpty(node.asString())) {
             try {
-                node = validateIfNodeIsTextual(objectMapper.readTree(node.asText()));
+                node = validateIfNodeIsTextual(jsonMapper.readTree(node.asString()));
             } catch (Exception e) {
                 logger.error("Error converting textual node", e);
             }
@@ -650,7 +650,7 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConsta
         String propertyValue = null;
         JsonNode propertyNode = objectNode.get(name);
         if (propertyNode != null && !propertyNode.isNull()) {
-            propertyValue = propertyNode.asText();
+            propertyValue = propertyNode.asString();
         }
         return propertyValue;
     }
@@ -659,7 +659,7 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConsta
         String propertyValue = null;
         JsonNode propertyNode = getProperty(name, objectNode);
         if (propertyNode != null && propertyNode.isNull() == false) {
-            propertyValue = propertyNode.asText();
+            propertyValue = propertyNode.asString();
         }
         return propertyValue;
     }

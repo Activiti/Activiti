@@ -15,10 +15,10 @@
  */
 package org.activiti.editor.language.json.converter;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.ObjectNode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -72,7 +72,7 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
 
     public static final String NAMESPACE = "http://activiti.com/modeler";
 
-    protected ObjectMapper objectMapper = new ObjectMapper();
+    protected JsonMapper jsonMapper = new JsonMapper();
     protected ActivityProcessor processor;
     protected BpmnModel model;
     protected ObjectNode flowElementNode;
@@ -123,7 +123,7 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
             graphicInfo.getY() - subProcessY
         );
         shapesArrayNode.add(flowElementNode);
-        ObjectNode propertiesNode = objectMapper.createObjectNode();
+        ObjectNode propertiesNode = jsonMapper.createObjectNode();
         propertiesNode.put(PROPERTY_OVERRIDE_ID, baseElement.getId());
 
         if (baseElement instanceof FlowElement) {
@@ -140,7 +140,7 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
         convertElementToJson(propertiesNode, baseElement);
 
         flowElementNode.set(EDITOR_SHAPE_PROPERTIES, propertiesNode);
-        ArrayNode outgoingArrayNode = objectMapper.createArrayNode();
+        ArrayNode outgoingArrayNode = jsonMapper.createArrayNode();
 
         if (baseElement instanceof FlowNode) {
             FlowNode flowNode = (FlowNode) baseElement;
@@ -288,8 +288,8 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
             128,
             212
         );
-        ArrayNode dockersArrayNode = objectMapper.createArrayNode();
-        ObjectNode dockNode = objectMapper.createObjectNode();
+        ArrayNode dockersArrayNode = jsonMapper.createArrayNode();
+        ObjectNode dockNode = jsonMapper.createObjectNode();
 
         dockNode.put(EDITOR_BOUNDS_X, model.getGraphicInfo(sourceRef).getWidth() / 2.0);
         dockNode.put(EDITOR_BOUNDS_Y, model.getGraphicInfo(sourceRef).getHeight() / 2.0);
@@ -298,24 +298,24 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
         if (model.getFlowLocationGraphicInfo(dataAssociation.getId()).size() > 2) {
             for (int i = 1; i < model.getFlowLocationGraphicInfo(dataAssociation.getId()).size() - 1; i++) {
                 GraphicInfo graphicInfo = model.getFlowLocationGraphicInfo(dataAssociation.getId()).get(i);
-                dockNode = objectMapper.createObjectNode();
+                dockNode = jsonMapper.createObjectNode();
                 dockNode.put(EDITOR_BOUNDS_X, graphicInfo.getX());
                 dockNode.put(EDITOR_BOUNDS_Y, graphicInfo.getY());
                 dockersArrayNode.add(dockNode);
             }
         }
 
-        dockNode = objectMapper.createObjectNode();
+        dockNode = jsonMapper.createObjectNode();
         dockNode.put(EDITOR_BOUNDS_X, model.getGraphicInfo(targetRef).getWidth() / 2.0);
         dockNode.put(EDITOR_BOUNDS_Y, model.getGraphicInfo(targetRef).getHeight() / 2.0);
         dockersArrayNode.add(dockNode);
         flowNode.set("dockers", dockersArrayNode);
-        ArrayNode outgoingArrayNode = objectMapper.createArrayNode();
+        ArrayNode outgoingArrayNode = jsonMapper.createArrayNode();
         outgoingArrayNode.add(BpmnJsonConverterUtil.createResourceNode(targetRef));
         flowNode.set("outgoing", outgoingArrayNode);
         flowNode.set("target", BpmnJsonConverterUtil.createResourceNode(targetRef));
 
-        ObjectNode propertiesNode = objectMapper.createObjectNode();
+        ObjectNode propertiesNode = jsonMapper.createObjectNode();
         propertiesNode.put(PROPERTY_OVERRIDE_ID, dataAssociation.getId());
 
         flowNode.set(EDITOR_SHAPE_PROPERTIES, propertiesNode);
@@ -386,7 +386,7 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
                         for (JsonNode orderNode : orderArray) {
                             ExtensionElement orderElement = new ExtensionElement();
                             orderElement.setName("EDITOR_FLOW_ORDER");
-                            orderElement.setElementText(orderNode.asText());
+                            orderElement.setElementText(orderNode.asString());
                             flowElement.addExtensionElement(orderElement);
                         }
                     }
@@ -399,7 +399,7 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
             if (flowElement instanceof SequenceFlow) {
                 ExtensionElement idExtensionElement = new ExtensionElement();
                 idExtensionElement.setName("EDITOR_RESOURCEID");
-                idExtensionElement.setElementText(elementNode.get(EDITOR_SHAPE_ID).asText());
+                idExtensionElement.setElementText(elementNode.get(EDITOR_SHAPE_ID).asString());
                 flowElement.addExtensionElement(idExtensionElement);
             }
 
@@ -447,10 +447,10 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
             return;
         }
 
-        ObjectNode formPropertiesNode = objectMapper.createObjectNode();
-        ArrayNode propertiesArrayNode = objectMapper.createArrayNode();
+        ObjectNode formPropertiesNode = jsonMapper.createObjectNode();
+        ArrayNode propertiesArrayNode = jsonMapper.createArrayNode();
         for (FormProperty property : formProperties) {
-            ObjectNode propertyItemNode = objectMapper.createObjectNode();
+            ObjectNode propertyItemNode = jsonMapper.createObjectNode();
             propertyItemNode.put(PROPERTY_FORM_ID, property.getId());
             propertyItemNode.put(PROPERTY_FORM_NAME, property.getName());
             propertyItemNode.put(PROPERTY_FORM_TYPE, property.getType());
@@ -468,9 +468,9 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
                 propertyItemNode.put(PROPERTY_FORM_DATE_PATTERN, property.getDatePattern());
             }
             if (CollectionUtils.isNotEmpty(property.getFormValues())) {
-                ArrayNode valuesNode = objectMapper.createArrayNode();
+                ArrayNode valuesNode = jsonMapper.createArrayNode();
                 for (FormValue formValue : property.getFormValues()) {
-                    ObjectNode valueNode = objectMapper.createObjectNode();
+                    ObjectNode valueNode = jsonMapper.createObjectNode();
                     valueNode.put(PROPERTY_FORM_ENUM_VALUES_NAME, formValue.getName());
                     valueNode.put(PROPERTY_FORM_ENUM_VALUES_ID, formValue.getId());
                     valuesNode.add(valueNode);
@@ -489,10 +489,10 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
     }
 
     protected void addFieldExtensions(List<FieldExtension> extensions, ObjectNode propertiesNode) {
-        ObjectNode fieldExtensionsNode = objectMapper.createObjectNode();
-        ArrayNode itemsNode = objectMapper.createArrayNode();
+        ObjectNode fieldExtensionsNode = jsonMapper.createObjectNode();
+        ArrayNode itemsNode = jsonMapper.createArrayNode();
         for (FieldExtension extension : extensions) {
-            ObjectNode propertyItemNode = objectMapper.createObjectNode();
+            ObjectNode propertyItemNode = jsonMapper.createObjectNode();
             propertyItemNode.put(PROPERTY_SERVICETASK_FIELD_NAME, extension.getFieldName());
             if (StringUtils.isNotEmpty(extension.getStringValue())) {
                 propertyItemNode.put(PROPERTY_SERVICETASK_FIELD_STRING_VALUE, extension.getStringValue());
@@ -559,9 +559,9 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
             if (propertiesArray != null) {
                 for (JsonNode formNode : propertiesArray) {
                     JsonNode formIdNode = formNode.get(PROPERTY_FORM_ID);
-                    if (formIdNode != null && StringUtils.isNotEmpty(formIdNode.asText())) {
+                    if (formIdNode != null && StringUtils.isNotEmpty(formIdNode.asString())) {
                         FormProperty formProperty = new FormProperty();
-                        formProperty.setId(formIdNode.asText());
+                        formProperty.setId(formIdNode.asString());
                         formProperty.setName(getValueAsString(PROPERTY_FORM_NAME, formNode));
                         formProperty.setType(getValueAsString(PROPERTY_FORM_TYPE, formNode));
                         formProperty.setExpression(getValueAsString(PROPERTY_FORM_EXPRESSION, formNode));
@@ -581,13 +581,13 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
                                         !enumNode.get(PROPERTY_FORM_ENUM_VALUES_NAME).isNull()
                                     ) {
                                         FormValue formValue = new FormValue();
-                                        formValue.setId(enumNode.get(PROPERTY_FORM_ENUM_VALUES_ID).asText());
-                                        formValue.setName(enumNode.get(PROPERTY_FORM_ENUM_VALUES_NAME).asText());
+                                        formValue.setId(enumNode.get(PROPERTY_FORM_ENUM_VALUES_ID).asString());
+                                        formValue.setName(enumNode.get(PROPERTY_FORM_ENUM_VALUES_NAME).asString());
                                         formValueList.add(formValue);
                                     } else if (enumNode.get("value") != null && !enumNode.get("value").isNull()) {
                                         FormValue formValue = new FormValue();
-                                        formValue.setId(enumNode.get("value").asText());
-                                        formValue.setName(enumNode.get("value").asText());
+                                        formValue.setId(enumNode.get("value").asString());
+                                        formValue.setName(enumNode.get("value").asString());
                                         formValueList.add(formValue);
                                     }
                                 }
@@ -657,7 +657,7 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
         String propertyValue = null;
         JsonNode propertyNode = objectNode.get(name);
         if (propertyNode != null && !propertyNode.isNull()) {
-            propertyValue = propertyNode.asText();
+            propertyValue = propertyNode.asString();
         }
         return propertyValue;
     }
@@ -677,7 +677,7 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
         if (valuesNode != null) {
             for (JsonNode valueNode : valuesNode) {
                 if (valueNode.get("value") != null && !valueNode.get("value").isNull()) {
-                    resultList.add(valueNode.get("value").asText());
+                    resultList.add(valueNode.get("value").asString());
                 }
             }
         }

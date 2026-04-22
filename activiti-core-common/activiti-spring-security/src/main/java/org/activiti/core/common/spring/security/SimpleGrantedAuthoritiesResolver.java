@@ -20,7 +20,7 @@ import static java.util.Collections.emptyList;
 import java.security.Principal;
 import java.util.Collection;
 import java.util.Optional;
-import org.springframework.lang.NonNull;
+import org.jspecify.annotations.NonNull;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 

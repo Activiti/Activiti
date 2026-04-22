@@ -15,7 +15,7 @@
  */
 package org.activiti.engine.impl.event.logger.handler;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import java.util.Date;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -31,5 +31,5 @@ public interface EventLoggerEventHandler {
 
     void setTimeStamp(Date timeStamp);
 
-    void setObjectMapper(ObjectMapper objectMapper);
+    void setObjectMapper(JsonMapper jsonMapper);
 }

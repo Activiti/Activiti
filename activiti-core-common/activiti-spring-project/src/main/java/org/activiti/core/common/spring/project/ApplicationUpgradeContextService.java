@@ -15,7 +15,7 @@
  */
 package org.activiti.core.common.spring.project;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,7 +32,7 @@ public class ApplicationUpgradeContextService {
 
     private boolean isRollbackDeployment;
 
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
 
     private ResourcePatternResolver resourceLoader;
 
@@ -40,13 +40,13 @@ public class ApplicationUpgradeContextService {
         String path,
         Integer enforcedAppVersion,
         Boolean isRollbackDeployment,
-        ObjectMapper objectMapper,
+        JsonMapper jsonMapper,
         ResourcePatternResolver resourceLoader
     ) {
         this.projectManifestFilePath = path;
         this.enforcedAppVersion = enforcedAppVersion;
         this.isRollbackDeployment = isRollbackDeployment;
-        this.objectMapper = objectMapper;
+        this.jsonMapper = jsonMapper;
         this.resourceLoader = resourceLoader;
     }
 
@@ -60,7 +60,7 @@ public class ApplicationUpgradeContextService {
     }
 
     private ProjectManifest read(InputStream inputStream) throws IOException {
-        return objectMapper.readValue(inputStream, ProjectManifest.class);
+        return jsonMapper.readValue(inputStream, ProjectManifest.class);
     }
 
     public boolean isRollbackDeployment() {

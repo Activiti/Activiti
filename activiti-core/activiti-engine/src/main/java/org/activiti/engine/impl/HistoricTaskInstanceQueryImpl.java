@@ -15,8 +15,8 @@
  */
 package org.activiti.engine.impl;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.ObjectNode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -1192,12 +1192,12 @@ public class HistoricTaskInstanceQueryImpl
                 if (languageNode != null) {
                     JsonNode languageNameNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_NAME);
                     if (languageNameNode != null && !languageNameNode.isNull()) {
-                        taskEntity.setLocalizedName(languageNameNode.asText());
+                        taskEntity.setLocalizedName(languageNameNode.asString());
                     }
 
                     JsonNode languageDescriptionNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_DESCRIPTION);
                     if (languageDescriptionNode != null && !languageDescriptionNode.isNull()) {
-                        taskEntity.setLocalizedDescription(languageDescriptionNode.asText());
+                        taskEntity.setLocalizedDescription(languageDescriptionNode.asString());
                     }
                 }
             }
