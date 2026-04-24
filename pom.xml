@@ -777,15 +777,14 @@
   </profiles>
   
   <distributionManagement>
-    <snapshotRepository>
-      <id>veda.activiti.snapshot.repo</id>
-      <url>http://activiti-intern.veda.de:8081/nexus/content/repositories/snapshots/</url>
-      <uniqueVersion>false</uniqueVersion>
-    </snapshotRepository>
     <repository>
-      <id>veda.activiti.release.repo</id>
-      <url>http://activiti-intern.veda.de:8081/nexus/content/repositories/releases</url>
+      <id>veda-releases</id>
+      <url>https://nexus.dev.veda.net/repository/releases</url>
     </repository>
+    <snapshotRepository>
+      <id>veda-snapshots</id>
+      <url>https://nexus.dev.veda.net/repository/snapshots</url>
+    </snapshotRepository>
   </distributionManagement>
 
   <!-- Various information, not used by the build -->
