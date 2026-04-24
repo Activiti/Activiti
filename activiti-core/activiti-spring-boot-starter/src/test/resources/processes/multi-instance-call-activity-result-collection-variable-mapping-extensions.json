@@ -98,6 +98,18 @@
         }
       }
     },
+    "multi-instance-parallel-call-activity-result-collection-output-data-item": {
+      "mappings": {
+        "output-data-item-callActivity": {
+          "inputs": {
+            "resultIndex": {
+              "type": "variable",
+              "value": "elementIndex"
+            }
+          }
+        }
+      }
+    },
     "multi-instance-call-activity-result-sub-process": {
       "constants": {},
       "mappings": {},

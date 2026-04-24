@@ -63,6 +63,21 @@
     <endEvent id="loop-variables-end"/>
   </process>
 
+  <process id="multi-instance-parallel-call-activity-result-collection-output-data-item">
+    <startEvent id="output-data-item-start"/>
+    <sequenceFlow id="output-data-item-flow1" sourceRef="output-data-item-start" targetRef="output-data-item-callActivity"/>
+    <callActivity id="output-data-item-callActivity" calledElement="multi-instance-call-activity-result-sub-process">
+      <multiInstanceLoopCharacteristics activiti:collection="${list(0,1)}" activiti:elementVariable="element" activiti:elementIndexVariable="elementIndex">
+        <loopDataOutputRef>miResult</loopDataOutputRef>
+        <outputDataItem name="result"/>
+      </multiInstanceLoopCharacteristics>
+    </callActivity>
+    <sequenceFlow id="output-data-item-flow2" sourceRef="output-data-item-callActivity" targetRef="output-data-item-userTask"/>
+    <userTask id="output-data-item-userTask" name="My user task" activiti:candidateUsers="user"/>
+    <sequenceFlow id="output-data-item-flow3" sourceRef="output-data-item-userTask" targetRef="output-data-item-end"/>
+    <endEvent id="output-data-item-end"/>
+  </process>
+
   <process id="multi-instance-call-activity-result-sub-process">
     <startEvent id="subStart"/>
     <sequenceFlow id="subFlow" sourceRef="subStart" targetRef="subEnd"/>
