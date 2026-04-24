@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import jakarta.el.ELContext;
 import java.util.Arrays;
 import java.util.List;
@@ -63,13 +63,12 @@ public class VariableScopeElResolverTest {
     @Mock
     private VariableScopeItemELResolver thirdItemResolver;
 
-
     @Before
     public void setUp() throws Exception {
-        doReturn(Arrays.asList(firstItemResolver, secondItemResolver, thirdItemResolver)).when(
-            variableScopeElResolver).getVariableScopeItemELResolvers();
+        doReturn(Arrays.asList(firstItemResolver, secondItemResolver, thirdItemResolver))
+            .when(variableScopeElResolver)
+            .getVariableScopeItemELResolvers();
     }
-
 
     @Test
     public void getValue_should_returnResolvedValueAndMarkContextAsResolved() {
@@ -108,18 +107,17 @@ public class VariableScopeElResolverTest {
         verifyNoInteractions(elContext);
     }
 
-
     @Test
     public void getVariableScopeItemELResolvers_should_return_defaultItemResolvers() {
         //given
         ProcessEngineConfigurationImpl processEngineConfiguration = mock(ProcessEngineConfigurationImpl.class);
-        given(processEngineConfiguration.getObjectMapper()).willReturn(new ObjectMapper());
+        given(processEngineConfiguration.getObjectMapper()).willReturn(new JsonMapper());
         Context.setProcessEngineConfiguration(processEngineConfiguration);
         doCallRealMethod().when(variableScopeElResolver).getVariableScopeItemELResolvers();
 
         //when
-        List<VariableScopeItemELResolver> variableScopeItemELResolvers = variableScopeElResolver
-            .getVariableScopeItemELResolvers();
+        List<VariableScopeItemELResolver> variableScopeItemELResolvers =
+            variableScopeElResolver.getVariableScopeItemELResolvers();
         //then
         assertThat(variableScopeItemELResolvers)
             .extracting(itemResolver -> itemResolver.getClass().getName())
@@ -130,6 +128,5 @@ public class VariableScopeElResolverTest {
                 ProcessInitiatorELResolver.class.getName(),
                 VariableElResolver.class.getName()
             );
-
     }
 }

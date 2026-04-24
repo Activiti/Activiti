@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.spring.cache;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import org.springframework.boot.autoconfigure.cache.CacheProperties;
+import org.springframework.boot.cache.autoconfigure.CacheProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties("activiti.spring.cache-manager")
@@ -100,6 +99,7 @@ public class ActivitiSpringCacheManagerProperties {
     }
 
     public static class CaffeineCacheProviderProperties {
+
         private boolean allowNullValues = true;
 
         private boolean useSystemScheduler = true;
@@ -132,6 +132,7 @@ public class ActivitiSpringCacheManagerProperties {
     }
 
     public static class SimpleCacheProviderProperties {
+
         private boolean allowNullValues = true;
 
         public boolean isAllowNullValues() {
@@ -141,7 +142,5 @@ public class ActivitiSpringCacheManagerProperties {
         public void setAllowNullValues(boolean allowNullValues) {
             this.allowNullValues = allowNullValues;
         }
-
     }
-
 }

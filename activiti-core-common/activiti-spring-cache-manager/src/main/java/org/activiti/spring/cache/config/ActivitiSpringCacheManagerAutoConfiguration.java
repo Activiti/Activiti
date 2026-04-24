@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.spring.cache.config;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
@@ -28,9 +27,9 @@ import org.activiti.spring.cache.caffeine.ActivitiSpringCaffeineCacheConfigurer;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration;
-import org.springframework.boot.autoconfigure.cache.CacheManagerCustomizer;
-import org.springframework.boot.autoconfigure.cache.CacheProperties;
+import org.springframework.boot.cache.autoconfigure.CacheAutoConfiguration;
+import org.springframework.boot.cache.autoconfigure.CacheManagerCustomizer;
+import org.springframework.boot.cache.autoconfigure.CacheProperties;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -43,7 +42,7 @@ import org.springframework.context.annotation.PropertySource;
 
 @AutoConfiguration(before = { CacheAutoConfiguration.class })
 @EnableCaching
-@EnableConfigurationProperties({ActivitiSpringCacheManagerProperties.class})
+@EnableConfigurationProperties({ ActivitiSpringCacheManagerProperties.class })
 @PropertySource("classpath:config/activiti-spring-cache-manager.properties")
 public class ActivitiSpringCacheManagerAutoConfiguration {
 
@@ -54,7 +53,8 @@ public class ActivitiSpringCacheManagerAutoConfiguration {
         CacheManager cacheManager
     ) {
         return () -> {
-            properties.getCaches()
+            properties
+                .getCaches()
                 .entrySet()
                 .stream()
                 .filter(it -> it.getValue().isEnabled())
@@ -65,7 +65,9 @@ public class ActivitiSpringCacheManagerAutoConfiguration {
 
     @Bean
     @ConditionalOnProperty(value = "activiti.spring.cache-manager.provider", havingValue = "simple")
-    public CacheManagerCustomizer<ConcurrentMapCacheManager> activitiSpringSimpleCacheManagerCustomizer(ActivitiSpringCacheManagerProperties properties) {
+    public CacheManagerCustomizer<ConcurrentMapCacheManager> activitiSpringSimpleCacheManagerCustomizer(
+        ActivitiSpringCacheManagerProperties properties
+    ) {
         return cacheManager -> {
             List<String> cacheNames = new ArrayList<>();
 
@@ -73,7 +75,8 @@ public class ActivitiSpringCacheManagerAutoConfiguration {
 
             cacheManager.setAllowNullValues(cacheProperties.isAllowNullValues());
 
-            properties.getCaches()
+            properties
+                .getCaches()
                 .entrySet()
                 .stream()
                 .filter(it -> it.getValue().isEnabled())
@@ -97,7 +100,8 @@ public class ActivitiSpringCacheManagerAutoConfiguration {
             cacheManager.setCaffeineSpec(CaffeineSpec.parse(caffeineCacheProperties.getDefaultSpec()));
             cacheManager.setAllowNullValues(caffeineCacheProperties.isAllowNullValues());
 
-            properties.getCaches()
+            properties
+                .getCaches()
                 .entrySet()
                 .stream()
                 .filter(it -> it.getValue().isEnabled())
@@ -109,7 +113,6 @@ public class ActivitiSpringCacheManagerAutoConfiguration {
                         .map(CaffeineSpec::parse)
                         .map(Caffeine::from)
                         .ifPresent(caffeine -> {
-
                             if (caffeineCacheProperties.isUseSystemScheduler()) {
                                 caffeine.scheduler(Scheduler.systemScheduler());
                             }
@@ -126,5 +129,4 @@ public class ActivitiSpringCacheManagerAutoConfiguration {
                 });
         };
     }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,27 @@
  */
 package org.activiti.runtime.api.impl;
 
+import static java.util.Collections.singletonList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.model.payloads.CreateProcessInstancePayload;
-import org.activiti.api.process.model.payloads.GetProcessDefinitionsPayload;
 import org.activiti.api.process.model.payloads.StartProcessPayload;
 import org.activiti.api.process.model.payloads.UpdateProcessPayload;
 import org.activiti.api.runtime.model.impl.DeploymentImpl;
@@ -51,25 +68,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-
-import static java.util.Collections.singletonList;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class ProcessRuntimeImplTest {
@@ -110,19 +108,22 @@ public class ProcessRuntimeImplTest {
         repositoryService = spy(new RepositoryServiceImpl());
         repositoryService.setCommandExecutor(commandExecutor);
 
-        processRuntime = spy(new ProcessRuntimeImpl(repositoryService,
-            processDefinitionConverter,
-            runtimeService,
-            taskService,
-            securityPoliciesManager,
-            processInstanceConverter,
-            null,
-            deploymentConverter,
-            null,
-            null,
-            processVariableValidator,
-            securityManager));
-
+        processRuntime = spy(
+            new ProcessRuntimeImpl(
+                repositoryService,
+                processDefinitionConverter,
+                runtimeService,
+                taskService,
+                securityPoliciesManager,
+                processInstanceConverter,
+                null,
+                deploymentConverter,
+                null,
+                null,
+                processVariableValidator,
+                securityManager
+            )
+        );
     }
 
     @Test
@@ -142,16 +143,17 @@ public class ProcessRuntimeImplTest {
         doReturn(processQuery).when(processQuery).processInstanceId("processId");
         doReturn(processQuery).when(runtimeService).createProcessInstanceQuery();
 
-        org.activiti.engine.runtime.ProcessInstance internalProcess = mock(org.activiti.engine.runtime.ProcessInstance.class);
+        org.activiti.engine.runtime.ProcessInstance internalProcess = mock(
+            org.activiti.engine.runtime.ProcessInstance.class
+        );
 
         doReturn(internalProcess).when(processQuery).singleResult();
 
-
         UpdateProcessPayload updateProcessPayload = ProcessPayloadBuilder.update()
-                .withProcessInstanceId("processId")
-                .withBusinessKey("businessKey")
-                .withName("name")
-                .build();
+            .withProcessInstanceId("processId")
+            .withBusinessKey("businessKey")
+            .withName("name")
+            .build();
 
         //when
         processRuntime.update(updateProcessPayload);
@@ -177,8 +179,9 @@ public class ProcessRuntimeImplTest {
         DeploymentEntityImpl deploymentEntity = new DeploymentEntityImpl();
         deploymentEntity.setId("deploymentId");
 
-        given(commandExecutor.execute(any())).willReturn(Arrays.asList(deploymentEntity))
-                                             .willReturn(findProcessDefinitionResult);
+        given(commandExecutor.execute(any()))
+            .willReturn(Arrays.asList(deploymentEntity))
+            .willReturn(findProcessDefinitionResult);
         given(securityPoliciesManager.canRead(processDefinitionKey)).willReturn(true);
 
         processRuntime.processDefinition(processDefinitionId);
@@ -214,7 +217,9 @@ public class ProcessRuntimeImplTest {
 
         assertThat(exception)
             .isInstanceOf(UnprocessableEntityException.class)
-            .hasMessage("Process definition with the given id:'processDefinitionId' belongs to a different application version.");
+            .hasMessage(
+                "Process definition with the given id:'processDefinitionId' belongs to a different application version."
+            );
     }
 
     @Test
@@ -258,20 +263,23 @@ public class ProcessRuntimeImplTest {
         processDefinition.setKey("key");
 
         CreateProcessInstancePayload createPayload = ProcessPayloadBuilder.create()
-        .withProcessDefinitionId(processDefinitionId)
+            .withProcessDefinitionId(processDefinitionId)
             .withProcessDefinitionKey("key")
             .withName("test-create")
             .build();
 
         doReturn(processDefinition)
             .when(processRuntime)
-                .getProcessDefinitionAndCheckUserHasRights(createPayload.getProcessDefinitionId(),
-                    createPayload.getProcessDefinitionKey());
+            .getProcessDefinitionAndCheckUserHasRights(
+                createPayload.getProcessDefinitionId(),
+                createPayload.getProcessDefinitionKey()
+            );
 
         ProcessInstanceBuilder processInstanceBuilder = mock(ProcessInstanceBuilder.class, Answers.RETURNS_SELF);
         given(runtimeService.createProcessInstanceBuilder()).willReturn(processInstanceBuilder);
         org.activiti.engine.runtime.ProcessInstance internalProcessInstance = mock(
-            org.activiti.engine.runtime.ProcessInstance.class);
+            org.activiti.engine.runtime.ProcessInstance.class
+        );
         given(processInstanceBuilder.create()).willReturn(internalProcessInstance);
 
         ProcessInstanceImpl apiProcessInstance = new ProcessInstanceImpl();
@@ -333,10 +341,12 @@ public class ProcessRuntimeImplTest {
     }
 
     @Test
-     void should_applyPaginationParams_whenSearchingProcessDefinitions() {
+    void should_applyPaginationParams_whenSearchingProcessDefinitions() {
         doReturn("testUser").when(securityManager).getAuthenticatedUserId();
 
-        given(securityPoliciesManager.restrictProcessDefQuery(any())).willReturn(ProcessPayloadBuilder.processDefinitions().build());
+        given(securityPoliciesManager.restrictProcessDefQuery(any())).willReturn(
+            ProcessPayloadBuilder.processDefinitions().build()
+        );
 
         ProcessDefinitionQuery processDefinitionQuery = mock(ProcessDefinitionQuery.class, Answers.RETURNS_SELF);
         given(processDefinitionQuery.deploymentIds(any())).willReturn(processDefinitionQuery);
@@ -346,36 +356,30 @@ public class ProcessRuntimeImplTest {
 
         processRuntime.processDefinitions(Pageable.of(0, 2), List.of());
 
+        verify(processDefinitionQuery).startableByUser(any());
+        verify(processDefinitionQuery).startableByGroups(any());
         verify(processDefinitionQuery).listPage(0, 2);
     }
 
     @Test
-    void should_setCategoryNotEquals_when_excludedCategoryIsSet() {
-        doReturn("user").when(securityManager).getAuthenticatedUserId();
-        given(securityPoliciesManager.restrictProcessDefQuery(any()))
-            .willReturn(ProcessPayloadBuilder.processDefinitions().build());
-
-        String processCategory = "#triggerableByForm";
+    void should_includeNoUserStartableProcess_whenSearchingProcessDefinitions() {
+        given(securityPoliciesManager.restrictProcessDefQuery(any())).willReturn(
+            ProcessPayloadBuilder.processDefinitions().build()
+        );
 
         ProcessDefinitionQuery processDefinitionQuery = mock(ProcessDefinitionQuery.class, Answers.RETURNS_SELF);
-        DeploymentQuery deploymentQuery = mock(DeploymentQuery.class, Answers.RETURNS_SELF);
+        given(processDefinitionQuery.deploymentIds(any())).willReturn(processDefinitionQuery);
+        given(repositoryService.createDeploymentQuery()).willReturn(mock(DeploymentQuery.class, Answers.RETURNS_SELF));
+        given(repositoryService.createProcessDefinitionQuery()).willReturn(processDefinitionQuery);
+        given(processDefinitionQuery.listPage(0, 2)).willReturn(Collections.emptyList());
 
-        when(repositoryService.createProcessDefinitionQuery()).thenReturn(processDefinitionQuery);
-        when(repositoryService.createDeploymentQuery()).thenReturn(deploymentQuery);
-        when(deploymentQuery.latestVersion()).thenReturn(deploymentQuery);
-        when(deploymentQuery.list()).thenReturn(Collections.emptyList());
-        when(processDefinitionQuery.deploymentIds(any())).thenReturn(processDefinitionQuery);
-        when(processDefinitionQuery.listPage(anyInt(), anyInt())).thenReturn(Collections.emptyList());
-        when(processDefinitionQuery.count()).thenReturn(0L);
+        processRuntime.processDefinitions(Pageable.of(0, 2), List.of("noUserStartableProcesses"));
 
-        Pageable pageable = Pageable.of(0, 10);
-        GetProcessDefinitionsPayload payload = ProcessPayloadBuilder.processDefinitions()
-            .withProcessCategoryToExclude(processCategory)
-            .build();
+        verify(securityManager, never()).getAuthenticatedUserId();
+        verify(repositoryService).createProcessDefinitionQuery();
+        verify(processDefinitionQuery, never()).startableByUser(any());
+        verify(processDefinitionQuery, never()).startableByGroups(any());
+        verify(processDefinitionQuery).listPage(0, 2);
 
-        processRuntime.processDefinitions(pageable, payload);
-
-        verify(processDefinitionQuery).processDefinitionCategoryNotEquals(processCategory);
     }
-
 }

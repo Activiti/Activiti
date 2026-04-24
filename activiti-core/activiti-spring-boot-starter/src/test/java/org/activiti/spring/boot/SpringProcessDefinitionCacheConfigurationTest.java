@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,10 +27,12 @@ import org.springframework.cache.caffeine.CaffeineCache;
 import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@TestPropertySource(properties = {
-    "spring.activiti.process-definition-cache-name=processDefinitions",
-    "activiti.spring.cache-manager.caches.processDefinitions.caffeine.spec=maximumSize=100, expireAfterAccess=10m, recordStats"
-})
+@TestPropertySource(
+    properties = {
+        "spring.activiti.process-definition-cache-name=processDefinitions",
+        "activiti.spring.cache-manager.caches.processDefinitions.caffeine.spec=maximumSize=100, expireAfterAccess=10m, recordStats",
+    }
+)
 public class SpringProcessDefinitionCacheConfigurationTest {
 
     @Autowired
@@ -54,9 +56,11 @@ public class SpringProcessDefinitionCacheConfigurationTest {
 
     @Test
     public void shouldApplyProcessDefinitionCacheSpec() {
-        var springProcessDefinitionCache = (SpringProcessDefinitionCache) processEngineConfiguration.getProcessDefinitionCache();
+        var springProcessDefinitionCache =
+            (SpringProcessDefinitionCache) processEngineConfiguration.getProcessDefinitionCache();
 
-        assertThat(((CaffeineCache) springProcessDefinitionCache.getDelegate()).getNativeCache().estimatedSize()).isEqualTo(100);
+        assertThat(
+            ((CaffeineCache) springProcessDefinitionCache.getDelegate()).getNativeCache().estimatedSize()
+        ).isEqualTo(100);
     }
-
 }

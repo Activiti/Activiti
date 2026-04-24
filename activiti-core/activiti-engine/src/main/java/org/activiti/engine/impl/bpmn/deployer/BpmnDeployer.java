@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.bpmn.deployer;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.ObjectNode;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -58,39 +57,36 @@ public class BpmnDeployer implements Deployer {
     private boolean disableExistingStartEventSubscriptions;
 
     @Override
-    public void deploy(DeploymentEntity deployment,
-                       Map<String, Object> deploymentSettings) {
-        log.debug("Processing deployment {}",
-                  deployment.getName());
+    public void deploy(DeploymentEntity deployment, Map<String, Object> deploymentSettings) {
+        log.debug("Processing deployment {}", deployment.getName());
 
         // The ParsedDeployment represents the deployment, the process definitions, and the BPMN
         // resource, parse, and model associated with each process definition.
         ParsedDeployment parsedDeployment = parsedDeploymentBuilderFactory
-                .getBuilderForDeploymentAndSettings(deployment,
-                                                    deploymentSettings)
-                .build();
+            .getBuilderForDeploymentAndSettings(deployment, deploymentSettings)
+            .build();
 
         bpmnDeploymentHelper.verifyProcessDefinitionsDoNotShareKeys(parsedDeployment.getAllProcessDefinitions());
 
         bpmnDeploymentHelper.copyDeploymentValuesToProcessDefinitions(
-                parsedDeployment.getDeployment(),
-                parsedDeployment.getAllProcessDefinitions());
+            parsedDeployment.getDeployment(),
+            parsedDeployment.getAllProcessDefinitions()
+        );
         bpmnDeploymentHelper.setResourceNamesOnProcessDefinitions(parsedDeployment);
 
-//    createAndPersistNewDiagramsIfNeeded(parsedDeployment);
+        //    createAndPersistNewDiagramsIfNeeded(parsedDeployment);
         setProcessDefinitionDiagramNames(parsedDeployment);
 
         if (deployment.isNew()) {
             Map<ProcessDefinitionEntity, ProcessDefinitionEntity> mapOfNewProcessDefinitionToPreviousVersion =
-                    getPreviousVersionsOfProcessDefinitions(parsedDeployment);
-            setProcessDefinitionVersionsAndIds(parsedDeployment,
-                                               mapOfNewProcessDefinitionToPreviousVersion);
+                getPreviousVersionsOfProcessDefinitions(parsedDeployment);
+            setProcessDefinitionVersionsAndIds(parsedDeployment, mapOfNewProcessDefinitionToPreviousVersion);
             setProcessDefinitionAppVersion(parsedDeployment);
             persistProcessDefinitionsAndAuthorizations(parsedDeployment);
-            if(shouldDisableExistingStartEventSubscriptions()){
+            if (shouldDisableExistingStartEventSubscriptions()) {
                 bpmnDeploymentHelper.disableExistingStartEventSubscriptions();
             }
-            updateTimersAndEvents(parsedDeployment,mapOfNewProcessDefinitionToPreviousVersion);
+            updateTimersAndEvents(parsedDeployment, mapOfNewProcessDefinitionToPreviousVersion);
             dispatchProcessDefinitionEntityInitializedEvent(parsedDeployment);
         } else {
             makeProcessDefinitionsConsistentWithPersistedVersions(parsedDeployment);
@@ -100,36 +96,36 @@ public class BpmnDeployer implements Deployer {
 
         for (ProcessDefinitionEntity processDefinition : parsedDeployment.getAllProcessDefinitions()) {
             BpmnModel bpmnModel = parsedDeployment.getBpmnModelForProcessDefinition(processDefinition);
-            createLocalizationValues(processDefinition,
-                                     bpmnModel.getProcessById(processDefinition.getKey()));
+            createLocalizationValues(processDefinition, bpmnModel.getProcessById(processDefinition.getKey()));
         }
     }
-//
-//  /**
-//   * Creates new diagrams for process definitions if the deployment is new, the process definition in
-//   * question supports it, and the engine is configured to make new diagrams.
-//   *
-//   * When this method creates a new diagram, it also persists it via the ResourceEntityManager
-//   * and adds it to the resources of the deployment.
-//   */
-//  protected void createAndPersistNewDiagramsIfNeeded(ParsedDeployment parsedDeployment) {
-//
-//    final ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
-//    final DeploymentEntity deploymentEntity = parsedDeployment.getDeployment();
-//
-//    final ResourceEntityManager resourceEntityManager = processEngineConfiguration.getResourceEntityManager();
-//
-//    for (ProcessDefinitionEntity processDefinition : parsedDeployment.getAllProcessDefinitions()) {
-//      if (processDefinitionDiagramHelper.shouldCreateDiagram(processDefinition, deploymentEntity)) {
-//        ResourceEntity resource = processDefinitionDiagramHelper.createDiagramForProcessDefinition(
-//            processDefinition, parsedDeployment.getBpmnParseForProcessDefinition(processDefinition));
-//        if (resource != null) {
-//          resourceEntityManager.insert(resource, false);
-//          deploymentEntity.addResource(resource);  // now we'll find it if we look for the diagram name later.
-//        }
-//      }
-//    }
-//  }
+
+    //
+    //  /**
+    //   * Creates new diagrams for process definitions if the deployment is new, the process definition in
+    //   * question supports it, and the engine is configured to make new diagrams.
+    //   *
+    //   * When this method creates a new diagram, it also persists it via the ResourceEntityManager
+    //   * and adds it to the resources of the deployment.
+    //   */
+    //  protected void createAndPersistNewDiagramsIfNeeded(ParsedDeployment parsedDeployment) {
+    //
+    //    final ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
+    //    final DeploymentEntity deploymentEntity = parsedDeployment.getDeployment();
+    //
+    //    final ResourceEntityManager resourceEntityManager = processEngineConfiguration.getResourceEntityManager();
+    //
+    //    for (ProcessDefinitionEntity processDefinition : parsedDeployment.getAllProcessDefinitions()) {
+    //      if (processDefinitionDiagramHelper.shouldCreateDiagram(processDefinition, deploymentEntity)) {
+    //        ResourceEntity resource = processDefinitionDiagramHelper.createDiagramForProcessDefinition(
+    //            processDefinition, parsedDeployment.getBpmnParseForProcessDefinition(processDefinition));
+    //        if (resource != null) {
+    //          resourceEntityManager.insert(resource, false);
+    //          deploymentEntity.addResource(resource);  // now we'll find it if we look for the diagram name later.
+    //        }
+    //      }
+    //    }
+    //  }
 
     /**
      * Updates all the process definition entities to have the correct diagram resource name.  Must
@@ -140,8 +136,10 @@ public class BpmnDeployer implements Deployer {
         Map<String, ResourceEntity> resources = parsedDeployment.getDeployment().getResources();
 
         for (ProcessDefinitionEntity processDefinition : parsedDeployment.getAllProcessDefinitions()) {
-            String diagramResourceName = ResourceNameUtil.getProcessDiagramResourceNameFromDeployment(processDefinition,
-                                                                                                      resources);
+            String diagramResourceName = ResourceNameUtil.getProcessDiagramResourceNameFromDeployment(
+                processDefinition,
+                resources
+            );
             processDefinition.setDiagramResourceName(diagramResourceName);
         }
     }
@@ -151,16 +149,20 @@ public class BpmnDeployer implements Deployer {
      * If no previous version exists, no map entry is created.
      */
     protected Map<ProcessDefinitionEntity, ProcessDefinitionEntity> getPreviousVersionsOfProcessDefinitions(
-            ParsedDeployment parsedDeployment) {
-
-        Map<ProcessDefinitionEntity, ProcessDefinitionEntity> result = new LinkedHashMap<ProcessDefinitionEntity, ProcessDefinitionEntity>();
+        ParsedDeployment parsedDeployment
+    ) {
+        Map<ProcessDefinitionEntity, ProcessDefinitionEntity> result = new LinkedHashMap<
+            ProcessDefinitionEntity,
+            ProcessDefinitionEntity
+        >();
 
         for (ProcessDefinitionEntity newDefinition : parsedDeployment.getAllProcessDefinitions()) {
-            ProcessDefinitionEntity existingDefinition = bpmnDeploymentHelper.getMostRecentVersionOfProcessDefinition(newDefinition);
+            ProcessDefinitionEntity existingDefinition = bpmnDeploymentHelper.getMostRecentVersionOfProcessDefinition(
+                newDefinition
+            );
 
             if (existingDefinition != null) {
-                result.put(newDefinition,
-                           existingDefinition);
+                result.put(newDefinition, existingDefinition);
             }
         }
 
@@ -172,23 +174,28 @@ public class BpmnDeployer implements Deployer {
      * an older version for a process definition, then the version is set to that older entity's
      * version plus one; otherwise it is set to 1.  Also dispatches an ENTITY_CREATED event.
      */
-    protected void setProcessDefinitionVersionsAndIds(ParsedDeployment parsedDeployment,
-                                                      Map<ProcessDefinitionEntity, ProcessDefinitionEntity> mapNewToOldProcessDefinitions) {
+    protected void setProcessDefinitionVersionsAndIds(
+        ParsedDeployment parsedDeployment,
+        Map<ProcessDefinitionEntity, ProcessDefinitionEntity> mapNewToOldProcessDefinitions
+    ) {
         CommandContext commandContext = Context.getCommandContext();
 
-        if(parsedDeployment.getDeployment().getProjectReleaseVersion() != null){
+        if (parsedDeployment.getDeployment().getProjectReleaseVersion() != null) {
             Integer version = parsedDeployment.getDeployment().getVersion();
             for (ProcessDefinitionEntity processDefinition : parsedDeployment.getAllProcessDefinitions()) {
                 processDefinition.setVersion(version);
                 processDefinition.setId(getIdForNewProcessDefinition(processDefinition));
 
                 if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-                    commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED,
-                                                                                                                                             processDefinition));
+                    commandContext
+                        .getProcessEngineConfiguration()
+                        .getEventDispatcher()
+                        .dispatchEvent(
+                            ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, processDefinition)
+                        );
                 }
             }
-        }else{
-
+        } else {
             for (ProcessDefinitionEntity processDefinition : parsedDeployment.getAllProcessDefinitions()) {
                 int version = 1;
 
@@ -201,13 +208,15 @@ public class BpmnDeployer implements Deployer {
                 processDefinition.setId(getIdForNewProcessDefinition(processDefinition));
 
                 if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-                    commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED,
-                                                                                                                                             processDefinition));
+                    commandContext
+                        .getProcessEngineConfiguration()
+                        .getEventDispatcher()
+                        .dispatchEvent(
+                            ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, processDefinition)
+                        );
                 }
             }
         }
-
-
     }
 
     /**
@@ -219,32 +228,49 @@ public class BpmnDeployer implements Deployer {
         ProcessDefinitionEntityManager processDefinitionManager = commandContext.getProcessDefinitionEntityManager();
 
         for (ProcessDefinitionEntity processDefinition : parsedDeployment.getAllProcessDefinitions()) {
-            processDefinitionManager.insert(processDefinition,
-                                            false);
-            bpmnDeploymentHelper.addAuthorizationsForNewProcessDefinition(parsedDeployment.getProcessModelForProcessDefinition(processDefinition),
-                                                                          processDefinition);
+            processDefinitionManager.insert(processDefinition, false);
+            bpmnDeploymentHelper.addAuthorizationsForNewProcessDefinition(
+                parsedDeployment.getProcessModelForProcessDefinition(processDefinition),
+                processDefinition
+            );
         }
     }
 
-    protected void updateTimersAndEvents(ParsedDeployment parsedDeployment,
-                                         Map<ProcessDefinitionEntity, ProcessDefinitionEntity> mapNewToOldProcessDefinitions) {
-
+    protected void updateTimersAndEvents(
+        ParsedDeployment parsedDeployment,
+        Map<ProcessDefinitionEntity, ProcessDefinitionEntity> mapNewToOldProcessDefinitions
+    ) {
         for (ProcessDefinitionEntity processDefinition : parsedDeployment.getAllProcessDefinitions()) {
-            bpmnDeploymentHelper.updateTimersAndEvents(processDefinition,
-                                                       mapNewToOldProcessDefinitions.get(processDefinition),
-                                                       parsedDeployment);
+            bpmnDeploymentHelper.updateTimersAndEvents(
+                processDefinition,
+                mapNewToOldProcessDefinitions.get(processDefinition),
+                parsedDeployment
+            );
         }
     }
 
     protected void dispatchProcessDefinitionEntityInitializedEvent(ParsedDeployment parsedDeployment) {
         CommandContext commandContext = Context.getCommandContext();
         for (ProcessDefinitionEntity processDefinitionEntity : parsedDeployment.getAllProcessDefinitions()) {
-            log.info("Process deployed: {id: " + processDefinitionEntity.getId() +
-                ", key: " + processDefinitionEntity.getKey() + ", name: " + processDefinitionEntity.getName() +" }");
+            log.info(
+                "Process deployed: {id: " +
+                processDefinitionEntity.getId() +
+                ", key: " +
+                processDefinitionEntity.getKey() +
+                ", name: " +
+                processDefinitionEntity.getName() +
+                " }"
+            );
             if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-                commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-                        ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED,
-                                                               processDefinitionEntity));
+                commandContext
+                    .getProcessEngineConfiguration()
+                    .getEventDispatcher()
+                    .dispatchEvent(
+                        ActivitiEventBuilder.createEntityEvent(
+                            ActivitiEventType.ENTITY_INITIALIZED,
+                            processDefinitionEntity
+                        )
+                    );
             }
         }
     }
@@ -274,7 +300,7 @@ public class BpmnDeployer implements Deployer {
     protected void makeProcessDefinitionsConsistentWithPersistedVersions(ParsedDeployment parsedDeployment) {
         for (ProcessDefinitionEntity processDefinition : parsedDeployment.getAllProcessDefinitions()) {
             ProcessDefinitionEntity persistedProcessDefinition =
-                    bpmnDeploymentHelper.getPersistedInstanceOfProcessDefinition(processDefinition);
+                bpmnDeploymentHelper.getPersistedInstanceOfProcessDefinition(processDefinition);
 
             if (persistedProcessDefinition != null) {
                 processDefinition.setId(persistedProcessDefinition.getId());
@@ -286,8 +312,7 @@ public class BpmnDeployer implements Deployer {
         }
     }
 
-    protected void createLocalizationValues(ProcessDefinition processDefinition,
-                                            Process process) {
+    protected void createLocalizationValues(ProcessDefinition processDefinition, Process process) {
         if (process == null) {
             return;
         }
@@ -301,12 +326,12 @@ public class BpmnDeployer implements Deployer {
         if (localizationElements != null) {
             for (ExtensionElement localizationElement : localizationElements) {
                 if (BpmnXMLConstants.ACTIVITI_EXTENSIONS_PREFIX.equals(localizationElement.getNamespacePrefix())) {
-                    String locale = localizationElement.getAttributeValue(null,
-                                                                          "locale");
-                    String name = localizationElement.getAttributeValue(null,
-                                                                        "name");
+                    String locale = localizationElement.getAttributeValue(null, "locale");
+                    String name = localizationElement.getAttributeValue(null, "name");
                     String documentation = null;
-                    List<ExtensionElement> documentationElements = localizationElement.getChildElements().get("documentation");
+                    List<ExtensionElement> documentationElements = localizationElement
+                        .getChildElements()
+                        .get("documentation");
                     if (documentationElements != null) {
                         for (ExtensionElement documentationElement : documentationElements) {
                             documentation = StringUtils.trimToNull(documentationElement.getElementText());
@@ -315,27 +340,16 @@ public class BpmnDeployer implements Deployer {
                     }
 
                     String processId = process.getId();
-                    if (!isEqualToCurrentLocalizationValue(locale,
-                                                          processId,
-                                                          "name",
-                                                          name,
-                                                          infoNode)) {
-                        dynamicBpmnService.changeLocalizationName(locale,
-                                                                  processId,
-                                                                  name,
-                                                                  infoNode);
+                    if (!isEqualToCurrentLocalizationValue(locale, processId, "name", name, infoNode)) {
+                        dynamicBpmnService.changeLocalizationName(locale, processId, name, infoNode);
                         localizationValuesChanged = true;
                     }
 
-                    if (documentation != null && !isEqualToCurrentLocalizationValue(locale,
-                                                                                   processId,
-                                                                                   "description",
-                                                                                   documentation,
-                                                                                   infoNode)) {
-                        dynamicBpmnService.changeLocalizationDescription(locale,
-                                                                         processId,
-                                                                         documentation,
-                                                                         infoNode);
+                    if (
+                        documentation != null &&
+                        !isEqualToCurrentLocalizationValue(locale, processId, "description", documentation, infoNode)
+                    ) {
+                        dynamicBpmnService.changeLocalizationDescription(locale, processId, documentation, infoNode);
                         localizationValuesChanged = true;
                     }
 
@@ -344,22 +358,18 @@ public class BpmnDeployer implements Deployer {
             }
         }
 
-        boolean isFlowElementLocalizationChanged = localizeFlowElements(process.getFlowElements(),
-                                                                        infoNode);
-        boolean isDataObjectLocalizationChanged = localizeDataObjectElements(process.getDataObjects(),
-                                                                             infoNode);
+        boolean isFlowElementLocalizationChanged = localizeFlowElements(process.getFlowElements(), infoNode);
+        boolean isDataObjectLocalizationChanged = localizeDataObjectElements(process.getDataObjects(), infoNode);
         if (isFlowElementLocalizationChanged || isDataObjectLocalizationChanged) {
             localizationValuesChanged = true;
         }
 
         if (localizationValuesChanged) {
-            dynamicBpmnService.saveProcessDefinitionInfo(processDefinition.getId(),
-                                                         infoNode);
+            dynamicBpmnService.saveProcessDefinitionInfo(processDefinition.getId(), infoNode);
         }
     }
 
-    protected boolean localizeFlowElements(Collection<FlowElement> flowElements,
-                                           ObjectNode infoNode) {
+    protected boolean localizeFlowElements(Collection<FlowElement> flowElements, ObjectNode infoNode) {
         boolean localizationValuesChanged = false;
 
         if (flowElements == null) {
@@ -374,13 +384,15 @@ public class BpmnDeployer implements Deployer {
                 List<ExtensionElement> localizationElements = flowElement.getExtensionElements().get("localization");
                 if (localizationElements != null) {
                     for (ExtensionElement localizationElement : localizationElements) {
-                        if (BpmnXMLConstants.ACTIVITI_EXTENSIONS_PREFIX.equals(localizationElement.getNamespacePrefix())) {
-                            String locale = localizationElement.getAttributeValue(null,
-                                                                                  "locale");
-                            String name = localizationElement.getAttributeValue(null,
-                                                                                "name");
+                        if (
+                            BpmnXMLConstants.ACTIVITI_EXTENSIONS_PREFIX.equals(localizationElement.getNamespacePrefix())
+                        ) {
+                            String locale = localizationElement.getAttributeValue(null, "locale");
+                            String name = localizationElement.getAttributeValue(null, "name");
                             String documentation = null;
-                            List<ExtensionElement> documentationElements = localizationElement.getChildElements().get("documentation");
+                            List<ExtensionElement> documentationElements = localizationElement
+                                .getChildElements()
+                                .get("documentation");
                             if (documentationElements != null) {
                                 for (ExtensionElement documentationElement : documentationElements) {
                                     documentation = StringUtils.trimToNull(documentationElement.getElementText());
@@ -389,27 +401,31 @@ public class BpmnDeployer implements Deployer {
                             }
 
                             String flowElementId = flowElement.getId();
-                            if (isEqualToCurrentLocalizationValue(locale,
-                                                                  flowElementId,
-                                                                  "name",
-                                                                  name,
-                                                                  infoNode) == false) {
-                                dynamicBpmnService.changeLocalizationName(locale,
-                                                                          flowElementId,
-                                                                          name,
-                                                                          infoNode);
+                            if (
+                                isEqualToCurrentLocalizationValue(locale, flowElementId, "name", name, infoNode) ==
+                                false
+                            ) {
+                                dynamicBpmnService.changeLocalizationName(locale, flowElementId, name, infoNode);
                                 localizationValuesChanged = true;
                             }
 
-                            if (documentation != null && isEqualToCurrentLocalizationValue(locale,
-                                                                                           flowElementId,
-                                                                                           "description",
-                                                                                           documentation,
-                                                                                           infoNode) == false) {
-                                dynamicBpmnService.changeLocalizationDescription(locale,
-                                                                                 flowElementId,
-                                                                                 documentation,
-                                                                                 infoNode);
+                            if (
+                                documentation != null &&
+                                isEqualToCurrentLocalizationValue(
+                                    locale,
+                                    flowElementId,
+                                    "description",
+                                    documentation,
+                                    infoNode
+                                ) ==
+                                false
+                            ) {
+                                dynamicBpmnService.changeLocalizationDescription(
+                                    locale,
+                                    flowElementId,
+                                    documentation,
+                                    infoNode
+                                );
                                 localizationValuesChanged = true;
                             }
 
@@ -420,10 +436,14 @@ public class BpmnDeployer implements Deployer {
 
                 if (flowElement instanceof SubProcess) {
                     SubProcess subprocess = (SubProcess) flowElement;
-                    boolean isFlowElementLocalizationChanged = localizeFlowElements(subprocess.getFlowElements(),
-                                                                                    infoNode);
-                    boolean isDataObjectLocalizationChanged = localizeDataObjectElements(subprocess.getDataObjects(),
-                                                                                         infoNode);
+                    boolean isFlowElementLocalizationChanged = localizeFlowElements(
+                        subprocess.getFlowElements(),
+                        infoNode
+                    );
+                    boolean isDataObjectLocalizationChanged = localizeDataObjectElements(
+                        subprocess.getDataObjects(),
+                        infoNode
+                    );
                     if (isFlowElementLocalizationChanged || isDataObjectLocalizationChanged) {
                         localizationValuesChanged = true;
                     }
@@ -434,14 +454,20 @@ public class BpmnDeployer implements Deployer {
         return localizationValuesChanged;
     }
 
-    protected boolean isEqualToCurrentLocalizationValue(String language,
-                                                        String id,
-                                                        String propertyName,
-                                                        String propertyValue,
-                                                        ObjectNode infoNode) {
+    protected boolean isEqualToCurrentLocalizationValue(
+        String language,
+        String id,
+        String propertyName,
+        String propertyValue,
+        ObjectNode infoNode
+    ) {
         boolean isEqual = false;
         JsonNode localizationNode = infoNode.path("localization").path(language).path(id).path(propertyName);
-        if (!localizationNode.isMissingNode() && !localizationNode.isNull() && localizationNode.asText().equals(propertyValue)) {
+        if (
+            !localizationNode.isMissingNode() &&
+            !localizationNode.isNull() &&
+            localizationNode.asString().equals(propertyValue)
+        ) {
             isEqual = true;
         }
         return isEqual;
@@ -456,8 +482,7 @@ public class BpmnDeployer implements Deployer {
         }
     }
 
-    protected boolean localizeDataObjectElements(List<ValuedDataObject> dataObjects,
-                                                 ObjectNode infoNode) {
+    protected boolean localizeDataObjectElements(List<ValuedDataObject> dataObjects, ObjectNode infoNode) {
         boolean localizationValuesChanged = false;
         CommandContext commandContext = Context.getCommandContext();
         DynamicBpmnService dynamicBpmnService = commandContext.getProcessEngineConfiguration().getDynamicBpmnService();
@@ -467,13 +492,13 @@ public class BpmnDeployer implements Deployer {
             if (localizationElements != null) {
                 for (ExtensionElement localizationElement : localizationElements) {
                     if (BpmnXMLConstants.ACTIVITI_EXTENSIONS_PREFIX.equals(localizationElement.getNamespacePrefix())) {
-                        String locale = localizationElement.getAttributeValue(null,
-                                                                              "locale");
-                        String name = localizationElement.getAttributeValue(null,
-                                                                            "name");
+                        String locale = localizationElement.getAttributeValue(null, "locale");
+                        String name = localizationElement.getAttributeValue(null, "name");
                         String documentation = null;
 
-                        List<ExtensionElement> documentationElements = localizationElement.getChildElements().get("documentation");
+                        List<ExtensionElement> documentationElements = localizationElement
+                            .getChildElements()
+                            .get("documentation");
                         if (documentationElements != null) {
                             for (ExtensionElement documentationElement : documentationElements) {
                                 documentation = StringUtils.trimToNull(documentationElement.getElementText());
@@ -481,28 +506,38 @@ public class BpmnDeployer implements Deployer {
                             }
                         }
 
-                        if (name != null && isEqualToCurrentLocalizationValue(locale,
-                                                                              dataObject.getId(),
-                                                                              DynamicBpmnConstants.LOCALIZATION_NAME,
-                                                                              name,
-                                                                              infoNode) == false) {
-                            dynamicBpmnService.changeLocalizationName(locale,
-                                                                      dataObject.getId(),
-                                                                      name,
-                                                                      infoNode);
+                        if (
+                            name != null &&
+                            isEqualToCurrentLocalizationValue(
+                                locale,
+                                dataObject.getId(),
+                                DynamicBpmnConstants.LOCALIZATION_NAME,
+                                name,
+                                infoNode
+                            ) ==
+                            false
+                        ) {
+                            dynamicBpmnService.changeLocalizationName(locale, dataObject.getId(), name, infoNode);
                             localizationValuesChanged = true;
                         }
 
-                        if (documentation != null && isEqualToCurrentLocalizationValue(locale,
-                                                                                       dataObject.getId(),
-                                                                                       DynamicBpmnConstants.LOCALIZATION_DESCRIPTION,
-                                                                                       documentation,
-                                                                                       infoNode) == false) {
-
-                            dynamicBpmnService.changeLocalizationDescription(locale,
-                                                                             dataObject.getId(),
-                                                                             documentation,
-                                                                             infoNode);
+                        if (
+                            documentation != null &&
+                            isEqualToCurrentLocalizationValue(
+                                locale,
+                                dataObject.getId(),
+                                DynamicBpmnConstants.LOCALIZATION_DESCRIPTION,
+                                documentation,
+                                infoNode
+                            ) ==
+                            false
+                        ) {
+                            dynamicBpmnService.changeLocalizationDescription(
+                                locale,
+                                dataObject.getId(),
+                                documentation,
+                                infoNode
+                            );
                             localizationValuesChanged = true;
                         }
                     }

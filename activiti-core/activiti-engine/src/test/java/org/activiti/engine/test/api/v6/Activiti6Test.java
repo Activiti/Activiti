@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.test.api.v6;
 
 import static java.util.Collections.singletonMap;
@@ -22,7 +21,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -42,7 +40,10 @@ public class Activiti6Test extends PluggableActivitiTestCase {
 
     @Test
     public void testSimplestProcessPossible() {
-        repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/api/v6/Activiti6Test.simplestProcessPossible.bpmn20.xml").deploy();
+        repositoryService
+            .createDeployment()
+            .addClasspathResource("org/activiti/engine/test/api/v6/Activiti6Test.simplestProcessPossible.bpmn20.xml")
+            .deploy();
 
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("startToEnd");
         assertThat(processInstance).isNotNull();
@@ -69,7 +70,9 @@ public class Activiti6Test extends PluggableActivitiTestCase {
     }
 
     @Test
-    @org.activiti.engine.test.Deployment(resources = "org/activiti/engine/test/api/v6/Activiti6Test.testOneTaskProcess.bpmn20.xml")
+    @org.activiti.engine.test.Deployment(
+        resources = "org/activiti/engine/test/api/v6/Activiti6Test.testOneTaskProcess.bpmn20.xml"
+    )
     public void testOneTaskProcessCleanupInMiddleOfProcess() {
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
         assertThat(processInstance).isNotNull();
@@ -87,9 +90,14 @@ public class Activiti6Test extends PluggableActivitiTestCase {
         assertThat(processInstance).isNotNull();
         assertThat(processInstance.isEnded()).isFalse();
 
-        List<Task> tasks = taskService.createTaskQuery().processDefinitionKey("simpleParallelGateway").orderByTaskName().asc().list();
+        List<Task> tasks = taskService
+            .createTaskQuery()
+            .processDefinitionKey("simpleParallelGateway")
+            .orderByTaskName()
+            .asc()
+            .list();
         assertThat(tasks).hasSize(2);
-        assertThat(tasks.get(0).getName()).isEqualTo("Task a");
+        assertThat(tasks.getFirst().getName()).isEqualTo("Task a");
         assertThat(tasks.get(1).getName()).isEqualTo("Task b");
 
         for (Task task : tasks) {
@@ -106,9 +114,14 @@ public class Activiti6Test extends PluggableActivitiTestCase {
         assertThat(processInstance).isNotNull();
         assertThat(processInstance.isEnded()).isFalse();
 
-        List<Task> tasks = taskService.createTaskQuery().processDefinitionKey("simpleParallelGateway").orderByTaskName().asc().list();
+        List<Task> tasks = taskService
+            .createTaskQuery()
+            .processDefinitionKey("simpleParallelGateway")
+            .orderByTaskName()
+            .asc()
+            .list();
         assertThat(tasks).hasSize(4);
-        assertThat(tasks.get(0).getName()).isEqualTo("Task a");
+        assertThat(tasks.getFirst().getName()).isEqualTo("Task a");
         assertThat(tasks.get(1).getName()).isEqualTo("Task b1");
         assertThat(tasks.get(2).getName()).isEqualTo("Task b2");
         assertThat(tasks.get(3).getName()).isEqualTo("Task c");
@@ -130,12 +143,9 @@ public class Activiti6Test extends PluggableActivitiTestCase {
         // it still fits within transaction timeouts). Go
         // on, try it!
         Map<String, Object> vars = new HashMap<String, Object>();
-        vars.put("counter",
-                 Integer.valueOf(0));
-        vars.put("maxCount",
-                 maxCount);
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testLongServiceTaskLoop",
-                                                                                   vars);
+        vars.put("counter", Integer.valueOf(0));
+        vars.put("maxCount", maxCount);
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testLongServiceTaskLoop", vars);
         assertThat(processInstance).isNotNull();
         assertThat(processInstance.isEnded()).isTrue();
 
@@ -143,8 +153,13 @@ public class Activiti6Test extends PluggableActivitiTestCase {
         assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
 
         if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
-            assertThat(historyService.createHistoricActivityInstanceQuery()
-                                 .processInstanceId(processInstance.getId()).activityId("serviceTask").count()).isEqualTo(maxCount);
+            assertThat(
+                historyService
+                    .createHistoricActivityInstanceQuery()
+                    .processInstanceId(processInstance.getId())
+                    .activityId("serviceTask")
+                    .count()
+            ).isEqualTo(maxCount);
         }
     }
 
@@ -152,25 +167,27 @@ public class Activiti6Test extends PluggableActivitiTestCase {
     @org.activiti.engine.test.Deployment
     public void testScriptTask() {
         Map<String, Object> variableMap = new HashMap<String, Object>();
-        variableMap.put("a",
-                        1);
-        variableMap.put("b",
-                        2);
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess",
-                                                                                   variableMap);
+        variableMap.put("a", 1);
+        variableMap.put("b", 2);
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", variableMap);
         assertThat(processInstance).isNotNull();
         assertThat(processInstance.isEnded()).isFalse();
 
-        Number sumVariable = (Number) runtimeService.getVariable(processInstance.getId(),
-                                                                 "sum");
+        Number sumVariable = (Number) runtimeService.getVariable(processInstance.getId(), "sum");
         assertThat(sumVariable.intValue()).isEqualTo(3);
 
-        Execution execution = runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).onlyChildExecutions().singleResult();
+        Execution execution = runtimeService
+            .createExecutionQuery()
+            .processInstanceId(processInstance.getId())
+            .onlyChildExecutions()
+            .singleResult();
         assertThat(execution).isNotNull();
 
         runtimeService.trigger(execution.getId());
 
-        assertThat(runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult()).isNull();
+        assertThat(
+            runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult()
+        ).isNull();
     }
 
     @Test
@@ -211,7 +228,6 @@ public class Activiti6Test extends PluggableActivitiTestCase {
     @Test
     @org.activiti.engine.test.Deployment
     public void testSimpleNonInterruptingTimerBoundaryEvent() {
-
         // First test: first the task associated with the parent execution, then
         // the one with the child
         // (see the task name ordering in the query to get that specific order)
@@ -252,10 +268,11 @@ public class Activiti6Test extends PluggableActivitiTestCase {
     @Test
     @org.activiti.engine.test.Deployment
     public void testConditionsWithoutExclusiveGateway() {
-
         // 3 conditions are true for input = 2
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testConditions",
-                                                                                   singletonMap("input", 2));
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
+            "testConditions",
+            singletonMap("input", 2)
+        );
         assertThat(processInstance).isNotNull();
         assertThat(processInstance.isEnded()).isFalse();
 
@@ -264,7 +281,7 @@ public class Activiti6Test extends PluggableActivitiTestCase {
 
         List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
         assertThat(tasks).hasSize(3);
-        assertThat(tasks.get(0).getName()).isEqualTo("A");
+        assertThat(tasks.getFirst().getName()).isEqualTo("A");
         assertThat(tasks.get(1).getName()).isEqualTo("B");
         assertThat(tasks.get(2).getName()).isEqualTo("C");
 
@@ -273,14 +290,13 @@ public class Activiti6Test extends PluggableActivitiTestCase {
         }
 
         // 2 conditions are true for input = 20
-        processInstance = runtimeService.startProcessInstanceByKey("testConditions",
-                                                                   singletonMap("input", 20));
+        processInstance = runtimeService.startProcessInstanceByKey("testConditions", singletonMap("input", 20));
         task = taskService.createTaskQuery().singleResult();
         taskService.complete(task.getId());
 
         tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
         assertThat(tasks).hasSize(2);
-        assertThat(tasks.get(0).getName()).isEqualTo("B");
+        assertThat(tasks.getFirst().getName()).isEqualTo("B");
         assertThat(tasks.get(1).getName()).isEqualTo("C");
 
         for (Task t : tasks) {
@@ -288,14 +304,13 @@ public class Activiti6Test extends PluggableActivitiTestCase {
         }
 
         // 1 condition is true for input = 200
-        processInstance = runtimeService.startProcessInstanceByKey("testConditions",
-                                                                   singletonMap("input", 200));
+        processInstance = runtimeService.startProcessInstanceByKey("testConditions", singletonMap("input", 200));
         task = taskService.createTaskQuery().singleResult();
         taskService.complete(task.getId());
 
         tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getName()).isEqualTo("C");
+        assertThat(tasks.getFirst().getName()).isEqualTo("C");
 
         for (Task t : tasks) {
             taskService.complete(t.getId());
@@ -309,9 +324,14 @@ public class Activiti6Test extends PluggableActivitiTestCase {
         assertThat(processInstance).isNotNull();
         assertThat(processInstance.isEnded()).isFalse();
 
-        List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
+        List<Task> tasks = taskService
+            .createTaskQuery()
+            .processInstanceId(processInstance.getId())
+            .orderByTaskName()
+            .asc()
+            .list();
         assertThat(tasks).hasSize(2);
-        assertThat(tasks.get(0).getName()).isEqualTo("A");
+        assertThat(tasks.getFirst().getName()).isEqualTo("A");
         assertThat(tasks.get(1).getName()).isEqualTo("B");
 
         // Triggering the timers cancels B, but A is not interrupted
@@ -324,7 +344,7 @@ public class Activiti6Test extends PluggableActivitiTestCase {
 
         tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
         assertThat(tasks).hasSize(5);
-        assertThat(tasks.get(0).getName()).isEqualTo("A");
+        assertThat(tasks.getFirst().getName()).isEqualTo("A");
         assertThat(tasks.get(1).getName()).isEqualTo("C");
         assertThat(tasks.get(2).getName()).isEqualTo("D");
         assertThat(tasks.get(3).getName()).isEqualTo("E");
@@ -333,12 +353,12 @@ public class Activiti6Test extends PluggableActivitiTestCase {
         // Firing timer shouldn't cancel anything, but create new task
         jobs = managementService.createTimerJobQuery().list();
         assertThat(jobs).hasSize(1);
-        managementService.moveTimerToExecutableJob(jobs.get(0).getId());
-        managementService.executeJob(jobs.get(0).getId());
+        managementService.moveTimerToExecutableJob(jobs.getFirst().getId());
+        managementService.executeJob(jobs.getFirst().getId());
 
         tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
         assertThat(tasks).hasSize(6);
-        assertThat(tasks.get(0).getName()).isEqualTo("A");
+        assertThat(tasks.getFirst().getName()).isEqualTo("A");
         assertThat(tasks.get(1).getName()).isEqualTo("C");
         assertThat(tasks.get(2).getName()).isEqualTo("D");
         assertThat(tasks.get(3).getName()).isEqualTo("E");
@@ -357,27 +377,31 @@ public class Activiti6Test extends PluggableActivitiTestCase {
     @Test
     @org.activiti.engine.test.Deployment
     public void testNonInterruptingMoreComplex2() {
-
         // Use case 1: no timers fire
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("nonInterruptingWithInclusiveMerge");
         assertThat(processInstance).isNotNull();
         assertThat(processInstance.isEnded()).isFalse();
 
-        List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
+        List<Task> tasks = taskService
+            .createTaskQuery()
+            .processInstanceId(processInstance.getId())
+            .orderByTaskName()
+            .asc()
+            .list();
         assertThat(tasks).hasSize(2);
-        assertThat(tasks.get(0).getName()).isEqualTo("A");
+        assertThat(tasks.getFirst().getName()).isEqualTo("A");
         assertThat(tasks.get(1).getName()).isEqualTo("B");
         assertThat(managementService.createTimerJobQuery().count()).isEqualTo(2);
 
         // Completing A
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
         tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getName()).isEqualTo("B");
+        assertThat(tasks.getFirst().getName()).isEqualTo("B");
         assertThat(managementService.createTimerJobQuery().count()).isEqualTo(1);
 
         // Completing B should end the process
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
         assertThat(managementService.createTimerJobQuery().count()).isEqualTo(0);
         assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
 
@@ -385,7 +409,7 @@ public class Activiti6Test extends PluggableActivitiTestCase {
         processInstance = runtimeService.startProcessInstanceByKey("nonInterruptingWithInclusiveMerge");
         tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
         assertThat(tasks).hasSize(2);
-        assertThat(tasks.get(0).getName()).isEqualTo("A");
+        assertThat(tasks.getFirst().getName()).isEqualTo("A");
         assertThat(tasks.get(1).getName()).isEqualTo("B");
         assertThat(managementService.createTimerJobQuery().count()).isEqualTo(2);
 
@@ -393,7 +417,7 @@ public class Activiti6Test extends PluggableActivitiTestCase {
         taskService.complete(tasks.get(1).getId());
         tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getName()).isEqualTo("A");
+        assertThat(tasks.getFirst().getName()).isEqualTo("A");
         assertThat(managementService.createTimerJobQuery().count()).isEqualTo(1);
 
         // Firing the timer should activate E and F too
@@ -402,7 +426,7 @@ public class Activiti6Test extends PluggableActivitiTestCase {
         managementService.executeJob(jobId);
         tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
         assertThat(tasks).hasSize(3);
-        assertThat(tasks.get(0).getName()).isEqualTo("A");
+        assertThat(tasks.getFirst().getName()).isEqualTo("A");
         assertThat(tasks.get(1).getName()).isEqualTo("C");
         assertThat(tasks.get(2).getName()).isEqualTo("D");
 
@@ -413,7 +437,7 @@ public class Activiti6Test extends PluggableActivitiTestCase {
         managementService.executeJob(jobId);
         tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
         assertThat(tasks).hasSize(4);
-        assertThat(tasks.get(0).getName()).isEqualTo("A");
+        assertThat(tasks.getFirst().getName()).isEqualTo("A");
         assertThat(tasks.get(1).getName()).isEqualTo("C");
         assertThat(tasks.get(2).getName()).isEqualTo("D");
         assertThat(tasks.get(3).getName()).isEqualTo("G");
@@ -422,20 +446,20 @@ public class Activiti6Test extends PluggableActivitiTestCase {
         taskService.complete(taskService.createTaskQuery().taskName("C").singleResult().getId());
         tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
         assertThat(tasks).hasSize(3);
-        assertThat(tasks.get(0).getName()).isEqualTo("A");
+        assertThat(tasks.getFirst().getName()).isEqualTo("A");
         assertThat(tasks.get(1).getName()).isEqualTo("D");
         assertThat(tasks.get(2).getName()).isEqualTo("G");
 
         taskService.complete(taskService.createTaskQuery().taskName("D").singleResult().getId());
         tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
         assertThat(tasks).hasSize(2);
-        assertThat(tasks.get(0).getName()).isEqualTo("A");
+        assertThat(tasks.getFirst().getName()).isEqualTo("A");
         assertThat(tasks.get(1).getName()).isEqualTo("G");
 
         taskService.complete(taskService.createTaskQuery().taskName("A").singleResult().getId());
         tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getName()).isEqualTo("G");
+        assertThat(tasks.getFirst().getName()).isEqualTo("G");
 
         taskService.complete(taskService.createTaskQuery().taskName("G").singleResult().getId());
         assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
@@ -445,9 +469,10 @@ public class Activiti6Test extends PluggableActivitiTestCase {
      * Based on the process and use cases described in http://www.bp-3.com/blogs/2013/09/joins-and-ibm-bpm-diving-deeper/
      */
     @Test
-    @org.activiti.engine.test.Deployment(resources = "org/activiti/engine/test/api/v6/Activiti6Test.testInclusiveTrickyMerge.bpmn20.xml")
+    @org.activiti.engine.test.Deployment(
+        resources = "org/activiti/engine/test/api/v6/Activiti6Test.testInclusiveTrickyMerge.bpmn20.xml"
+    )
     public void testInclusiveTrickyMergeEasy() {
-
         // Use case 1 (easy):
         // "When C completes, depending on the data, we can immediately issue E no matter what the status is of A or B."
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("trickyInclusiveMerge");
@@ -459,18 +484,18 @@ public class Activiti6Test extends PluggableActivitiTestCase {
         taskService.complete(taskC.getId());
         List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
         assertThat(tasks).hasSize(3);
-        assertThat(tasks.get(0).getName()).isEqualTo("A");
+        assertThat(tasks.getFirst().getName()).isEqualTo("A");
         assertThat(tasks.get(1).getName()).isEqualTo("B");
         assertThat(tasks.get(2).getName()).isEqualTo("E");
 
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
         taskService.complete(tasks.get(1).getId());
         tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
         assertThat(tasks).hasSize(2);
-        assertThat(tasks.get(0).getName()).isEqualTo("D");
+        assertThat(tasks.getFirst().getName()).isEqualTo("D");
         assertThat(tasks.get(1).getName()).isEqualTo("E");
 
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
         taskService.complete(tasks.get(1).getId());
         assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
     }
@@ -479,9 +504,10 @@ public class Activiti6Test extends PluggableActivitiTestCase {
      * Based on the process and use cases described in http://www.bp-3.com/blogs/2013/09/joins-and-ibm-bpm-diving-deeper/
      */
     @Test
-    @org.activiti.engine.test.Deployment(resources = "org/activiti/engine/test/api/v6/Activiti6Test.testInclusiveTrickyMerge.bpmn20.xml")
+    @org.activiti.engine.test.Deployment(
+        resources = "org/activiti/engine/test/api/v6/Activiti6Test.testInclusiveTrickyMerge.bpmn20.xml"
+    )
     public void testInclusiveTrickyMergeDifficult() {
-
         // Use case 2 (tricky):
         // "If A and B are complete and C routes to E, D will be issued in Parallel to E"
         // It's tricky cause the inclusive gateway is not visited directly.
@@ -492,27 +518,27 @@ public class Activiti6Test extends PluggableActivitiTestCase {
 
         List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
         assertThat(tasks).hasSize(3);
-        assertThat(tasks.get(0).getName()).isEqualTo("A");
+        assertThat(tasks.getFirst().getName()).isEqualTo("A");
         assertThat(tasks.get(1).getName()).isEqualTo("B");
         assertThat(tasks.get(2).getName()).isEqualTo("C");
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
         taskService.complete(tasks.get(1).getId());
 
         // C should still be open
         tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getName()).isEqualTo("C");
+        assertThat(tasks.getFirst().getName()).isEqualTo("C");
 
         // If C is now completed, the inclusive gateway should also be completed
         // and D and E should be open tasks
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
         tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
         assertThat(tasks).hasSize(2);
-        assertThat(tasks.get(0).getName()).isEqualTo("D");
+        assertThat(tasks.getFirst().getName()).isEqualTo("D");
         assertThat(tasks.get(1).getName()).isEqualTo("E");
 
         // Completing them should just end the process instance
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
         taskService.complete(tasks.get(1).getId());
         assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
     }
@@ -521,7 +547,9 @@ public class Activiti6Test extends PluggableActivitiTestCase {
      * Simple test that checks if all databases have correcly added the process definition tag.
      */
     @Test
-    @org.activiti.engine.test.Deployment(resources = "org/activiti/engine/test/api/v6/Activiti6Test.testOneTaskProcess.bpmn20.xml")
+    @org.activiti.engine.test.Deployment(
+        resources = "org/activiti/engine/test/api/v6/Activiti6Test.testOneTaskProcess.bpmn20.xml"
+    )
     public void testProcessDefinitionTagCreated() {
         ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
         assertThat(((ProcessDefinitionEntity) processDefinition).getEngineVersion()).isNull();

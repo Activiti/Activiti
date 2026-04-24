@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,25 +22,25 @@ import static org.mockito.Mockito.mock;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
 import java.util.List;
 import org.junit.Test;
 
 public class JsonTypeConverterTest {
 
     private static final String TYPE_PROPERTY_NAME = "@class";
-    private static ObjectMapper objectMapper = new ObjectMapper();
+    private static JsonMapper jsonMapper = new JsonMapper();
 
-    private JsonTypeConverter converter = new JsonTypeConverter(objectMapper, TYPE_PROPERTY_NAME);
+    private JsonTypeConverter converter = new JsonTypeConverter(jsonMapper, TYPE_PROPERTY_NAME);
 
     @Test
     public void should_convertToList() throws Exception {
         //given
         List<Integer> originalValue = asList(1, 2);
-        String json = objectMapper.writeValueAsString(originalValue);
-        JsonNode jsonNode = objectMapper.readTree(json);
-        System.out.println(json);
+        String json = jsonMapper.writeValueAsString(originalValue);
+        JsonNode jsonNode = jsonMapper.readTree(json);
+        IO.println(json);
 
         ValueFields valueFields = buildValueFields("numbers", originalValue);
 
@@ -49,7 +49,7 @@ public class JsonTypeConverterTest {
 
         //then
         assertThat(numbers).isInstanceOf(List.class);
-        assertThat(((List<?>) numbers).get(0)).isInstanceOf(Integer.class);
+        assertThat(((List<?>) numbers).getFirst()).isInstanceOf(Integer.class);
         assertThat(numbers).isEqualTo(originalValue);
     }
 
@@ -64,8 +64,8 @@ public class JsonTypeConverterTest {
     public void should_convertToPOJO() throws Exception {
         //given
         Person person = new Person("John", "Doe");
-        String json = objectMapper.writeValueAsString(person);
-        JsonNode jsonNode = objectMapper.readTree(json);
+        String json = jsonMapper.writeValueAsString(person);
+        JsonNode jsonNode = jsonMapper.readTree(json);
 
         //when
         Object convertedValue = converter.convertToValue(jsonNode, buildValueFields("person", person));
@@ -82,8 +82,7 @@ public class JsonTypeConverterTest {
         private String firstName;
         private String lastName;
 
-        public Person() {
-        }
+        public Person() {}
 
         public Person(String firstName, String lastName) {
             this.firstName = firstName;
@@ -98,5 +97,4 @@ public class JsonTypeConverterTest {
             return lastName;
         }
     }
-
 }

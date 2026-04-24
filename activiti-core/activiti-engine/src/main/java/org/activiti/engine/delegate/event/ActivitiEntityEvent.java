@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.delegate.event;
+
+import static org.activiti.engine.impl.persistence.entity.ExecutionEntityManagerImpl.SERVICE_USER;
 
 /**
  * An {@link ActivitiEvent} related to a single entity.
@@ -23,12 +24,16 @@ package org.activiti.engine.delegate.event;
  */
 public interface ActivitiEntityEvent extends ActivitiEvent {
 
-  /**
-   * @return the entity that is targeted by this event.
-   */
-  Object getEntity();
+    /**
+     * @return the entity that is targeted by this event.
+     */
+    Object getEntity();
 
-  default String getReason(){
-      return null;
-  }
+    default String getReason() {
+        return null;
+    }
+
+    default String getActor() {
+        return SERVICE_USER;
+    }
 }

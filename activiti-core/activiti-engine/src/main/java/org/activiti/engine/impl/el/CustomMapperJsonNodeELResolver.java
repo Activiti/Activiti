@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package org.activiti.engine.impl.el;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import jakarta.el.CompositeELResolver;
 import jakarta.el.ELResolver;
 import org.activiti.core.el.JsonNodeELResolver;
@@ -30,7 +30,7 @@ import org.activiti.engine.impl.context.Context;
 public class CustomMapperJsonNodeELResolver extends JsonNodeELResolver {
 
     @Override
-    protected ObjectMapper getObjectMapper() {
+    protected JsonMapper getObjectMapper() {
         return Context.getProcessEngineConfiguration().getObjectMapper();
     }
 }

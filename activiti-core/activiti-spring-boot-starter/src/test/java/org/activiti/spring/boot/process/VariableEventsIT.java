@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.spring.boot.process;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -50,13 +49,14 @@ public class VariableEventsIT {
 
     @Test
     public void should_EmmitEventsWithoutVariableValue_when_itsEphemeral() {
-
         //given
-        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder.start()
-            .withProcessDefinitionKey("taskVariableMappingSendAll")
-            .withVariable("nonEphemeralVar", "nonEphemeral")
-            .withVariable("ephemeralVar", "ephemeral")
-            .build());
+        ProcessInstance processInstance = processRuntime.start(
+            ProcessPayloadBuilder.start()
+                .withProcessDefinitionKey("taskVariableMappingSendAll")
+                .withVariable("nonEphemeralVar", "nonEphemeral")
+                .withVariable("ephemeralVar", "ephemeral")
+                .build()
+        );
 
         //when
         assertThat(variableCreatedListener.getEvents())
@@ -65,13 +65,12 @@ public class VariableEventsIT {
                 event -> event.getEntity().getName(),
                 VariableCreatedEvent::isEphemeralVariable,
                 event -> event.getEntity().isTaskVariable()
-            ).contains(
+            )
+            .contains(
                 tuple("ephemeralVar", true, false),
                 tuple("ephemeralVar", false, true), //task variable created by MAP_ALL: not ephemeral
                 tuple("nonEphemeralVar", false, false),
                 tuple("nonEphemeralVar", false, true)
             );
-
     }
-
 }

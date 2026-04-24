@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:activiti="http://activiti.org/bpmn" id="Definitions_catchall" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Activiti Modeler" exporterVersion="3.0.0-beta.3">
+  <bpmn:error id="errorIdUnhandled" name="errorNameUnhandled" errorCode="UNHANDLED_ERROR" />
+  <bpmn:error id="errorId1" name="errorName1" errorCode="ERROR_CODE_1" />
+  <bpmn:process id="errorBoundaryEventCatchAll" name="errorBoundaryEventCatchAll" isExecutable="true">
+    <bpmn:startEvent id="theStart">
+      <bpmn:outgoing>flow1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:subProcess id="subProcess">
+      <bpmn:incoming>flow1</bpmn:incoming>
+      <bpmn:outgoing>flow3</bpmn:outgoing>
+      <bpmn:startEvent id="subStart">
+        <bpmn:outgoing>flow2</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:sequenceFlow id="flow2" sourceRef="subStart" targetRef="subEnd" />
+      <bpmn:endEvent id="subEnd">
+        <bpmn:incoming>flow2</bpmn:incoming>
+        <bpmn:errorEventDefinition errorRef="errorIdUnhandled" />
+      </bpmn:endEvent>
+    </bpmn:subProcess>
+    <bpmn:sequenceFlow id="flow1" sourceRef="theStart" targetRef="subProcess" />
+    <bpmn:endEvent id="theEnd">
+      <bpmn:incoming>flow3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="flow3" sourceRef="subProcess" targetRef="theEnd" />
+
+    <!-- Boundary event with specific error code ERROR_CODE_1 (won't match) -->
+    <bpmn:boundaryEvent id="catchError1" name="Catch Error 1" attachedToRef="subProcess">
+      <bpmn:outgoing>flow4</bpmn:outgoing>
+      <bpmn:errorEventDefinition errorRef="errorId1" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="flow4" sourceRef="catchError1" targetRef="errorTask1" />
+    <bpmn:userTask id="errorTask1" name="Task 1" activiti:candidateUsers="user">
+      <bpmn:incoming>flow4</bpmn:incoming>
+      <bpmn:outgoing>flow5</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="errorEnd1">
+      <bpmn:incoming>flow5</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="flow5" sourceRef="errorTask1" targetRef="errorEnd1" />
+
+    <!-- Boundary event with NO error code (catch-all) - should catch UNHANDLED_ERROR -->
+    <bpmn:boundaryEvent id="catchErrorAny" name="Catch Any Error" attachedToRef="subProcess">
+      <bpmn:outgoing>flow6</bpmn:outgoing>
+      <bpmn:errorEventDefinition />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="flow6" sourceRef="catchErrorAny" targetRef="errorTaskAny" />
+    <bpmn:userTask id="errorTaskAny" name="Task Any" activiti:candidateUsers="user">
+      <bpmn:incoming>flow6</bpmn:incoming>
+      <bpmn:outgoing>flow7</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="errorEndAny">
+      <bpmn:incoming>flow7</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="flow7" sourceRef="errorTaskAny" targetRef="errorEndAny" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="errorBoundaryEventCatchAll">
+      <bpmndi:BPMNShape bpmnElement="theStart" id="BPMNShape_theStart">
+        <dc:Bounds x="179" y="159" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="subProcess" id="BPMNShape_subProcess" isExpanded="true">
+        <dc:Bounds x="261" y="87" width="350" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <di:waypoint x="215" y="177" />
+        <di:waypoint x="261" y="178" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape bpmnElement="subStart" id="BPMNShape_subStart">
+        <dc:Bounds x="281" y="161" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <di:waypoint x="317" y="179" />
+        <di:waypoint x="520" y="179" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape bpmnElement="theEnd" id="BPMNShape_theEnd">
+        <dc:Bounds x="657" y="164" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <di:waypoint x="611" y="182" />
+        <di:waypoint x="657" y="182" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape bpmnElement="subEnd" id="BPMNShape_subEnd">
+        <dc:Bounds x="520" y="161" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@TestPropertySource(properties = {"spring.activiti.process-definition-cache-limit=100"})
+@TestPropertySource(properties = { "spring.activiti.process-definition-cache-limit=100" })
 public class ProcessDefinitionCacheLimitConfigurationTest {
 
     @Autowired
@@ -43,7 +43,9 @@ public class ProcessDefinitionCacheLimitConfigurationTest {
     public void shouldConfigureProcessDefinitionCacheLimit() {
         assertThat(activitiProperties.getProcessDefinitionCacheLimit()).isEqualTo(100);
 
-        assertThat(processEngineConfiguration.getProcessDefinitionCacheLimit()).isEqualTo(activitiProperties.getProcessDefinitionCacheLimit());
+        assertThat(processEngineConfiguration.getProcessDefinitionCacheLimit()).isEqualTo(
+            activitiProperties.getProcessDefinitionCacheLimit()
+        );
     }
 
     @Test
@@ -53,9 +55,10 @@ public class ProcessDefinitionCacheLimitConfigurationTest {
 
     @Test
     public void shouldApplyProcessDefinitionCacheLimit() {
-        var processDefinitionCache = (DefaultDeploymentCache<ProcessDefinitionCacheEntry>) processEngineConfiguration.getProcessDefinitionCache();
+        var processDefinitionCache = (DefaultDeploymentCache<
+            ProcessDefinitionCacheEntry
+        >) processEngineConfiguration.getProcessDefinitionCache();
 
         assertThat(processDefinitionCache.size()).isEqualTo(100);
     }
-
 }

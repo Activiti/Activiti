@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,84 +13,80 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.cmd;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
-
 public class CompleteTaskCmd extends AbstractCompleteTaskCmd {
 
-  private static final long serialVersionUID = 1L;
-  private static final String ASSIGNEE_VARIABLE_NAME = "sys_task_assignee";
+    private static final long serialVersionUID = 1L;
+    private static final String ASSIGNEE_VARIABLE_NAME = "sys_task_assignee";
 
-  protected Map<String, Object> variables;
-  protected Map<String, Object> transientVariables;
-  protected Map<String, Object> taskVariables;
-  protected boolean localScope;
+    protected Map<String, Object> variables;
+    protected Map<String, Object> transientVariables;
+    protected Map<String, Object> taskVariables;
+    protected boolean localScope;
 
-  public CompleteTaskCmd(String taskId, Map<String, Object> variables) {
-    super(taskId);
-    this.variables = variables;
-  }
-
-  public CompleteTaskCmd(String taskId, Map<String, Object> variables, boolean localScope) {
-    this(taskId, variables);
-    this.localScope = localScope;
-  }
-
-  public CompleteTaskCmd(String taskId, Map<String, Object> variables, Map<String, Object> transientVariables) {
-    this(taskId, variables);
-    this.transientVariables = transientVariables;
-  }
-
-  protected Void execute(CommandContext commandContext, TaskEntity task) {
-    if (variables != null) {
-      if (localScope) {
-        task.setVariablesLocal(variables);
-      } else if (task.getExecutionId() != null) {
-        task.setExecutionVariables(variables);
-      } else {
-        task.setVariables(variables);
-      }
+    public CompleteTaskCmd(String taskId, Map<String, Object> variables) {
+        super(taskId);
+        this.variables = variables;
     }
 
-    if (transientVariables != null) {
-      if (localScope) {
-        task.setTransientVariablesLocal(transientVariables);
-      } else {
-        task.setTransientVariables(transientVariables);
-      }
+    public CompleteTaskCmd(String taskId, Map<String, Object> variables, boolean localScope) {
+        this(taskId, variables);
+        this.localScope = localScope;
     }
 
-    Map<String, Object> taskLocalVariables = new HashMap<>(task.getVariablesLocal());
-    taskLocalVariables.put(ASSIGNEE_VARIABLE_NAME, task.getAssignee());
+    public CompleteTaskCmd(String taskId, Map<String, Object> variables, Map<String, Object> transientVariables) {
+        this(taskId, variables);
+        this.transientVariables = transientVariables;
+    }
 
-    setTaskVariables(taskLocalVariables);
+    protected Void execute(CommandContext commandContext, TaskEntity task) {
+        if (variables != null) {
+            if (localScope) {
+                task.setVariablesLocal(variables);
+            } else if (task.getExecutionId() != null) {
+                task.setExecutionVariables(variables);
+            } else {
+                task.setVariables(variables);
+            }
+        }
 
-    executeTaskComplete(commandContext, task, variables, localScope);
-    return null;
-  }
+        if (transientVariables != null) {
+            if (localScope) {
+                task.setTransientVariablesLocal(transientVariables);
+            } else {
+                task.setTransientVariables(transientVariables);
+            }
+        }
 
-  @Override
-  protected String getSuspendedTaskException() {
-    return "Cannot complete a suspended task";
-  }
+        Map<String, Object> taskLocalVariables = new HashMap<>(task.getVariablesLocal());
+        taskLocalVariables.put(ASSIGNEE_VARIABLE_NAME, task.getAssignee());
 
-  public Map<String, Object> getTaskVariables() {
-    return taskVariables;
-  }
+        setTaskVariables(taskLocalVariables);
 
-  private void setTaskVariables(Map<String, Object> taskVariables) {
-    this.taskVariables = taskVariables;
-  }
+        executeTaskComplete(commandContext, task, variables, localScope);
+        return null;
+    }
 
-  public String getTaskId() {
-    return taskId;
-  }
+    @Override
+    protected String getSuspendedTaskException() {
+        return "Cannot complete a suspended task";
+    }
 
+    public Map<String, Object> getTaskVariables() {
+        return taskVariables;
+    }
+
+    private void setTaskVariables(Map<String, Object> taskVariables) {
+        this.taskVariables = taskVariables;
+    }
+
+    public String getTaskId() {
+        return taskId;
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.persistence.entity.data;
 
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
@@ -28,28 +26,45 @@ import org.activiti.engine.repository.ProcessDefinition;
 
  */
 public interface ProcessDefinitionDataManager extends DataManager<ProcessDefinitionEntity> {
+    ProcessDefinitionEntity findLatestProcessDefinitionByKey(String processDefinitionKey);
 
-  ProcessDefinitionEntity findLatestProcessDefinitionByKey(String processDefinitionKey);
+    ProcessDefinitionEntity findLatestProcessDefinitionByKeyAndTenantId(String processDefinitionKey, String tenantId);
 
-  ProcessDefinitionEntity findLatestProcessDefinitionByKeyAndTenantId(String processDefinitionKey, String tenantId);
+    void deleteProcessDefinitionsByDeploymentId(String deploymentId);
 
-  void deleteProcessDefinitionsByDeploymentId(String deploymentId);
+    List<ProcessDefinition> findProcessDefinitionsByQueryCriteria(
+        ProcessDefinitionQueryImpl processDefinitionQuery,
+        Page page
+    );
 
-  List<ProcessDefinition> findProcessDefinitionsByQueryCriteria(ProcessDefinitionQueryImpl processDefinitionQuery, Page page);
+    long findProcessDefinitionCountByQueryCriteria(ProcessDefinitionQueryImpl processDefinitionQuery);
 
-  long findProcessDefinitionCountByQueryCriteria(ProcessDefinitionQueryImpl processDefinitionQuery);
+    ProcessDefinitionEntity findProcessDefinitionByDeploymentAndKey(String deploymentId, String processDefinitionKey);
 
-  ProcessDefinitionEntity findProcessDefinitionByDeploymentAndKey(String deploymentId, String processDefinitionKey);
+    ProcessDefinitionEntity findProcessDefinitionByDeploymentAndKeyAndTenantId(
+        String deploymentId,
+        String processDefinitionKey,
+        String tenantId
+    );
 
-  ProcessDefinitionEntity findProcessDefinitionByDeploymentAndKeyAndTenantId(String deploymentId, String processDefinitionKey, String tenantId);
+    ProcessDefinitionEntity findProcessDefinitionByKeyAndVersion(
+        String processDefinitionKey,
+        Integer processDefinitionVersion
+    );
 
-  ProcessDefinitionEntity findProcessDefinitionByKeyAndVersion(String processDefinitionKey, Integer processDefinitionVersion);
+    ProcessDefinitionEntity findProcessDefinitionByKeyAndVersionAndTenantId(
+        String processDefinitionKey,
+        Integer processDefinitionVersion,
+        String tenantId
+    );
 
-  ProcessDefinitionEntity findProcessDefinitionByKeyAndVersionAndTenantId(String processDefinitionKey, Integer processDefinitionVersion, String tenantId);
+    List<ProcessDefinition> findProcessDefinitionsByNativeQuery(
+        Map<String, Object> parameterMap,
+        int firstResult,
+        int maxResults
+    );
 
-  List<ProcessDefinition> findProcessDefinitionsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults);
+    long findProcessDefinitionCountByNativeQuery(Map<String, Object> parameterMap);
 
-  long findProcessDefinitionCountByNativeQuery(Map<String, Object> parameterMap);
-
-  void updateProcessDefinitionTenantIdForDeployment(String deploymentId, String newTenantId);
+    void updateProcessDefinitionTenantIdForDeployment(String deploymentId, String newTenantId);
 }

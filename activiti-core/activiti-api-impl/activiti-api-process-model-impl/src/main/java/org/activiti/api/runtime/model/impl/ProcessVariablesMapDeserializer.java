@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,72 +15,70 @@
  */
 package org.activiti.api.runtime.model.impl;
 
-import java.io.IOException;
-
+import java.util.function.Supplier;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.convert.ConversionService;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ValueDeserializer;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+public class ProcessVariablesMapDeserializer extends ValueDeserializer<ProcessVariablesMap<String, Object>> {
 
-public class ProcessVariablesMapDeserializer extends JsonDeserializer<ProcessVariablesMap<String, Object>> {
     private static final Logger logger = LoggerFactory.getLogger(ProcessVariablesMapDeserializer.class);
 
     private static final String VALUE = "value";
     private static final String TYPE = "type";
-    private final static ObjectMapper objectMapper = new ObjectMapper();
-    private final ConversionService conversionService;
+    private static final JsonMapper jsonMapper = new JsonMapper();
+    private final Supplier<ConversionService> conversionServiceSupplier;
 
-    public ProcessVariablesMapDeserializer(ConversionService conversionService) {
-        this.conversionService = conversionService;
+    public ProcessVariablesMapDeserializer(Supplier<ConversionService> conversionServiceSupplier) {
+        this.conversionServiceSupplier = conversionServiceSupplier;
     }
 
     @Override
-    public ProcessVariablesMap<String, Object> deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException,
-                                                                                                              JsonProcessingException {
+    public ProcessVariablesMap<String, Object> deserialize(JsonParser jp, DeserializationContext ctxt) {
         ProcessVariablesMap<String, Object> map = new ProcessVariablesMap<>();
 
-        ObjectMapper codec = (ObjectMapper) jp.getCodec();
-        JsonNode node = codec.readTree(jp);
-        node.fields().forEachRemaining(entry -> {
-            String name = entry.getKey();
-            JsonNode entryValue = entry.getValue();
+        JsonNode node = ctxt.readTree(jp);
+        node
+            .properties().iterator()
+            .forEachRemaining(entry -> {
+                String name = entry.getKey();
+                JsonNode entryValue = entry.getValue();
 
-            if(!entryValue.isNull()) {
-                if (entryValue.get(TYPE) != null && entryValue.get(VALUE) != null) {
-                    String type = entryValue.get(TYPE).textValue();
-                    String value = entryValue.get(VALUE).asText();
+                if (!entryValue.isNull()) {
+                    if (entryValue.get(TYPE) != null && entryValue.get(VALUE) != null) {
+                        String type = entryValue.get(TYPE).asString();
+                        String value = entryValue.get(VALUE).asString();
 
-                    Class<?> clazz = ProcessVariablesMapTypeRegistry.forType(type);
-                    Object result = conversionService.convert(value, clazz);
+                        Class<?> clazz = ProcessVariablesMapTypeRegistry.forType(type);
 
-                    if(ObjectValue.class.isInstance(result)) {
-                        result = ObjectValue.class.cast(result)
-                                                  .getObject();
+                        ConversionService conversionService = conversionServiceSupplier.get();
+
+                        Object result = conversionService.convert(value, clazz);
+
+                        if (ObjectValue.class.isInstance(result)) {
+                            result = ObjectValue.class.cast(result).getObject();
+                        }
+                        map.put(name, result);
+
+                    } else {
+                        Object value = null;
+                        try {
+                            value = jsonMapper.treeToValue(entryValue, Object.class);
+                        } catch (JacksonException e) {
+                            logger.error("Unexpected Json Processing Exception: ", e);
+                        }
+                        map.put(name, value);
                     }
-
-                    map.put(name, result);
+                } else {
+                    map.put(name, null);
                 }
-                else {
-                    Object value = null;
-                    try {
-                        value = objectMapper.treeToValue(entryValue,
-                                                         Object.class);
-                    } catch (JsonProcessingException e) {
-                        logger.error("Unexpected Json Processing Exception: ", e);
-                    }
-                    map.put(name, value);
-                }
-
-            } else {
-                map.put(name, null);
-            }
-        });
+            });
 
         return map;
     }

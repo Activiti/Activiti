@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,15 @@
  */
 package org.activiti.api.model.shared.event;
 
-
 import org.activiti.api.model.shared.model.VariableInstance;
 
 public interface VariableEvent extends RuntimeEvent<VariableInstance, VariableEvent.VariableEvents> {
-
     enum VariableEvents {
-
         VARIABLE_CREATED,
 
         VARIABLE_UPDATED,
 
-        VARIABLE_DELETED
-
+        VARIABLE_DELETED,
     }
 
     boolean isEphemeralVariable();

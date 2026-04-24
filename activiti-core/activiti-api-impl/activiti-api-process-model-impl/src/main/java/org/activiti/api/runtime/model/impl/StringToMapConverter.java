@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,27 +15,28 @@
  */
 package org.activiti.api.runtime.model.impl;
 
+import tools.jackson.databind.JavaType;
+import tools.jackson.databind.json.JsonMapper;
 import java.util.Map;
-
 import org.springframework.core.convert.converter.Converter;
-
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ProcessVariableTypeConverter
 public class StringToMapConverter implements Converter<String, Map<String, Object>> {
-    private final ObjectMapper objectMapper;
 
-    public StringToMapConverter(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
+    private final JsonMapper jsonMapper;
+
+    public StringToMapConverter(JsonMapper jsonMapper) {
+        this.jsonMapper = jsonMapper;
     }
 
     @Override
     public Map<String, Object> convert(String source) {
-        JavaType javaType = objectMapper.getTypeFactory().constructParametricType(Map.class, String.class, Object.class);
+        JavaType javaType = jsonMapper
+            .getTypeFactory()
+            .constructParametricType(Map.class, String.class, Object.class);
 
         try {
-            return objectMapper.readValue(source, javaType);
+            return jsonMapper.readValue(source, javaType);
         } catch (Exception cause) {
             throw new RuntimeException(cause);
         }

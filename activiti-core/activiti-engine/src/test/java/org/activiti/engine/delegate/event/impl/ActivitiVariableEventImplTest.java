@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.delegate.event.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -42,5 +41,4 @@ public class ActivitiVariableEventImplTest {
         //then
         assertThat(variableEvent.isTaskVariable()).isFalse();
     }
-
 }

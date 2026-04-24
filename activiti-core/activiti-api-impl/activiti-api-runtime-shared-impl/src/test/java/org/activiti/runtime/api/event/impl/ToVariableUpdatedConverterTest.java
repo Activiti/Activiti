@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
-
 import org.activiti.api.model.shared.event.VariableEvent.VariableEvents;
 import org.activiti.api.model.shared.event.VariableUpdatedEvent;
 import org.activiti.api.model.shared.model.VariableInstance;
@@ -80,7 +79,10 @@ class ToVariableUpdatedConverterTest {
         assertThat(actualValue).isNull();
     }
 
-    private VariableInstance assertVariableUpdatedEvent(VariableUpdatedEvent actualEvent, ActivitiVariableUpdatedEventImpl internalEvent) {
+    private VariableInstance assertVariableUpdatedEvent(
+        VariableUpdatedEvent actualEvent,
+        ActivitiVariableUpdatedEventImpl internalEvent
+    ) {
         assertThat(actualEvent.getEventType()).isEqualTo(VariableEvents.VARIABLE_UPDATED);
         VariableInstance actualEntity = actualEvent.getEntity();
         assertThat(actualEntity.getName()).isEqualTo(internalEvent.getVariableName());

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.spring.cache.test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -42,10 +41,11 @@ import org.springframework.context.annotation.Bean;
         "activiti.spring.cache-manager.caches.foo.caffeine.spec=initialCapacity=100, maximumSize=1000, expireAfterAccess=60s, recordStats",
         "activiti.spring.cache-manager.caches.bar.enabled=false",
         "activiti.spring.cache-manager.caches.bar.caffeine.spec=initialCapacity=100, maximumSize=1000, expireAfterAccess=60s, recordStats",
-})
+    }
+)
 class ActivitiSpringCaffeineCacheManagerTests {
 
-    private static final List<Caffeine<Object,Object>> caffeineCacheConfigurers = new ArrayList<>();
+    private static final List<Caffeine<Object, Object>> caffeineCacheConfigurers = new ArrayList<>();
 
     @SpringBootApplication
     static class TestApplication {
@@ -76,9 +76,7 @@ class ActivitiSpringCaffeineCacheManagerTests {
 
     @Test
     void testCacheManager() {
-        assertThat(cacheManager)
-            .isNotNull()
-            .isInstanceOf(CaffeineCacheManager.class);
+        assertThat(cacheManager).isNotNull().isInstanceOf(CaffeineCacheManager.class);
     }
 
     @Test
@@ -110,7 +108,5 @@ class ActivitiSpringCaffeineCacheManagerTests {
         var cache = cacheManager.getCache("foo");
 
         assertThat(cache.get("foo", String.class)).isEqualTo("bar");
-
     }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,12 @@ package org.activiti.editor.language.xml;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.nio.charset.StandardCharsets;
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.UserTask;
 import org.junit.jupiter.api.Test;
-
-import java.nio.charset.StandardCharsets;
 
 public class MultiInstanceUserTaskConverterTest extends AbstractConverterTest {
 
@@ -54,13 +53,12 @@ public class MultiInstanceUserTaskConverterTest extends AbstractConverterTest {
     }
 
     private void checkXml(BpmnModel model) throws Exception {
+        String xml = new String(new BpmnXMLConverter().convertToXML(model), StandardCharsets.UTF_8);
 
-        String xml = new String(new BpmnXMLConverter().convertToXML(model),
-            StandardCharsets.UTF_8);
-
-        assertThat(xml).containsSubsequence("incoming>SequenceFlow_0c6mbti<",
-                                            "outgoing>SequenceFlow_0pj9a04<",
-                                            "<bpmn2:multiInstanceLoopCharacteristics");
-
+        assertThat(xml).containsSubsequence(
+            "incoming>SequenceFlow_0c6mbti<",
+            "outgoing>SequenceFlow_0pj9a04<",
+            "<bpmn2:multiInstanceLoopCharacteristics"
+        );
     }
 }

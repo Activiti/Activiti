@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,10 @@
  */
 package org.activiti.spring.boot.tasks;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
+
+import java.util.List;
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.task.model.Task;
@@ -27,19 +31,13 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.TestPropertySource;
 
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@TestPropertySource(properties = {
-    "spring.activiti.env-var-el-resolver.enabled=false"
-})
+@TestPropertySource(properties = { "spring.activiti.env-var-el-resolver.enabled=false" })
 class EnvironmentVariableELResolverDisabledIT {
 
     private static final String TASK_EXPRESSION_MAPPING_ENV_VARS = "taskExpressionMappingEnvVars";
-    private static final String TASK_EXPRESSION_MAPPING_ENV_VARS_PROCESS_VARS = "taskExpressionMappingEnvVarsAndProcessVar";
+    private static final String TASK_EXPRESSION_MAPPING_ENV_VARS_PROCESS_VARS =
+        "taskExpressionMappingEnvVarsAndProcessVar";
 
     @Autowired
     Environment environment;
@@ -57,7 +55,7 @@ class EnvironmentVariableELResolverDisabledIT {
         List<Task> tasks = taskBaseRuntime.getTasksByProcessInstanceId(processInstanceId);
         assertThat(tasks).isNotEmpty();
         assertThat(tasks).hasSize(1);
-        return tasks.get(0);
+        return tasks.getFirst();
     }
 
     @Test
@@ -67,7 +65,9 @@ class EnvironmentVariableELResolverDisabledIT {
 
     @Test
     public void should_notMapTaskVariables_when_inputMappingWithExpression_envVarResolverIsDisabled() {
-        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(TASK_EXPRESSION_MAPPING_ENV_VARS);
+        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(
+            TASK_EXPRESSION_MAPPING_ENV_VARS
+        );
 
         Task task = checkTasks(processInstance.getId());
 
@@ -76,19 +76,15 @@ class EnvironmentVariableELResolverDisabledIT {
 
         assertThat(taskVariables)
             .isNotNull()
-            .extracting(VariableInstance::getName,
-                VariableInstance::getValue)
-            .containsOnly(
-                tuple("inValue", "varValue"),
-                tuple("envVar", null),
-                tuple("inNull", null)
-            );
-
+            .extracting(VariableInstance::getName, VariableInstance::getValue)
+            .containsOnly(tuple("inValue", "varValue"), tuple("envVar", null), tuple("inNull", null));
     }
 
     @Test
     public void should_mapTaskVariablesToProcessVar_ifProcessVarExists_when_inputMappingWithExpression_envVarResolverIsDisabled() {
-        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(TASK_EXPRESSION_MAPPING_ENV_VARS_PROCESS_VARS);
+        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(
+            TASK_EXPRESSION_MAPPING_ENV_VARS_PROCESS_VARS
+        );
 
         Task task = checkTasks(processInstance.getId());
 
@@ -96,12 +92,7 @@ class EnvironmentVariableELResolverDisabledIT {
         List<VariableInstance> taskVariables = taskBaseRuntime.getTasksVariablesByTaskId(task.getId());
         assertThat(taskVariables)
             .isNotNull()
-            .extracting(VariableInstance::getName,
-                VariableInstance::getValue)
-            .containsOnly(
-                tuple("inValue", "varValue"),
-                tuple("envVar", "some_value"),
-                tuple("inNull", null)
-            );
+            .extracting(VariableInstance::getName, VariableInstance::getValue)
+            .containsOnly(tuple("inValue", "varValue"), tuple("envVar", "some_value"), tuple("inNull", null));
     }
 }
