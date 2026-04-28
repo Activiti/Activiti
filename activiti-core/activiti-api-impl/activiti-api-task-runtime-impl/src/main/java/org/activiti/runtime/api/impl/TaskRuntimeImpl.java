@@ -68,8 +68,9 @@ public class TaskRuntimeImpl implements TaskRuntime {
 
     private final TaskRuntimeHelper taskRuntimeHelper;
 
+    // Keys are stored in lowercase because applySortOrder() normalizes requested sort properties before lookup.
     private static final java.util.Map<String, java.util.function.Function<TaskQuery, TaskQuery>> SORT_FIELD_MAPPERS =
-        java.util.Map.of("createdDate", TaskQuery::orderByTaskCreateTime);
+        java.util.Map.of("createddate", TaskQuery::orderByTaskCreateTime);
 
     public TaskRuntimeImpl(
         TaskService taskService,
