@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,16 @@
  */
 package org.activiti.core.el;
 
+import jakarta.el.FunctionMapper;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import javax.el.FunctionMapper;
 
 /**
  * Default implementation of a {@link FunctionMapper}.
  * <p>
- * A non-null implementation is required by the javax.el.* classes, hence the reason for this pretty useless class.
+ * A non-null implementation is required by the jakarta.el.* classes, hence the reason for this pretty useless class.
  */
 public class ActivitiFunctionMapper extends FunctionMapper {
 

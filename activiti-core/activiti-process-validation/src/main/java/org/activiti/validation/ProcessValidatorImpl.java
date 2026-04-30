@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,56 +13,56 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.validation;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.validation.validator.ValidationErrorDecorator;
 import org.activiti.validation.validator.Validator;
 import org.activiti.validation.validator.ValidatorSet;
 
-/**
-
- */
 public class ProcessValidatorImpl implements ProcessValidator {
 
-  protected List<ValidatorSet> validatorSets;
+    protected List<ValidatorSet> validatorSets;
+    protected ValidationErrorDecorator validationErrorDecorator;
 
-  @Override
-  public List<ValidationError> validate(BpmnModel bpmnModel) {
+    public ProcessValidatorImpl() {
+        this.validationErrorDecorator = new ValidationErrorDecorator();
+    }
 
-    List<ValidationError> allErrors = new ArrayList<ValidationError>();
+    @Override
+    public List<ValidationError> validate(BpmnModel bpmnModel) {
+        List<ValidationError> allErrors = new ArrayList<ValidationError>();
 
-    for (ValidatorSet validatorSet : validatorSets) {
-      for (Validator validator : validatorSet.getValidators()) {
-        List<ValidationError> validatorErrors = new ArrayList<ValidationError>();
-        validator.validate(bpmnModel, validatorErrors);
-        if (!validatorErrors.isEmpty()) {
-          for (ValidationError error : validatorErrors) {
-            error.setValidatorSetName(validatorSet.getName());
-          }
-          allErrors.addAll(validatorErrors);
+        for (ValidatorSet validatorSet : validatorSets) {
+            for (Validator validator : validatorSet.getValidators()) {
+                List<ValidationError> validatorErrors = new ArrayList<ValidationError>();
+                validator.validate(bpmnModel, validatorErrors);
+                if (!validatorErrors.isEmpty()) {
+                    for (ValidationError error : validatorErrors) {
+                        error.setValidatorSetName(validatorSet.getName());
+                        validationErrorDecorator.decorate(error);
+                    }
+                    allErrors.addAll(validatorErrors);
+                }
+            }
         }
-      }
+        return allErrors;
     }
-    return allErrors;
-  }
 
-  public List<ValidatorSet> getValidatorSets() {
-    return validatorSets;
-  }
-
-  public void setValidatorSets(List<ValidatorSet> validatorSets) {
-    this.validatorSets = validatorSets;
-  }
-
-  public void addValidatorSet(ValidatorSet validatorSet) {
-    if (validatorSets == null) {
-      validatorSets = new ArrayList<ValidatorSet>();
+    public List<ValidatorSet> getValidatorSets() {
+        return validatorSets;
     }
-    validatorSets.add(validatorSet);
-  }
 
+    public void setValidatorSets(List<ValidatorSet> validatorSets) {
+        this.validatorSets = validatorSets;
+    }
+
+    public void addValidatorSet(ValidatorSet validatorSet) {
+        if (validatorSets == null) {
+            validatorSets = new ArrayList<ValidatorSet>();
+        }
+        validatorSets.add(validatorSet);
+    }
 }

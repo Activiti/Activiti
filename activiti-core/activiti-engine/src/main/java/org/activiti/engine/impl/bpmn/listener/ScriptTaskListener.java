@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.bpmn.listener;
 
 import org.activiti.engine.delegate.DelegateTask;
@@ -29,51 +27,50 @@ import org.activiti.engine.impl.scripting.ScriptingEngines;
  */
 public class ScriptTaskListener implements TaskListener {
 
-  private static final long serialVersionUID = -8915149072830499057L;
+    private static final long serialVersionUID = -8915149072830499057L;
 
-  protected Expression script;
+    protected Expression script;
 
-  protected Expression language;
+    protected Expression language;
 
-  protected Expression resultVariable;
+    protected Expression resultVariable;
 
-  protected boolean autoStoreVariables;
+    protected boolean autoStoreVariables;
 
-  public void notify(DelegateTask delegateTask) {
-    validateParameters();
+    public void notify(DelegateTask delegateTask) {
+        validateParameters();
 
-    ScriptingEngines scriptingEngines = Context.getProcessEngineConfiguration().getScriptingEngines();
-    Object result = scriptingEngines.evaluate(script.getExpressionText(), language.getExpressionText(), delegateTask, autoStoreVariables);
+        ScriptingEngines scriptingEngines = Context.getProcessEngineConfiguration().getScriptingEngines();
+        Object result = scriptingEngines.evaluate(script.getExpressionText(), language.getExpressionText(), delegateTask, autoStoreVariables);
 
-    if (resultVariable != null) {
-      delegateTask.setVariable(resultVariable.getExpressionText(), result);
+        if (resultVariable != null) {
+          delegateTask.setVariable(resultVariable.getExpressionText(), result);
+        }
+      }
+
+    protected void validateParameters() {
+        if (script == null) {
+            throw new IllegalArgumentException("The field 'script' should be set on the TaskListener");
+        }
+
+        if (language == null) {
+            throw new IllegalArgumentException("The field 'language' should be set on the TaskListener");
+        }
     }
-  }
 
-  protected void validateParameters() {
-    if (script == null) {
-      throw new IllegalArgumentException("The field 'script' should be set on the TaskListener");
+    public void setScript(Expression script) {
+        this.script = script;
     }
 
-    if (language == null) {
-      throw new IllegalArgumentException("The field 'language' should be set on the TaskListener");
+    public void setLanguage(Expression language) {
+        this.language = language;
     }
-  }
 
-  public void setScript(Expression script) {
-    this.script = script;
-  }
+    public void setResultVariable(Expression resultVariable) {
+        this.resultVariable = resultVariable;
+    }
 
-  public void setLanguage(Expression language) {
-    this.language = language;
-  }
-
-  public void setResultVariable(Expression resultVariable) {
-    this.resultVariable = resultVariable;
-  }
-
-  public void setAutoStoreVariables(boolean autoStoreVariables) {
-    this.autoStoreVariables = autoStoreVariables;
-  }
-
+    public void setAutoStoreVariables(boolean autoStoreVariables) {
+        this.autoStoreVariables = autoStoreVariables;
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.cfg;
 
-
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 
 /**
 
  */
 public class JpaHelper {
 
-  public static EntityManagerFactory createEntityManagerFactory(String jpaPersistenceUnitName) {
-    return Persistence.createEntityManagerFactory(jpaPersistenceUnitName);
-  }
-
+    public static EntityManagerFactory createEntityManagerFactory(String jpaPersistenceUnitName) {
+        return Persistence.createEntityManagerFactory(jpaPersistenceUnitName);
+    }
 }

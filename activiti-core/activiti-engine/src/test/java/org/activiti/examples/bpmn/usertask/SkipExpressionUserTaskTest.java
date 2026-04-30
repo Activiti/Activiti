@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -33,7 +32,7 @@ public class SkipExpressionUserTaskTest extends PluggableActivitiTestCase {
         ProcessInstance pi = runtimeService.startProcessInstanceByKey("skipExpressionUserTask");
         List<Task> tasks = taskService.createTaskQuery().list();
         assertThat(tasks).hasSize(1);
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
         assertThat(taskService.createTaskQuery().list()).hasSize(0);
 
         Map<String, Object> variables2 = new HashMap<String, Object>();
@@ -42,7 +41,7 @@ public class SkipExpressionUserTaskTest extends PluggableActivitiTestCase {
         runtimeService.startProcessInstanceByKey("skipExpressionUserTask", variables2);
         List<Task> tasks2 = taskService.createTaskQuery().list();
         assertThat(tasks2).hasSize(1);
-        taskService.complete(tasks2.get(0).getId());
+        taskService.complete(tasks2.getFirst().getId());
         assertThat(taskService.createTaskQuery().list()).hasSize(0);
 
         Map<String, Object> variables3 = new HashMap<String, Object>();
@@ -70,10 +69,9 @@ public class SkipExpressionUserTaskTest extends PluggableActivitiTestCase {
         variables.put("skip2", true);
         variables.put("skip3", false);
 
-        runtimeService.startProcessInstanceByKey("skipExpressionUserTask-testSkipMultipleTasks",
-                                                 variables);
+        runtimeService.startProcessInstanceByKey("skipExpressionUserTask-testSkipMultipleTasks", variables);
         List<Task> tasks = taskService.createTaskQuery().list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getName()).isEqualTo("Task3");
+        assertThat(tasks.getFirst().getName()).isEqualTo("Task3");
     }
 }

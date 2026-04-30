@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.persistence.deploy;
 
 import static java.util.Collections.synchronizedMap;
@@ -21,7 +20,6 @@ import static java.util.Collections.synchronizedMap;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,59 +30,60 @@ import org.slf4j.LoggerFactory;
  */
 public class DefaultDeploymentCache<T> implements DeploymentCache<T> {
 
-  private static final Logger logger = LoggerFactory.getLogger(DefaultDeploymentCache.class);
+    private static final Logger logger = LoggerFactory.getLogger(DefaultDeploymentCache.class);
 
-  protected Map<String, T> cache;
+    protected Map<String, T> cache;
 
-  /** Cache with no limit */
-  public DefaultDeploymentCache() {
-    this.cache = synchronizedMap(new HashMap<String, T>());
-  }
+    /** Cache with no limit */
+    public DefaultDeploymentCache() {
+        this.cache = synchronizedMap(new HashMap<String, T>());
+    }
 
-  /**
-   * Cache which has a hard limit: no more elements will be cached than the limit.
-   */
-  public DefaultDeploymentCache(final int limit) {
-    this.cache = synchronizedMap(new LinkedHashMap<String, T>(limit + 1, 0.75f, true) { // +1 is needed, because the entry is inserted first, before it is removed
-          // 0.75 is the default (see javadocs)
-          // true will keep the 'access-order', which is needed to have a real LRU cache
-          private static final long serialVersionUID = 1L;
+    /**
+     * Cache which has a hard limit: no more elements will be cached than the limit.
+     */
+    public DefaultDeploymentCache(final int limit) {
+        this.cache = synchronizedMap(
+            new LinkedHashMap<String, T>(limit + 1, 0.75f, true) {
+                // +1 is needed, because the entry is inserted first, before it is removed
+                // 0.75 is the default (see javadocs)
+                // true will keep the 'access-order', which is needed to have a real LRU cache
+                private static final long serialVersionUID = 1L;
 
-          protected boolean removeEldestEntry(Map.Entry<String, T> eldest) {
-            boolean removeEldest = size() > limit;
-            if (removeEldest && logger.isTraceEnabled()) {
-              logger.trace("Cache limit is reached, {} will be evicted", eldest.getKey());
+                protected boolean removeEldestEntry(Map.Entry<String, T> eldest) {
+                    boolean removeEldest = size() > limit;
+                    if (removeEldest && logger.isTraceEnabled()) {
+                        logger.trace("Cache limit {} is reached, {} will be evicted", limit, eldest.getKey());
+                    }
+                    return removeEldest;
+                }
             }
-            return removeEldest;
-          }
+        );
+    }
 
-        });
-  }
+    public T get(String id) {
+        return cache.get(id);
+    }
 
-  public T get(String id) {
-    return cache.get(id);
-  }
+    public void add(String id, T obj) {
+        cache.put(id, obj);
+    }
 
-  public void add(String id, T obj) {
-    cache.put(id, obj);
-  }
+    public void remove(String id) {
+        cache.remove(id);
+    }
 
-  public void remove(String id) {
-    cache.remove(id);
-  }
+    @Override
+    public boolean contains(String id) {
+        return cache.containsKey(id);
+    }
 
-  @Override
-  public boolean contains(String id) {
-    return cache.containsKey(id);
-  }
+    public void clear() {
+        cache.clear();
+    }
 
-  public void clear() {
-    cache.clear();
-  }
-
-  // For testing purposes only
-  public int size() {
-    return cache.size();
-  }
-
+    // For testing purposes only
+    public int size() {
+        return cache.size();
+    }
 }

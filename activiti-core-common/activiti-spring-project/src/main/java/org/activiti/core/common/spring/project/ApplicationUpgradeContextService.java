@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,11 @@
  */
 package org.activiti.core.common.spring.project;
 
+import tools.jackson.databind.json.JsonMapper;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Optional;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.core.common.project.model.ProjectManifest;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
@@ -31,22 +30,27 @@ public class ApplicationUpgradeContextService {
 
     private Integer enforcedAppVersion;
 
-    private final ObjectMapper objectMapper;
+    private boolean isRollbackDeployment;
+
+    private final JsonMapper jsonMapper;
 
     private ResourcePatternResolver resourceLoader;
 
-    public ApplicationUpgradeContextService(String path,
-                                            Integer enforcedAppVersion,
-                                            ObjectMapper objectMapper,
-                                            ResourcePatternResolver resourceLoader) {
+    public ApplicationUpgradeContextService(
+        String path,
+        Integer enforcedAppVersion,
+        Boolean isRollbackDeployment,
+        JsonMapper jsonMapper,
+        ResourcePatternResolver resourceLoader
+    ) {
         this.projectManifestFilePath = path;
         this.enforcedAppVersion = enforcedAppVersion;
-        this.objectMapper = objectMapper;
+        this.isRollbackDeployment = isRollbackDeployment;
+        this.jsonMapper = jsonMapper;
         this.resourceLoader = resourceLoader;
     }
 
     private Optional<Resource> retrieveResource() {
-
         Resource resource = resourceLoader.getResource(projectManifestFilePath);
         if (resource.exists()) {
             return Optional.of(resource);
@@ -56,16 +60,21 @@ public class ApplicationUpgradeContextService {
     }
 
     private ProjectManifest read(InputStream inputStream) throws IOException {
-        return objectMapper.readValue(inputStream,
-                                      ProjectManifest.class);
+        return jsonMapper.readValue(inputStream, ProjectManifest.class);
+    }
+
+    public boolean isRollbackDeployment() {
+        return isRollbackDeployment;
     }
 
     public ProjectManifest loadProjectManifest() throws IOException {
         Optional<Resource> resourceOptional = retrieveResource();
 
-        return read(resourceOptional
-                        .orElseThrow(() -> new FileNotFoundException("'" + projectManifestFilePath + "' manifest not found."))
-                        .getInputStream());
+        return read(
+            resourceOptional
+                .orElseThrow(() -> new FileNotFoundException("'" + projectManifestFilePath + "' manifest not found."))
+                .getInputStream()
+        );
     }
 
     public boolean hasProjectManifest() {

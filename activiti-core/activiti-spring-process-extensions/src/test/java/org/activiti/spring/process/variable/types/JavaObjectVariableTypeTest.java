@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package org.activiti.spring.process.variable.types;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 import org.activiti.engine.ActivitiException;
@@ -25,32 +26,44 @@ import org.junit.jupiter.api.Test;
 class JavaObjectVariableTypeTest {
 
     private List<ActivitiException> exceptionList;
-    JavaObjectVariableType javaObjectVariableType;
+    private JavaObjectVariableType javaObjectVariableType;
 
     @BeforeEach
     public void setUp() {
-        javaObjectVariableType = new JavaObjectVariableType(Boolean.class);
         exceptionList = new ArrayList<>();
     }
 
     @Test
     public void should_returnException_when_validateValueNotAssignableToClass() {
+        javaObjectVariableType = new JavaObjectVariableType(Boolean.class);
         javaObjectVariableType.validate(1, exceptionList);
 
-        assertTrue(exceptionList.stream().anyMatch(error ->
-            error.getMessage().equals("class java.lang.Integer is not assignable from class java.lang.Boolean")
-        ));
+        assertTrue(
+            exceptionList
+                .stream()
+                .anyMatch(error ->
+                    error.getMessage().equals("class java.lang.Integer is not assignable from class java.lang.Boolean")
+                )
+        );
     }
 
     @Test
     public void should_returnEmptyErrorList_when_validateValueAssignableToClass() {
+        javaObjectVariableType = new JavaObjectVariableType(Boolean.class);
         javaObjectVariableType.validate(true, exceptionList);
+
+        javaObjectVariableType = new JavaObjectVariableType(Integer.class);
+        javaObjectVariableType.validate(1, exceptionList);
+
+        javaObjectVariableType = new JavaObjectVariableType(String.class);
+        javaObjectVariableType.validate("abc", exceptionList);
 
         assertTrue(exceptionList.isEmpty());
     }
 
     @Test
     public void should_returnEmptyErrorList_when_validateValidExpression() {
+        javaObjectVariableType = new JavaObjectVariableType(String.class);
         javaObjectVariableType.validate("${now()}", exceptionList);
 
         assertTrue(exceptionList.isEmpty());
@@ -58,10 +71,15 @@ class JavaObjectVariableTypeTest {
 
     @Test
     public void should_returnException_when_validateIncompleteExpression() {
+        javaObjectVariableType = new JavaObjectVariableType(Boolean.class);
         javaObjectVariableType.validate("${now()", exceptionList);
 
-        assertTrue(exceptionList.stream().anyMatch(error ->
-            error.getMessage().equals("class java.lang.String is not assignable from class java.lang.Boolean")
-        ));
+        assertTrue(
+            exceptionList
+                .stream()
+                .anyMatch(error ->
+                    error.getMessage().equals("class java.lang.String is not assignable from class java.lang.Boolean")
+                )
+        );
     }
 }

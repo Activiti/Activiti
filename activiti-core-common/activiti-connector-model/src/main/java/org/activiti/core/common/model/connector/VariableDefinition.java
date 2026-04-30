@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,8 @@ public class VariableDefinition {
     private String displayName;
 
     private boolean analytics;
+
+    private boolean ephemeral;
 
     public String getId() {
         return id;
@@ -95,5 +97,13 @@ public class VariableDefinition {
 
     public void setAnalytics(boolean analytics) {
         this.analytics = analytics;
+    }
+
+    public void setEphemeral(boolean ephemeral) {
+        this.ephemeral = ephemeral;
+    }
+
+    public boolean isEphemeral() {
+        return ephemeral;
     }
 }

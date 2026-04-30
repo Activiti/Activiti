@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,35 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.spring.process.conf;
 
+import tools.jackson.databind.json.JsonMapper;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.common.util.DateFormatterProvider;
 import org.activiti.engine.RepositoryService;
+import org.activiti.spring.process.CacheableProcessExtensionRepository;
 import org.activiti.spring.process.CachingProcessExtensionService;
+import org.activiti.spring.process.ProcessExtensionRepository;
+import org.activiti.spring.process.ProcessExtensionRepositoryImpl;
 import org.activiti.spring.process.ProcessExtensionResourceReader;
 import org.activiti.spring.process.ProcessExtensionService;
 import org.activiti.spring.process.model.ProcessExtensionModel;
 import org.activiti.spring.process.variable.VariableParsingService;
 import org.activiti.spring.process.variable.VariableValidationService;
+import org.activiti.spring.process.variable.types.BigDecimalVariableType;
 import org.activiti.spring.process.variable.types.DateVariableType;
 import org.activiti.spring.process.variable.types.JavaObjectVariableType;
 import org.activiti.spring.process.variable.types.JsonObjectVariableType;
 import org.activiti.spring.process.variable.types.VariableType;
 import org.activiti.spring.resources.DeploymentResourceLoader;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.PropertySource;
 
-@Configuration
+@AutoConfiguration
 @EnableCaching
+@PropertySource("classpath:config/process-extensions-service.properties")
 public class ProcessExtensionsAutoConfiguration {
 
     @Bean
@@ -52,46 +57,61 @@ public class ProcessExtensionsAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ProcessExtensionResourceReader processExtensionResourceReader(ObjectMapper objectMapper,
-                                                            Map<String, VariableType> variableTypeMap) {
-        return new ProcessExtensionResourceReader(objectMapper, variableTypeMap);
+    public ProcessExtensionResourceReader processExtensionResourceReader(
+        JsonMapper jsonMapper,
+        Map<String, VariableType> variableTypeMap
+    ) {
+        return new ProcessExtensionResourceReader(jsonMapper, variableTypeMap);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public ProcessExtensionService processExtensionService(ProcessExtensionResourceReader processExtensionResourceReader,
-                                                           DeploymentResourceLoader<ProcessExtensionModel> deploymentResourceLoader) {
-        return new ProcessExtensionService(
-                deploymentResourceLoader,
-                processExtensionResourceReader);
+    public ProcessExtensionRepository processExtensionsRepository(
+        ProcessExtensionResourceReader processExtensionResourceReader,
+        DeploymentResourceLoader<ProcessExtensionModel> deploymentResourceLoader,
+        @Lazy RepositoryService repositoryService
+    ) {
+        var delegate = new ProcessExtensionRepositoryImpl(
+            deploymentResourceLoader,
+            processExtensionResourceReader,
+            repositoryService
+        );
+
+        return new CacheableProcessExtensionRepository(delegate);
     }
 
     @Bean
-    InitializingBean initRepositoryServiceForProcessExtensionService(RepositoryService repositoryService,
-                                                                     ProcessExtensionService processExtensionService) {
-        return () -> processExtensionService.setRepositoryService(repositoryService);
+    @ConditionalOnMissingBean
+    public ProcessExtensionService processExtensionService(ProcessExtensionRepository processExtensionsRepository) {
+        return new ProcessExtensionService(processExtensionsRepository);
     }
 
     @Bean
-    InitializingBean initRepositoryServiceForDeploymentResourceLoader(RepositoryService repositoryService,
-                                                                      DeploymentResourceLoader deploymentResourceLoader) {
+    InitializingBean initRepositoryServiceForDeploymentResourceLoader(
+        RepositoryService repositoryService,
+        DeploymentResourceLoader deploymentResourceLoader
+    ) {
         return () -> deploymentResourceLoader.setRepositoryService(repositoryService);
     }
 
     @Bean
     @ConditionalOnMissingBean(name = "variableTypeMap")
-    public Map<String, VariableType> variableTypeMap(ObjectMapper objectMapper,
-                                                     DateFormatterProvider dateFormatterProvider) {
+    public Map<String, VariableType> variableTypeMap(
+        JsonMapper jsonMapper,
+        DateFormatterProvider dateFormatterProvider
+    ) {
         Map<String, VariableType> variableTypeMap = new HashMap<>();
         variableTypeMap.put("boolean", new JavaObjectVariableType(Boolean.class));
         variableTypeMap.put("string", new JavaObjectVariableType(String.class));
         variableTypeMap.put("integer", new JavaObjectVariableType(Integer.class));
-        variableTypeMap.put("json", new JsonObjectVariableType(objectMapper));
-        variableTypeMap.put("file", new JsonObjectVariableType(objectMapper));
-        variableTypeMap.put("folder", new JsonObjectVariableType(objectMapper));
+        variableTypeMap.put("bigdecimal", new BigDecimalVariableType());
+        variableTypeMap.put("json", new JsonObjectVariableType(jsonMapper));
+        variableTypeMap.put("file", new JsonObjectVariableType(jsonMapper));
+        variableTypeMap.put("folder", new JsonObjectVariableType(jsonMapper));
+        variableTypeMap.put("content", new JsonObjectVariableType(jsonMapper));
         variableTypeMap.put("date", new DateVariableType(Date.class, dateFormatterProvider));
         variableTypeMap.put("datetime", new DateVariableType(Date.class, dateFormatterProvider));
-        variableTypeMap.put("array", new JsonObjectVariableType(objectMapper));
+        variableTypeMap.put("array", new JsonObjectVariableType(jsonMapper));
         return variableTypeMap;
     }
 
@@ -107,7 +127,9 @@ public class ProcessExtensionsAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public CachingProcessExtensionService cachingProcessExtensionService(ProcessExtensionService processExtensionService) {
+    public CachingProcessExtensionService cachingProcessExtensionService(
+        ProcessExtensionService processExtensionService
+    ) {
         return new CachingProcessExtensionService(processExtensionService);
     }
 }

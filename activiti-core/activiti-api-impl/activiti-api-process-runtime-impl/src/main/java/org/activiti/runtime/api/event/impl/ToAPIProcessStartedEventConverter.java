@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,14 @@
  */
 package org.activiti.runtime.api.event.impl;
 
+import java.util.Optional;
 import org.activiti.api.process.runtime.events.ProcessStartedEvent;
 import org.activiti.engine.delegate.event.ActivitiProcessStartedEvent;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
 
-import java.util.Optional;
-
-public class ToAPIProcessStartedEventConverter implements EventConverter<ProcessStartedEvent, ActivitiProcessStartedEvent> {
+public class ToAPIProcessStartedEventConverter
+    implements EventConverter<ProcessStartedEvent, ActivitiProcessStartedEvent> {
 
     private final APIProcessInstanceConverter processInstanceConverter;
 
@@ -32,12 +32,14 @@ public class ToAPIProcessStartedEventConverter implements EventConverter<Process
 
     @Override
     public Optional<ProcessStartedEvent> from(ActivitiProcessStartedEvent internalEvent) {
-        ExecutionEntity entity = (ExecutionEntity)
-                internalEvent.getEntity();
+        ExecutionEntity entity = (ExecutionEntity) internalEvent.getEntity();
         ProcessStartedEventImpl processStartedEvent = new ProcessStartedEventImpl(
-                processInstanceConverter.from(entity.getProcessInstance()));
+            processInstanceConverter.from(entity.getProcessInstance())
+        );
         processStartedEvent.setNestedProcessDefinitionId(internalEvent.getNestedProcessDefinitionId());
         processStartedEvent.setNestedProcessInstanceId(internalEvent.getNestedProcessInstanceId());
+        processStartedEvent.setLinkedProcessInstanceId(internalEvent.getLinkedProcessInstanceId());
+        processStartedEvent.setLinkedProcessInstanceType(internalEvent.getLinkedProcessInstanceType());
         return Optional.of(processStartedEvent);
     }
 }

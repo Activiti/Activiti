@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,32 +20,30 @@ import static org.activiti.api.runtime.model.impl.ProcessVariablesMapTypeRegistr
 import static org.activiti.api.runtime.model.impl.ProcessVariablesMapTypeRegistry.getContainerType;
 import static org.activiti.api.runtime.model.impl.ProcessVariablesMapTypeRegistry.isScalarType;
 
-import java.io.IOException;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.ser.std.StdSerializer;
 import java.util.HashMap;
 import java.util.Map;
-
+import java.util.function.Supplier;
 import org.springframework.core.convert.ConversionService;
-
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import tools.jackson.databind.SerializationContext;
 
 public class ProcessVariablesMapSerializer extends StdSerializer<ProcessVariablesMap<String, Object>> {
 
     private static final long serialVersionUID = 1L;
-    private final ConversionService conversionService;
+    private final Supplier<ConversionService> conversionServiceSupplier;
 
-    public ProcessVariablesMapSerializer(ConversionService conversionService) {
+    public ProcessVariablesMapSerializer(Supplier<ConversionService> conversionServiceSupplier) {
         super(ProcessVariablesMap.class, true);
-
-        this.conversionService = conversionService;
+        this.conversionServiceSupplier = conversionServiceSupplier;
     }
 
     @Override
-    public void serialize(ProcessVariablesMap<String, Object> processVariablesMap,
+    public void serialize(
+        ProcessVariablesMap<String, Object> processVariablesMap,
         JsonGenerator gen,
-        SerializerProvider serializers) throws IOException {
-
+        SerializationContext serializers
+    )  {
         HashMap<String, ProcessVariableValue> map = new HashMap<>();
         for (Map.Entry<String, Object> entry : processVariablesMap.entrySet()) {
             String name = entry.getKey();
@@ -53,7 +51,7 @@ public class ProcessVariablesMapSerializer extends StdSerializer<ProcessVariable
             map.put(name, buildProcessVariableValue(value));
         }
 
-        gen.writeObject(map);
+        gen.writePOJO(map);
     }
 
     private ProcessVariableValue buildProcessVariableValue(Object value) {
@@ -67,8 +65,8 @@ public class ProcessVariablesMapSerializer extends StdSerializer<ProcessVariable
                 value = new ObjectValue(value);
             }
 
+            ConversionService conversionService = this.conversionServiceSupplier.get();
             String entryValue = conversionService.convert(value, String.class);
-
             variableValue = new ProcessVariableValue(entryType, entryValue);
         }
 
@@ -81,8 +79,7 @@ public class ProcessVariablesMapSerializer extends StdSerializer<ProcessVariable
         if (isScalarType(clazz)) {
             entryType = clazz;
         } else {
-            entryType = getContainerType(clazz, value)
-                            .orElse(ObjectValue.class);
+            entryType = getContainerType(clazz, value).orElse(ObjectValue.class);
         }
 
         return forClass(entryType);

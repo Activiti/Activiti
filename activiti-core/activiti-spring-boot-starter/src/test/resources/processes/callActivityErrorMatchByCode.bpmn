@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:activiti="http://activiti.org/bpmn"
+             targetNamespace="http://www.activiti.org/test">
+
+  <error id="ERR_PARENT" errorCode="BUSINESS_ERROR"/>
+
+  <process id="callActivityErrorMatchByCode" name="Call Activity Error Match By Code - Parent" isExecutable="true">
+    <startEvent id="start"/>
+    <sequenceFlow sourceRef="start" targetRef="callChild"/>
+
+    <callActivity id="callChild" name="Call Child" calledElement="callActivityErrorMatchByCodeChild"/>
+    <sequenceFlow sourceRef="callChild" targetRef="end"/>
+
+    <boundaryEvent id="errorBoundary" attachedToRef="callChild">
+      <errorEventDefinition errorRef="ERR_PARENT"/>
+    </boundaryEvent>
+    <sequenceFlow sourceRef="errorBoundary" targetRef="errorHandledByCode"/>
+
+    <userTask id="errorHandledByCode" name="Error Handled by Code" activiti:assignee="user"/>
+    <sequenceFlow sourceRef="errorHandledByCode" targetRef="end"/>
+
+    <endEvent id="end"/>
+  </process>
+</definitions>

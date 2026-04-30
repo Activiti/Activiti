@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,20 +20,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import java.util.Properties;
-
-import javax.mail.NoSuchProviderException;
-import javax.mail.Provider;
-import javax.mail.Provider.Type;
-import javax.mail.Session;
+import jakarta.mail.NoSuchProviderException;
+import jakarta.mail.Provider;
+import jakarta.mail.Session;
+import javax.naming.InitialContext;
 import javax.naming.NamingException;
-
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 import org.activiti.spring.impl.test.SpringActivitiTestCase;
 import org.junit.BeforeClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.mock.jndi.SimpleNamingContextBuilder;
 import org.springframework.test.context.ContextConfiguration;
 
 @ContextConfiguration("classpath:org/activiti/spring/test/email/jndiEmailConfiguration-context.xml")
@@ -50,17 +47,19 @@ public class JndiEmailTest extends SpringActivitiTestCase {
         props.put("mail.smtp.provider.vendor", "test");
         props.put("mail.smtp.provider.version", "0.0.0");
 
-        Provider provider = new Provider(Type.TRANSPORT,
-                                         "smtp",
-                                         MockEmailTransport.class.getName(),
-                                         "test",
-                                         "1.0");
-        Session mailSession = Session.getDefaultInstance(props);
-        SimpleNamingContextBuilder builder = null;
+        Provider provider = new Provider(
+            Provider.Type.TRANSPORT,
+            "smtp",
+            MockEmailTransport.class.getName(),
+            "test",
+            "1.0"
+        );
         try {
+            Session mailSession = Session.getDefaultInstance(props);
             mailSession.setProvider(provider);
-            builder = SimpleNamingContextBuilder.emptyActivatedContextBuilder();
-            builder.bind("java:comp/env/Session", mailSession);
+
+            InitialContext ctx = new InitialContext();
+            ctx.bind("java:comp/env/Session", mailSession);
         } catch (NamingException e) {
             logger.error("Naming error in email setup", e);
         } catch (NoSuchProviderException e) {
@@ -80,10 +79,11 @@ public class JndiEmailTest extends SpringActivitiTestCase {
         cleanUp();
     }
 
-    @Deployment(resources = {"org/activiti/spring/test/email/EmailTaskUsingJndi.bpmn20.xml"})
+    @Deployment(resources = { "org/activiti/spring/test/email/EmailTaskUsingJndi.bpmn20.xml" })
     public void testEmailUsingJndi() {
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("EmailJndiProcess", emptyMap());
-        assertThat(runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(0);
+        assertThat(
+            runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count()
+        ).isEqualTo(0);
     }
-
 }

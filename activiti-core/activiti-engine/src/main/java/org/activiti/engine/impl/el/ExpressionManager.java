@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.el;
 
+import jakarta.el.ArrayELResolver;
+import jakarta.el.BeanELResolver;
+import jakarta.el.CompositeELResolver;
+import jakarta.el.ELContext;
+import jakarta.el.ELResolver;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.ListELResolver;
+import jakarta.el.MapELResolver;
+import jakarta.el.ValueExpression;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import javax.el.ArrayELResolver;
-import javax.el.BeanELResolver;
-import javax.el.CompositeELResolver;
-import javax.el.ELContext;
-import javax.el.ELResolver;
-import javax.el.ExpressionFactory;
-import javax.el.ListELResolver;
-import javax.el.MapELResolver;
-import javax.el.ValueExpression;
-import de.odysseus.el.ExpressionFactoryImpl;
 import org.activiti.core.el.ActivitiElContext;
 import org.activiti.core.el.CustomFunctionProvider;
 import org.activiti.core.el.ELContextBuilder;
@@ -56,37 +53,36 @@ public class ExpressionManager {
     protected ExpressionFactory expressionFactory;
     protected Map<Object, Object> beans;
     protected List<CustomFunctionProvider> customFunctionProviders;
+    protected List<ELResolver> customELResolvers;
 
     public ExpressionManager() {
         this(null);
     }
 
     public ExpressionManager(boolean initFactory) {
-        this(null,
-             initFactory);
+        this(null, initFactory);
     }
 
     public ExpressionManager(Map<Object, Object> beans) {
-        this(beans,
-             true);
+        this(beans, true);
     }
 
-    public ExpressionManager(Map<Object, Object> beans,
-                             boolean initFactory) {
+    public ExpressionManager(Map<Object, Object> beans, boolean initFactory) {
         // Use the ExpressionFactoryImpl in activiti build in version of juel,
         // with parametrised method expressions enabled
         if (initFactory) {
-            expressionFactory = new ExpressionFactoryImpl();
+            expressionFactory = ExpressionFactory.newInstance();
         }
         this.beans = beans;
     }
 
     public Expression createExpression(String expression) {
-        ValueExpression valueExpression = expressionFactory.createValueExpression(getElContext(Collections.emptyMap()),
+        ValueExpression valueExpression = expressionFactory.createValueExpression(
+            getElContext(Collections.emptyMap()),
             expression.trim(),
-            Object.class);
-        return new JuelExpression(valueExpression,
-            expression);
+            Object.class
+        );
+        return new JuelExpression(valueExpression, expression);
     }
 
     public void setExpressionFactory(ExpressionFactory expressionFactory) {
@@ -99,6 +95,14 @@ public class ExpressionManager {
 
     public void setCustomFunctionProviders(List<CustomFunctionProvider> customFunctionProviders) {
         this.customFunctionProviders = customFunctionProviders;
+    }
+
+    public List<ELResolver> getCustomELResolvers() {
+        return customELResolvers;
+    }
+
+    public void setCustomELResolvers(List<ELResolver> customELResolvers) {
+        this.customELResolvers = customELResolvers;
     }
 
     public ELContext getElContext(VariableScope variableScope) {
@@ -119,12 +123,17 @@ public class ExpressionManager {
     }
 
     protected ActivitiElContext createElContext(VariableScope variableScope) {
-        return (ActivitiElContext) new ELContextBuilder().withResolvers(createElResolver(variableScope)).buildWithCustomFunctions(customFunctionProviders);
+        return (ActivitiElContext) new ELContextBuilder()
+            .withResolvers(createElResolver(variableScope))
+            .buildWithCustomFunctions(customFunctionProviders);
     }
 
     protected ELResolver createElResolver(VariableScope variableScope) {
         CompositeELResolver elResolver = new CompositeELResolver();
         elResolver.add(new VariableScopeElResolver(variableScope));
+        if (customELResolvers != null) {
+            customELResolvers.forEach(elResolver::add);
+        }
         addBeansResolver(elResolver);
         addBaseResolvers(elResolver);
         return elResolver;
@@ -144,9 +153,7 @@ public class ExpressionManager {
         elResolver.add(new ListELResolver());
         elResolver.add(new MapELResolver());
         elResolver.add(new CustomMapperJsonNodeELResolver());
-        elResolver.add(new DynamicBeanPropertyELResolver(ItemInstance.class,
-                                                         "getFieldValue",
-                                                         "setFieldValue")); // TODO: needs verification
+        elResolver.add(new DynamicBeanPropertyELResolver(ItemInstance.class, "getFieldValue", "setFieldValue")); // TODO: needs verification
         elResolver.add(new ELResolverReflectionBlockerDecorator(new BeanELResolver()));
     }
 
@@ -161,6 +168,9 @@ public class ExpressionManager {
     public ELContext getElContext(Map<String, Object> availableVariables) {
         CompositeELResolver elResolver = new CompositeELResolver();
         addBaseResolvers(elResolver);
-        return new ELContextBuilder().withResolvers(elResolver).withVariables(availableVariables).buildWithCustomFunctions(customFunctionProviders);
+        return new ELContextBuilder()
+            .withResolvers(elResolver)
+            .withVariables(availableVariables)
+            .buildWithCustomFunctions(customFunctionProviders);
     }
 }

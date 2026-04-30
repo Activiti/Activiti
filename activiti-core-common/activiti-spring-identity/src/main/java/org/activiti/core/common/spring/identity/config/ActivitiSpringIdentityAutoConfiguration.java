@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,12 @@ package org.activiti.core.common.spring.identity.config;
 
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.core.common.spring.identity.ActivitiUserGroupManagerImpl;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-@Configuration
+@AutoConfiguration
 public class ActivitiSpringIdentityAutoConfiguration {
 
     @Bean
@@ -30,5 +30,4 @@ public class ActivitiSpringIdentityAutoConfiguration {
     public UserGroupManager userGroupManager(UserDetailsService userDetailsService) {
         return new ActivitiUserGroupManagerImpl(userDetailsService);
     }
-
 }

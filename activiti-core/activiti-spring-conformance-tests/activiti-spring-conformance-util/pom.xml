@@ -5,10 +5,13 @@
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-spring-conformance-tests</artifactId>
-    <version>7.7.0-SNAPSHOT</version>
+    <version>9.1.0-SNAPSHOT</version>
   </parent>
   <artifactId>activiti-spring-conformance-util</artifactId>
   <name>Activiti :: Spring :: Conformance Util </name>
+  <properties>
+    <enforcer.skip>true</enforcer.skip>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>org.activiti</groupId>
@@ -48,7 +51,7 @@
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-web</artifactId>
+      <artifactId>spring-boot-starter-webmvc</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -61,7 +64,6 @@
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>

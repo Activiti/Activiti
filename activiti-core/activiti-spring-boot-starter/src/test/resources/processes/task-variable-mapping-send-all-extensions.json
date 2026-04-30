@@ -1,5 +1,5 @@
 {
-  "id":"taskVariableMappingSendAllModel",
+  "id": "taskVariableMappingSendAllModel",
   "type": "PROCESS",
   "name": "process",
   "extensions": {
@@ -25,6 +25,13 @@
           "type": "string",
           "required": true,
           "value": "outputmap1Value"
+        },
+        "ephemeralVar": {
+          "id": "ephemeralVar",
+          "name": "ephemeralVar",
+          "type": "string",
+          "required": false,
+          "ephemeral": true
         }
       },
       "mappings": {

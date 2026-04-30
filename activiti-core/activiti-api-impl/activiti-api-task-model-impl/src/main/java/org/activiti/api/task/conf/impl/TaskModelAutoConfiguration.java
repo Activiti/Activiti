@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,10 @@
  */
 package org.activiti.api.task.conf.impl;
 
-import com.fasterxml.jackson.core.Version;
-import com.fasterxml.jackson.databind.BeanDescription;
-import com.fasterxml.jackson.databind.DeserializationConfig;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.Module;
-import com.fasterxml.jackson.databind.jsontype.NamedType;
-import com.fasterxml.jackson.databind.module.SimpleAbstractTypeResolver;
-import com.fasterxml.jackson.databind.module.SimpleModule;
+import tools.jackson.core.Version;
+import tools.jackson.databind.jsontype.NamedType;
+import tools.jackson.databind.module.SimpleAbstractTypeResolver;
+import tools.jackson.databind.module.SimpleModule;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.TaskCandidateGroup;
 import org.activiti.api.task.model.TaskCandidateUser;
@@ -39,66 +35,46 @@ import org.activiti.api.task.model.payloads.ReleaseTaskPayload;
 import org.activiti.api.task.model.payloads.SaveTaskPayload;
 import org.activiti.api.task.model.payloads.UpdateTaskPayload;
 import org.activiti.api.task.model.results.TaskResult;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
-import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
+import org.springframework.boot.jackson.autoconfigure.JacksonAutoConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import tools.jackson.databind.JacksonModule;
 
-@AutoConfigureBefore({JacksonAutoConfiguration.class})
-@Configuration
+@AutoConfiguration
+@AutoConfigureBefore({ JacksonAutoConfiguration.class })
 public class TaskModelAutoConfiguration {
 
-    //this bean will be automatically injected inside boot's ObjectMapper
+    //this bean will be automatically injected inside boot's jsonMapper
     @Bean
-    public Module customizeTaskModelObjectMapper() {
-        SimpleModule module = new SimpleModule("mapTaskRuntimeInterfaces",
-                                               Version.unknownVersion());
-        SimpleAbstractTypeResolver resolver = new SimpleAbstractTypeResolver() {
-            //this is a workaround for https://github.com/FasterXML/jackson-databind/issues/2019
-            //once version 2.9.6 is related we can remove this @override method
-            @Override
-            public JavaType resolveAbstractType(DeserializationConfig config,
-                                                BeanDescription typeDesc) {
-                return findTypeMapping(config,
-                                       typeDesc.getType());
-            }
-        };
-        resolver.addMapping(Task.class,
-                            TaskImpl.class);
-        resolver.addMapping(TaskCandidateUser.class,
-                            TaskCandidateUserImpl.class);
-        resolver.addMapping(TaskCandidateGroup.class,
-                            TaskCandidateGroupImpl.class);
+    public JacksonModule customizeTaskModelObjectMapper() {
+        SimpleModule module = new SimpleModule("mapTaskRuntimeInterfaces", Version.unknownVersion());
+        SimpleAbstractTypeResolver resolver = new SimpleAbstractTypeResolver();
+        resolver.addMapping(Task.class, TaskImpl.class);
+        resolver.addMapping(TaskCandidateUser.class, TaskCandidateUserImpl.class);
+        resolver.addMapping(TaskCandidateGroup.class, TaskCandidateGroupImpl.class);
 
-        module.registerSubtypes(new NamedType(TaskResult.class,
-                                              TaskResult.class.getSimpleName()));
+        module.registerSubtypes(new NamedType(TaskResult.class, TaskResult.class.getSimpleName()));
 
-        module.registerSubtypes(new NamedType(ClaimTaskPayload.class,
-                                              ClaimTaskPayload.class.getSimpleName()));
+        module.registerSubtypes(new NamedType(ClaimTaskPayload.class, ClaimTaskPayload.class.getSimpleName()));
 
-        module.registerSubtypes(new NamedType(CompleteTaskPayload.class,
-                                              CompleteTaskPayload.class.getSimpleName()));
+        module.registerSubtypes(new NamedType(CompleteTaskPayload.class, CompleteTaskPayload.class.getSimpleName()));
 
-        module.registerSubtypes(new NamedType(SaveTaskPayload.class,
-                                              SaveTaskPayload.class.getSimpleName()));
+        module.registerSubtypes(new NamedType(SaveTaskPayload.class, SaveTaskPayload.class.getSimpleName()));
 
-        module.registerSubtypes(new NamedType(CreateTaskPayload.class,
-                                              CreateTaskPayload.class.getSimpleName()));
+        module.registerSubtypes(new NamedType(CreateTaskPayload.class, CreateTaskPayload.class.getSimpleName()));
 
-        module.registerSubtypes(new NamedType(DeleteTaskPayload.class,
-                                              DeleteTaskPayload.class.getSimpleName()));
+        module.registerSubtypes(new NamedType(DeleteTaskPayload.class, DeleteTaskPayload.class.getSimpleName()));
 
-        module.registerSubtypes(new NamedType(GetTasksPayload.class,
-                                              GetTasksPayload.class.getSimpleName()));
+        module.registerSubtypes(new NamedType(GetTasksPayload.class, GetTasksPayload.class.getSimpleName()));
 
-        module.registerSubtypes(new NamedType(GetTaskVariablesPayload.class,
-                                              GetTaskVariablesPayload.class.getSimpleName()));
+        module.registerSubtypes(
+            new NamedType(GetTaskVariablesPayload.class, GetTaskVariablesPayload.class.getSimpleName())
+        );
 
-        module.registerSubtypes(new NamedType(ReleaseTaskPayload.class,
-                                              ReleaseTaskPayload.class.getSimpleName()));
+        module.registerSubtypes(new NamedType(ReleaseTaskPayload.class, ReleaseTaskPayload.class.getSimpleName()));
 
-        module.registerSubtypes(new NamedType(UpdateTaskPayload.class,
-                                              UpdateTaskPayload.class.getSimpleName()));
+        module.registerSubtypes(new NamedType(UpdateTaskPayload.class, UpdateTaskPayload.class.getSimpleName()));
 
         module.setAbstractTypes(resolver);
 

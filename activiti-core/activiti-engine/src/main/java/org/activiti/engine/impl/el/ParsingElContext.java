@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.el;
 
-import javax.el.ELContext;
-import javax.el.ELResolver;
-import javax.el.ExpressionFactory;
-import javax.el.FunctionMapper;
-import javax.el.VariableMapper;
+import jakarta.el.ELContext;
+import jakarta.el.ELResolver;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.FunctionMapper;
+import jakarta.el.VariableMapper;
 
 /**
  * Simple implementation of the {@link ELContext} used during parsings.
@@ -34,16 +33,15 @@ import javax.el.VariableMapper;
  */
 public class ParsingElContext extends ELContext {
 
-  public ELResolver getELResolver() {
-    return null;
-  }
+    public ELResolver getELResolver() {
+        return null;
+    }
 
-  public FunctionMapper getFunctionMapper() {
-    return null;
-  }
+    public FunctionMapper getFunctionMapper() {
+        return null;
+    }
 
-  public VariableMapper getVariableMapper() {
-    return null;
-  }
-
+    public VariableMapper getVariableMapper() {
+        return null;
+    }
 }

@@ -5,15 +5,15 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.activiti</groupId>
   <artifactId>activiti-parent</artifactId>
-  <version>7.7.0-SNAPSHOT</version>
+  <version>9.1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Activiti :: Parent</name>
   <description>${project.name}</description>
   <url>https://www.activiti.org</url>
   <inceptionYear>2010</inceptionYear>
   <organization>
-    <name>Alfresco Software, Ltd</name>
-    <url>https://www.alfresco.com</url>
+    <name>Hyland Software, Inc. and its affiliates</name>
+    <url>https://www.hyland.com</url>
   </organization>
   <licenses>
     <license>
@@ -187,44 +187,45 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <project.scm.organization>Activiti</project.scm.organization>
     <project.scm.repository>Activiti</project.scm.repository>
-    <project.year>2020</project.year>
+    <project.year>2026</project.year>
 
-    <java.release>11</java.release>
-    <java.version>1.${java.release}</java.version>
+    <java.release>${java.version}</java.release>
+    <java.version>25</java.version>
     <maven.compiler.release>${java.release}</maven.compiler.release>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
 
     <!-- versions -->
-    <asm.version>9.3</asm.version>
-    <build-helper-maven-plugin.version>3.3.0</build-helper-maven-plugin.version>
-    <dependency-check-maven.version>7.1.2</dependency-check-maven.version>
-    <exec-maven-plugin.version>3.1.0</exec-maven-plugin.version>
-    <extra-enforcer-rules.version>1.6.1</extra-enforcer-rules.version>
-    <jacoco-maven-plugin.version>0.8.8</jacoco-maven-plugin.version>
-    <license-maven-plugin.version>3.0</license-maven-plugin.version>
-    <third-party-license-maven-plugin.version>2.0.1.alfresco-2</third-party-license-maven-plugin.version>
-    <maven-checkstyle-plugin.version>3.1.2</maven-checkstyle-plugin.version>
-    <maven-clean-plugin.version>3.2.0</maven-clean-plugin.version>
-    <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
-    <maven-deploy-plugin.version>3.0.0</maven-deploy-plugin.version>
-    <maven-enforcer-plugin.version>3.1.0</maven-enforcer-plugin.version>
-    <maven-failsafe-plugin.version>2.22.2</maven-failsafe-plugin.version>
-    <maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
-    <maven-install-plugin.version>3.0.1</maven-install-plugin.version>
-    <maven-jar-plugin.version>3.2.2</maven-jar-plugin.version>
-    <maven-javadoc-plugin.version>3.4.1</maven-javadoc-plugin.version>
-    <maven-jxr-plugin.version>3.2.0</maven-jxr-plugin.version>
-    <maven-pmd-plugin.version>3.17.0</maven-pmd-plugin.version>
-    <maven-project-info-reports-plugin.version>3.4.1</maven-project-info-reports-plugin.version>
-    <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
-    <maven-resources-plugin.version>3.3.0</maven-resources-plugin.version>
-    <maven-site-plugin.version>3.12.1</maven-site-plugin.version>
-    <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
-    <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
-    <spring-boot.version>2.7.5</spring-boot.version>
-    <h2.version>1.4.200</h2.version>
-    <versions-maven-plugin.version>2.11.0</versions-maven-plugin.version>
+    <asm.version>9.9.1</asm.version>
+    <build-helper-maven-plugin.version>3.6.1</build-helper-maven-plugin.version>
+    <dependency-check-maven.version>12.2.1</dependency-check-maven.version>
+    <exec-maven-plugin.version>3.6.3</exec-maven-plugin.version>
+    <extra-enforcer-rules.version>1.12.0</extra-enforcer-rules.version>
+    <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
+    <license-maven-plugin.version>5.0.0</license-maven-plugin.version>
+    <third-party-license-maven-plugin.version>2.7.1</third-party-license-maven-plugin.version>
+    <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
+    <maven-clean-plugin.version>3.5.0</maven-clean-plugin.version>
+    <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
+    <maven-deploy-plugin.version>3.1.4</maven-deploy-plugin.version>
+    <maven-enforcer-plugin.version>3.6.2</maven-enforcer-plugin.version>
+    <maven-failsafe-plugin.version>3.5.5</maven-failsafe-plugin.version>
+    <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
+    <maven-install-plugin.version>3.1.4</maven-install-plugin.version>
+    <maven-jar-plugin.version>3.5.0</maven-jar-plugin.version>
+    <maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
+    <maven-jxr-plugin.version>3.6.0</maven-jxr-plugin.version>
+    <maven-pmd-plugin.version>3.28.0</maven-pmd-plugin.version>
+    <maven-project-info-reports-plugin.version>3.9.0</maven-project-info-reports-plugin.version>
+    <maven-release-plugin.version>3.3.1</maven-release-plugin.version>
+    <maven-resources-plugin.version>3.5.0</maven-resources-plugin.version>
+    <maven-site-plugin.version>3.21.0</maven-site-plugin.version>
+    <maven-source-plugin.version>3.4.0</maven-source-plugin.version>
+    <maven-surefire-plugin.version>3.5.5</maven-surefire-plugin.version>
+    <sonar-maven-plugin.version>5.6.0.6792</sonar-maven-plugin.version>
+    <spring-boot.version>4.0.6</spring-boot.version>
+    <jakarta.el-api.version>6.0.1</jakarta.el-api.version>
+    <versions-maven-plugin.version>2.21.0</versions-maven-plugin.version>
 
     <!-- configuration properties for tests -->
     <generated-assertions-folder>
@@ -242,11 +243,6 @@
         <classifier>suppression</classifier>
       </dependency>
       <dependency>
-        <groupId>com.h2database</groupId>
-        <artifactId>h2</artifactId>
-        <version>${h2.version}</version>
-      </dependency>
-      <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
         <version>${spring-boot.version}</version>
@@ -256,6 +252,18 @@
     </dependencies>
   </dependencyManagement>
   <pluginRepositories>
+    <pluginRepository>
+      <id>central</id>
+      <name>Central Repository</name>
+      <url>https://repo.maven.apache.org/maven2</url>
+      <layout>default</layout>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <releases>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+    </pluginRepository>
     <pluginRepository>
       <id>alfresco-internal-plugin</id>
       <name>Alfresco Internal Repository</name>
@@ -270,8 +278,10 @@
           <artifactId>license-maven-plugin</artifactId>
           <version>${license-maven-plugin.version}</version>
           <configuration>
-            <inlineHeader>
-              <![CDATA[
+            <licenseSets>
+              <licenseSet>
+                <inlineHeader>
+                  <![CDATA[
 Copyright ${project.inceptionYear}-${project.year} ${project.organization.name}.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -285,11 +295,13 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-            ]]>
-            </inlineHeader>
-            <includes>
-              <include>**/*.java</include>
-            </includes>
+                  ]]>
+                </inlineHeader>
+                <includes>
+                  <include>**/*.java</include>
+                </includes>
+              </licenseSet>
+            </licenseSets>
             <mapping>
               <java>SLASHSTAR_STYLE</java>
             </mapping>
@@ -311,7 +323,7 @@ limitations under the License.
                 <excludedScopes>provided,test</excludedScopes>
                 <excludedGroups>^(org\.alfresco|com\.alfresco|org\.activiti|org\.gytheio).*</excludedGroups>
                 <failIfWarning>true</failIfWarning>
-                <includedLicenses>https://raw.githubusercontent.com/Alfresco/third-party-license-overrides/master/includedLicenses.txt</includedLicenses>
+                <includedLicenses>https://raw.githubusercontent.com/Alfresco/third-party-license-overrides/master/includedLicensesPlusNashorn.txt</includedLicenses>
                 <licenseMergesUrl>https://raw.githubusercontent.com/Alfresco/third-party-license-overrides/master/licenseMerges.txt</licenseMergesUrl>
                 <overrideUrl>https://raw.githubusercontent.com/Alfresco/third-party-license-overrides/master/override-THIRD-PARTY.properties</overrideUrl>
               </configuration>
@@ -368,6 +380,7 @@ limitations under the License.
                     <module name="TreeWalker">
                       <!-- Import settings: getting rid of redundant import, forbid star notation, defined order of imports. -->
                       <module name="RedundantImport"/>
+                      <module name="UnusedImports"/>
                       <module name="AvoidStarImport">
                         <property name="excludes"
                                   value="org.junit.Assert,org.assertj.core.api.Assertions,org.mockito.Mockito"/>
@@ -492,6 +505,11 @@ limitations under the License.
           <artifactId>jacoco-maven-plugin</artifactId>
           <version>${jacoco-maven-plugin.version}</version>
         </plugin>
+        <plugin>
+          <groupId>org.sonarsource.scanner.maven</groupId>
+          <artifactId>sonar-maven-plugin</artifactId>
+          <version>${sonar-maven-plugin.version}</version>
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
@@ -524,6 +542,9 @@ limitations under the License.
           <showDeprecation>true</showDeprecation>
           <showWarnings>true</showWarnings>
           <optimize>true</optimize>
+          <compilerArgs>
+            <arg>-parameters</arg>
+          </compilerArgs>
         </configuration>
       </plugin>
       <plugin>
@@ -570,6 +591,17 @@ limitations under the License.
             </configuration>
           </execution>
           <execution>
+            <id>no-duplicate-declared-dependencies</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <banDuplicatePomDependencyVersions />
+              </rules>
+            </configuration>
+          </execution>
+          <execution>
             <id>ban-blacklisted-dependencies</id>
             <phase>validate</phase>
             <goals>
@@ -579,9 +611,6 @@ limitations under the License.
               <rules>
                 <bannedDependencies>
                   <excludes combine.children="append">
-                    <!-- Ban blacklisted logging deps (we only use SLF4J + Logback) -->
-                    <!-- In case of transitive dependency, exclude it and use 'org.slf4j:jcl-over-slf4j' instead -->
-                    <exclude>commons-logging:commons-log*</exclude>
                     <!-- In case of transitive dependency, exclude it and use 'org.slf4j:log4j-over-slf4j' instead -->
                     <exclude>log4j:log4j</exclude>
                     <!-- In case of transitive dependency, exclude it and use 'org.javassist:javassist' instead -->
@@ -611,19 +640,41 @@ limitations under the License.
                          properly exclude everything. There were no real issues with this so far as mostly the APIs
                          are just duplicates of the exactly same sources. In ideal world, this get eventually fixed,
                          but it may very well not be worth the effort. -->
-                    <ignoreClass>javax.servlet.*</ignoreClass>
-                    <!-- Classes in javax.annotation package are just marker annotations used to aid the programmers.
+                    <ignoreClass>jakarta.servlet.*</ignoreClass>
+                    <!-- Classes in jakarta.annotation package are just marker annotations used to aid the programmers.
                          These annotations do not influence the actual behavior of the code, so it's reasonable to
                          ignore them. Following dependencies contain these classes: 'com.google.code.findbugs:jsr305'
                          and 'com.google.code.findbugs:annotations'. -->
-                    <ignoreClass>javax.annotation.*</ignoreClass>
-                    <!-- Exactly the same case as for above 'javax.annotation.*' classes. Following dependencies contain
+                    <ignoreClass>jakarta.annotation.*</ignoreClass>
+                    <!-- Exactly the same case as for above 'jakarta.annotation.*' classes. Following dependencies contain
                          these classes: 'net.jcip:jcip-annotations' and 'com.google.code.findbugs:annotations'. -->
                     <ignoreClass>net.jcip.annotations.*</ignoreClass>
                   </ignoreClasses>
                   <findAllDuplicates>true</findAllDuplicates>
                 </banDuplicateClasses>
               </rules>
+            </configuration>
+          </execution>
+          <execution>
+            <id>ban-test-dependencies-in-compile</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <bannedDependencies>
+                  <excludes>
+                    <!-- These should only be test-scoped -->
+                    <exclude>org.assertj:*:*:*:compile</exclude>
+                    <exclude>org.mockito:*:*:*:compile</exclude>
+                    <exclude>org.springframework:spring-test:*:*:compile</exclude>
+                    <exclude>junit:*:*:*:compile</exclude>
+                    <exclude>org.junit.jupiter:*:*:*:compile</exclude>
+                  </excludes>
+                  <searchTransitive>true</searchTransitive>
+                </bannedDependencies>
+              </rules>
+              <fail>true</fail>
             </configuration>
           </execution>
         </executions>
@@ -678,6 +729,25 @@ limitations under the License.
             <goals>
               <goal>report-integration</goal>
             </goals>
+          </execution>
+          <!-- Merge execution reports configuration-->
+          <execution>
+            <id>merge</id>
+            <goals>
+              <goal>merge</goal>
+            </goals>
+            <configuration>
+              <!--   This change is required to get all reports scanned while executing `jacoco:merge` on the root pom (`-N` option) -->
+              <fileSets>
+                <fileSet>
+                  <directory>${project.basedir}</directory>
+                  <includes>
+                    <include>**/*.exec</include>
+                  </includes>
+                </fileSet>
+              </fileSets>
+              <destFile>${project.build.directory}/jacoco.exec</destFile>
+            </configuration>
           </execution>
         </executions>
       </plugin>
@@ -908,4 +978,26 @@ limitations under the License.
       </build>
     </profile>
   </profiles>
+  <repositories>
+    <repository>
+      <id>central</id>
+      <name>Central Repository</name>
+      <url>https://repo.maven.apache.org/maven2</url>
+      <layout>default</layout>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>activiti-releases</id>
+      <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-releases</url>
+    </repository>
+    <repository>
+      <id>activiti-snapshots</id>
+      <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-snapshots</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
 </project>

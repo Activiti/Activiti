@@ -1,6 +1,6 @@
 {
-  "id":"connectorVarMapping",
-  "name":"myProcess.bpmn",
+  "id": "connectorVarMapping",
+  "name": "myProcess.bpmn",
   "extensions": {
     "properties": {
       "age-id": {
@@ -8,6 +8,12 @@
         "name": "age",
         "type": "integer",
         "value": 20
+      },
+      "height-meters-id": {
+        "id": "height-meters-id",
+        "name": "height-meters",
+        "type": "bigdecimal",
+        "value": 1.93
       },
       "name-id": {
         "id": "name-id",
@@ -50,10 +56,12 @@
         "outputs": {
           "name": {
             "type": "variable",
-            "value" : "out_variable_name_1"},
+            "value": "out_variable_name_1"
+          },
           "age": {
             "type": "variable",
-            "value" : "out_variable_name_2"}
+            "value": "out_variable_name_2"
+          }
         }
       }
     }

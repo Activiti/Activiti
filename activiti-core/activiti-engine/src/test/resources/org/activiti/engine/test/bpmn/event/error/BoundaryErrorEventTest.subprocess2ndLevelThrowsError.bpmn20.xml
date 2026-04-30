@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+
+  <process id="simpleSubProcess">
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="subprocessThrowsError" />
+
+    <subProcess id="subprocessThrowsError">
+      <startEvent id="subprocessStart"/>
+      <sequenceFlow id="subprocessFlow1" sourceRef="subprocessStart" targetRef="subprocessErrorEnd"/>
+      <endEvent id="subprocessErrorEnd">
+        <errorEventDefinition errorRef="myError" />
+      </endEvent>
+    </subProcess>
+
+    <sequenceFlow id="flow2" sourceRef="subprocessThrowsError" targetRef="theEnd"/>
+    <endEvent id="theEnd"/>
+
+    <boundaryEvent id="catchEvent" attachedToRef="subprocessThrowsError">
+      <errorEventDefinition errorRef="myError" />
+    </boundaryEvent>
+
+    <!-- with userTask after catchEvent -->
+    <userTask id="childErrorUserTask" name="Child Error Task"/>
+    <sequenceFlow id="flow3" sourceRef="catchEvent" targetRef="childErrorUserTask"/>
+    <sequenceFlow id="flow4" sourceRef="childErrorUserTask" targetRef="theErrorEnd"/>
+
+    <endEvent id="theErrorEnd">
+      <errorEventDefinition errorRef="myError" />
+    </endEvent>
+  </process>
+
+</definitions>

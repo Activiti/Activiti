@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package org.activiti.editor.language.xml;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.activiti.bpmn.exceptions.XMLException;
@@ -22,8 +23,6 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.ServiceTask;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class MapExceptionConverterTest extends AbstractConverterTest {
 
@@ -63,8 +62,8 @@ public class MapExceptionConverterTest extends AbstractConverterTest {
         ServiceTask serviceTask = (ServiceTask) flowElement;
         assertThat(serviceTask.getMapExceptions()).isNotNull();
         assertThat(serviceTask.getMapExceptions()).hasSize(1);
-        assertThat(serviceTask.getMapExceptions().get(0).getClassName()).isNotNull();
-        assertThat(serviceTask.getMapExceptions().get(0).getClassName().length()).isEqualTo(0);
+        assertThat(serviceTask.getMapExceptions().getFirst().getClassName()).isNotNull();
+        assertThat(serviceTask.getMapExceptions().getFirst().getClassName().length()).isEqualTo(0);
     }
 
     @Test
@@ -76,7 +75,6 @@ public class MapExceptionConverterTest extends AbstractConverterTest {
     }
 
     private void validateModel(BpmnModel model) {
-
         // check service task with andChildren Set to True
         FlowElement flowElement = model.getMainProcess().getFlowElement("servicetaskWithAndTrueAndChildren");
         assertThat(flowElement).isNotNull();
@@ -87,9 +85,9 @@ public class MapExceptionConverterTest extends AbstractConverterTest {
         assertThat(serviceTask.getMapExceptions()).hasSize(3);
 
         // check a normal mapException, with hasChildren == true
-        assertThat(serviceTask.getMapExceptions().get(0).getErrorCode()).isEqualTo("myErrorCode1");
-        assertThat(serviceTask.getMapExceptions().get(0).getClassName()).isEqualTo("com.activiti.Something1");
-        assertThat(serviceTask.getMapExceptions().get(0).isAndChildren()).isTrue();
+        assertThat(serviceTask.getMapExceptions().getFirst().getErrorCode()).isEqualTo("myErrorCode1");
+        assertThat(serviceTask.getMapExceptions().getFirst().getClassName()).isEqualTo("com.activiti.Something1");
+        assertThat(serviceTask.getMapExceptions().getFirst().isAndChildren()).isTrue();
 
         // check a normal mapException, with hasChildren == false
         assertThat(serviceTask.getMapExceptions().get(1).getErrorCode()).isEqualTo("myErrorCode2");

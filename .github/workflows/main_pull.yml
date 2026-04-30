@@ -1,0 +1,126 @@
+name: PR - Validate and Build
+
+permissions: read-all
+
+on:
+  pull_request:
+    branches:
+      - develop
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - milestoned
+
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref }}
+  cancel-in-progress: true
+
+jobs:
+  pre-checks:
+    runs-on: ubuntu-latest
+    outputs:
+      preview: ${{ steps.check_pr_preview.outputs.preview }}
+    steps:
+      - name: Check dependabot/fork build
+        if: github.secret_source == 'Dependabot' || (github.secret_source == 'None' && github.event.action != 'milestoned')
+        uses: Alfresco/alfresco-build-tools/.github/actions/github-require-secrets@f95467b62527ce087c9a1b7e55c467061cf827a0 # v17.6.1
+        with:
+          dependabot-error-message: "This PR requires additional validation, please set the milestone to 'Validating' or ask a reviewer to approve it."
+          none-error-message: "This PR requires additional validation, please set the milestone to 'Validating'."
+      - name: pre-commit
+        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@f95467b62527ce087c9a1b7e55c467061cf827a0 # v17.6.1
+      - name: Ensure SHA pinned actions
+        uses: hyland/github-actions-ensure-sha-pinned-actions@7d494b6b53e71f75194d74b4dd890a2266d060b5 # v2.0.0
+      - name: Check PR preview
+        id: check_pr_preview
+        shell: bash
+        run: |
+          echo "preview=${{ contains(github.event.pull_request.labels.*.name, 'preview') }}" >> $GITHUB_OUTPUT
+
+  build:
+    runs-on: ubuntu-latest
+    needs: pre-checks
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Setup Java JDK 25
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # 5.2.0
+        with:
+          java-version: 25
+          distribution: "corretto"
+
+      - name: Set preview version
+        if: ${{ needs.pre-checks.outputs.preview == 'true' }}
+        run: |
+          GITHUB_PR_NUMBER=PR-${{ github.event.pull_request.number }}
+          echo 0.0.1-${GITHUB_PR_NUMBER}-${GITHUB_RUN_NUMBER}-SNAPSHOT > VERSION
+
+      - name: Set VERSION env variable
+        if: ${{ needs.pre-checks.outputs.preview == 'true' }}
+        run: |
+          VERSION=$(cat VERSION)
+          echo set VERSION=$VERSION
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Update pom files to the new version
+        if: ${{ needs.pre-checks.outputs.preview == 'true' }}
+        run: mvn -B versions:set -DnewVersion=$VERSION -DprocessAllModules=true -DgenerateBackupPoms=false
+
+      - name: Define Maven Command
+        id: define_maven_command
+        shell: bash
+        run: |
+          if [[ $DO_PUSH == 'true' && $SECRET_SOURCE != 'None' ]]
+          then
+            echo "command=deploy" >> $GITHUB_OUTPUT
+          else
+            echo "command=install" >> $GITHUB_OUTPUT
+          fi
+        env:
+          DO_PUSH: ${{ needs.pre-checks.outputs.preview }}
+          SECRET_SOURCE: ${{ github.secret_source }}
+
+      - name: Build and Test with Maven (and maybe deploy)
+        shell: bash
+        run: mvn ${{ steps.define_maven_command.outputs.command }} ${{ env.MAVEN_CLI_OPTS}}
+        env:
+          MAVEN_CLI_OPTS: --show-version --no-transfer-progress --settings settings.xml
+          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+
+      - name: Merge JaCoCo execution files
+        shell: bash
+        run: mvn jacoco:merge@merge -N
+
+      - name: Generate aggregate coverage report
+        shell: bash
+        run: mvn jacoco:report -Djacoco.dataFile=${{ github.workspace }}/target/jacoco.exec
+
+      - name: Set SONAR_SCANNER_OPTS
+        shell: bash
+        run: |
+          echo "SONAR_SCANNER_OPTS=sonar:sonar -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=activiti -Dsonar.projectKey=Activiti_Activiti -Dsonar.coverage.jacoco.xmlReportPaths=**/target/site/jacoco*/jacoco.xml" >> $GITHUB_ENV
+
+      - name: Run SonarCloud analysis
+        if: ${{ env.SONAR_TOKEN != '' }}
+        shell: bash
+        run: mvn ${{ env.SONAR_SCANNER_OPTS }} ${{ env.MAVEN_CLI_OPTS}}
+        env:
+          MAVEN_CLI_OPTS: --show-version --no-transfer-progress --settings settings.xml
+          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Echo Longest Test Run
+        uses: ./.github/actions/echo-longest-run

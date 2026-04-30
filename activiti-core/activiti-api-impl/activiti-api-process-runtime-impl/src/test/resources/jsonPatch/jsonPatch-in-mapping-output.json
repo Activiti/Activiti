@@ -1,0 +1,264 @@
+{
+  "id": "taskVarMapping",
+  "extensions": {
+    "Process_jsonPatchMappingOutput": {
+      "properties": {
+        "variable-name-id": {
+          "id": "variable-name-id",
+          "name": "process_variable_name",
+          "type": "string",
+          "required": true,
+          "value": "John"
+        },
+        "variable-person-simple-cases-id": {
+          "id": "variable-person-simple-cases-id",
+          "name": "process_variable_person_simple_cases",
+          "type": "json",
+          "required": false,
+          "value": {
+            "firstname": "Bob",
+            "addresses": [
+              {
+                "street": "123 Main St"
+              },
+              {
+                "street": "456 Elm St"
+              }
+            ]
+          }
+        },
+        "variable-person-array-cases-id": {
+          "id": "variable-person-array-cases-id",
+          "name": "process_variable_person_array_cases",
+          "type": "json",
+          "required": false,
+          "value": {
+            "firstname": "Bob",
+            "addresses": [
+              {
+                "street": "123 Main St"
+              },
+              {
+                "street": "456 Elm St"
+              },
+              {
+                "street": "77 Replace Street"
+              }
+            ]
+          }
+        },
+        "variable-person-variable-cases-id": {
+          "id": "variable-person-variable-cases-id",
+          "name": "process_variable_person_variable_cases",
+          "type": "json",
+          "required": false,
+          "value": {
+            "firstname": "Bob",
+            "addresses": [
+              {
+                "street": "123 Main St"
+              },
+              {
+                "street": "456 Elm St"
+              }
+            ]
+          }
+        },
+        "variable-empty-json-id": {
+          "id": "variable-empty-json-id",
+          "name": "process_variable_empty_json",
+          "type": "json",
+          "required": false
+        },
+        "variable-invalid-object": {
+          "id": "variable-invalid-object",
+          "name": "variable_invalid_object",
+          "type": "json",
+          "required": false,
+          "value": ""
+        },
+        "variable-lastname-id": {
+          "id": "variable-lastname-id",
+          "name": "process_variable_lastname",
+          "type": "string",
+          "required": true,
+          "value": "Miracle"
+        },
+        "variable-address-id": {
+          "id": "variable-address-id",
+          "name": "process_variable_address",
+          "type": "json",
+          "required": true,
+          "value": {
+            "address": {
+              "street": "Ha-Ha Road"
+            }
+          }
+        },
+        "variable-property-path-id": {
+          "id": "variable-property-path-id",
+          "name": "process_variable_property_path",
+          "type": "string",
+          "required": true,
+          "value": "propertyFromVariable"
+        },
+        "variable-index-1": {
+          "id": "variable-index-1-id",
+          "name": "process_variable_index_1",
+          "type": "integer",
+          "required": true,
+          "value": 1
+        },
+        "variable-index-2": {
+          "id": "variable-index-2-id",
+          "name": "process_variable_index_2",
+          "type": "integer",
+          "required": true,
+          "value": 2
+        },
+        "variable-street-name-id": {
+          "id": "variable-name-id",
+          "name": "process_variable_street_name",
+          "type": "string",
+          "required": true,
+          "value": "Street Name"
+        },
+        "variable-name-equals-value": {
+          "id": "variable-name-equals-value",
+          "name": "process_variable_name_equals_value",
+          "type": "string",
+          "required": true,
+          "value": "process_variable_name_equals_value"
+        },
+        "variable-empty-inner-array": {
+          "id": "variable-empty-inner-array",
+          "name": "process_variable_empty_inner_array",
+          "type": "json",
+          "required": false,
+          "value": {
+            "people": []
+          }
+        }
+      },
+      "mappings": {
+        "simpleTask": {
+          "inputs": {
+            "task_input_variable_name_1": {
+              "type": "VARIABLE",
+              "value": "process_variable_name"
+            },
+            "task_input_variable_name_2": {
+              "type": "VALUE",
+              "value": "static_value_1"
+            }
+          },
+          "outputs": {
+            "process_variable_person_simple_cases": {
+              "type": "JSONPATCH",
+              "value": [
+                {
+                  "op": "add",
+                  "path": "/lastname",
+                  "value": "${process_variable_lastname}"
+                }
+              ]
+            },
+            "process_variable_person_array_cases": {
+              "type": "JSONPATCH",
+              "value": [
+                {
+                  "op": "add",
+                  "path": "/addresses/1/street",
+                  "value": "${process_variable_address.address.street}"
+                },
+                {
+                  "op": "add",
+                  "path": "/addresses/1/new-street-field",
+                  "value": "${process_variable_street_name}"
+                },
+                {
+                  "op": "add",
+                  "path": "/addresses/2",
+                  "value": {
+                    "street": "100 Replaced address"
+                  }
+                },
+                {
+                  "op": "add",
+                  "path": "/addresses/3",
+                  "value": "${process_variable_address}"
+                }
+              ]
+            },
+            "process_variable_person_variable_cases": {
+              "type": "JSONPATCH",
+              "value": [
+                {
+                  "op": "add",
+                  "path": "/${process_variable_property_path}",
+                  "value": "${process_variable_lastname}"
+                },
+                {
+                  "op": "add",
+                  "path": "/${process_variable_name_equals_value}",
+                  "value": "${process_variable_lastname}"
+                },
+                {
+                  "op": "add",
+                  "path": "/addresses/0/${process_variable_property_path}",
+                  "value": "${process_variable_street_name}"
+                },
+                {
+                  "op": "add",
+                  "path": "/addresses/${process_variable_index_1}/${process_variable_property_path}",
+                  "value": "${process_variable_street_name}"
+                },
+                {
+                  "op": "add",
+                  "path": "/addresses/${process_variable_index_2}",
+                  "value": "${process_variable_address}"
+                }
+              ]
+            },
+            "process_variable_empty_json": {
+              "type": "JSONPATCH",
+              "value": [
+                {
+                  "op": "add",
+                  "path": "/address/street",
+                  "value": "${process_variable_address.address.street}"
+                },
+                {
+                  "op": "add",
+                  "path": "/firstname",
+                  "value": "${process_variable_name}"
+                }
+              ]
+            },
+            "variable_invalid_object": {
+              "type": "JSONPATCH",
+              "value": [
+                {
+                  "op": "add",
+                  "path": "/street2",
+                  "value": "${process_variable_address.address.street}"
+                }
+              ]
+            },
+            "process_variable_empty_inner_array": {
+              "type": "JSONPATCH",
+              "value": [
+                {
+                  "op": "add",
+                  "path": "/people/0/name",
+                  "value": "${process_variable_name}"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "constants": {}
+    }
+  }
+}

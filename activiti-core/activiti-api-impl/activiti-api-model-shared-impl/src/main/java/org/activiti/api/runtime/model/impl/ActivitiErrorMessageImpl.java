@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package org.activiti.api.runtime.model.impl;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import org.activiti.api.model.shared.model.ActivitiErrorMessage;
 
 public class ActivitiErrorMessageImpl implements ActivitiErrorMessage {
@@ -22,33 +23,29 @@ public class ActivitiErrorMessageImpl implements ActivitiErrorMessage {
     private int code;
     private String message;
 
-    public ActivitiErrorMessageImpl() {
-    }
+    @JsonCreator
+    public ActivitiErrorMessageImpl() {}
 
-    public ActivitiErrorMessageImpl(int status,
-                                    String message){
-        this.code = status;
+    public ActivitiErrorMessageImpl(int code, String message) {
+        this.code = code;
         this.message = message;
     }
 
     @Override
-    public int getCode(){
+    public int getCode() {
         return code;
     }
 
-    public void setCode(int status){
-        this.code = status;
+    public void setCode(int code) {
+        this.code = code;
     }
 
     @Override
-    public String getMessage(){
+    public String getMessage() {
         return message;
     }
 
-    public void setMessage(String message){
+    public void setMessage(String message) {
         this.message = message;
     }
-
-
-
 }

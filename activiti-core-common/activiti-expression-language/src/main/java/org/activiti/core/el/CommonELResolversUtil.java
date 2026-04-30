@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,12 @@
  */
 package org.activiti.core.el;
 
-import javax.el.ArrayELResolver;
-import javax.el.BeanELResolver;
-import javax.el.ELContext;
-import javax.el.ELResolver;
-import javax.el.ListELResolver;
-import javax.el.MapELResolver;
+import jakarta.el.ArrayELResolver;
+import jakarta.el.BeanELResolver;
+import jakarta.el.ELContext;
+import jakarta.el.ELResolver;
+import jakarta.el.ListELResolver;
+import jakarta.el.MapELResolver;
 
 /**
  * Builder of {@link ELContext} instances.
@@ -50,5 +50,4 @@ public final class CommonELResolversUtil {
     public static ELResolver beanResolver() {
         return new ELResolverReflectionBlockerDecorator(new BeanELResolver());
     }
-
 }

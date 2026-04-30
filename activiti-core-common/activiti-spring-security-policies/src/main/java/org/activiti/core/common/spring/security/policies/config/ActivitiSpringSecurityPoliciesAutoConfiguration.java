@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,25 +24,29 @@ import org.activiti.core.common.spring.security.policies.SecurityPoliciesProcess
 import org.activiti.core.common.spring.security.policies.SecurityPoliciesProcessInstanceRestrictionApplier;
 import org.activiti.core.common.spring.security.policies.SecurityPoliciesRestrictionApplier;
 import org.activiti.core.common.spring.security.policies.conf.SecurityPoliciesProperties;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
-@Configuration
+@AutoConfiguration
 @EnableConfigurationProperties(SecurityPoliciesProperties.class)
 public class ActivitiSpringSecurityPoliciesAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ProcessSecurityPoliciesManager processSecurityPoliciesManager(SecurityManager securityManager,
-                                                                         SecurityPoliciesProperties securityPoliciesProperties,
-                                                                         SecurityPoliciesRestrictionApplier<GetProcessDefinitionsPayload> processDefinitionRestrictionApplier,
-                                                                         SecurityPoliciesRestrictionApplier<GetProcessInstancesPayload> processInstanceRestrictionApplier) {
-        return new ProcessSecurityPoliciesManagerImpl(securityManager,
-                                                      securityPoliciesProperties,
-                                                      processDefinitionRestrictionApplier,
-                                                      processInstanceRestrictionApplier);
+    public ProcessSecurityPoliciesManager processSecurityPoliciesManager(
+        SecurityManager securityManager,
+        SecurityPoliciesProperties securityPoliciesProperties,
+        SecurityPoliciesRestrictionApplier<GetProcessDefinitionsPayload> processDefinitionRestrictionApplier,
+        SecurityPoliciesRestrictionApplier<GetProcessInstancesPayload> processInstanceRestrictionApplier
+    ) {
+        return new ProcessSecurityPoliciesManagerImpl(
+            securityManager,
+            securityPoliciesProperties,
+            processDefinitionRestrictionApplier,
+            processInstanceRestrictionApplier
+        );
     }
 
     @Bean
@@ -53,8 +57,7 @@ public class ActivitiSpringSecurityPoliciesAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(name = "processDefinitionRestrictionApplier")
-    public SecurityPoliciesRestrictionApplier<GetProcessDefinitionsPayload> processDefinitionRestrictionApplier () {
+    public SecurityPoliciesRestrictionApplier<GetProcessDefinitionsPayload> processDefinitionRestrictionApplier() {
         return new SecurityPoliciesProcessDefinitionRestrictionApplier();
     }
-
 }

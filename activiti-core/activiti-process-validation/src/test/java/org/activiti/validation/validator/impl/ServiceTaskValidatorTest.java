@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,27 @@
  */
 package org.activiti.validation.validator.impl;
 
-import java.util.ArrayList;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.ServiceTask;
-import org.activiti.validation.ValidationError;
+import org.activiti.validation.ProcessValidatorImpl;
+import org.activiti.validation.validator.ValidatorSet;
+import org.activiti.validation.validator.ValidatorSetNames;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class ServiceTaskValidatorTest {
 
-    private ServiceTaskValidator validator = new ServiceTaskValidator();
+    ValidatorSet validatorSet = new ValidatorSet(ValidatorSetNames.ACTIVITI_EXECUTABLE_PROCESS);
+    ProcessValidatorImpl validator = new ProcessValidatorImpl();
+
+    @BeforeEach
+    void setUp() {
+        validatorSet.addValidator(new ServiceTaskValidator());
+        validator.addValidatorSet(validatorSet);
+    }
 
     @Test
     public void executeValidationShouldRiseErrorsForEmptyServiceTask() {
@@ -35,19 +43,17 @@ public class ServiceTaskValidatorTest {
         Process process = new Process();
         process.addFlowElement(new ServiceTask());
         BpmnModel bpmnModel = new BpmnModel();
-        ArrayList<ValidationError> errors = new ArrayList<>();
+        bpmnModel.addProcess(process);
 
         //when
-        validator.executeValidation(bpmnModel, process,
-                                    errors);
+        var errors = validator.validate(bpmnModel);
 
         //then
         assertThat(errors).hasSize(1);
-        assertThat(errors.get(0).getProblem()).isEqualTo("activiti-servicetask-missing-implementation");
-        assertThat(errors.get(0).getDefaultDescription())
-                .isEqualTo(
-                        "One of the attributes 'implementation', 'class', 'delegateExpression', 'type', 'operation', or 'expression' is mandatory on serviceTask."
-                );
+        assertThat(errors.getFirst().getProblem()).isEqualTo("activiti-servicetask-missing-implementation");
+        assertThat(errors.getFirst().getDefaultDescription()).isEqualTo(
+            "One of the attributes 'implementation', 'class', 'delegateExpression', 'type', 'operation', or 'expression' is mandatory on serviceTask."
+        );
     }
 
     @Test
@@ -58,16 +64,12 @@ public class ServiceTaskValidatorTest {
         serviceTask.setImplementation("myImpl");
         process.addFlowElement(serviceTask);
         BpmnModel bpmnModel = new BpmnModel();
-        ArrayList<ValidationError> errors = new ArrayList<>();
+        bpmnModel.addProcess(process);
 
         //when
-        validator.executeValidation(bpmnModel, process,
-                                    errors);
+        var errors = validator.validate(bpmnModel);
 
         //then
-        assertThat(errors)
-                .as("No error is expected: the default behavior will be used")
-                .isEmpty();
+        assertThat(errors).as("No error is expected: the default behavior will be used").isEmpty();
     }
-
 }

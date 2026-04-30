@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+
+  <error id="error123" errorCode="123" />
+  <error id="error1" errorCode="ERROR_1" />
+
+  <process id="xmlOrderIndependence">
+
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="subprocess" />
+
+    <subProcess id="subprocess">
+      <startEvent id="subprocessStart" />
+      <sequenceFlow id="subFlow1" sourceRef="subprocessStart" targetRef="subprocessEnd" />
+      <endEvent id="subprocessEnd">
+        <errorEventDefinition errorRef="error123" />
+      </endEvent>
+    </subProcess>
+
+    <!-- Order in XML: catch-all, ERROR_1, then "123" -->
+
+    <!-- 1. Catch-all boundary event defined FIRST -->
+    <boundaryEvent id="catchAllError" cancelActivity="true" attachedToRef="subprocess">
+      <errorEventDefinition />
+    </boundaryEvent>
+    <sequenceFlow id="flowCatchAll" sourceRef="catchAllError" targetRef="catchAllTask" />
+    <userTask id="catchAllTask" name="Catch All Task" />
+    <sequenceFlow id="flowCatchAllEnd" sourceRef="catchAllTask" targetRef="endCatchAll" />
+    <endEvent id="endCatchAll" />
+
+    <!-- 2. ERROR_1 handler defined SECOND (won't match) -->
+    <boundaryEvent id="catchError1" cancelActivity="true" attachedToRef="subprocess">
+      <errorEventDefinition errorRef="error1" />
+    </boundaryEvent>
+    <sequenceFlow id="flowError1" sourceRef="catchError1" targetRef="error1Task" />
+    <userTask id="error1Task" name="Error 1 Task" />
+    <sequenceFlow id="flowError1End" sourceRef="error1Task" targetRef="endError1" />
+    <endEvent id="endError1" />
+
+    <!-- 3. Error code "123" handler defined LAST (SHOULD match despite XML order) -->
+    <boundaryEvent id="catchError123" cancelActivity="true" attachedToRef="subprocess">
+      <errorEventDefinition errorRef="error123" />
+    </boundaryEvent>
+    <sequenceFlow id="flowError123" sourceRef="catchError123" targetRef="task123" />
+    <userTask id="task123" name="Task for Error 123" />
+    <sequenceFlow id="flowError123End" sourceRef="task123" targetRef="endError123" />
+    <endEvent id="endError123" />
+
+    <sequenceFlow id="flow2" sourceRef="subprocess" targetRef="theEnd" />
+    <endEvent id="theEnd" />
+
+  </process>
+
+</definitions>

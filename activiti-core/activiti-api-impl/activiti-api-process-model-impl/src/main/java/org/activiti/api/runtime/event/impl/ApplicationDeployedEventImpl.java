@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,15 +19,23 @@ import org.activiti.api.process.model.Deployment;
 import org.activiti.api.process.model.events.ApplicationDeployedEvent;
 import org.activiti.api.process.model.events.ApplicationEvent;
 
-public class ApplicationDeployedEventImpl extends RuntimeEventImpl<Deployment, ApplicationEvent.ApplicationEvents>
-        implements ApplicationDeployedEvent {
+public class ApplicationDeployedEventImpl
+    extends RuntimeEventImpl<Deployment, ApplicationEvent.ApplicationEvents>
+    implements ApplicationDeployedEvent {
+
+    private final ApplicationEvents eventType;
 
     public ApplicationDeployedEventImpl(Deployment entity) {
+        this(entity, ApplicationEvents.APPLICATION_DEPLOYED);
+    }
+
+    public ApplicationDeployedEventImpl(Deployment entity, ApplicationEvents eventType) {
         super(entity);
+        this.eventType = eventType;
     }
 
     @Override
     public ApplicationEvents getEventType() {
-        return ApplicationEvents.APPLICATION_DEPLOYED;
+        return eventType;
     }
 }

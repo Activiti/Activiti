@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.el;
 
-import java.beans.FeatureDescriptor;
+import jakarta.el.ELContext;
+import jakarta.el.ELResolver;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
-import javax.el.ELContext;
-import javax.el.ELResolver;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.variable.AuthenticatedUserELResolver;
@@ -52,7 +48,6 @@ public class VariableScopeElResolver extends ELResolver {
 
     @Override
     public Object getValue(ELContext context, Object base, Object property) {
-
         if (base == null) {
             String variable = (String) property; // according to javadoc, can
             // only be a String
@@ -82,43 +77,38 @@ public class VariableScopeElResolver extends ELResolver {
                 new TaskElResolver(),
                 new AuthenticatedUserELResolver(),
                 new ProcessInitiatorELResolver(),
-                new VariableElResolver(Context.getProcessEngineConfiguration().getObjectMapper()));
+                new VariableElResolver(Context.getProcessEngineConfiguration().getObjectMapper())
+            );
         }
         return variableScopeItemELResolvers;
     }
 
-	@Override
-	public boolean isReadOnly(ELContext context, Object base, Object property) {
-		if (base == null) {
-			String variable = (String) property;
-			return !variableScope.hasVariable(variable);
-		}
-		return true;
-	}
+    @Override
+    public boolean isReadOnly(ELContext context, Object base, Object property) {
+        if (base == null) {
+            String variable = (String) property;
+            return !variableScope.hasVariable(variable);
+        }
+        return true;
+    }
 
-	@Override
-	public void setValue(ELContext context, Object base, Object property, Object value) {
-		if (base == null) {
-			String variable = (String) property;
-			if (variableScope.hasVariable(variable)) {
-				variableScope.setVariable(variable, value);
-			}
-		}
-	}
+    @Override
+    public void setValue(ELContext context, Object base, Object property, Object value) {
+        if (base == null) {
+            String variable = (String) property;
+            if (variableScope.hasVariable(variable)) {
+                variableScope.setVariable(variable, value);
+            }
+        }
+    }
 
-	@Override
-	public Class<?> getCommonPropertyType(ELContext arg0, Object arg1) {
-		return Object.class;
-	}
+    @Override
+    public Class<?> getCommonPropertyType(ELContext arg0, Object arg1) {
+        return Object.class;
+    }
 
-	@Override
-	public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext arg0, Object arg1) {
-		return null;
-	}
-
-	@Override
-	public Class<?> getType(ELContext arg0, Object arg1, Object arg2) {
-		return Object.class;
-	}
-
+    @Override
+    public Class<?> getType(ELContext arg0, Object arg1, Object arg2) {
+        return Object.class;
+    }
 }

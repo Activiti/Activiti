@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+	xmlns:activiti="http://activiti.org/bpmn"
+	targetNamespace="Examples">
+
+	<process id="testExpressionOnTimerWithExecutionListeners">
+
+		<startEvent id="theStart" />
+		<sequenceFlow id="theStart_task" sourceRef="theStart" targetRef="task" />
+    <userTask id="task" name="Task rigged with timer">
+      <extensionElements>
+        <activiti:executionListener event="end" class="org.activiti.engine.test.bpmn.event.timer.BoundaryTimerEventTest$MyExecutionListener" />
+      </extensionElements>
+    </userTask>
+		<sequenceFlow id="task_theEnd" sourceRef="task" targetRef="theEnd" />
+
+		<boundaryEvent id="boundaryTimer" cancelActivity="true" attachedToRef="task">
+			<timerEventDefinition>
+			  <timeDuration>${duration}</timeDuration>
+			</timerEventDefinition>
+		</boundaryEvent>
+
+    <sequenceFlow id="boundaryTimer_theEnd" sourceRef="boundaryTimer" targetRef="theEnd" />
+
+		<endEvent id="theEnd" />
+
+	</process>
+
+</definitions>

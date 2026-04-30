@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,12 @@
 package org.activiti.spring.resources.conf;
 
 import org.activiti.spring.resources.ResourceFinder;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
-@Configuration
+@AutoConfiguration
 public class ResourceFinderAutoConfiguration {
 
     @Bean
@@ -29,5 +29,4 @@ public class ResourceFinderAutoConfiguration {
     public ResourceFinder resourceFinderImpl(ResourcePatternResolver resourcePatternResolver) {
         return new ResourceFinder(resourcePatternResolver);
     }
-
 }

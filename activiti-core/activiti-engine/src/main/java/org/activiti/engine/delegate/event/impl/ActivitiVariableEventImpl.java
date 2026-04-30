@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.delegate.event.impl;
 
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -27,48 +26,52 @@ import org.activiti.engine.impl.variable.VariableType;
  */
 public class ActivitiVariableEventImpl extends ActivitiEventImpl implements ActivitiVariableEvent {
 
-  protected String variableName;
-  protected Object variableValue;
-  protected VariableType variableType;
-  protected String taskId;
+    protected String variableName;
+    protected Object variableValue;
+    protected VariableType variableType;
+    protected String taskId;
 
-  public ActivitiVariableEventImpl(ActivitiEventType type) {
-    super(type);
-  }
+    public ActivitiVariableEventImpl(ActivitiEventType type) {
+        super(type);
+    }
 
-  @Override
-  public String getVariableName() {
-    return variableName;
-  }
+    @Override
+    public String getVariableName() {
+        return variableName;
+    }
 
-  public void setVariableName(String variableName) {
-    this.variableName = variableName;
-  }
+    public void setVariableName(String variableName) {
+        this.variableName = variableName;
+    }
 
-  @Override
-  public Object getVariableValue() {
-    return variableValue;
-  }
+    @Override
+    public Object getVariableValue() {
+        return variableValue;
+    }
 
-  public void setVariableValue(Object variableValue) {
-    this.variableValue = variableValue;
-  }
+    public void setVariableValue(Object variableValue) {
+        this.variableValue = variableValue;
+    }
 
-  public VariableType getVariableType() {
-    return variableType;
-  }
+    public VariableType getVariableType() {
+        return variableType;
+    }
 
-  public void setVariableType(VariableType variableType) {
-    this.variableType = variableType;
-  }
+    public void setVariableType(VariableType variableType) {
+        this.variableType = variableType;
+    }
 
-  @Override
-  public String getTaskId() {
-    return taskId;
-  }
+    @Override
+    public String getTaskId() {
+        return taskId;
+    }
 
-  public void setTaskId(String taskId) {
-    this.taskId = taskId;
-  }
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
+    }
 
+    @Override
+    public boolean isTaskVariable() {
+        return taskId != null;
+    }
 }

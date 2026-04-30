@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,24 +15,23 @@
  */
 package org.activiti.api.runtime.model.impl;
 
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
 import org.springframework.core.convert.converter.Converter;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ProcessVariableTypeConverter
 public class JsonNodeToStringConverter implements Converter<JsonNode, String> {
-    private final ObjectMapper objectMapper;
 
-    public JsonNodeToStringConverter(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
+    private final JsonMapper jsonMapper;
+
+    public JsonNodeToStringConverter(JsonMapper jsonMapper) {
+        this.jsonMapper = jsonMapper;
     }
 
     @Override
     public String convert(JsonNode source) {
-
         try {
-            return objectMapper.writeValueAsString(source);
+            return jsonMapper.writeValueAsString(source);
         } catch (Exception cause) {
             throw new RuntimeException(cause);
         }

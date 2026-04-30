@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,46 +15,70 @@
  */
 package org.activiti.runtime.api.event.impl;
 
+import static org.activiti.runtime.api.event.impl.VariableBuilder.buildVariableEvent;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 import org.activiti.api.model.shared.event.VariableDeletedEvent;
 import org.activiti.api.model.shared.event.VariableEvent.VariableEvents;
 import org.activiti.api.model.shared.model.VariableInstance;
-import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiVariableEventImpl;
-import org.activiti.engine.impl.variable.BooleanType;
-import org.activiti.engine.impl.variable.VariableType;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 class ToVariableDeletedConverterTest {
 
-    private ToVariableDeletedConverter converter = new ToVariableDeletedConverter();
+    @Mock
+    EphemeralVariableResolver ephemeralVariableResolver;
+
+    @InjectMocks
+    private ToVariableDeletedConverter converter;
 
     @Test
     void should_convertToVariableDeletedEvent() {
-        ActivitiVariableEventImpl internalEvent = new ActivitiVariableEventImpl(ActivitiEventType.VARIABLE_DELETED);
-        internalEvent.setVariableName("variableName");
-        internalEvent.setProcessInstanceId("processInstanceId");
-        internalEvent.setTaskId("taskId");
-        VariableType variableType = new BooleanType();
-        internalEvent.setVariableType(variableType);
-        Object value = mock(Object.class);
-        internalEvent.setVariableValue(value);
+        ActivitiVariableEventImpl internalEvent = buildVariableEvent();
 
         Optional<VariableDeletedEvent> result = converter.from(internalEvent);
-
         assertThat(result).isPresent();
         VariableDeletedEvent actualEvent = result.get();
+        assertThat(actualEvent.isEphemeralVariable()).isFalse();
+
+        VariableInstance actualEntity = assertVariableDeleted(actualEvent, internalEvent);
+        Object actualValue = actualEntity.getValue();
+        assertThat(actualValue).isEqualTo(internalEvent.getVariableValue());
+    }
+
+    @Test
+    void should_convertToVariableDeletedEvent_withNullValue_when_variableIsEphemeral() {
+        ActivitiVariableEventImpl internalEvent = buildVariableEvent();
+
+        when(ephemeralVariableResolver.isEphemeralVariable(internalEvent)).thenReturn(true);
+
+        Optional<VariableDeletedEvent> result = converter.from(internalEvent);
+        assertThat(result).isPresent();
+        VariableDeletedEvent actualEvent = result.get();
+        assertThat(actualEvent.isEphemeralVariable()).isTrue();
+
+        VariableInstance actualEntity = assertVariableDeleted(actualEvent, internalEvent);
+        Object actualValue = actualEntity.getValue();
+        assertThat(actualValue).isNull();
+    }
+
+    private VariableInstance assertVariableDeleted(
+        VariableDeletedEvent actualEvent,
+        ActivitiVariableEventImpl internalEvent
+    ) {
         assertThat(actualEvent.getEventType()).isEqualTo(VariableEvents.VARIABLE_DELETED);
         VariableInstance actualEntity = actualEvent.getEntity();
-        assertThat(actualEntity.getName()).isEqualTo("variableName");
-        assertThat(actualEntity.getProcessInstanceId()).isEqualTo("processInstanceId");
-        assertThat(actualEntity.getTaskId()).isEqualTo("taskId");
-        assertThat(actualEntity.getType()).isEqualTo("boolean");
-        Object actualValue = actualEntity.getValue();
-        assertThat(actualValue).isSameAs(value);
-
+        assertThat(actualEntity.getName()).isEqualTo(internalEvent.getVariableName());
+        assertThat(actualEntity.getProcessInstanceId()).isEqualTo(internalEvent.getProcessInstanceId());
+        assertThat(actualEntity.getTaskId()).isEqualTo(internalEvent.getTaskId());
+        assertThat(actualEntity.getType()).isEqualTo(internalEvent.getVariableType().getTypeName());
+        return actualEntity;
     }
 }

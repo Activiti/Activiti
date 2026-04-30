@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,15 +20,22 @@ import org.activiti.api.model.shared.model.VariableInstance;
 
 public class VariableDeletedEventImpl extends VariableEventImpl implements VariableDeletedEvent {
 
-    public VariableDeletedEventImpl() {
-    }
+    private boolean isEphemeralVariable;
 
-    public VariableDeletedEventImpl(VariableInstance entity) {
+    public VariableDeletedEventImpl() {}
+
+    public VariableDeletedEventImpl(VariableInstance entity, boolean isEphemeralVariable) {
         super(entity);
+        this.isEphemeralVariable = isEphemeralVariable;
     }
 
     @Override
     public VariableEvents getEventType() {
         return VariableEvents.VARIABLE_DELETED;
+    }
+
+    @Override
+    public boolean isEphemeralVariable() {
+        return isEphemeralVariable;
     }
 }
