@@ -28,6 +28,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -573,14 +574,25 @@ public class DbSqlSession implements Session {
     }
 
     protected void flushInsertEntities(Class<? extends Entity> entityClass, Collection<Entity> entitiesToInsert) {
-        if (entitiesToInsert.size() == 1) {
-            flushRegularInsert(entitiesToInsert.iterator().next(), entityClass);
+        // Sort non-execution entities by ID to ensure deterministic lock acquisition
+        // order within the same class, preventing within-table deadlocks across
+        // concurrent transactions. ExecutionEntity is excluded because it has
+        // self-referential FK constraints (parent-child) that require specific ordering.
+        Collection<Entity> orderedInserts = entitiesToInsert;
+        if (!ExecutionEntity.class.isAssignableFrom(entityClass) && entitiesToInsert.size() > 1) {
+            List<Entity> sortedInserts = new ArrayList<>(entitiesToInsert);
+            sortedInserts.sort(Comparator.comparing(Entity::getId));
+            orderedInserts = sortedInserts;
+        }
+
+        if (orderedInserts.size() == 1) {
+            flushRegularInsert(orderedInserts.iterator().next(), entityClass);
         } else if (Boolean.FALSE.equals(dbSqlSessionFactory.isBulkInsertable(entityClass))) {
-            for (Entity entity : entitiesToInsert) {
+            for (Entity entity : orderedInserts) {
                 flushRegularInsert(entity, entityClass);
             }
         } else {
-            flushBulkInsert(entitiesToInsert, entityClass);
+            flushBulkInsert(orderedInserts, entityClass);
         }
     }
 
@@ -751,6 +763,18 @@ public class DbSqlSession implements Session {
     }
 
     protected void flushUpdates() {
+        // Sort to ensure a deterministic update order across concurrent transactions.
+        // Without this, HashMap iteration produces non-deterministic ordering that can
+        // cause deadlocks when two transactions update the same rows in opposite order.
+        updatedObjects.sort(
+            Comparator.comparingInt((Entity e) -> {
+                int idx = EntityDependencyOrder.UPDATE_ORDER.indexOf(e.getClass());
+                return idx >= 0 ? idx : Integer.MAX_VALUE;
+            })
+            .thenComparing(e -> e.getClass().getName())
+            .thenComparing(Entity::getId)
+        );
+
         for (Entity updatedObject : updatedObjects) {
             String updateStatement = dbSqlSessionFactory.getUpdateStatement(updatedObject);
             updateStatement = dbSqlSessionFactory.mapStatement(updateStatement);
@@ -812,7 +836,18 @@ public class DbSqlSession implements Session {
     }
 
     protected void flushDeleteEntities(Class<? extends Entity> entityClass, Collection<Entity> entitiesToDelete) {
-        for (Entity entity : entitiesToDelete) {
+        // Sort non-execution entities by ID to ensure deterministic lock acquisition
+        // order within the same class, preventing within-table deadlocks across
+        // concurrent transactions. ExecutionEntity is excluded because it has
+        // self-referential FK constraints (parent-child) that require specific ordering.
+        Collection<Entity> orderedDeletes = entitiesToDelete;
+        if (!ExecutionEntity.class.isAssignableFrom(entityClass) && entitiesToDelete.size() > 1) {
+            List<Entity> sortedDeletes = new ArrayList<>(entitiesToDelete);
+            sortedDeletes.sort(Comparator.comparing(Entity::getId));
+            orderedDeletes = sortedDeletes;
+        }
+
+        for (Entity entity : orderedDeletes) {
             String deleteStatement = dbSqlSessionFactory.getDeleteStatement(entity.getClass());
             deleteStatement = dbSqlSessionFactory.mapStatement(deleteStatement);
             if (deleteStatement == null) {
