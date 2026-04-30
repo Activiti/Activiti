@@ -61,6 +61,7 @@ public class EntityDependencyOrder {
 
     public static List<Class<? extends Entity>> DELETE_ORDER = new ArrayList<Class<? extends Entity>>();
     public static List<Class<? extends Entity>> INSERT_ORDER = new ArrayList<Class<? extends Entity>>();
+    public static List<Class<? extends Entity>> UPDATE_ORDER = new ArrayList<Class<? extends Entity>>();
 
     static {
         /*
@@ -210,5 +211,7 @@ public class EntityDependencyOrder {
 
         INSERT_ORDER = new ArrayList<Class<? extends Entity>>(DELETE_ORDER);
         Collections.reverse(INSERT_ORDER);
+
+        UPDATE_ORDER = new ArrayList<Class<? extends Entity>>(INSERT_ORDER);
     }
 }

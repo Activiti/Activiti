@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definition"
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+
+  <process id="miDeadlockProcess">
+
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="miSubProcess" />
+
+    <subProcess id="miSubProcess">
+      <multiInstanceLoopCharacteristics isSequential="false">
+        <loopCardinality>2</loopCardinality>
+      </multiInstanceLoopCharacteristics>
+
+      <startEvent id="subStart" />
+      <sequenceFlow id="subFlow1" sourceRef="subStart" targetRef="subTask" />
+
+      <userTask id="subTask" name="MI Sub Task" />
+      <sequenceFlow id="subFlow2" sourceRef="subTask" targetRef="subEnd" />
+
+      <endEvent id="subEnd" />
+    </subProcess>
+
+    <sequenceFlow id="flow2" sourceRef="miSubProcess" targetRef="theEnd" />
+    <endEvent id="theEnd" />
+
+  </process>
+
+</definitions>
