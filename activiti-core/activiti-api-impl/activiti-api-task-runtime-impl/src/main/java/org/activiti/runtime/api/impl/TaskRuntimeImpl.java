@@ -533,10 +533,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
         String sortField = order.getProperty().trim().toLowerCase(Locale.ROOT);
 
         if (!SORT_FIELD_MAPPERS.containsKey(sortField)) {
-            throw new IllegalStateException(
-                    "Sorting by '" + order.getProperty() + "' (normalized to '" + sortField
-                            + "') is not supported. Field names are case-insensitive. Supported fields are: "
-                            + String.join(", ", SORT_FIELD_MAPPERS.keySet()));
+            return taskQuery;
         }
 
         TaskQuery sortedQuery = SORT_FIELD_MAPPERS.get(sortField).apply(taskQuery);
