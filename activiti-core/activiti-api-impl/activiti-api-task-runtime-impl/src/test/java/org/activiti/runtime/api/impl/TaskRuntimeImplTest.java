@@ -21,19 +21,24 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import org.activiti.api.runtime.shared.query.Order;
+import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.model.impl.TaskImpl;
 import org.activiti.api.task.model.payloads.AssignTaskPayload;
+import org.activiti.api.task.model.payloads.GetTasksPayload;
 import org.activiti.api.task.model.payloads.UpdateTaskPayload;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.task.TaskQuery;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -123,5 +128,129 @@ public class TaskRuntimeImplTest {
 
         verify(taskService).unclaim(taskId);
         verify(taskService).claim(taskId, newAssignee);
+    }
+
+    @Test
+    public void tasks_should_invokeOrderByTaskCreateTimeAsc_when_sortingByCreatedDateAsc() {
+        //given
+        when(securityManager.getAuthenticatedUserId()).thenReturn(AUTHENTICATED_USER);
+        when(securityManager.getAuthenticatedUserGroups()).thenReturn(Collections.emptyList());
+
+        TaskQuery taskQuery = mock(TaskQuery.class);
+        TaskQuery sortedQuery = mock(TaskQuery.class);
+        TaskQuery ascQuery = mock(TaskQuery.class);
+
+        when(taskService.createTaskQuery()).thenReturn(taskQuery);
+        when(taskQuery.or()).thenReturn(taskQuery);
+        when(taskQuery.taskCandidateOrAssigned(AUTHENTICATED_USER, Collections.emptyList()))
+            .thenReturn(taskQuery);
+        when(taskQuery.taskOwner(AUTHENTICATED_USER)).thenReturn(taskQuery);
+        when(taskQuery.endOr()).thenReturn(taskQuery);
+        when(taskQuery.orderByTaskCreateTime()).thenReturn(sortedQuery);
+        when(sortedQuery.asc()).thenReturn(ascQuery);
+        when(ascQuery.listPage(0, 50)).thenReturn(Collections.emptyList());
+        when(ascQuery.count()).thenReturn(0L);
+        when(taskConverter.from(Collections.emptyList())).thenReturn(Collections.emptyList());
+
+        Order order = Order.by("createdDate", Order.Direction.ASC);
+        Pageable pageable = Pageable.of(0, 50, order);
+        GetTasksPayload payload = TaskPayloadBuilder.tasks().build();
+
+        //when
+        taskRuntime.tasks(pageable, payload);
+
+        //then
+        verify(taskQuery).orderByTaskCreateTime();
+        verify(sortedQuery).asc();
+    }
+
+    @Test
+    public void tasks_should_invokeOrderByTaskCreateTimeDesc_when_sortingByCreatedDateDesc() {
+        //given
+        when(securityManager.getAuthenticatedUserId()).thenReturn(AUTHENTICATED_USER);
+        when(securityManager.getAuthenticatedUserGroups()).thenReturn(Collections.emptyList());
+
+        TaskQuery taskQuery = mock(TaskQuery.class);
+        TaskQuery sortedQuery = mock(TaskQuery.class);
+        TaskQuery descQuery = mock(TaskQuery.class);
+
+        when(taskService.createTaskQuery()).thenReturn(taskQuery);
+        when(taskQuery.or()).thenReturn(taskQuery);
+        when(taskQuery.taskCandidateOrAssigned(AUTHENTICATED_USER, Collections.emptyList()))
+            .thenReturn(taskQuery);
+        when(taskQuery.taskOwner(AUTHENTICATED_USER)).thenReturn(taskQuery);
+        when(taskQuery.endOr()).thenReturn(taskQuery);
+        when(taskQuery.orderByTaskCreateTime()).thenReturn(sortedQuery);
+        when(sortedQuery.desc()).thenReturn(descQuery);
+        when(descQuery.listPage(0, 50)).thenReturn(Collections.emptyList());
+        when(descQuery.count()).thenReturn(0L);
+        when(taskConverter.from(Collections.emptyList())).thenReturn(Collections.emptyList());
+
+        Order order = Order.by("createdDate", Order.Direction.DESC);
+        Pageable pageable = Pageable.of(0, 50, order);
+        GetTasksPayload payload = TaskPayloadBuilder.tasks().build();
+
+        //when
+        taskRuntime.tasks(pageable, payload);
+
+        //then
+        verify(taskQuery).orderByTaskCreateTime();
+        verify(sortedQuery).desc();
+    }
+
+    @Test
+    public void tasks_should_throwException_when_sortingByUnsupportedField() {
+        //given
+        when(securityManager.getAuthenticatedUserId()).thenReturn(AUTHENTICATED_USER);
+        when(securityManager.getAuthenticatedUserGroups()).thenReturn(Collections.emptyList());
+
+        TaskQuery taskQuery = mock(TaskQuery.class);
+
+        when(taskService.createTaskQuery()).thenReturn(taskQuery);
+        when(taskQuery.or()).thenReturn(taskQuery);
+        when(taskQuery.taskCandidateOrAssigned(AUTHENTICATED_USER, Collections.emptyList()))
+            .thenReturn(taskQuery);
+        when(taskQuery.taskOwner(AUTHENTICATED_USER)).thenReturn(taskQuery);
+        when(taskQuery.endOr()).thenReturn(taskQuery);
+
+        Order order = Order.by("unsupportedField", Order.Direction.ASC);
+        Pageable pageable = Pageable.of(0, 50, order);
+        GetTasksPayload payload = TaskPayloadBuilder.tasks().build();
+
+        //when
+        Throwable thrown = catchThrowable(() -> taskRuntime.tasks(pageable, payload));
+
+        //then
+        assertThat(thrown)
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessageContaining("Sorting by unsupportedField is not supported");
+    }
+
+    @Test
+    public void tasks_should_handleNullOrder_gracefully() {
+        //given
+        when(securityManager.getAuthenticatedUserId()).thenReturn(AUTHENTICATED_USER);
+        when(securityManager.getAuthenticatedUserGroups()).thenReturn(Collections.emptyList());
+
+        TaskQuery taskQuery = mock(TaskQuery.class);
+
+        when(taskService.createTaskQuery()).thenReturn(taskQuery);
+        when(taskQuery.or()).thenReturn(taskQuery);
+        when(taskQuery.taskCandidateOrAssigned(AUTHENTICATED_USER, Collections.emptyList()))
+            .thenReturn(taskQuery);
+        when(taskQuery.taskOwner(AUTHENTICATED_USER)).thenReturn(taskQuery);
+        when(taskQuery.endOr()).thenReturn(taskQuery);
+        when(taskQuery.listPage(0, 50)).thenReturn(Collections.emptyList());
+        when(taskQuery.count()).thenReturn(0L);
+        when(taskConverter.from(Collections.emptyList())).thenReturn(Collections.emptyList());
+
+        Pageable pageable = Pageable.of(0, 50);
+        GetTasksPayload payload = TaskPayloadBuilder.tasks().build();
+
+        //when
+        taskRuntime.tasks(pageable, payload);
+
+        //then
+        verify(taskQuery, never()).orderByTaskCreateTime();
     }
 }
