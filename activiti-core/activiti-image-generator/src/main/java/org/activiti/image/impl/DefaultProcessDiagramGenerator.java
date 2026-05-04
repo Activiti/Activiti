@@ -131,7 +131,7 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                     GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
                     StartEvent startEvent = (StartEvent) flowNode;
                     if (startEvent.getEventDefinitions() != null && !startEvent.getEventDefinitions().isEmpty()) {
-                        EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
+                        EventDefinition eventDefinition = startEvent.getEventDefinitions().getFirst();
                         if (eventDefinition instanceof TimerEventDefinition) {
                             processDiagramCanvas.drawTimerStartEvent(flowNode.getId(), flowNode.getName(), graphicInfo);
                         } else if (eventDefinition instanceof ErrorEventDefinition) {
@@ -174,7 +174,7 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                         intermediateCatchEvent.getEventDefinitions() != null &&
                         !intermediateCatchEvent.getEventDefinitions().isEmpty()
                     ) {
-                        if (intermediateCatchEvent.getEventDefinitions().get(0) instanceof SignalEventDefinition) {
+                        if (intermediateCatchEvent.getEventDefinitions().getFirst() instanceof SignalEventDefinition) {
                             processDiagramCanvas.drawCatchingSignalEvent(
                                 flowNode.getId(),
                                 flowNode.getName(),
@@ -182,7 +182,7 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                                 true
                             );
                         } else if (
-                            intermediateCatchEvent.getEventDefinitions().get(0) instanceof TimerEventDefinition
+                            intermediateCatchEvent.getEventDefinitions().getFirst() instanceof TimerEventDefinition
                         ) {
                             processDiagramCanvas.drawCatchingTimerEvent(
                                 flowNode.getId(),
@@ -191,7 +191,7 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                                 true
                             );
                         } else if (
-                            intermediateCatchEvent.getEventDefinitions().get(0) instanceof MessageEventDefinition
+                            intermediateCatchEvent.getEventDefinitions().getFirst() instanceof MessageEventDefinition
                         ) {
                             processDiagramCanvas.drawCatchingMessageEvent(
                                 flowNode.getId(),
@@ -225,13 +225,13 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                     GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
                     ThrowEvent throwEvent = (ThrowEvent) flowNode;
                     if (throwEvent.getEventDefinitions() != null && !throwEvent.getEventDefinitions().isEmpty()) {
-                        if (throwEvent.getEventDefinitions().get(0) instanceof SignalEventDefinition) {
+                        if (throwEvent.getEventDefinitions().getFirst() instanceof SignalEventDefinition) {
                             processDiagramCanvas.drawThrowingSignalEvent(
                                 flowNode.getId(),
                                 flowNode.getName(),
                                 graphicInfo
                             );
-                        } else if (throwEvent.getEventDefinitions().get(0) instanceof CompensateEventDefinition) {
+                        } else if (throwEvent.getEventDefinitions().getFirst() instanceof CompensateEventDefinition) {
                             processDiagramCanvas.drawThrowingCompensateEvent(
                                 flowNode.getId(),
                                 flowNode.getName(),
@@ -270,7 +270,7 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                     GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
                     EndEvent endEvent = (EndEvent) flowNode;
                     if (endEvent.getEventDefinitions() != null && !endEvent.getEventDefinitions().isEmpty()) {
-                        if (endEvent.getEventDefinitions().get(0) instanceof ErrorEventDefinition) {
+                        if (endEvent.getEventDefinitions().getFirst() instanceof ErrorEventDefinition) {
                             processDiagramCanvas.drawErrorEndEvent(flowNode.getId(), flowNode.getName(), graphicInfo);
                         } else {
                             processDiagramCanvas.drawNoneEndEvent(flowNode.getId(), flowNode.getName(), graphicInfo);
@@ -488,34 +488,34 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                     GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
                     BoundaryEvent boundaryEvent = (BoundaryEvent) flowNode;
                     if (boundaryEvent.getEventDefinitions() != null && !boundaryEvent.getEventDefinitions().isEmpty()) {
-                        if (boundaryEvent.getEventDefinitions().get(0) instanceof TimerEventDefinition) {
+                        if (boundaryEvent.getEventDefinitions().getFirst() instanceof TimerEventDefinition) {
                             processDiagramCanvas.drawCatchingTimerEvent(
                                 flowNode.getId(),
                                 flowNode.getName(),
                                 graphicInfo,
                                 boundaryEvent.isCancelActivity()
                             );
-                        } else if (boundaryEvent.getEventDefinitions().get(0) instanceof ErrorEventDefinition) {
+                        } else if (boundaryEvent.getEventDefinitions().getFirst() instanceof ErrorEventDefinition) {
                             processDiagramCanvas.drawCatchingErrorEvent(
                                 flowNode.getId(),
                                 graphicInfo,
                                 boundaryEvent.isCancelActivity()
                             );
-                        } else if (boundaryEvent.getEventDefinitions().get(0) instanceof SignalEventDefinition) {
+                        } else if (boundaryEvent.getEventDefinitions().getFirst() instanceof SignalEventDefinition) {
                             processDiagramCanvas.drawCatchingSignalEvent(
                                 flowNode.getId(),
                                 flowNode.getName(),
                                 graphicInfo,
                                 boundaryEvent.isCancelActivity()
                             );
-                        } else if (boundaryEvent.getEventDefinitions().get(0) instanceof MessageEventDefinition) {
+                        } else if (boundaryEvent.getEventDefinitions().getFirst() instanceof MessageEventDefinition) {
                             processDiagramCanvas.drawCatchingMessageEvent(
                                 flowNode.getId(),
                                 flowNode.getName(),
                                 graphicInfo,
                                 boundaryEvent.isCancelActivity()
                             );
-                        } else if (boundaryEvent.getEventDefinitions().get(0) instanceof CompensateEventDefinition) {
+                        } else if (boundaryEvent.getEventDefinitions().getFirst() instanceof CompensateEventDefinition) {
                             processDiagramCanvas.drawCatchingCompensateEvent(
                                 flowNode.getId(),
                                 graphicInfo,

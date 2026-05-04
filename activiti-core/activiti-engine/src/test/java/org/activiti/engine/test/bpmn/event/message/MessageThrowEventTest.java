@@ -119,7 +119,7 @@ public class MessageThrowEventTest extends ResourceActivitiTestCase {
 
         assertThat(receivedEvents).hasSize(1);
 
-        ActivitiMessageEvent event = (ActivitiMessageEvent) receivedEvents.get(0);
+        ActivitiMessageEvent event = (ActivitiMessageEvent) receivedEvents.getFirst();
 
         assertThat(event.getActivityId()).isEqualTo("messageThrow");
         assertThat(event.getActivityType()).isEqualTo("throwEvent");
@@ -142,7 +142,7 @@ public class MessageThrowEventTest extends ResourceActivitiTestCase {
 
         assertThat(receivedEvents).hasSize(1);
 
-        ActivitiMessageEvent event = (ActivitiMessageEvent) receivedEvents.get(0);
+        ActivitiMessageEvent event = (ActivitiMessageEvent) receivedEvents.getFirst();
 
         assertThat(event.getActivityId()).isEqualTo("messageThrow");
         assertThat(event.getActivityType()).isEqualTo("throwEvent");
@@ -163,7 +163,7 @@ public class MessageThrowEventTest extends ResourceActivitiTestCase {
         assertThat(listenerExecuted).isTrue();
         assertThat(receivedEvents).hasSize(1);
 
-        ActivitiMessageEvent event = (ActivitiMessageEvent) receivedEvents.get(0);
+        ActivitiMessageEvent event = (ActivitiMessageEvent) receivedEvents.getFirst();
 
         assertThat(event.getActivityId()).isEqualTo("theEnd");
         assertThat(event.getActivityType()).isEqualTo("endEvent");
@@ -185,7 +185,7 @@ public class MessageThrowEventTest extends ResourceActivitiTestCase {
         assertThat(delegateExecuted).isTrue();
         assertThat(receivedEvents).hasSize(1);
 
-        ActivitiMessageEvent event = (ActivitiMessageEvent) receivedEvents.get(0);
+        ActivitiMessageEvent event = (ActivitiMessageEvent) receivedEvents.getFirst();
 
         assertThat(event.getActivityId()).isEqualTo("theEnd");
         assertThat(event.getActivityType()).isEqualTo("endEvent");
@@ -212,7 +212,7 @@ public class MessageThrowEventTest extends ResourceActivitiTestCase {
         assertThat(delegateExecuted).isTrue();
         assertThat(receivedEvents).hasSize(1);
 
-        ActivitiMessageEvent event = (ActivitiMessageEvent) receivedEvents.get(0);
+        ActivitiMessageEvent event = (ActivitiMessageEvent) receivedEvents.getFirst();
 
         assertThat(event.getActivityId()).isEqualTo("messageThrow");
         assertThat(event.getActivityType()).isEqualTo("throwEvent");
@@ -241,7 +241,7 @@ public class MessageThrowEventTest extends ResourceActivitiTestCase {
 
         assertThat(receivedEvents.size() > 0);
 
-        ActivitiMessageEvent event = (ActivitiMessageEvent) receivedEvents.get(0);
+        ActivitiMessageEvent event = (ActivitiMessageEvent) receivedEvents.getFirst();
 
         assertThat(event.getActivityId()).isEqualTo("theEnd");
         assertThat(event.getActivityType()).isEqualTo("endEvent");
@@ -271,7 +271,7 @@ public class MessageThrowEventTest extends ResourceActivitiTestCase {
 
         assertThat(receivedEvents.size() > 0);
 
-        ActivitiMessageEvent event = (ActivitiMessageEvent) receivedEvents.get(0);
+        ActivitiMessageEvent event = (ActivitiMessageEvent) receivedEvents.getFirst();
 
         assertThat(event.getActivityId()).isEqualTo("messageThrow");
         assertThat(event.getActivityType()).isEqualTo("throwEvent");
@@ -338,7 +338,7 @@ public class MessageThrowEventTest extends ResourceActivitiTestCase {
 
         assertThat(receivedEvents).hasSize(1);
 
-        ActivitiMessageEvent event = (ActivitiMessageEvent) receivedEvents.get(0);
+        ActivitiMessageEvent event = (ActivitiMessageEvent) receivedEvents.getFirst();
 
         assertThat(event.getActivityId()).isEqualTo("messageThrow");
         assertThat(event.getActivityType()).isEqualTo("throwEvent");
@@ -370,7 +370,7 @@ public class MessageThrowEventTest extends ResourceActivitiTestCase {
 
         assertThat(receivedEvents).hasSize(1);
 
-        ActivitiMessageEvent event = (ActivitiMessageEvent) receivedEvents.get(0);
+        ActivitiMessageEvent event = (ActivitiMessageEvent) receivedEvents.getFirst();
 
         assertThat(event.getActivityId()).isEqualTo("theEnd");
         assertThat(event.getActivityType()).isEqualTo("endEvent");

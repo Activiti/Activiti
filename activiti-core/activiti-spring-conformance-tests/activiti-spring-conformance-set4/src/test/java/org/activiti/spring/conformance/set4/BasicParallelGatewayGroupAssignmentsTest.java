@@ -89,7 +89,7 @@ public class BasicParallelGatewayGroupAssignmentsTest {
 
         assertThat(tasks.getTotalItems()).isEqualTo(1);
 
-        Task task = tasks.getContent().get(0);
+        Task task = tasks.getContent().getFirst();
 
         Task taskById = taskRuntime.task(task.getId());
 
@@ -141,7 +141,7 @@ public class BasicParallelGatewayGroupAssignmentsTest {
 
         assertThat(tasks.getTotalItems()).isEqualTo(1);
 
-        task = tasks.getContent().get(0);
+        task = tasks.getContent().getFirst();
 
         taskById = taskRuntime.task(task.getId());
 
@@ -158,7 +158,7 @@ public class BasicParallelGatewayGroupAssignmentsTest {
 
         assertThat(tasks.getTotalItems()).isEqualTo(1);
 
-        task = tasks.getContent().get(0);
+        task = tasks.getContent().getFirst();
 
         taskById = taskRuntime.task(task.getId());
 

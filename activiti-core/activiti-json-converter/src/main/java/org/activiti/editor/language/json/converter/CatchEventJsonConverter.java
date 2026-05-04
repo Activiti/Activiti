@@ -15,8 +15,8 @@
  */
 package org.activiti.editor.language.json.converter;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.ObjectNode;
 import java.util.List;
 import java.util.Map;
 import org.activiti.bpmn.model.BaseElement;
@@ -59,7 +59,7 @@ public class CatchEventJsonConverter extends BaseBpmnJsonConverter {
             return STENCIL_EVENT_CATCH_TIMER;
         }
 
-        EventDefinition eventDefinition = eventDefinitions.get(0);
+        EventDefinition eventDefinition = eventDefinitions.getFirst();
         if (eventDefinition instanceof MessageEventDefinition) {
             return STENCIL_EVENT_CATCH_MESSAGE;
         } else if (eventDefinition instanceof SignalEventDefinition) {

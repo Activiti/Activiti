@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-core-dependencies</artifactId>
-    <version>9.0.0-SNAPSHOT</version>
+    <version>9.1.0-SNAPSHOT</version>
     <relativePath>../activiti-core-dependencies</relativePath>
   </parent>
   <artifactId>activiti-spring-boot-starter</artifactId>
@@ -109,12 +109,16 @@
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-jdbc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-actuator-autoconfigure</artifactId>
     </dependency>
 
     <!-- Optional -->
     <dependency>
-      <groupId>org.codehaus.groovy</groupId>
+      <groupId>org.apache.groovy</groupId>
       <artifactId>groovy</artifactId>
       <optional>true</optional>
     </dependency>
@@ -125,7 +129,7 @@
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-web</artifactId>
+      <artifactId>spring-boot-starter-webmvc</artifactId>
       <optional>true</optional>
     </dependency>
     <dependency>
@@ -149,8 +153,8 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.springframework.security</groupId>
-      <artifactId>spring-security-test</artifactId>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-security-test</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

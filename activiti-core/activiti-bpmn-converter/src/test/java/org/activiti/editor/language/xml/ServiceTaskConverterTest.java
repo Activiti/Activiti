@@ -57,7 +57,7 @@ public class ServiceTaskConverterTest extends AbstractConverterTest {
 
         List<FieldExtension> fields = serviceTask.getFieldExtensions();
         assertThat(fields).hasSize(2);
-        FieldExtension field = fields.get(0);
+        FieldExtension field = fields.getFirst();
         assertThat(field.getFieldName()).isEqualTo("testField");
         assertThat(field.getStringValue()).isEqualTo("test");
         field = fields.get(1);
@@ -66,7 +66,7 @@ public class ServiceTaskConverterTest extends AbstractConverterTest {
 
         List<ActivitiListener> listeners = serviceTask.getExecutionListeners();
         assertThat(listeners).hasSize(3);
-        ActivitiListener listener = listeners.get(0);
+        ActivitiListener listener = listeners.getFirst();
         assertThat(ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(listener.getImplementationType())).isTrue();
         assertThat(listener.getImplementation()).isEqualTo("org.test.TestClass");
         assertThat(listener.getEvent()).isEqualTo("start");

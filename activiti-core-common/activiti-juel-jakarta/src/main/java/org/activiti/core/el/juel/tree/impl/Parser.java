@@ -290,7 +290,7 @@ public class Parser {
             token = scanner.next();
             position = scanner.getPosition();
         } else {
-            LookaheadToken next = lookahead.remove(0);
+            LookaheadToken next = lookahead.removeFirst();
             token = next.token;
             position = next.position;
         }

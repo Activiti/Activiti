@@ -105,7 +105,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
             currentArtifact.setId(elementId);
 
             if (!activeSubProcessList.isEmpty()) {
-                activeSubProcessList.get(activeSubProcessList.size() - 1).addArtifact(currentArtifact);
+                activeSubProcessList.getLast().addArtifact(currentArtifact);
             } else {
                 activeProcess.addArtifact(currentArtifact);
             }
@@ -139,7 +139,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
 
             if (currentFlowElement instanceof DataObject) {
                 if (!activeSubProcessList.isEmpty()) {
-                    SubProcess subProcess = activeSubProcessList.get(activeSubProcessList.size() - 1);
+                    SubProcess subProcess = activeSubProcessList.getLast();
                     subProcess.getDataObjects().add((ValuedDataObject) parsedElement);
                 } else {
                     activeProcess.getDataObjects().add((ValuedDataObject) parsedElement);
@@ -147,7 +147,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
             }
 
             if (!activeSubProcessList.isEmpty()) {
-                SubProcess subProcess = activeSubProcessList.get(activeSubProcessList.size() - 1);
+                SubProcess subProcess = activeSubProcessList.getLast();
                 subProcess.addFlowElement(currentFlowElement);
             } else {
                 activeProcess.addFlowElement(currentFlowElement);

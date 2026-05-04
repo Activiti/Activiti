@@ -92,7 +92,7 @@ public class ExecutionListenerTest extends PluggableActivitiTestCase {
 
         List<RecordedEvent> events = RecorderExecutionListener.getRecordedEvents();
         assertThat(events).hasSize(1);
-        RecordedEvent event = events.get(0);
+        RecordedEvent event = events.getFirst();
         assertThat(event.getParameter()).isEqualTo("End Process Listener");
     }
 
@@ -108,10 +108,10 @@ public class ExecutionListenerTest extends PluggableActivitiTestCase {
         List<RecordedEvent> recordedEvents = RecorderExecutionListener.getRecordedEvents();
         assertThat(recordedEvents).hasSize(4);
 
-        assertThat(recordedEvents.get(0).getActivityId()).isEqualTo("theStart");
-        assertThat(recordedEvents.get(0).getActivityName()).isEqualTo("Start Event");
-        assertThat(recordedEvents.get(0).getParameter()).isEqualTo("Start Event Listener");
-        assertThat(recordedEvents.get(0).getEventName()).isEqualTo("end");
+        assertThat(recordedEvents.getFirst().getActivityId()).isEqualTo("theStart");
+        assertThat(recordedEvents.getFirst().getActivityName()).isEqualTo("Start Event");
+        assertThat(recordedEvents.getFirst().getParameter()).isEqualTo("Start Event Listener");
+        assertThat(recordedEvents.getFirst().getEventName()).isEqualTo("end");
 
         assertThat(recordedEvents.get(1).getActivityId()).isEqualTo("noneEvent");
         assertThat(recordedEvents.get(1).getActivityName()).isEqualTo("None Event");
@@ -163,8 +163,8 @@ public class ExecutionListenerTest extends PluggableActivitiTestCase {
         List<CurrentActivity> currentActivities = CurrentActivityExecutionListener.getCurrentActivities();
         assertThat(currentActivities).hasSize(3);
 
-        assertThat(currentActivities.get(0).getActivityId()).isEqualTo("theStart");
-        assertThat(currentActivities.get(0).getActivityName()).isEqualTo("Start Event");
+        assertThat(currentActivities.getFirst().getActivityId()).isEqualTo("theStart");
+        assertThat(currentActivities.getFirst().getActivityName()).isEqualTo("Start Event");
 
         assertThat(currentActivities.get(1).getActivityId()).isEqualTo("noneEvent");
         assertThat(currentActivities.get(1).getActivityName()).isEqualTo("None Event");
@@ -185,7 +185,7 @@ public class ExecutionListenerTest extends PluggableActivitiTestCase {
 
         List<RecordedEvent> recordedEvents = RecorderExecutionListener.getRecordedEvents();
         assertThat(recordedEvents).hasSize(1);
-        assertThat(recordedEvents.get(0).getParameter()).isEqualTo("Process Start");
+        assertThat(recordedEvents.getFirst().getParameter()).isEqualTo("Process Start");
 
         RecorderExecutionListener.clear();
 
@@ -197,7 +197,7 @@ public class ExecutionListenerTest extends PluggableActivitiTestCase {
         recordedEvents = RecorderExecutionListener.getRecordedEvents();
 
         assertThat(recordedEvents).hasSize(3);
-        assertThat(recordedEvents.get(0).getParameter()).isEqualTo("Subprocess Start");
+        assertThat(recordedEvents.getFirst().getParameter()).isEqualTo("Subprocess Start");
         assertThat(recordedEvents.get(1).getParameter()).isEqualTo("Subprocess End");
         assertThat(recordedEvents.get(2).getParameter()).isEqualTo("Process End");
     }
@@ -222,6 +222,6 @@ public class ExecutionListenerTest extends PluggableActivitiTestCase {
         // THEN: and the executionListener should have run
         List<RecordedEvent> recordedEvents = RecorderExecutionListener.getRecordedEvents();
         assertThat(recordedEvents).hasSize(1);
-        assertThat(recordedEvents.get(0).getParameter()).isEqualTo("Process has ended");
+        assertThat(recordedEvents.getFirst().getParameter()).isEqualTo("Process has ended");
     }
 }

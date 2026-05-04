@@ -209,6 +209,6 @@ public class ProcessRuntimeBPMNErrorReceivedIT {
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50), getTasksPayload);
 
         assertThat(tasks.getContent()).hasSize(1);
-        assertThat(tasks.getContent().get(0).getName()).isEqualTo(taskName);
+        assertThat(tasks.getContent().getFirst().getName()).isEqualTo(taskName);
     }
 }

@@ -105,7 +105,7 @@ public class DemoApplication implements CommandLineRunner {
                 List<VariableInstance> variables = taskRuntime.variables(
                     TaskPayloadBuilder.variables().withTaskId(t.getId()).build()
                 );
-                VariableInstance variableInstance = variables.get(0);
+                VariableInstance variableInstance = variables.getFirst();
                 if (variableInstance.getName().equals("content")) {
                     Content contentToProcess = variableInstance.getValue();
                     logger.info("> Content received inside the task to approve: " + contentToProcess);

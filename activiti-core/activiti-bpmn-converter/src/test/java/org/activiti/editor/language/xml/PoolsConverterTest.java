@@ -47,13 +47,13 @@ public class PoolsConverterTest extends AbstractConverterTest {
 
     private void validateModel(BpmnModel model) {
         assertThat(model.getPools()).hasSize(1);
-        Pool pool = model.getPools().get(0);
+        Pool pool = model.getPools().getFirst();
         assertThat(pool.getId()).isEqualTo("pool1");
         assertThat(pool.getName()).isEqualTo("Pool");
         Process process = model.getProcess(pool.getId());
         assertThat(process).isNotNull();
         assertThat(process.getLanes()).hasSize(2);
-        Lane lane = process.getLanes().get(0);
+        Lane lane = process.getLanes().getFirst();
         assertThat(lane.getId()).isEqualTo("lane1");
         assertThat(lane.getName()).isEqualTo("Lane 1");
         assertThat(lane.getFlowReferences()).hasSize(2);

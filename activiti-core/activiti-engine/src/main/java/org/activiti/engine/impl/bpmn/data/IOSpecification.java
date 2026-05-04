@@ -77,12 +77,12 @@ public class IOSpecification {
     }
 
     public String getFirstDataInputName() {
-        return this.dataInputs.get(0).getName();
+        return this.dataInputs.getFirst().getName();
     }
 
     public String getFirstDataOutputName() {
         if (this.dataOutputs != null && !this.dataOutputs.isEmpty()) {
-            return this.dataOutputs.get(0).getName();
+            return this.dataOutputs.getFirst().getName();
         } else {
             return null;
         }

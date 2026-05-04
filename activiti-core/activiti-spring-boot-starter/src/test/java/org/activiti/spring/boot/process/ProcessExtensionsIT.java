@@ -254,7 +254,7 @@ public class ProcessExtensionsIT {
         );
         assertThat(tasks.getContent()).hasSize(1);
         return taskRuntime.variables(
-            TaskPayloadBuilder.variables().withTaskId(tasks.getContent().get(0).getId()).build()
+            TaskPayloadBuilder.variables().withTaskId(tasks.getContent().getFirst().getId()).build()
         );
     }
 

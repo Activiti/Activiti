@@ -34,13 +34,12 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.integration.annotation.InboundChannelAdapter;
-import org.springframework.integration.annotation.Poller;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.channel.DirectChannel;
 import org.springframework.integration.config.EnableIntegration;
-import org.springframework.integration.core.MessageSource;
-import org.springframework.integration.file.FileReadingMessageSource;
+import org.springframework.integration.dsl.IntegrationFlow;
+import org.springframework.integration.dsl.Pollers;
+import org.springframework.integration.file.dsl.Files;
 import org.springframework.integration.file.filters.SimplePatternFileListFilter;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -83,12 +82,13 @@ public class DemoApplication implements CommandLineRunner {
     }
 
     @Bean
-    @InboundChannelAdapter(value = "fileChannel", poller = @Poller(fixedDelay = "1000"))
-    public MessageSource<File> fileReadingMessageSource() {
-        FileReadingMessageSource sourceReader = new FileReadingMessageSource();
-        sourceReader.setDirectory(new File(INPUT_DIR));
-        sourceReader.setFilter(new SimplePatternFileListFilter(FILE_PATTERN));
-        return sourceReader;
+    public IntegrationFlow fileReadingFlow() {
+        return IntegrationFlow.from(
+            Files.inboundAdapter(new File(INPUT_DIR))
+                .filter(new SimplePatternFileListFilter(FILE_PATTERN)),
+            e -> e.poller(Pollers.fixedDelay(1000)))
+            .channel("fileChannel")
+            .get();
     }
 
     @ServiceActivator(inputChannel = "fileChannel")

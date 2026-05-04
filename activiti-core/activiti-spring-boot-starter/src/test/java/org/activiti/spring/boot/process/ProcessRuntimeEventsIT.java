@@ -128,7 +128,7 @@ public class ProcessRuntimeEventsIT {
         List<VariableCreatedEvent> variableCreatedEvents = localEventSource.getEvents(VariableCreatedEvent.class);
         assertThat(variableCreatedEvents).hasSize(1);
 
-        VariableCreatedEvent variableCreatedEvent = variableCreatedEvents.get(0);
+        VariableCreatedEvent variableCreatedEvent = variableCreatedEvents.getFirst();
         assertThat(variableCreatedEvent.getProcessInstanceId()).isEqualTo(singleTaskProcess.getId());
         assertThat(variableCreatedEvent.getEntity().getName()).isEqualTo("name");
         assertThat(variableCreatedEvent.getEntity().getType()).isEqualTo("string");
@@ -181,7 +181,7 @@ public class ProcessRuntimeEventsIT {
         List<VariableUpdatedEvent> variableCreatedEvents = localEventSource.getEvents(VariableUpdatedEvent.class);
         assertThat(variableCreatedEvents).hasSize(1);
 
-        VariableUpdatedEvent variableUpdatedEvent = variableCreatedEvents.get(0);
+        VariableUpdatedEvent variableUpdatedEvent = variableCreatedEvents.getFirst();
         assertThat(variableUpdatedEvent.getEntity().getName()).isEqualTo("name");
         assertThat(variableUpdatedEvent.getEntity().getType()).isEqualTo("string");
         assertThat(variableUpdatedEvent.getEntity().<String>getValue()).isEqualTo("paul");
@@ -207,7 +207,7 @@ public class ProcessRuntimeEventsIT {
         List<ProcessCancelledEvent> processCancelledEvents = localEventSource.getEvents(ProcessCancelledEvent.class);
         assertThat(processCancelledEvents).hasSize(1);
 
-        ProcessCancelledEvent processCancelledEvent = processCancelledEvents.get(0);
+        ProcessCancelledEvent processCancelledEvent = processCancelledEvents.getFirst();
         assertThat(processCancelledEvent.getCause()).isEqualTo("process instance deleted");
         assertThat(processCancelledEvent.getEntity().getId()).isEqualTo(processInstance.getId());
         assertThat(processCancelledEvent.getEntity().getProcessDefinitionId()).isEqualTo(

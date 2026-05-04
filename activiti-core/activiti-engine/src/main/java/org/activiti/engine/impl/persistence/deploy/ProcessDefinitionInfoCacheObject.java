@@ -15,7 +15,7 @@
  */
 package org.activiti.engine.impl.persistence.deploy;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.node.ObjectNode;
 
 /**
 

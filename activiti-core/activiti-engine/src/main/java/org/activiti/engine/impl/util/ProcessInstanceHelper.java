@@ -155,11 +155,11 @@ public class ProcessInstanceHelper {
                 StartEvent startEvent = (StartEvent) flowElement;
                 if (
                     CollectionUtil.isNotEmpty(startEvent.getEventDefinitions()) &&
-                    startEvent.getEventDefinitions().get(0) instanceof MessageEventDefinition
+                    startEvent.getEventDefinitions().getFirst() instanceof MessageEventDefinition
                 ) {
                     MessageEventDefinition messageEventDefinition = (MessageEventDefinition) startEvent
                         .getEventDefinitions()
-                        .get(0);
+                        .getFirst();
                     String messageRef = messageEventDefinition.getMessageRef();
                     if (messageRef.equals(messageName)) {
                         initialFlowElement = flowElement;
@@ -273,7 +273,7 @@ public class ProcessInstanceHelper {
                     if (subElement instanceof StartEvent) {
                         StartEvent startEvent = (StartEvent) subElement;
                         if (CollectionUtil.isNotEmpty(startEvent.getEventDefinitions())) {
-                            EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
+                            EventDefinition eventDefinition = startEvent.getEventDefinitions().getFirst();
                             if (eventDefinition instanceof MessageEventDefinition) {
                                 MessageEventDefinition messageEventDefinition =
                                     (MessageEventDefinition) eventDefinition;
@@ -315,7 +315,7 @@ public class ProcessInstanceHelper {
             }
         }
 
-        ExecutionEntity execution = processInstance.getExecutions().get(0); // There will always be one child execution created
+        ExecutionEntity execution = processInstance.getExecutions().getFirst(); // There will always be one child execution created
 
         execution.setAppVersion(processInstance.getAppVersion());
 
@@ -434,7 +434,7 @@ public class ProcessInstanceHelper {
         // Dispatch message received event
         if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
             // There will always be one child execution created
-            DelegateExecution execution = processInstance.getExecutions().get(0);
+            DelegateExecution execution = processInstance.getExecutions().getFirst();
             ActivitiEventDispatcher eventDispatcher = Context.getProcessEngineConfiguration().getEventDispatcher();
             eventDispatcher.dispatchEvent(
                 ActivitiEventBuilder.createMessageReceivedEvent(execution, messageName, null, variables)

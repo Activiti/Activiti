@@ -110,7 +110,7 @@ public class BasicInclusiveGatewayTest {
 
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50), processInstanceTasksPayload);
         assertThat(tasks.getTotalItems()).isEqualTo(1);
-        Task task = tasks.getContent().get(0);
+        Task task = tasks.getContent().getFirst();
 
         //given
         taskOperations
@@ -135,7 +135,7 @@ public class BasicInclusiveGatewayTest {
         tasks = taskRuntime.tasks(Pageable.of(0, 50));
         assertThat(tasks.getTotalItems()).isEqualTo(2);
 
-        Task task1 = tasks.getContent().get(0);
+        Task task1 = tasks.getContent().getFirst();
         Task task2 = tasks.getContent().get(1);
 
         //given

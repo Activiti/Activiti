@@ -15,8 +15,8 @@
  */
 package org.activiti.editor.language.json.converter;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.ObjectNode;
 import java.util.Map;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.ErrorEventDefinition;
@@ -66,7 +66,7 @@ public class StartEventJsonConverter
     protected String getStencilId(BaseElement baseElement) {
         Event event = (Event) baseElement;
         if (event.getEventDefinitions().size() > 0) {
-            EventDefinition eventDefinition = event.getEventDefinitions().get(0);
+            EventDefinition eventDefinition = event.getEventDefinitions().getFirst();
             if (eventDefinition instanceof TimerEventDefinition) {
                 return STENCIL_EVENT_START_TIMER;
             } else if (eventDefinition instanceof ErrorEventDefinition) {
@@ -88,7 +88,7 @@ public class StartEventJsonConverter
 
         if (StringUtils.isNotEmpty(startEvent.getFormKey())) {
             if (formKeyMap != null && formKeyMap.containsKey(startEvent.getFormKey())) {
-                ObjectNode formRefNode = objectMapper.createObjectNode();
+                ObjectNode formRefNode = jsonMapper.createObjectNode();
                 ModelInfo modelInfo = formKeyMap.get(startEvent.getFormKey());
                 formRefNode.put("id", modelInfo.getId());
                 formRefNode.put("name", modelInfo.getName());
@@ -118,8 +118,8 @@ public class StartEventJsonConverter
             } else {
                 JsonNode formReferenceNode = getProperty(PROPERTY_FORM_REFERENCE, elementNode);
                 if (formReferenceNode != null && formReferenceNode.get("id") != null) {
-                    if (formMap != null && formMap.containsKey(formReferenceNode.get("id").asText())) {
-                        startEvent.setFormKey(formMap.get(formReferenceNode.get("id").asText()));
+                    if (formMap != null && formMap.containsKey(formReferenceNode.get("id").asString())) {
+                        startEvent.setFormKey(formMap.get(formReferenceNode.get("id").asString()));
                     }
                 }
             }

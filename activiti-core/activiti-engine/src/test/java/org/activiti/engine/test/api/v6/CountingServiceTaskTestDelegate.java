@@ -33,7 +33,7 @@ public class CountingServiceTaskTestDelegate implements JavaDelegate {
         execution.setVariable("counter", counter);
 
         if (CALL_COUNT.get() % 1000 == 0) {
-            System.out.println("Call count: " + CALL_COUNT);
+            IO.println("Call count: " + CALL_COUNT);
         }
 
         CALL_COUNT.incrementAndGet();

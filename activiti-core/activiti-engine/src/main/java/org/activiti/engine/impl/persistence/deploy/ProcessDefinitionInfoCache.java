@@ -17,8 +17,8 @@ package org.activiti.engine.impl.persistence.deploy;
 
 import static java.util.Collections.synchronizedMap;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.ObjectNode;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -114,7 +114,7 @@ public class ProcessDefinitionInfoCache {
         CommandContext commandContext
     ) {
         ProcessDefinitionInfoEntityManager infoEntityManager = commandContext.getProcessDefinitionInfoEntityManager();
-        ObjectMapper objectMapper = commandContext.getProcessEngineConfiguration().getObjectMapper();
+        JsonMapper jsonMapper = commandContext.getProcessEngineConfiguration().getObjectMapper();
 
         ProcessDefinitionInfoCacheObject cacheObject = null;
         if (cache.containsKey(processDefinitionId)) {
@@ -122,7 +122,7 @@ public class ProcessDefinitionInfoCache {
         } else {
             cacheObject = new ProcessDefinitionInfoCacheObject();
             cacheObject.setRevision(0);
-            cacheObject.setInfoNode(objectMapper.createObjectNode());
+            cacheObject.setInfoNode(jsonMapper.createObjectNode());
         }
 
         ProcessDefinitionInfoEntity infoEntity = infoEntityManager.findProcessDefinitionInfoByProcessDefinitionId(
@@ -133,7 +133,7 @@ public class ProcessDefinitionInfoCache {
             if (infoEntity.getInfoJsonId() != null) {
                 byte[] infoBytes = infoEntityManager.findInfoJsonById(infoEntity.getInfoJsonId());
                 try {
-                    ObjectNode infoNode = (ObjectNode) objectMapper.readTree(infoBytes);
+                    ObjectNode infoNode = (ObjectNode) jsonMapper.readTree(infoBytes);
                     cacheObject.setInfoNode(infoNode);
                 } catch (Exception e) {
                     throw new ActivitiException(
@@ -144,7 +144,7 @@ public class ProcessDefinitionInfoCache {
             }
         } else if (infoEntity == null) {
             cacheObject.setRevision(0);
-            cacheObject.setInfoNode(objectMapper.createObjectNode());
+            cacheObject.setInfoNode(jsonMapper.createObjectNode());
         }
 
         return cacheObject;

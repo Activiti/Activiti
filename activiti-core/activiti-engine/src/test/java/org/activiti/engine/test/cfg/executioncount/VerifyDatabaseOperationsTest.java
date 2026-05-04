@@ -145,7 +145,7 @@ public class VerifyDatabaseOperationsTest extends PluggableActivitiTestCase {
             "process-variables-servicetask01"
         );
 
-        assertDatabaseSelects("StartProcessInstanceCmd", "selectLatestProcessDefinitionByKey", 1L, "selectIdentityLinksByProcessInstance", 1L);
+        assertDatabaseSelects("StartProcessInstanceCmd", "selectLatestProcessDefinitionByKey", 1L, "selectIdentityLinksByProcessInstance", 1L, "selectVariablesByExecutionId", 1L);
         assertDatabaseInserts(
             "StartProcessInstanceCmd",
             "HistoricVariableInstanceEntityImpl-bulk-with-4",
@@ -167,7 +167,7 @@ public class VerifyDatabaseOperationsTest extends PluggableActivitiTestCase {
             "process-variables-servicetask02"
         );
 
-        assertDatabaseSelects("StartProcessInstanceCmd", "selectLatestProcessDefinitionByKey", 1L, "selectIdentityLinksByProcessInstance", 1L);
+        assertDatabaseSelects("StartProcessInstanceCmd", "selectLatestProcessDefinitionByKey", 1L, "selectIdentityLinksByProcessInstance", 1L, "selectVariablesByExecutionId", 1L);
         assertDatabaseInserts(
             "StartProcessInstanceCmd",
             "HistoricVariableInstanceEntityImpl-bulk-with-50",
@@ -237,7 +237,7 @@ public class VerifyDatabaseOperationsTest extends PluggableActivitiTestCase {
     public void testExlusiveGateway() {
         deployStartProcessInstanceAndProfile("process05.bpmn20.xml", "process05");
 
-        assertDatabaseSelects("StartProcessInstanceCmd", "selectLatestProcessDefinitionByKey", 1L, "selectIdentityLinksByProcessInstance", 1L);
+        assertDatabaseSelects("StartProcessInstanceCmd", "selectLatestProcessDefinitionByKey", 1L, "selectIdentityLinksByProcessInstance", 1L, "selectVariablesByExecutionId", 1L);
         assertDatabaseInserts(
             "StartProcessInstanceCmd",
             "HistoricActivityInstanceEntityImpl-bulk-with-5",
@@ -320,13 +320,13 @@ public class VerifyDatabaseOperationsTest extends PluggableActivitiTestCase {
     // ---------------------------------
 
     protected void assertExecutedCommands(String... commands) {
-        ProfileSession profileSession = ActivitiProfiler.getInstance().getProfileSessions().get(0);
+        ProfileSession profileSession = ActivitiProfiler.getInstance().getProfileSessions().getFirst();
         Map<String, CommandStats> allStats = profileSession.calculateSummaryStatistics();
 
         if (commands.length != allStats.size()) {
-            System.out.println("Following commands were found: ");
+            IO.println("Following commands were found: ");
             for (String command : allStats.keySet()) {
-                System.out.println(command);
+                IO.println(command);
             }
         }
         assertThat(allStats).hasSize(commands.length);
@@ -408,7 +408,7 @@ public class VerifyDatabaseOperationsTest extends PluggableActivitiTestCase {
     }
 
     protected CommandStats getStats(String commandClass) {
-        ProfileSession profileSession = ActivitiProfiler.getInstance().getProfileSessions().get(0);
+        ProfileSession profileSession = ActivitiProfiler.getInstance().getProfileSessions().getFirst();
         Map<String, CommandStats> allStats = profileSession.calculateSummaryStatistics();
         CommandStats stats = getStatsForCommand(commandClass, allStats);
         return stats;

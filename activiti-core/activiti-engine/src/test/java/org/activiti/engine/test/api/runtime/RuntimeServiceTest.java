@@ -440,13 +440,13 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
 
         tasks = taskService.createTaskQuery().list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getName()).isEqualTo("MainUserTask");
+        assertThat(tasks.getFirst().getName()).isEqualTo("MainUserTask");
 
         activeActivities = runtimeService.getActiveActivityIds(processInstance.getId());
         assertThat(activeActivities).hasSize(1);
-        assertThat(activeActivities.get(0)).isEqualTo("MainUserTask");
+        assertThat(activeActivities.getFirst()).isEqualTo("MainUserTask");
 
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
         assertProcessEnded(processInstance.getId());
     }
 
@@ -807,7 +807,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
                 .createExecutionQuery()
                 .signalEventSubscriptionName("alert")
                 .listPage(0, 1);
-            runtimeService.signalEventReceived("alert", page.get(0).getId());
+            runtimeService.signalEventReceived("alert", page.getFirst().getId());
 
             assertThat(runtimeService.createExecutionQuery().signalEventSubscriptionName("alert").count()).isEqualTo(
                 executions - 1
@@ -819,7 +819,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
                 .createExecutionQuery()
                 .signalEventSubscriptionName("panic")
                 .listPage(0, 1);
-            runtimeService.signalEventReceived("panic", page.get(0).getId());
+            runtimeService.signalEventReceived("panic", page.getFirst().getId());
 
             assertThat(runtimeService.createExecutionQuery().signalEventSubscriptionName("panic").count()).isEqualTo(
                 executions - 1
@@ -844,7 +844,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
                 .createExecutionQuery()
                 .messageEventSubscriptionName("alert")
                 .listPage(0, 1);
-            runtimeService.messageEventReceived("alert", page.get(0).getId());
+            runtimeService.messageEventReceived("alert", page.getFirst().getId());
 
             assertThat(runtimeService.createExecutionQuery().messageEventSubscriptionName("alert").count()).isEqualTo(
                 executions - 1
@@ -856,7 +856,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
                 .createExecutionQuery()
                 .messageEventSubscriptionName("panic")
                 .listPage(0, 1);
-            runtimeService.messageEventReceived("panic", page.get(0).getId());
+            runtimeService.messageEventReceived("panic", page.getFirst().getId());
 
             assertThat(runtimeService.createExecutionQuery().messageEventSubscriptionName("panic").count()).isEqualTo(
                 executions - 1
@@ -1166,23 +1166,28 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         builder.linkedProcessInstanceType("myLinkType");
 
         // Spy on the command executor to capture the command
+        CommandExecutor originalExecutor = runtimeService.getCommandExecutor();
         CommandExecutor commandExecutor = spy(processEngineConfiguration.getCommandExecutor());
         runtimeService.setCommandExecutor(commandExecutor);
 
-        ProcessInstance processInstance = runtimeService.startProcessInstance(builder);
+        try {
+            ProcessInstance processInstance = runtimeService.startProcessInstance(builder);
 
-        // Capture the StartProcessInstanceCmd
-        ArgumentCaptor<StartProcessInstanceCmd> commandCaptor = ArgumentCaptor.forClass(StartProcessInstanceCmd.class);
-        verify(commandExecutor).execute(commandCaptor.capture());
+            // Capture the StartProcessInstanceCmd
+            ArgumentCaptor<StartProcessInstanceCmd> commandCaptor = ArgumentCaptor.forClass(StartProcessInstanceCmd.class);
+            verify(commandExecutor).execute(commandCaptor.capture());
 
-        StartProcessInstanceCmd capturedCommand = commandCaptor.getValue();
-        assertThat(capturedCommand.getLinkedProcessInstanceId()).isEqualTo("linkedProcess123");
+            StartProcessInstanceCmd capturedCommand = commandCaptor.getValue();
+            assertThat(capturedCommand.getLinkedProcessInstanceId()).isEqualTo("linkedProcess123");
 
-        assertThat(capturedCommand.getLinkedProcessInstanceType()).isEqualTo("myLinkType");
+            assertThat(capturedCommand.getLinkedProcessInstanceType()).isEqualTo("myLinkType");
 
-        assertThat(processInstance).isNotNull();
-        assertThat(processInstance.getProcessDefinitionId()).isEqualTo(processDefinition.getId());
-        assertThat(processInstance.getBusinessKey()).isEqualTo("businessKey456");
+            assertThat(processInstance).isNotNull();
+            assertThat(processInstance.getProcessDefinitionId()).isEqualTo(processDefinition.getId());
+            assertThat(processInstance.getBusinessKey()).isEqualTo("businessKey456");
+        } finally {
+            runtimeService.setCommandExecutor(originalExecutor);
+        }
     }
 
     @Deployment(resources = { "org/activiti/engine/test/api/messageStartEvent.bpmn20.xml" })
@@ -1196,23 +1201,28 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         builder.linkedProcessInstanceId("linkedProcess123");
         builder.linkedProcessInstanceType("myLinkType");
 
+        CommandExecutor originalExecutor = runtimeService.getCommandExecutor();
         CommandExecutor commandExecutor = spy(processEngineConfiguration.getCommandExecutor());
         runtimeService.setCommandExecutor(commandExecutor);
 
-        ProcessInstance processInstance = runtimeService.startProcessInstance(builder);
+        try {
+            ProcessInstance processInstance = runtimeService.startProcessInstance(builder);
 
-        // Capture the StartProcessInstanceByMessageCmd
-        ArgumentCaptor<StartProcessInstanceByMessageCmd> commandCaptor = ArgumentCaptor.forClass(StartProcessInstanceByMessageCmd.class);
-        verify(commandExecutor).execute(commandCaptor.capture());
+            // Capture the StartProcessInstanceByMessageCmd
+            ArgumentCaptor<StartProcessInstanceByMessageCmd> commandCaptor = ArgumentCaptor.forClass(StartProcessInstanceByMessageCmd.class);
+            verify(commandExecutor).execute(commandCaptor.capture());
 
-        StartProcessInstanceByMessageCmd capturedCommand = commandCaptor.getValue();
-        assertThat(capturedCommand.getLinkedProcessInstanceId()).isEqualTo("linkedProcess123");
+            StartProcessInstanceByMessageCmd capturedCommand = commandCaptor.getValue();
+            assertThat(capturedCommand.getLinkedProcessInstanceId()).isEqualTo("linkedProcess123");
 
-        assertThat(capturedCommand.getLinkedProcessInstanceType()).isEqualTo("myLinkType");
+            assertThat(capturedCommand.getLinkedProcessInstanceType()).isEqualTo("myLinkType");
 
-        assertThat(processInstance).isNotNull();
-        assertThat(processInstance.getProcessDefinitionId()).isEqualTo(processDefinition.getId());
-        assertThat(processInstance.getBusinessKey()).isEqualTo("businessKey456");
+            assertThat(processInstance).isNotNull();
+            assertThat(processInstance.getProcessDefinitionId()).isEqualTo(processDefinition.getId());
+            assertThat(processInstance.getBusinessKey()).isEqualTo("businessKey456");
+        } finally {
+            runtimeService.setCommandExecutor(originalExecutor);
+        }
     }
 
 

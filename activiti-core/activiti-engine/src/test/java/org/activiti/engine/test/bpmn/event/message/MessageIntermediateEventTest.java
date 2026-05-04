@@ -113,7 +113,7 @@ public class MessageIntermediateEventTest extends PluggableActivitiTestCase {
         assertThat(executions).isNotNull();
         assertThat(executions).hasSize(2);
 
-        runtimeService.messageEventReceived(messageName, executions.get(0).getId());
+        runtimeService.messageEventReceived(messageName, executions.getFirst().getId());
 
         Task task = taskService.createTaskQuery().singleResult();
         assertThat(task).isNull();

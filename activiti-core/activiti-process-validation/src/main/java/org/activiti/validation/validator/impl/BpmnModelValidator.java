@@ -37,7 +37,7 @@ public class BpmnModelValidator extends ValidatorImpl {
     public void validate(BpmnModel bpmnModel, List<ValidationError> errors) {
         List<Process> processesDuplicated = getProcessesWithSameId(bpmnModel.getProcesses());
         if (!processesDuplicated.isEmpty()) {
-            addError(errors, Problems.PROCESS_DEFINITION_ID_NOT_UNIQUE, processesDuplicated.get(0));
+            addError(errors, Problems.PROCESS_DEFINITION_ID_NOT_UNIQUE, processesDuplicated.getFirst());
         }
 
         // If all process definitions of this bpmnModel are not executable, raise an error

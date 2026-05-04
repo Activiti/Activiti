@@ -15,8 +15,8 @@
  */
 package org.activiti.editor.language.json.converter;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.ObjectNode;
 import java.util.List;
 import java.util.Map;
 import org.activiti.bpmn.model.BaseElement;
@@ -61,7 +61,7 @@ public class EndEventJsonConverter extends BaseBpmnJsonConverter {
             return STENCIL_EVENT_END_NONE;
         }
 
-        EventDefinition eventDefinition = eventDefinitions.get(0);
+        EventDefinition eventDefinition = eventDefinitions.getFirst();
         if (eventDefinition instanceof ErrorEventDefinition) {
             return STENCIL_EVENT_END_ERROR;
         } else if (eventDefinition instanceof CancelEventDefinition) {

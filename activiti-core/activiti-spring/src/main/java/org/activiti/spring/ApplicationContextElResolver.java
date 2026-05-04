@@ -17,8 +17,6 @@ package org.activiti.spring;
 
 import jakarta.el.ELContext;
 import jakarta.el.ELResolver;
-import java.beans.FeatureDescriptor;
-import java.util.Iterator;
 import org.activiti.engine.ActivitiException;
 import org.springframework.context.ApplicationContext;
 
@@ -67,10 +65,6 @@ public class ApplicationContextElResolver extends ELResolver {
 
     public Class<?> getCommonPropertyType(ELContext context, Object arg) {
         return Object.class;
-    }
-
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object arg) {
-        return null;
     }
 
     public Class<?> getType(ELContext context, Object arg1, Object arg2) {

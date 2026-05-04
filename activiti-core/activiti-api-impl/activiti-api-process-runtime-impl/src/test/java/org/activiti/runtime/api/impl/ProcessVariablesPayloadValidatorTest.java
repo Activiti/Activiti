@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import java.io.IOException;
 import java.util.Date;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
@@ -54,7 +54,7 @@ public class ProcessVariablesPayloadValidatorTest {
     private DateFormatterProvider dateFormatterProvider = new DateFormatterProvider(
         "yyyy-MM-dd[['T']HH:mm:ss[.SSS'Z']]"
     );
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private JsonMapper jsonMapper = new JsonMapper();
     private VariableNameValidator variableNameValidator = new VariableNameValidator();
 
     private ProcessVariablesPayloadValidator processVariablesValidator;
@@ -62,7 +62,7 @@ public class ProcessVariablesPayloadValidatorTest {
 
     private ExpressionResolver expressionResolver = new ExpressionResolver(
         new ExpressionManager(),
-        objectMapper,
+        jsonMapper,
         new DefaultDelegateInterceptor()
     );
 
@@ -98,9 +98,9 @@ public class ProcessVariablesPayloadValidatorTest {
                 "integer",
                 new JavaObjectVariableType(Integer.class),
                 "json",
-                new JsonObjectVariableType(objectMapper),
+                new JsonObjectVariableType(jsonMapper),
                 "file",
-                new JsonObjectVariableType(objectMapper),
+                new JsonObjectVariableType(jsonMapper),
                 "date",
                 new DateVariableType(Date.class, dateFormatterProvider),
                 "datetime",
@@ -244,7 +244,7 @@ public class ProcessVariablesPayloadValidatorTest {
                     .withVariables(
                         map(
                             "expression_object",
-                            objectMapper.createObjectNode().put("attr1", "value1").put("attr2", "${variable}"),
+                            jsonMapper.createObjectNode().put("attr1", "value1").put("attr2", "${variable}"),
                             "variable",
                             "no-expression"
                         )
@@ -265,10 +265,10 @@ public class ProcessVariablesPayloadValidatorTest {
                     .withVariables(
                         map(
                             "expression_list",
-                            objectMapper
+                            jsonMapper
                                 .createObjectNode()
                                 .put("attr1", "value1")
-                                .set("attr2", objectMapper.createArrayNode().add("1").add("${variable}").add("2")),
+                                .set("attr2", jsonMapper.createArrayNode().add("1").add("${variable}").add("2")),
                             "variable",
                             "no-expression"
                         )

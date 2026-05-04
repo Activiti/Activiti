@@ -161,7 +161,7 @@ public class TaskRuntimeVariableMappingIT {
         List<Task> tasks = taskBaseRuntime.getTasksByProcessInstanceId(processInstance.getId());
         assertThat(tasks).hasSize(1);
 
-        Task task = tasks.get(0);
+        Task task = tasks.getFirst();
         assertThat(task.getName()).isEqualTo("testSimpleTask");
 
         List<VariableInstance> procVariables = processBaseRuntime.getProcessVariablesByProcessId(
@@ -311,7 +311,7 @@ public class TaskRuntimeVariableMappingIT {
         assertThat(tasks).isNotEmpty();
         assertThat(tasks).hasSize(1);
 
-        Task task = tasks.get(0);
+        Task task = tasks.getFirst();
         assertThat(task.getName()).isEqualTo("testSimpleTask");
 
         List<VariableInstance> procVariables = processBaseRuntime.getProcessVariablesByProcessId(
@@ -417,7 +417,7 @@ public class TaskRuntimeVariableMappingIT {
         List<Task> tasks = taskBaseRuntime.getTasksByProcessInstanceId(processInstanceId);
         assertThat(tasks).isNotEmpty();
         assertThat(tasks).hasSize(1);
-        return tasks.get(0);
+        return tasks.getFirst();
     }
 
     @Test
@@ -430,7 +430,7 @@ public class TaskRuntimeVariableMappingIT {
         assertThat(tasks).extracting(Task::getName).containsExactly("Enter values");
 
         //when the task completes with a variable value causing a loop back
-        taskBaseRuntime.completeTask(tasks.get(0), singletonMap("formInput", "provided-it1"));
+        taskBaseRuntime.completeTask(tasks.getFirst(), singletonMap("formInput", "provided-it1"));
 
         //then process loops back to the first task
         waitForTaskOnProcessInstance(processInstance, "Enter values");
@@ -441,7 +441,7 @@ public class TaskRuntimeVariableMappingIT {
 
         //when the task completes with a variable value not causing a loop back
         tasks = taskBaseRuntime.getTasksByProcessInstanceId(processInstance.getId());
-        taskBaseRuntime.completeTask(tasks.get(0), singletonMap("formInput", "go"));
+        taskBaseRuntime.completeTask(tasks.getFirst(), singletonMap("formInput", "go"));
 
         //then the process reaches the next task
         waitForTaskOnProcessInstance(processInstance, "Wait");
@@ -470,7 +470,7 @@ public class TaskRuntimeVariableMappingIT {
         assertThat(tasks).extracting(Task::getName).containsExactly("Input Task");
 
         //when
-        taskBaseRuntime.completeTask(tasks.get(0), singletonMap("inputText", "From input task"));
+        taskBaseRuntime.completeTask(tasks.getFirst(), singletonMap("inputText", "From input task"));
 
         //then the process has executed the service task as well and reached the next user task
         waitForTaskOnProcessInstance(processInstance, "Output Task");
@@ -483,7 +483,7 @@ public class TaskRuntimeVariableMappingIT {
 
         //the task variables are updated based on the input mapping
         tasks = taskBaseRuntime.getTasksByProcessInstanceId(processInstance.getId());
-        final List<VariableInstance> taskVariables = taskBaseRuntime.getTasksVariablesByTaskId(tasks.get(0).getId());
+        final List<VariableInstance> taskVariables = taskBaseRuntime.getTasksVariablesByTaskId(tasks.getFirst().getId());
         assertThat(taskVariables)
             .extracting(VariableInstance::getName, VariableInstance::getValue)
             .containsExactly(tuple("outputText", "From output connector"));
@@ -499,7 +499,7 @@ public class TaskRuntimeVariableMappingIT {
         assertThat(tasks).extracting(Task::getName).containsExactly("Input Task");
 
         //when
-        taskBaseRuntime.completeTask(tasks.get(0), singletonMap("inputText", "From input task"));
+        taskBaseRuntime.completeTask(tasks.getFirst(), singletonMap("inputText", "From input task"));
 
         //then the process has executed the call activity as well and reached the next user task
         waitForTaskOnProcessInstance(processInstance, "Output Task");
@@ -512,7 +512,7 @@ public class TaskRuntimeVariableMappingIT {
 
         //the task variables are updated based on the input mapping
         tasks = taskBaseRuntime.getTasksByProcessInstanceId(processInstance.getId());
-        final List<VariableInstance> taskVariables = taskBaseRuntime.getTasksVariablesByTaskId(tasks.get(0).getId());
+        final List<VariableInstance> taskVariables = taskBaseRuntime.getTasksVariablesByTaskId(tasks.getFirst().getId());
         assertThat(taskVariables)
             .extracting(VariableInstance::getName, VariableInstance::getValue)
             .containsExactly(tuple("outputText", "From child"));
@@ -591,7 +591,7 @@ public class TaskRuntimeVariableMappingIT {
 
         List<Task> tasks = checkMultiInstanceTasks(processInstance.getId(), 2);
 
-        taskBaseRuntime.completeTask(tasks.get(0).getId());
+        taskBaseRuntime.completeTask(tasks.getFirst().getId());
 
         taskBaseRuntime.assignTask(tasks.get(1).getId(), "garth");
         securityUtil.logInAs("garth");

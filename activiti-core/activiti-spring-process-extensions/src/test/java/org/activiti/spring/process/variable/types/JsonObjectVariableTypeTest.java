@@ -17,7 +17,7 @@ package org.activiti.spring.process.variable.types;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import java.util.ArrayList;
 import java.util.List;
 import org.activiti.engine.ActivitiException;
@@ -31,7 +31,7 @@ class JsonObjectVariableTypeTest {
 
     @BeforeEach
     public void setUp() {
-        jsonObjectVariableType = new JsonObjectVariableType(new ObjectMapper());
+        jsonObjectVariableType = new JsonObjectVariableType(new JsonMapper());
         exceptionList = new ArrayList<>();
     }
 

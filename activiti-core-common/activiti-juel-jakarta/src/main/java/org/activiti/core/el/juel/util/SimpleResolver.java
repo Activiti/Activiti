@@ -23,8 +23,6 @@ import jakarta.el.ELResolver;
 import jakarta.el.ListELResolver;
 import jakarta.el.MapELResolver;
 import jakarta.el.ResourceBundleELResolver;
-import java.beans.FeatureDescriptor;
-import java.util.Iterator;
 
 /**
  * Simple resolver implementation. This resolver handles root properties (top-level identifiers).
@@ -103,11 +101,6 @@ public class SimpleResolver extends ELResolver {
     @Override
     public Class<?> getCommonPropertyType(ELContext context, Object base) {
         return delegate.getCommonPropertyType(context, base);
-    }
-
-    @Override
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
-        return delegate.getFeatureDescriptors(context, base);
     }
 
     @Override

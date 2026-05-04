@@ -694,7 +694,7 @@ public class ProcessRuntimeBPMNMessageIT {
         // then
         assertThat(tasks.getContent()).hasSize(1);
 
-        String taskId = tasks.getContent().get(0).getId();
+        String taskId = tasks.getContent().getFirst().getId();
 
         // when
         taskRuntime.complete(
@@ -721,7 +721,7 @@ public class ProcessRuntimeBPMNMessageIT {
 
         assertThat(tasks.getContent()).hasSize(1);
 
-        taskId = tasks.getContent().get(0).getId();
+        taskId = tasks.getContent().getFirst().getId();
 
         // then
         taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(taskId).build());
@@ -971,7 +971,7 @@ public class ProcessRuntimeBPMNMessageIT {
         assertThat(localEventSource.getEvents())
             .filteredOn(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED))
             .extracting(RuntimeEvent::getEventType, event -> ((Task) event.getEntity()).getName())
-            .containsExactly(tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED, allTasks.get(0).getName()));
+            .containsExactly(tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED, allTasks.getFirst().getName()));
 
         // sending the Interrupted Start Message to process
         processRuntime.receive(
@@ -1023,7 +1023,7 @@ public class ProcessRuntimeBPMNMessageIT {
         assertThat(localEventSource.getEvents())
             .filteredOn(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_CANCELLED))
             .extracting(RuntimeEvent::getEventType, event -> ((Task) event.getEntity()).getName())
-            .containsExactly(tuple(TaskRuntimeEvent.TaskEvents.TASK_CANCELLED, allTasks.get(0).getName()));
+            .containsExactly(tuple(TaskRuntimeEvent.TaskEvents.TASK_CANCELLED, allTasks.getFirst().getName()));
 
         assertThat(localEventSource.getEvents())
             .extracting(RuntimeEvent::getEventType, RuntimeEvent::getProcessInstanceId)
@@ -1075,7 +1075,7 @@ public class ProcessRuntimeBPMNMessageIT {
         assertThat(localEventSource.getEvents())
             .filteredOn(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED))
             .extracting(RuntimeEvent::getEventType, event -> ((Task) event.getEntity()).getName())
-            .containsExactly(tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED, allTasks.get(0).getName()));
+            .containsExactly(tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED, allTasks.getFirst().getName()));
 
         // sending the Non Interrupted Start Message to process
         processRuntime.receive(
@@ -1125,16 +1125,16 @@ public class ProcessRuntimeBPMNMessageIT {
         assertThat(localEventSource.getEvents())
             .filteredOn(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED))
             .extracting(RuntimeEvent::getEventType, event -> ((Task) event.getEntity()).getName())
-            .containsExactly(tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED, allTasks.get(0).getName()));
+            .containsExactly(tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED, allTasks.getFirst().getName()));
 
         localEventSource.clearEvents();
 
-        taskBaseRuntime.completeTask(allTasks.get(0).getId());
+        taskBaseRuntime.completeTask(allTasks.getFirst().getId());
 
         assertThat(localEventSource.getEvents())
             .filteredOn(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED))
             .extracting(RuntimeEvent::getEventType, event -> ((Task) event.getEntity()).getName())
-            .containsExactly(tuple(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED, allTasks.get(0).getName()));
+            .containsExactly(tuple(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED, allTasks.getFirst().getName()));
 
         assertThat(localEventSource.getEvents())
             .extracting(RuntimeEvent::getEventType, RuntimeEvent::getProcessInstanceId)

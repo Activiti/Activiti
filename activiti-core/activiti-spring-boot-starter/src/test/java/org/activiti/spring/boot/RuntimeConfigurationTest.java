@@ -56,11 +56,11 @@ public class RuntimeConfigurationTest {
         List<String> userRoles = userGroupManager.getUserRoles("user");
         assertThat(userRoles).isNotNull();
         assertThat(userRoles).hasSize(1);
-        assertThat(userRoles.get(0)).isEqualTo("ACTIVITI_USER");
+        assertThat(userRoles.getFirst()).isEqualTo("ACTIVITI_USER");
         List<String> userGroups = userGroupManager.getUserGroups("user");
         assertThat(userGroups).isNotNull();
         assertThat(userGroups).hasSize(1);
-        assertThat(userGroups.get(0)).isEqualTo("activitiTeam");
+        assertThat(userGroups.getFirst()).isEqualTo("activitiTeam");
     }
 
     @Test
@@ -75,7 +75,7 @@ public class RuntimeConfigurationTest {
         List<String> userRoles = userGroupManager.getUserRoles("admin");
         assertThat(userRoles).isNotNull();
         assertThat(userRoles).hasSize(1);
-        assertThat(userRoles.get(0)).isEqualTo("ACTIVITI_ADMIN");
+        assertThat(userRoles.getFirst()).isEqualTo("ACTIVITI_ADMIN");
         List<String> userGroups = userGroupManager.getUserGroups("admin");
         assertThat(userGroups).isNotNull();
         assertThat(userGroups).hasSize(0);

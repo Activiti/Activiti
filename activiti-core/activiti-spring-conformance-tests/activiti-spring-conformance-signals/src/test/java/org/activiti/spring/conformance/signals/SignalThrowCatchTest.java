@@ -142,7 +142,7 @@ public class SignalThrowCatchTest {
                 ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED
             );
 
-        BPMNSignalReceivedEvent event = (BPMNSignalReceivedEvent) RuntimeTestConfiguration.collectedEvents.get(0);
+        BPMNSignalReceivedEvent event = (BPMNSignalReceivedEvent) RuntimeTestConfiguration.collectedEvents.getFirst();
 
         assertThat(event.getEntity()).isNotNull();
         assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
@@ -253,7 +253,7 @@ public class SignalThrowCatchTest {
                 TaskRuntimeEvent.TaskEvents.TASK_CREATED
             );
 
-        BPMNSignalReceivedEvent event = (BPMNSignalReceivedEvent) RuntimeTestConfiguration.collectedEvents.get(0);
+        BPMNSignalReceivedEvent event = (BPMNSignalReceivedEvent) RuntimeTestConfiguration.collectedEvents.getFirst();
 
         assertThat(event.getEntity()).isNotNull();
         assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());

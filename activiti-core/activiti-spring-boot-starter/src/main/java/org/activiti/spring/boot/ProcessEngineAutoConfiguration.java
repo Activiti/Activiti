@@ -67,7 +67,6 @@ import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.sql.init.dependency.DependsOnDatabaseInitialization;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
@@ -79,7 +78,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 @AutoConfiguration
 @AutoConfigureAfter(
     name = {
-        "org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration",
+        "org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration",
         "org.springframework.boot.autoconfigure.task.TaskExecutionAutoConfiguration",
     }
 )
@@ -100,7 +99,6 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
 
     @Bean
     @ConditionalOnMissingBean
-    @DependsOnDatabaseInitialization
     public SpringProcessEngineConfiguration springProcessEngineConfiguration(
         DataSource dataSource,
         PlatformTransactionManager transactionManager,

@@ -61,7 +61,7 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
         // and we are still in the first state, but in the second state as well!
         assertThat(taskService.createTaskQuery().count()).isEqualTo(2L);
         List<Task> taskList = taskService.createTaskQuery().orderByTaskName().desc().list();
-        assertThat(taskList.get(0).getName()).isEqualTo("First Task");
+        assertThat(taskList.getFirst().getName()).isEqualTo("First Task");
         assertThat(taskList.get(1).getName()).isEqualTo("Escalation Task 1");
 
         // complete the task and end the forked execution
@@ -83,11 +83,11 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
         // and we are still in the first state, but in the next escalation state as well
         assertThat(taskService.createTaskQuery().count()).isEqualTo(2L);
         taskList = taskService.createTaskQuery().orderByTaskName().desc().list();
-        assertThat(taskList.get(0).getName()).isEqualTo("First Task");
+        assertThat(taskList.getFirst().getName()).isEqualTo("First Task");
         assertThat(taskList.get(1).getName()).isEqualTo("Escalation Task 2");
 
         // This time we end the main task
-        taskService.complete(taskList.get(0).getId());
+        taskService.complete(taskList.getFirst().getId());
 
         // but we still have the escalation task
         assertThat(taskService.createTaskQuery().count()).isEqualTo(1L);
@@ -242,7 +242,7 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
 
         List<Task> tasks = tq.list();
 
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
         taskService.complete(tasks.get(1).getId());
 
         assertProcessEnded(id);
@@ -267,13 +267,13 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
         // The Execution Query should work normally and find executions in state "task"
         List<Execution> executions = runtimeService.createExecutionQuery().activityId("task").list();
         assertThat(executions).hasSize(1);
-        List<String> activeActivityIds = runtimeService.getActiveActivityIds(executions.get(0).getId());
+        List<String> activeActivityIds = runtimeService.getActiveActivityIds(executions.getFirst().getId());
         assertThat(activeActivityIds).hasSize(2);
         Collections.sort(activeActivityIds);
-        assertThat(activeActivityIds.get(0)).isEqualTo("task");
+        assertThat(activeActivityIds.getFirst()).isEqualTo("task");
         assertThat(activeActivityIds.get(1)).isEqualTo("timer");
 
-        runtimeService.trigger(executions.get(0).getId());
+        runtimeService.trigger(executions.getFirst().getId());
 
         // // After setting the clock to time '1 hour and 5 seconds', the second
         // timer should fire

@@ -22,7 +22,7 @@ import static org.activiti.engine.impl.util.CollectionUtil.map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.node.ObjectNode;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -59,7 +59,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
         // Complete the task and check if the size is count 1
         List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
         assertThat(tasks).hasSize(1);
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
         assertThat(historyService.createHistoricProcessInstanceQuery().count() == 1).isTrue();
     }
 
@@ -71,7 +71,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
 
         List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
         assertThat(tasks).hasSize(1);
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
 
         historyService.createHistoricTaskInstanceQuery().orderByDeleteReason().asc().list();
         historyService.createHistoricTaskInstanceQuery().orderByExecutionId().asc().list();
@@ -102,7 +102,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
 
         List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
         assertThat(tasks).hasSize(1);
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
 
         historicProcessInstance = historyService.createHistoricProcessInstanceQuery().singleResult();
         assertThat(historicProcessInstance.getEndActivityId()).isEqualTo("theEnd");
@@ -318,7 +318,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
             .createHistoricProcessInstanceQuery()
             .deploymentId(deployment.getId());
         assertThat(processInstanceQuery.count()).isEqualTo(5);
-        assertThat(processInstanceQuery.list().get(0).getDeploymentId()).isEqualTo(deployment.getId());
+        assertThat(processInstanceQuery.list().getFirst().getDeploymentId()).isEqualTo(deployment.getId());
 
         List<HistoricProcessInstance> processInstances = processInstanceQuery.list();
         assertThat(processInstances).isNotNull();
@@ -603,8 +603,8 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
             .processDefinitionId(processInstance.getProcessDefinitionId())
             .list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getName()).isEqualTo("my task");
-        assertThat(tasks.get(0).getDescription()).isNull();
+        assertThat(tasks.getFirst().getName()).isEqualTo("my task");
+        assertThat(tasks.getFirst().getDescription()).isNull();
 
         ObjectNode infoNode = dynamicBpmnService.changeLocalizationName("en-GB", "theTask", "My localized name");
         dynamicBpmnService.changeLocalizationDescription(
@@ -620,8 +620,8 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
             .processDefinitionId(processInstance.getProcessDefinitionId())
             .list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getName()).isEqualTo("my task");
-        assertThat(tasks.get(0).getDescription()).isNull();
+        assertThat(tasks.getFirst().getName()).isEqualTo("my task");
+        assertThat(tasks.getFirst().getDescription()).isNull();
 
         tasks = historyService
             .createHistoricTaskInstanceQuery()
@@ -629,16 +629,16 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
             .locale("en-GB")
             .list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getName()).isEqualTo("My localized name");
-        assertThat(tasks.get(0).getDescription()).isEqualTo("My localized description");
+        assertThat(tasks.getFirst().getName()).isEqualTo("My localized name");
+        assertThat(tasks.getFirst().getDescription()).isEqualTo("My localized description");
 
         tasks = historyService
             .createHistoricTaskInstanceQuery()
             .processDefinitionId(processInstance.getProcessDefinitionId())
             .listPage(0, 10);
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getName()).isEqualTo("my task");
-        assertThat(tasks.get(0).getDescription()).isNull();
+        assertThat(tasks.getFirst().getName()).isEqualTo("my task");
+        assertThat(tasks.getFirst().getDescription()).isNull();
 
         tasks = historyService
             .createHistoricTaskInstanceQuery()
@@ -646,8 +646,8 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
             .locale("en-GB")
             .listPage(0, 10);
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getName()).isEqualTo("My localized name");
-        assertThat(tasks.get(0).getDescription()).isEqualTo("My localized description");
+        assertThat(tasks.getFirst().getName()).isEqualTo("My localized name");
+        assertThat(tasks.getFirst().getDescription()).isEqualTo("My localized description");
 
         HistoricTaskInstance task = historyService
             .createHistoricTaskInstanceQuery()
@@ -797,7 +797,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
         assertThat(processInstances).hasSize(2);
         List<String> expectedIds = asList(processInstance1.getId(), processInstance2.getId());
         List<String> ids = new ArrayList<String>(
-            asList(processInstances.get(0).getId(), processInstances.get(1).getId())
+            asList(processInstances.getFirst().getId(), processInstances.get(1).getId())
         );
         ids.removeAll(expectedIds);
         assertThat(ids.isEmpty()).isTrue();
@@ -816,7 +816,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
             .list();
         assertThat(processInstances).hasSize(2);
         expectedIds = asList(processInstance1.getId(), processInstance2.getId());
-        ids = new ArrayList<String>(asList(processInstances.get(0).getId(), processInstances.get(1).getId()));
+        ids = new ArrayList<String>(asList(processInstances.getFirst().getId(), processInstances.get(1).getId()));
         ids.removeAll(expectedIds);
         assertThat(ids.isEmpty()).isTrue();
 
@@ -867,7 +867,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
         processInstances = historyService.createHistoricProcessInstanceQuery().variableValueEquals("abcdef").list();
         assertThat(processInstances).hasSize(2);
         expectedIds = asList(processInstance1.getId(), processInstance2.getId());
-        ids = new ArrayList<String>(asList(processInstances.get(0).getId(), processInstances.get(1).getId()));
+        ids = new ArrayList<String>(asList(processInstances.getFirst().getId(), processInstances.get(1).getId()));
         ids.removeAll(expectedIds);
         assertThat(ids.isEmpty()).isTrue();
 
@@ -1071,7 +1071,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
 
         List<String> expectedIds = asList(processInstance1.getId(), processInstance2.getId());
         List<String> ids = new ArrayList<String>(
-            asList(processInstances.get(0).getId(), processInstances.get(1).getId())
+            asList(processInstances.getFirst().getId(), processInstances.get(1).getId())
         );
         ids.removeAll(expectedIds);
         assertThat(ids.isEmpty()).isTrue();
@@ -1111,7 +1111,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
         processInstances = historyService.createHistoricProcessInstanceQuery().variableValueEquals(date1).list();
         assertThat(processInstances).hasSize(2);
         expectedIds = asList(processInstance1.getId(), processInstance2.getId());
-        ids = new ArrayList<String>(asList(processInstances.get(0).getId(), processInstances.get(1).getId()));
+        ids = new ArrayList<String>(asList(processInstances.getFirst().getId(), processInstances.get(1).getId()));
         ids.removeAll(expectedIds);
         assertThat(ids.isEmpty()).isTrue();
 
@@ -1207,7 +1207,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
                 .createHistoricProcessInstanceQuery()
                 .processDefinitionName(processDefinitionName)
                 .list()
-                .get(0)
+                .getFirst()
                 .getProcessDefinitionName()
         ).isEqualTo(processDefinitionName);
         assertThat(
@@ -1230,7 +1230,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
                 .processDefinitionId("invalid")
                 .endOr()
                 .list()
-                .get(0)
+                .getFirst()
                 .getProcessDefinitionName()
         ).isEqualTo(processDefinitionName);
         assertThat(

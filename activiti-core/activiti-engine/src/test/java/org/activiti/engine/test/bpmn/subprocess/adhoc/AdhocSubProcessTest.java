@@ -129,7 +129,7 @@ public class AdhocSubProcessTest extends PluggableActivitiTestCase {
 
             assertThat(historicTasks).hasSize(3);
             List<String> taskDefinitionKeys = new ArrayList<String>(3);
-            taskDefinitionKeys.add(historicTasks.get(0).getTaskDefinitionKey());
+            taskDefinitionKeys.add(historicTasks.getFirst().getTaskDefinitionKey());
             taskDefinitionKeys.add(historicTasks.get(1).getTaskDefinitionKey());
             taskDefinitionKeys.add(historicTasks.get(2).getTaskDefinitionKey());
             assertThat(taskDefinitionKeys.contains("subProcessTask")).isTrue();

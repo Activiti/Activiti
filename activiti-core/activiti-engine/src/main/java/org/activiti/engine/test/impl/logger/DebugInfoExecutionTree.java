@@ -59,7 +59,7 @@ public class DebugInfoExecutionTree {
                 childNodes.get(i).print(logger, prefix + (isTail ? "    " : "│   "), false);
             }
             if (childNodes.size() > 0) {
-                childNodes.get(childNodes.size() - 1).print(logger, prefix + (isTail ? "    " : "│   "), true);
+                childNodes.getLast().print(logger, prefix + (isTail ? "    " : "│   "), true);
             }
         }
 

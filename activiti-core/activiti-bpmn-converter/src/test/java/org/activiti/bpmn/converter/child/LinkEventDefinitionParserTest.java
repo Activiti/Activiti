@@ -47,7 +47,7 @@ public class LinkEventDefinitionParserTest {
 
             List<EventDefinition> eventDefinitionList = intermediateThrowEvent.getEventDefinitions();
             assertThat(eventDefinitionList).isNotEmpty();
-            LinkEventDefinition linkEventDefinition = (LinkEventDefinition) eventDefinitionList.get(0);
+            LinkEventDefinition linkEventDefinition = (LinkEventDefinition) eventDefinitionList.getFirst();
             assertThat(linkEventDefinition).isNotNull();
             assertThat(linkEventDefinition.getId()).isEqualTo("LinkEventDefinition_03bs3ae");
             assertThat(linkEventDefinition.getName()).isEqualTo("a");
@@ -70,11 +70,11 @@ public class LinkEventDefinitionParserTest {
 
             List<EventDefinition> eventDefinitionList = intermediateCatchEvent.getEventDefinitions();
             assertThat(eventDefinitionList).isNotEmpty();
-            LinkEventDefinition linkEventDefinition = (LinkEventDefinition) eventDefinitionList.get(0);
+            LinkEventDefinition linkEventDefinition = (LinkEventDefinition) eventDefinitionList.getFirst();
             assertThat(linkEventDefinition).isNotNull();
             assertThat(linkEventDefinition.getId()).isEqualTo("LinkEventDefinition_1smqlx0");
             assertThat(linkEventDefinition.getName()).isEqualTo("a");
-            assertThat(linkEventDefinition.getSources().get(0)).isEqualTo("LinkEventDefinition_03bs3ae");
+            assertThat(linkEventDefinition.getSources().getFirst()).isEqualTo("LinkEventDefinition_03bs3ae");
             assertThat(linkEventDefinition.getSources().get(1)).isEqualTo("test");
         }
     }

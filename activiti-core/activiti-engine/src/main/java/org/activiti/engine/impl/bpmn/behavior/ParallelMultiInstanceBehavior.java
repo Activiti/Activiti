@@ -168,7 +168,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
                                 for (BoundaryEvent boundaryEvent : subActivity.getBoundaryEvents()) {
                                     if (
                                         CollectionUtil.isNotEmpty(boundaryEvent.getEventDefinitions()) &&
-                                        boundaryEvent.getEventDefinitions().get(0) instanceof CompensateEventDefinition
+                                        boundaryEvent.getEventDefinitions().getFirst() instanceof CompensateEventDefinition
                                     ) {
                                         hasCompensation = true;
                                         break;

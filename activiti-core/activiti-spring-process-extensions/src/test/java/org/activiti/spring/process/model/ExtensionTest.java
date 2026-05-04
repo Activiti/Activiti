@@ -25,10 +25,8 @@ import static org.activiti.spring.process.model.AssignmentDefinition.AssignmentT
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.MapperFeature;
+import tools.jackson.databind.json.JsonMapper;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,8 +44,7 @@ class ExtensionTest {
     @Mock
     private ProcessVariablesMapping processVariablesMapping;
 
-    private static final ObjectMapper MAPPER = JsonMapper.builder()
-        .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+    private static final JsonMapper MAPPER = JsonMapper.builder()
         .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
         .build();
 

@@ -20,12 +20,9 @@ import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.Module;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.TextNode;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.JsonNodeFactory;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -50,12 +47,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.context.annotation.Bean;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JacksonModule;
+import tools.jackson.databind.node.StringNode;
 
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
 class IntegrationContextImplTest {
 
     @Autowired
-    private ObjectMapper objectMapper;
+    private JsonMapper jsonMapper;
 
     private static Instant instant = Instant.now();
 
@@ -92,8 +92,8 @@ class IntegrationContextImplTest {
         Arguments.of(singleton("item"), singleton("item")),
         Arguments.of(singletonMap("key", "value"), singletonMap("key", "value")),
         Arguments.of(
-            JsonNodeFactory.instance.objectNode().set("key", TextNode.valueOf("value")),
-            JsonNodeFactory.instance.objectNode().set("key", TextNode.valueOf("value"))
+            JsonNodeFactory.instance.objectNode().set("key", StringNode.valueOf("value")),
+            JsonNodeFactory.instance.objectNode().set("key", StringNode.valueOf("value"))
         ),
         Arguments.of(
             new CustomPojo("field1", "field2"),
@@ -120,8 +120,8 @@ class IntegrationContextImplTest {
     static class Application {
 
         @Bean
-        public ObjectMapper objectMapper(Module customizeProcessModelObjectMapper) {
-            return new ObjectMapper().registerModule(customizeProcessModelObjectMapper);
+        public JsonMapper jsonMapper(JacksonModule customizeProcessModelObjectMapper) {
+            return JsonMapper.builder().addModule(customizeProcessModelObjectMapper).build();
         }
     }
 
@@ -163,7 +163,7 @@ class IntegrationContextImplTest {
     }
 
     @Test
-    public void testProcessVariablesMapDeserializerShouldFallbackToKeyValueMap() throws JsonProcessingException {
+    public void testProcessVariablesMapDeserializerShouldFallbackToKeyValueMap() throws JacksonException {
         // given
         Map<String, Object> map = new LinkedHashMap<>();
 
@@ -176,10 +176,10 @@ class IntegrationContextImplTest {
         map.put("list", Collections.singletonList("item"));
         map.put("pojo", new CustomPojo("field1", "field2"));
 
-        String json = objectMapper.writeValueAsString(map);
+        String json = jsonMapper.writeValueAsString(map);
 
         // when
-        ProcessVariablesMap<String, Object> result = objectMapper.readValue(
+        ProcessVariablesMap<String, Object> result = jsonMapper.readValue(
             json,
             new TypeReference<ProcessVariablesMap<String, Object>>() {}
         );
@@ -205,7 +205,7 @@ class IntegrationContextImplTest {
     }
 
     private IntegrationContext exchangeIntegrationContext(IntegrationContext source) throws IOException {
-        return objectMapper.readValue(objectMapper.writeValueAsString(source), IntegrationContext.class);
+        return jsonMapper.readValue(jsonMapper.writeValueAsString(source), IntegrationContext.class);
     }
 
     @Test

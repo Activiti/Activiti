@@ -343,7 +343,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
                         ELEMENT_TRANSACTION.equals(xtr.getLocalName()) ||
                         ELEMENT_ADHOC_SUBPROCESS.equals(xtr.getLocalName()))
                 ) {
-                    activeSubProcessList.remove(activeSubProcessList.size() - 1);
+                    activeSubProcessList.removeLast();
                 }
 
                 if (!xtr.isStartElement()) {
@@ -392,7 +392,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
                 } else if (ELEMENT_DOCUMENTATION.equals(xtr.getLocalName())) {
                     BaseElement parentElement = null;
                     if (!activeSubProcessList.isEmpty()) {
-                        parentElement = activeSubProcessList.get(activeSubProcessList.size() - 1);
+                        parentElement = activeSubProcessList.getLast();
                     } else if (activeProcess != null) {
                         parentElement = activeProcess;
                     }
@@ -421,7 +421,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
                     subProcessParser.parse(xtr, activeSubProcessList, activeProcess);
                 } else if (ELEMENT_COMPLETION_CONDITION.equals(xtr.getLocalName())) {
                     if (!activeSubProcessList.isEmpty()) {
-                        SubProcess subProcess = activeSubProcessList.get(activeSubProcessList.size() - 1);
+                        SubProcess subProcess = activeSubProcessList.getLast();
                         if (subProcess instanceof AdhocSubProcess) {
                             AdhocSubProcess adhocSubProcess = (AdhocSubProcess) subProcess;
                             adhocSubProcess.setCompletionCondition(xtr.getElementText());
@@ -435,7 +435,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
                     if (!activeSubProcessList.isEmpty() && ELEMENT_MULTIINSTANCE.equalsIgnoreCase(xtr.getLocalName())) {
                         multiInstanceParser.parseChildElement(
                             xtr,
-                            activeSubProcessList.get(activeSubProcessList.size() - 1),
+                            activeSubProcessList.getLast(),
                             model
                         );
                     } else if (convertersToBpmnMap.containsKey(xtr.getLocalName())) {

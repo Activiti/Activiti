@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.activiti</groupId>
   <artifactId>activiti-parent</artifactId>
-  <version>9.0.0-SNAPSHOT</version>
+  <version>9.1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Activiti :: Parent</name>
   <description>${project.name}</description>
@@ -190,7 +190,7 @@
     <project.year>2026</project.year>
 
     <java.release>${java.version}</java.release>
-    <java.version>21</java.version>
+    <java.version>25</java.version>
     <maven.compiler.release>${java.release}</maven.compiler.release>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
@@ -198,9 +198,9 @@
     <!-- versions -->
     <asm.version>9.9.1</asm.version>
     <build-helper-maven-plugin.version>3.6.1</build-helper-maven-plugin.version>
-    <dependency-check-maven.version>12.2.0</dependency-check-maven.version>
+    <dependency-check-maven.version>12.2.1</dependency-check-maven.version>
     <exec-maven-plugin.version>3.6.3</exec-maven-plugin.version>
-    <extra-enforcer-rules.version>1.11.0</extra-enforcer-rules.version>
+    <extra-enforcer-rules.version>1.12.0</extra-enforcer-rules.version>
     <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
     <license-maven-plugin.version>5.0.0</license-maven-plugin.version>
     <third-party-license-maven-plugin.version>2.7.1</third-party-license-maven-plugin.version>
@@ -218,15 +218,13 @@
     <maven-pmd-plugin.version>3.28.0</maven-pmd-plugin.version>
     <maven-project-info-reports-plugin.version>3.9.0</maven-project-info-reports-plugin.version>
     <maven-release-plugin.version>3.3.1</maven-release-plugin.version>
-    <maven-resources-plugin.version>3.4.0</maven-resources-plugin.version>
+    <maven-resources-plugin.version>3.5.0</maven-resources-plugin.version>
     <maven-site-plugin.version>3.21.0</maven-site-plugin.version>
     <maven-source-plugin.version>3.4.0</maven-source-plugin.version>
     <maven-surefire-plugin.version>3.5.5</maven-surefire-plugin.version>
-    <sonar-maven-plugin.version>5.5.0.6356</sonar-maven-plugin.version>
-    <spring-boot.version>3.5.7</spring-boot.version>
-    <h2.version>2.4.240</h2.version>
-    <jakarta.el-api.version>5.0.1</jakarta.el-api.version>
-    <testcontainers.version>2.0.3</testcontainers.version>
+    <sonar-maven-plugin.version>5.6.0.6792</sonar-maven-plugin.version>
+    <spring-boot.version>4.0.6</spring-boot.version>
+    <jakarta.el-api.version>6.0.1</jakarta.el-api.version>
     <versions-maven-plugin.version>2.21.0</versions-maven-plugin.version>
 
     <!-- configuration properties for tests -->
@@ -237,39 +235,12 @@
   </properties>
   <dependencyManagement>
     <dependencies>
-      <!-- temporary security fix AAE-36930 -->
-      <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-lang3</artifactId>
-        <version>3.20.0</version>
-      </dependency>
-      <!-- temporary security fix -->
-      <!-- security fix AAE-41710, remove with Spring update -->
-      <dependency>
-        <groupId>org.assertj</groupId>
-        <artifactId>assertj-core</artifactId>
-        <version>3.27.7</version>
-      </dependency>
-      <!-- security fix AAE-41710 -->
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-dependency-check</artifactId>
         <version>${project.version}</version>
         <type>xml</type>
         <classifier>suppression</classifier>
-      </dependency>
-      <dependency>
-        <groupId>com.h2database</groupId>
-        <artifactId>h2</artifactId>
-        <version>${h2.version}</version>
-      </dependency>
-      <!-- AAE-40315 Override testcontainers version to fix Docker compatibility issue -->
-      <dependency>
-        <groupId>org.testcontainers</groupId>
-        <artifactId>testcontainers-bom</artifactId>
-        <version>${testcontainers.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>org.springframework.boot</groupId>
@@ -409,6 +380,7 @@ limitations under the License.
                     <module name="TreeWalker">
                       <!-- Import settings: getting rid of redundant import, forbid star notation, defined order of imports. -->
                       <module name="RedundantImport"/>
+                      <module name="UnusedImports"/>
                       <module name="AvoidStarImport">
                         <property name="excludes"
                                   value="org.junit.Assert,org.assertj.core.api.Assertions,org.mockito.Mockito"/>
@@ -639,9 +611,6 @@ limitations under the License.
               <rules>
                 <bannedDependencies>
                   <excludes combine.children="append">
-                    <!-- Ban blacklisted logging deps (we only use SLF4J + Logback) -->
-                    <!-- In case of transitive dependency, exclude it and use 'org.slf4j:jcl-over-slf4j' instead -->
-                    <exclude>commons-logging:commons-log*</exclude>
                     <!-- In case of transitive dependency, exclude it and use 'org.slf4j:log4j-over-slf4j' instead -->
                     <exclude>log4j:log4j</exclude>
                     <!-- In case of transitive dependency, exclude it and use 'org.javassist:javassist' instead -->
@@ -858,12 +827,6 @@ limitations under the License.
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-failsafe-plugin</artifactId>
-            <configuration>
-              <!-- temporary fix for https://github.com/testcontainers/testcontainers-java/issues/11491 -->
-              <systemPropertyVariables>
-                <api.version>1.44</api.version>
-              </systemPropertyVariables>
-            </configuration>
             <executions>
               <execution>
                 <id>integration-test</id>

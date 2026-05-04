@@ -52,7 +52,7 @@ public class BoundaryEventParseHandler extends AbstractFlowNodeBpmnParseHandler<
 
         EventDefinition eventDefinition = null;
         if (boundaryEvent.getEventDefinitions().size() > 0) {
-            eventDefinition = boundaryEvent.getEventDefinitions().get(0);
+            eventDefinition = boundaryEvent.getEventDefinitions().getFirst();
         }
 
         if (

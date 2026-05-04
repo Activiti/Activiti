@@ -68,7 +68,7 @@ public class ProcessValidationExecutedAfterDeployTest extends PluggableActivitiT
         } catch (Exception e) {
             fail(e.getMessage());
         }
-        return definitions.get(0);
+        return definitions.getFirst();
     }
 
     public void testGetLatestProcessDefinitionTextByKey() {

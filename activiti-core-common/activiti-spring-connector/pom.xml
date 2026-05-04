@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-core-common-dependencies</artifactId>
-    <version>9.0.0-SNAPSHOT</version>
+    <version>9.1.0-SNAPSHOT</version>
     <relativePath>../activiti-core-common-dependencies</relativePath>
   </parent>
   <artifactId>activiti-spring-connector</artifactId>
@@ -24,7 +24,7 @@
       <artifactId>spring-context</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
+      <groupId>tools.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
     </dependency>
     <dependency>

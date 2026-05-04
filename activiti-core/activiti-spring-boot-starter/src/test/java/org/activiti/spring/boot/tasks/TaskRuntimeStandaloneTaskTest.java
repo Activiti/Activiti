@@ -67,7 +67,7 @@ public class TaskRuntimeStandaloneTaskTest {
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
 
         assertThat(tasks.getContent()).hasSize(1);
-        Task task = tasks.getContent().get(0);
+        Task task = tasks.getContent().getFirst();
 
         assertThat(task.getAssignee()).isEqualTo("user");
         assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
@@ -117,7 +117,7 @@ public class TaskRuntimeStandaloneTaskTest {
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
 
         assertThat(tasks.getContent()).hasSize(1);
-        Task task = tasks.getContent().get(0);
+        Task task = tasks.getContent().getFirst();
 
         assertThat(task.getId()).isEqualTo(standAloneTask.getId());
         assertThat(task.getAssignee()).isNull();

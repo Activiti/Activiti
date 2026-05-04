@@ -15,7 +15,7 @@
  */
 package org.activiti.engine.impl.event.logger.handler;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import java.util.Date;
 import java.util.Map;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
@@ -38,7 +38,7 @@ public abstract class AbstractDatabaseEventLoggerEventHandler implements EventLo
 
     protected ActivitiEvent event;
     protected Date timeStamp;
-    protected ObjectMapper objectMapper;
+    protected JsonMapper jsonMapper;
 
     public AbstractDatabaseEventLoggerEventHandler() {}
 
@@ -99,7 +99,7 @@ public abstract class AbstractDatabaseEventLoggerEventHandler implements EventLo
         }
 
         try {
-            eventLogEntry.setData(objectMapper.writeValueAsBytes(data));
+            eventLogEntry.setData(jsonMapper.writeValueAsBytes(data));
         } catch (Exception e) {
             logger.warn("Could not serialize event data. Data will not be written to the database", e);
         }
@@ -118,8 +118,8 @@ public abstract class AbstractDatabaseEventLoggerEventHandler implements EventLo
     }
 
     @Override
-    public void setObjectMapper(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
+    public void setObjectMapper(JsonMapper jsonMapper) {
+        this.jsonMapper = jsonMapper;
     }
 
     // Helper methods //////////////////////////////////////////////////////

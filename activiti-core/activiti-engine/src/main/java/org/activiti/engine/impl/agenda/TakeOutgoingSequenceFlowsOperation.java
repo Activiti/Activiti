@@ -206,7 +206,7 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
                 );
                 execution.setCurrentFlowElement(node);
             } else {
-                SequenceFlow sequenceFlow = outgoingSequenceFlows.get(0);
+                SequenceFlow sequenceFlow = outgoingSequenceFlows.getFirst();
                 // Reuse existing one
                 execution.setCurrentFlowElement(sequenceFlow);
             }
@@ -331,7 +331,7 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
                 for (BoundaryEvent event : activity.getBoundaryEvents()) {
                     if (
                         CollectionUtil.isNotEmpty(event.getEventDefinitions()) &&
-                        event.getEventDefinitions().get(0) instanceof CancelEventDefinition
+                        event.getEventDefinitions().getFirst() instanceof CancelEventDefinition
                     ) {
                         notToDeleteEvents.add(event.getId());
                     }

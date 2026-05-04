@@ -94,7 +94,7 @@ public class TimerManager {
                 if (element instanceof StartEvent) {
                     StartEvent startEvent = (StartEvent) element;
                     if (CollectionUtil.isNotEmpty(startEvent.getEventDefinitions())) {
-                        EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
+                        EventDefinition eventDefinition = startEvent.getEventDefinitions().getFirst();
                         if (eventDefinition instanceof TimerEventDefinition) {
                             TimerEventDefinition timerEventDefinition = (TimerEventDefinition) eventDefinition;
                             TimerJobEntity timerJob = jobManager.createTimerJob(

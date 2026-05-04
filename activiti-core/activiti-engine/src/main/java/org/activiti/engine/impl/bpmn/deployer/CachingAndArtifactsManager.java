@@ -15,8 +15,8 @@
  */
 package org.activiti.engine.impl.bpmn.deployer;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.ObjectNode;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Process;
 import org.activiti.engine.ActivitiException;
@@ -80,7 +80,7 @@ public class CachingAndArtifactsManager {
         DeploymentManager deploymentManager = processEngineConfiguration.getDeploymentManager();
         ProcessDefinitionInfoEntityManager definitionInfoEntityManager =
             commandContext.getProcessDefinitionInfoEntityManager();
-        ObjectMapper objectMapper = commandContext.getProcessEngineConfiguration().getObjectMapper();
+        JsonMapper jsonMapper = commandContext.getProcessEngineConfiguration().getObjectMapper();
         ProcessDefinitionInfoEntity definitionInfoEntity =
             definitionInfoEntityManager.findProcessDefinitionInfoByProcessDefinitionId(processDefinition.getId());
 
@@ -89,7 +89,7 @@ public class CachingAndArtifactsManager {
             byte[] infoBytes = definitionInfoEntityManager.findInfoJsonById(definitionInfoEntity.getInfoJsonId());
             if (infoBytes != null) {
                 try {
-                    infoNode = (ObjectNode) objectMapper.readTree(infoBytes);
+                    infoNode = (ObjectNode) jsonMapper.readTree(infoBytes);
                 } catch (Exception e) {
                     throw new ActivitiException(
                         "Error deserializing json info for process definition " + processDefinition.getId()
@@ -107,7 +107,7 @@ public class CachingAndArtifactsManager {
         }
 
         if (infoNode == null) {
-            infoNode = objectMapper.createObjectNode();
+            infoNode = jsonMapper.createObjectNode();
         }
         definitionCacheObject.setInfoNode(infoNode);
 

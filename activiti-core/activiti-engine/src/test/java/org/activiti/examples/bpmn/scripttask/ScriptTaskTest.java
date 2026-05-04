@@ -17,7 +17,7 @@ package org.activiti.examples.bpmn.scripttask;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.node.ObjectNode;
 import groovy.lang.MissingPropertyException;
 import java.util.HashMap;
 import java.util.Map;

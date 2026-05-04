@@ -231,7 +231,7 @@ public class DeploymentEntityManagerImpl
                     if (CollectionUtil.isNotEmpty(startEvents)) {
                         for (StartEvent startEvent : startEvents) {
                             if (CollectionUtil.isNotEmpty(startEvent.getEventDefinitions())) {
-                                EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
+                                EventDefinition eventDefinition = startEvent.getEventDefinitions().getFirst();
                                 if (eventDefinition instanceof TimerEventDefinition) {
                                     restoreTimerStartEvent(previousProcessDefinition, startEvent, eventDefinition);
                                 } else if (eventDefinition instanceof SignalEventDefinition) {
@@ -390,7 +390,7 @@ public class DeploymentEntityManagerImpl
         List<ProcessDefinition> processDefinitions =
             getProcessDefinitionEntityManager().findProcessDefinitionsByQueryCriteria(query, new Page(0, 1));
         if (processDefinitions != null && processDefinitions.size() > 0) {
-            return processDefinitions.get(0);
+            return processDefinitions.getFirst();
         }
         return null;
     }

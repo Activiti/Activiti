@@ -182,7 +182,7 @@ public class MultiTenantProcessEngineTest {
             .addClasspathResource("org/activiti/engine/test/cfg/multitenant/jobTest.bpmn20.xml")
             .addClasspathResource("org/activiti/engine/test/cfg/multitenant/TimerJob_test.bpmn20.xml")
             .deploy();
-        System.out.println("Process deployed! Deployment id is " + deployment.getId());
+        IO.println("Process deployed! Deployment id is " + deployment.getId());
 
         tenantInfoHolder.clearCurrentUserId();
         tenantInfoHolder.clearCurrentTenantId();

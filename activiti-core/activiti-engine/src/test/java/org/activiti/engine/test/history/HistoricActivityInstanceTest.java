@@ -197,7 +197,7 @@ public class HistoricActivityInstanceTest extends PluggableActivitiTestCase {
             HistoricActivityInstance historicActivityInstance = historyService
                 .createHistoricActivityInstanceQuery()
                 .list()
-                .get(0);
+                .getFirst();
             assertThat(
                 historyService
                     .createHistoricActivityInstanceQuery()
@@ -504,7 +504,7 @@ public class HistoricActivityInstanceTest extends PluggableActivitiTestCase {
 
         // Complete both tasks, second task-complete should end the fork-gateway
         // and set time
-        taskService.complete(tasksToComplete.get(0).getId());
+        taskService.complete(tasksToComplete.getFirst().getId());
         taskService.complete(tasksToComplete.get(1).getId());
 
         List<HistoricActivityInstance> historicActivityInstance = historyService
@@ -518,7 +518,7 @@ public class HistoricActivityInstanceTest extends PluggableActivitiTestCase {
         // History contains 2 entries for parallel join (one for each path
         // arriving in the join), should contain end-time
         assertThat(historicActivityInstance).hasSize(2);
-        assertThat(historicActivityInstance.get(0).getEndTime()).isNotNull();
+        assertThat(historicActivityInstance.getFirst().getEndTime()).isNotNull();
         assertThat(historicActivityInstance.get(1).getEndTime()).isNotNull();
     }
 

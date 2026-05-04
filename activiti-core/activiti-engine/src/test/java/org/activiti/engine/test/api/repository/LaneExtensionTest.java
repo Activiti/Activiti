@@ -43,7 +43,7 @@ public class LaneExtensionTest extends PluggableActivitiTestCase {
             .singleResult();
         BpmnModel bpmnModel = repositoryService.getBpmnModel(processDefinition.getId());
         byte[] xml = new BpmnXMLConverter().convertToXML(bpmnModel);
-        System.out.println(new String(xml));
+        IO.println(new String(xml));
         Process bpmnProcess = bpmnModel.getMainProcess();
         for (Lane l : bpmnProcess.getLanes()) {
             Map<String, List<ExtensionElement>> extensions = l.getExtensionElements();

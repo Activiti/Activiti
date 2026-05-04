@@ -18,10 +18,8 @@ package org.activiti.engine.test.api.event;
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.json.JsonMapper;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -36,6 +34,8 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
+import tools.jackson.core.exc.StreamReadException;
+import tools.jackson.databind.DatabindException;
 
 /**
  */
@@ -43,7 +43,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 
     protected EventLogger databaseEventLogger;
 
-    protected ObjectMapper objectMapper = new ObjectMapper();
+    protected JsonMapper jsonMapper = new JsonMapper();
 
     @Override
     protected void setUp() throws Exception {
@@ -109,7 +109,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
                 assertThat(entry.getTimeStamp()).isNotNull();
                 assertThat(entry.getTaskId()).isNull();
 
-                Map<String, Object> data = objectMapper.readValue(
+                Map<String, Object> data = jsonMapper.readValue(
                     entry.getData(),
                     new TypeReference<HashMap<String, Object>>() {}
                 );
@@ -129,7 +129,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
                 assertThat(entry.getExecutionId()).isNull();
                 assertThat(entry.getTaskId()).isNull();
 
-                Map<String, Object> data = objectMapper.readValue(
+                Map<String, Object> data = jsonMapper.readValue(
                     entry.getData(),
                     new TypeReference<HashMap<String, Object>>() {}
                 );
@@ -156,7 +156,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
                 assertThat(entry.getExecutionId()).isNotNull();
                 assertThat(entry.getTaskId()).isNull();
 
-                Map<String, Object> data = objectMapper.readValue(
+                Map<String, Object> data = jsonMapper.readValue(
                     entry.getData(),
                     new TypeReference<HashMap<String, Object>>() {}
                 );
@@ -178,7 +178,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
                 assertThat(entry.getExecutionId()).isNotNull();
                 assertThat(entry.getTaskId()).isNull();
 
-                Map<String, Object> data = objectMapper.readValue(
+                Map<String, Object> data = jsonMapper.readValue(
                     entry.getData(),
                     new TypeReference<HashMap<String, Object>>() {}
                 );
@@ -201,7 +201,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
                 assertThat(entry.getExecutionId()).isNotNull();
                 assertThat(entry.getTaskId()).isNull();
 
-                Map<String, Object> data = objectMapper.readValue(
+                Map<String, Object> data = jsonMapper.readValue(
                     entry.getData(),
                     new TypeReference<HashMap<String, Object>>() {}
                 );
@@ -222,7 +222,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
                 assertThat(entry.getExecutionId()).isNotNull();
                 assertThat(entry.getTaskId()).isNull();
 
-                Map<String, Object> data = objectMapper.readValue(
+                Map<String, Object> data = jsonMapper.readValue(
                     entry.getData(),
                     new TypeReference<HashMap<String, Object>>() {}
                 );
@@ -244,7 +244,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
                 assertThat(entry.getExecutionId()).isNotNull();
                 assertThat(entry.getTaskId()).isNotNull();
 
-                Map<String, Object> data = objectMapper.readValue(
+                Map<String, Object> data = jsonMapper.readValue(
                     entry.getData(),
                     new TypeReference<HashMap<String, Object>>() {}
                 );
@@ -276,7 +276,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
                 assertThat(entry.getExecutionId()).isNotNull();
                 assertThat(entry.getTaskId()).isNotNull();
 
-                Map<String, Object> data = objectMapper.readValue(
+                Map<String, Object> data = jsonMapper.readValue(
                     entry.getData(),
                     new TypeReference<HashMap<String, Object>>() {}
                 );
@@ -325,7 +325,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
                 assertThat(entry.getExecutionId()).isNotNull();
                 assertThat(entry.getTaskId()).isNotNull();
 
-                Map<String, Object> data = objectMapper.readValue(
+                Map<String, Object> data = jsonMapper.readValue(
                     entry.getData(),
                     new TypeReference<HashMap<String, Object>>() {}
                 );
@@ -362,7 +362,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
                 assertThat(entry.getExecutionId()).isNotNull();
                 assertThat(entry.getTaskId()).isNull();
 
-                Map<String, Object> data = objectMapper.readValue(
+                Map<String, Object> data = jsonMapper.readValue(
                     entry.getData(),
                     new TypeReference<HashMap<String, Object>>() {}
                 );
@@ -396,7 +396,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
                 assertThat(entry.getExecutionId()).isNotNull();
                 assertThat(entry.getTaskId()).isNull();
 
-                Map<String, Object> data = objectMapper.readValue(
+                Map<String, Object> data = jsonMapper.readValue(
                     entry.getData(),
                     new TypeReference<HashMap<String, Object>>() {}
                 );
@@ -430,7 +430,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
                 assertThat(entry.getExecutionId()).isNull();
                 assertThat(entry.getTaskId()).isNull();
 
-                Map<String, Object> data = objectMapper.readValue(
+                Map<String, Object> data = jsonMapper.readValue(
                     entry.getData(),
                     new TypeReference<HashMap<String, Object>>() {}
                 );
@@ -485,7 +485,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 
             if (i == 0) {
                 assertThat(ActivitiEventType.VARIABLE_CREATED.name()).isEqualTo(entry.getType());
-                Map<String, Object> data = objectMapper.readValue(
+                Map<String, Object> data = jsonMapper.readValue(
                     entry.getData(),
                     new TypeReference<HashMap<String, Object>>() {}
                 );
@@ -495,7 +495,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
             // process instance start
             if (i == 1) {
                 assertThat(entry.getType()).isEqualTo("PROCESSINSTANCE_START");
-                Map<String, Object> data = objectMapper.readValue(
+                Map<String, Object> data = jsonMapper.readValue(
                     entry.getData(),
                     new TypeReference<HashMap<String, Object>>() {}
                 );
@@ -505,7 +505,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
             // Activity started
             if (i == 2 || i == 5 || i == 9 || i == 12) {
                 assertThat(ActivitiEventType.ACTIVITY_STARTED.name()).isEqualTo(entry.getType());
-                Map<String, Object> data = objectMapper.readValue(
+                Map<String, Object> data = jsonMapper.readValue(
                     entry.getData(),
                     new TypeReference<HashMap<String, Object>>() {}
                 );
@@ -515,7 +515,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
             // Leaving start
             if (i == 3) {
                 assertThat(ActivitiEventType.ACTIVITY_COMPLETED.name()).isEqualTo(entry.getType());
-                Map<String, Object> data = objectMapper.readValue(
+                Map<String, Object> data = jsonMapper.readValue(
                     entry.getData(),
                     new TypeReference<HashMap<String, Object>>() {}
                 );
@@ -525,7 +525,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
             // Sequence flow taken
             if (i == 4 || i == 7 || i == 8) {
                 assertThat(ActivitiEventType.SEQUENCEFLOW_TAKEN.name()).isEqualTo(entry.getType());
-                Map<String, Object> data = objectMapper.readValue(
+                Map<String, Object> data = jsonMapper.readValue(
                     entry.getData(),
                     new TypeReference<HashMap<String, Object>>() {}
                 );
@@ -535,7 +535,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
             // Leaving parallel gateway
             if (i == 6) {
                 assertThat(ActivitiEventType.ACTIVITY_COMPLETED.name()).isEqualTo(entry.getType());
-                Map<String, Object> data = objectMapper.readValue(
+                Map<String, Object> data = jsonMapper.readValue(
                     entry.getData(),
                     new TypeReference<HashMap<String, Object>>() {}
                 );
@@ -545,7 +545,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
             // Tasks
             if (i == 11 || i == 14) {
                 assertThat(ActivitiEventType.TASK_ASSIGNED.name()).isEqualTo(entry.getType());
-                Map<String, Object> data = objectMapper.readValue(
+                Map<String, Object> data = jsonMapper.readValue(
                     entry.getData(),
                     new TypeReference<HashMap<String, Object>>() {}
                 );
@@ -554,7 +554,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 
             if (i == 10 || i == 13) {
                 assertThat(ActivitiEventType.TASK_CREATED.name()).isEqualTo(entry.getType());
-                Map<String, Object> data = objectMapper.readValue(
+                Map<String, Object> data = jsonMapper.readValue(
                     entry.getData(),
                     new TypeReference<HashMap<String, Object>>() {}
                 );
@@ -570,7 +570,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
         }
     }
 
-    public void testStandaloneTaskEvents() throws JsonParseException, JsonMappingException, IOException {
+    public void testStandaloneTaskEvents() throws StreamReadException, DatabindException, IOException {
         Task task = taskService.newTask();
         task.setAssignee("kermit");
         task.setTenantId("myTenant");
@@ -584,13 +584,13 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 
         List<EventLogEntry> events = managementService.getEventLogEntries(null, null);
         assertThat(events).hasSize(4);
-        assertThat(events.get(0).getType()).isEqualTo("TASK_CREATED");
+        assertThat(events.getFirst().getType()).isEqualTo("TASK_CREATED");
         assertThat(events.get(1).getType()).isEqualTo("TASK_ASSIGNED");
         assertThat(events.get(2).getType()).isEqualTo("TASK_ASSIGNED");
         assertThat(events.get(3).getType()).isEqualTo("TASK_ASSIGNED");
 
         for (EventLogEntry eventLogEntry : events) {
-            Map<String, Object> data = objectMapper.readValue(
+            Map<String, Object> data = jsonMapper.readValue(
                 eventLogEntry.getData(),
                 new TypeReference<HashMap<String, Object>>() {}
             );

@@ -167,7 +167,7 @@ public class SignalEventsAndNewVersionDeploymentsTest extends PluggableActivitiT
         repositoryService.deleteDeployment(deploymentId1, true);
         eventSubscriptions = getAllEventSubscriptions();
         assertThat(eventSubscriptions).hasSize(1);
-        assertThat(eventSubscriptions.get(0).getProcessDefinitionId()).isEqualTo(
+        assertThat(eventSubscriptions.getFirst().getProcessDefinitionId()).isEqualTo(
             repositoryService.createProcessDefinitionQuery().deploymentId(deploymentId2).singleResult().getId()
         );
 
@@ -203,7 +203,7 @@ public class SignalEventsAndNewVersionDeploymentsTest extends PluggableActivitiT
         assertEventSubscriptionsCount(1);
 
         List<EventSubscriptionEntity> eventSubscriptions = getAllEventSubscriptions();
-        assertThat(eventSubscriptions.get(0).getProcessDefinitionId()).isEqualTo(
+        assertThat(eventSubscriptions.getFirst().getProcessDefinitionId()).isEqualTo(
             repositoryService.createProcessDefinitionQuery().deploymentId(deploymentId3).singleResult().getId()
         );
 

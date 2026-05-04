@@ -35,7 +35,7 @@ public class SignalAndMessageDefinitionExport implements BpmnXMLConstants {
             for (FlowElement flowElement : process.findFlowElementsOfType(Event.class)) {
                 Event event = (Event) flowElement;
                 if (!event.getEventDefinitions().isEmpty()) {
-                    EventDefinition eventDefinition = event.getEventDefinitions().get(0);
+                    EventDefinition eventDefinition = event.getEventDefinitions().getFirst();
                     if (eventDefinition instanceof SignalEventDefinition) {
                         SignalEventDefinition signalEvent = (SignalEventDefinition) eventDefinition;
                         if (StringUtils.isNotEmpty(signalEvent.getSignalRef())) {

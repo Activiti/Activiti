@@ -76,7 +76,7 @@ public class SubProcessConverterAutoLayoutTest extends AbstractConverterTest {
         List<ValuedDataObject> dataObjects = ((SubProcess) flowElement).getDataObjects();
         assertThat(dataObjects.size() == 1).isTrue();
 
-        ValuedDataObject dataObj = dataObjects.get(0);
+        ValuedDataObject dataObj = dataObjects.getFirst();
         assertThat(dataObj.getName()).isEqualTo("SubTest");
         assertThat(dataObj.getItemSubjectRef().getStructureRef()).isEqualTo("xsd:string");
         assertThat(dataObj.getValue()).isInstanceOf(String.class);

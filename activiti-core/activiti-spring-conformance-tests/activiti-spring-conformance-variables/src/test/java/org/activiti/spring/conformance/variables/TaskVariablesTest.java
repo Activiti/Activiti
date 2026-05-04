@@ -85,8 +85,8 @@ public class TaskVariablesTest {
             .containsExactly(
                 tuple(
                     VariableEvent.VariableEvents.VARIABLE_CREATED,
-                    variableInstanceList.get(0).getName(),
-                    variableInstanceList.get(0).getValue()
+                    variableInstanceList.getFirst().getName(),
+                    variableInstanceList.getFirst().getValue()
                 ),
                 tuple(
                     VariableEvent.VariableEvents.VARIABLE_CREATED,
@@ -104,7 +104,7 @@ public class TaskVariablesTest {
 
         createVariables();
 
-        VariableInstance variableOneRuntime = variableInstanceList.get(0);
+        VariableInstance variableOneRuntime = variableInstanceList.getFirst();
         assertThat(variableOneRuntime.getTaskId()).isEqualTo(taskId);
         assertThat(variableOneRuntime.getProcessInstanceId()).isEqualTo(processInstanceId);
 
@@ -113,8 +113,8 @@ public class TaskVariablesTest {
             .containsExactly(
                 tuple(
                     VariableEvent.VariableEvents.VARIABLE_CREATED,
-                    variableInstanceList.get(0).getName(),
-                    variableInstanceList.get(0).getValue()
+                    variableInstanceList.getFirst().getName(),
+                    variableInstanceList.getFirst().getValue()
                 ),
                 tuple(
                     VariableEvent.VariableEvents.VARIABLE_CREATED,
@@ -132,7 +132,7 @@ public class TaskVariablesTest {
 
         createVariables();
 
-        VariableInstance variableOneRuntime = variableInstanceList.get(0);
+        VariableInstance variableOneRuntime = variableInstanceList.getFirst();
         assertThat(variableOneRuntime.isTaskVariable()).isTrue();
 
         assertThat(RuntimeTestConfiguration.collectedEvents)
@@ -140,8 +140,8 @@ public class TaskVariablesTest {
             .containsExactly(
                 tuple(
                     VariableEvent.VariableEvents.VARIABLE_CREATED,
-                    variableInstanceList.get(0).getName(),
-                    variableInstanceList.get(0).getValue()
+                    variableInstanceList.getFirst().getName(),
+                    variableInstanceList.getFirst().getValue()
                 ),
                 tuple(
                     VariableEvent.VariableEvents.VARIABLE_CREATED,
@@ -159,7 +159,7 @@ public class TaskVariablesTest {
 
         createVariables();
 
-        VariableInstance variableOneRuntime = variableInstanceList.get(0);
+        VariableInstance variableOneRuntime = variableInstanceList.getFirst();
         VariableInstance variableTwoRuntime = variableInstanceList.get(1);
         assertThat(variableOneRuntime.getType()).isEqualTo("string");
         assertThat(variableTwoRuntime.getType()).isEqualTo("integer");
@@ -169,8 +169,8 @@ public class TaskVariablesTest {
             .containsExactly(
                 tuple(
                     VariableEvent.VariableEvents.VARIABLE_CREATED,
-                    variableInstanceList.get(0).getName(),
-                    variableInstanceList.get(0).getValue()
+                    variableInstanceList.getFirst().getName(),
+                    variableInstanceList.getFirst().getValue()
                 ),
                 tuple(
                     VariableEvent.VariableEvents.VARIABLE_CREATED,
@@ -218,7 +218,7 @@ public class TaskVariablesTest {
         clearEvents();
 
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
-        taskId = tasks.getContent().get(0).getId();
+        taskId = tasks.getContent().getFirst().getId();
         assertThat(tasks.getTotalItems()).isEqualTo(1);
     }
 

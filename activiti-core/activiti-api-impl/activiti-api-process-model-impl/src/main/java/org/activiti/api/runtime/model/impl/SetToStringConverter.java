@@ -15,23 +15,23 @@
  */
 package org.activiti.api.runtime.model.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import java.util.Set;
 import org.springframework.core.convert.converter.Converter;
 
 @ProcessVariableTypeConverter
 public class SetToStringConverter implements Converter<Set<Object>, String> {
 
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
 
-    public SetToStringConverter(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
+    public SetToStringConverter(JsonMapper jsonMapper) {
+        this.jsonMapper = jsonMapper;
     }
 
     @Override
     public String convert(Set<Object> source) {
         try {
-            return objectMapper.writeValueAsString(source);
+            return jsonMapper.writeValueAsString(source);
         } catch (Exception cause) {
             throw new RuntimeException(cause);
         }

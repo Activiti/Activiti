@@ -51,7 +51,7 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
         // Check create event
         runtimeService.setVariable(processInstance.getId(), "testVariable", "The value");
         assertThat(listener.getEventsReceived()).hasSize(1);
-        ActivitiVariableEvent event = (ActivitiVariableEvent) listener.getEventsReceived().get(0);
+        ActivitiVariableEvent event = (ActivitiVariableEvent) listener.getEventsReceived().getFirst();
         assertThat(event.getType()).isEqualTo(ActivitiEventType.VARIABLE_CREATED);
         assertThat(event.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
         assertThat(event.getExecutionId()).isEqualTo(processInstance.getId());
@@ -64,7 +64,7 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
         // Update variable
         runtimeService.setVariable(processInstance.getId(), "testVariable", "Updated value");
         assertThat(listener.getEventsReceived()).hasSize(1);
-        event = (ActivitiVariableEvent) listener.getEventsReceived().get(0);
+        event = (ActivitiVariableEvent) listener.getEventsReceived().getFirst();
         assertThat(event.getType()).isEqualTo(ActivitiEventType.VARIABLE_UPDATED);
         assertThat(event.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
         assertThat(event.getExecutionId()).isEqualTo(processInstance.getId());
@@ -77,7 +77,7 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
         // Delete variable
         runtimeService.removeVariable(processInstance.getId(), "testVariable");
         assertThat(listener.getEventsReceived()).hasSize(1);
-        event = (ActivitiVariableEvent) listener.getEventsReceived().get(0);
+        event = (ActivitiVariableEvent) listener.getEventsReceived().getFirst();
         assertThat(event.getType()).isEqualTo(ActivitiEventType.VARIABLE_DELETED);
         // process definition Id can't be recognized in DB flush
         assertThat(event.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
@@ -121,7 +121,7 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
         );
 
         assertThat(listener.getEventsReceived()).hasSize(1);
-        assertThat(listener.getEventsReceived().get(0).getType()).isEqualTo(ActivitiEventType.VARIABLE_CREATED);
+        assertThat(listener.getEventsReceived().getFirst().getType()).isEqualTo(ActivitiEventType.VARIABLE_CREATED);
 
         Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         taskService.complete(task.getId());
@@ -143,7 +143,7 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
 
         // Check create event
         assertThat(listener.getEventsReceived()).hasSize(1);
-        ActivitiVariableEvent event = (ActivitiVariableEvent) listener.getEventsReceived().get(0);
+        ActivitiVariableEvent event = (ActivitiVariableEvent) listener.getEventsReceived().getFirst();
         assertThat(event.getType()).isEqualTo(ActivitiEventType.VARIABLE_CREATED);
         assertThat(event.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
         assertThat(event.getExecutionId()).isEqualTo(processInstance.getId());
@@ -168,7 +168,7 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
         runtimeService.setVariableLocal(child.getId(), "test", 1234567);
 
         assertThat(listener.getEventsReceived()).hasSize(1);
-        ActivitiVariableEvent event = (ActivitiVariableEvent) listener.getEventsReceived().get(0);
+        ActivitiVariableEvent event = (ActivitiVariableEvent) listener.getEventsReceived().getFirst();
         assertThat(event.getType()).isEqualTo(ActivitiEventType.VARIABLE_CREATED);
 
         // Execution and process-id should differ
@@ -187,7 +187,7 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
         assertThat(listener.getEventsReceived()).hasSize(3);
 
         // Check create event
-        ActivitiVariableEvent event = (ActivitiVariableEvent) listener.getEventsReceived().get(0);
+        ActivitiVariableEvent event = (ActivitiVariableEvent) listener.getEventsReceived().getFirst();
         assertThat(event.getType()).isEqualTo(ActivitiEventType.VARIABLE_CREATED);
         assertThat(event.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
         assertThat(event.getExecutionId()).isEqualTo(processInstance.getId());
@@ -229,13 +229,19 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
             .collect(Collectors.toList());
         assertThat(variableEvents)
             .extracting(ActivitiVariableEvent::getType, ActivitiVariableEvent::getVariableName)
-            .containsExactly(
+            .startsWith(
                 tuple(ActivitiEventType.VARIABLE_CREATED, "parentVar1"),
                 tuple(ActivitiEventType.VARIABLE_CREATED, "subVar1"),
                 tuple(ActivitiEventType.VARIABLE_CREATED, "parentVar2"),
-                tuple(ActivitiEventType.VARIABLE_DELETED, "subVar1"),
-                tuple(ActivitiEventType.VARIABLE_DELETED, "parentVar2"),
-                tuple(ActivitiEventType.VARIABLE_DELETED, "parentVar1")
+                tuple(ActivitiEventType.VARIABLE_DELETED, "subVar1")
+            );
+        // The deletion order of parentVar1 and parentVar2 is not guaranteed
+        // because they belong to the same execution and the DB query has no ORDER BY
+        assertThat(variableEvents.subList(4, 6))
+            .extracting(ActivitiVariableEvent::getType, ActivitiVariableEvent::getVariableName)
+            .containsExactlyInAnyOrder(
+                tuple(ActivitiEventType.VARIABLE_DELETED, "parentVar1"),
+                tuple(ActivitiEventType.VARIABLE_DELETED, "parentVar2")
             );
     }
 
@@ -256,7 +262,7 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
 
         // Check create event
         assertThat(listener.getEventsReceived()).hasSize(3);
-        ActivitiVariableEvent event = (ActivitiVariableEvent) listener.getEventsReceived().get(0);
+        ActivitiVariableEvent event = (ActivitiVariableEvent) listener.getEventsReceived().getFirst();
         assertThat(event.getType()).isEqualTo(ActivitiEventType.VARIABLE_CREATED);
         assertThat(event.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
         assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
@@ -298,7 +304,7 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
         assertThat(listener.getEventsReceived()).hasSize(3);
 
         // Check create event
-        ActivitiVariableEvent event = (ActivitiVariableEvent) listener.getEventsReceived().get(0);
+        ActivitiVariableEvent event = (ActivitiVariableEvent) listener.getEventsReceived().getFirst();
         assertThat(event.getType()).isEqualTo(ActivitiEventType.VARIABLE_CREATED);
         assertThat(event.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
         assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
@@ -340,7 +346,7 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
             taskService.removeVariable(newTask.getId(), "testVariable");
 
             assertThat(listener.getEventsReceived()).hasSize(3);
-            ActivitiVariableEvent event = (ActivitiVariableEvent) listener.getEventsReceived().get(0);
+            ActivitiVariableEvent event = (ActivitiVariableEvent) listener.getEventsReceived().getFirst();
             assertThat(event.getType()).isEqualTo(ActivitiEventType.VARIABLE_CREATED);
             assertThat(event.getProcessDefinitionId()).isNull();
             assertThat(event.getExecutionId()).isNull();

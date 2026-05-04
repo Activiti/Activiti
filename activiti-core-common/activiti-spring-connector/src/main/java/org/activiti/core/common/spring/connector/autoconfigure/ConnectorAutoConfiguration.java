@@ -17,7 +17,7 @@ package org.activiti.core.common.spring.connector.autoconfigure;
 
 import static java.util.Collections.emptyList;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import java.io.IOException;
 import java.util.List;
 import org.activiti.core.common.model.connector.ConnectorDefinition;
@@ -35,18 +35,18 @@ public class ConnectorAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnMissingClass(value = "org.springframework.http.converter.json.Jackson2ObjectMapperBuilder")
-    public ObjectMapper objectMapper() {
-        return new ObjectMapper();
+    public JsonMapper jsonMapper() {
+        return new JsonMapper();
     }
 
     @Bean
     @ConditionalOnMissingBean
     public ConnectorDefinitionService connectorDefinitionService(
         @Value("${activiti.connectors.dir:classpath:/connectors/}") String connectorRoot,
-        ObjectMapper objectMapper,
+        JsonMapper jsonMapper,
         ResourcePatternResolver resourceLoader
     ) {
-        return new ConnectorDefinitionService(connectorRoot, objectMapper, resourceLoader);
+        return new ConnectorDefinitionService(connectorRoot, jsonMapper, resourceLoader);
     }
 
     @Bean

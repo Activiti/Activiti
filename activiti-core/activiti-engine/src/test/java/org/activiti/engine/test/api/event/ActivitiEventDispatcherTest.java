@@ -69,7 +69,7 @@ public abstract class ActivitiEventDispatcherTest extends PluggableActivitiTestC
         dispatcher.dispatchEvent(event2);
 
         assertThat(newListener.getEventsReceived()).hasSize(2);
-        assertThat(newListener.getEventsReceived().get(0)).isEqualTo(event1);
+        assertThat(newListener.getEventsReceived().getFirst()).isEqualTo(event1);
         assertThat(newListener.getEventsReceived().get(1)).isEqualTo(event2);
 
         // Remove listener and dispatch events again, listener should not be
@@ -111,7 +111,7 @@ public abstract class ActivitiEventDispatcherTest extends PluggableActivitiTestC
         dispatcher.dispatchEvent(event3);
 
         assertThat(newListener.getEventsReceived()).hasSize(2);
-        assertThat(newListener.getEventsReceived().get(0)).isEqualTo(event1);
+        assertThat(newListener.getEventsReceived().getFirst()).isEqualTo(event1);
         assertThat(newListener.getEventsReceived().get(1)).isEqualTo(event2);
 
         // Remove listener and dispatch events again, listener should not be
