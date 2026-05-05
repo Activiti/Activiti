@@ -199,7 +199,7 @@ public class TaskRuntimeImplTest {
     }
 
     @Test
-    void tasks_should_throwException_when_sortingByUnsupportedField() {
+    void tasks_should_ignoreUnsupportedField_gracefully() {
         //given
         when(securityManager.getAuthenticatedUserId()).thenReturn(AUTHENTICATED_USER);
         when(securityManager.getAuthenticatedUserGroups()).thenReturn(Collections.emptyList());
@@ -212,18 +212,19 @@ public class TaskRuntimeImplTest {
             .thenReturn(taskQuery);
         when(taskQuery.taskOwner(AUTHENTICATED_USER)).thenReturn(taskQuery);
         when(taskQuery.endOr()).thenReturn(taskQuery);
+        when(taskQuery.listPage(0, 50)).thenReturn(Collections.emptyList());
+        when(taskQuery.count()).thenReturn(0L);
+        when(taskConverter.from(Collections.emptyList())).thenReturn(Collections.emptyList());
 
         Order order = Order.by("unsupportedField", Order.Direction.ASC);
         Pageable pageable = Pageable.of(0, 50, order);
         GetTasksPayload payload = TaskPayloadBuilder.tasks().build();
 
         //when
-        Throwable thrown = catchThrowable(() -> taskRuntime.tasks(pageable, payload));
+        taskRuntime.tasks(pageable, payload);
 
         //then
-        assertThat(thrown)
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessageContaining("Sorting by unsupportedField is not supported");
+        verify(taskQuery, never()).orderByTaskCreateTime();
     }
 
     @Test
