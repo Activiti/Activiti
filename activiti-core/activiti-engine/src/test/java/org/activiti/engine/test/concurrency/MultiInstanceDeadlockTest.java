@@ -38,6 +38,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.PostgreSQLContainer;
 
@@ -90,6 +91,13 @@ class MultiInstanceDeadlockTest {
         postgres.stop();
     }
 
+    @Disabled(
+        "Bug reproducer: this test asserted that a Postgres deadlock OCCURS during " +
+        "concurrent multi-instance task completion. After the fix in DbSqlSession " +
+        "(deterministic flush ordering for inserts/updates/deletes), the deadlock no " +
+        "longer occurs and the assertion fails. To be reworked into a regression test " +
+        "with the assertion inverted (deadlockOccurred isFalse). Tracking: AAE-42043."
+    )
     @Test
     void testConcurrentUserTaskCompletionCausesDeadlock() throws Exception {
         repositoryService
