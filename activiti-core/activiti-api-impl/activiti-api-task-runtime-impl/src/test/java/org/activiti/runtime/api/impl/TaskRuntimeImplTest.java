@@ -69,7 +69,7 @@ public class TaskRuntimeImplTest {
     private TaskService taskService;
 
     @Test
-    public void should_returnResultOfHelper_when_updateTask() {
+    void should_returnResultOfHelper_when_updateTask() {
         //given
         UpdateTaskPayload updateTaskPayload = TaskPayloadBuilder.update()
             .withTaskId("taskId")
@@ -87,7 +87,7 @@ public class TaskRuntimeImplTest {
     }
 
     @Test
-    public void assign_should_returnIllegalStateException_when_assigneeIsNotACandidateUser() {
+    void assign_should_returnIllegalStateException_when_assigneeIsNotACandidateUser() {
         //given
         AssignTaskPayload assignTaskPayload = TaskPayloadBuilder.assign()
             .withTaskId("taskId")
@@ -108,7 +108,7 @@ public class TaskRuntimeImplTest {
     }
 
     @Test
-    public void assign_should_updateTaskAssignee_whenAssigneeIsACandidateUser() {
+    void assign_should_updateTaskAssignee_whenAssigneeIsACandidateUser() {
         //given
         when(securityManager.getAuthenticatedUserId()).thenReturn(AUTHENTICATED_USER);
 
@@ -131,7 +131,7 @@ public class TaskRuntimeImplTest {
     }
 
     @Test
-    public void tasks_should_invokeOrderByTaskCreateTimeAsc_when_sortingByCreatedDateAsc() {
+    void tasks_should_invokeOrderByTaskCreateTimeAsc_when_sortingByCreatedDateAsc() {
         //given
         when(securityManager.getAuthenticatedUserId()).thenReturn(AUTHENTICATED_USER);
         when(securityManager.getAuthenticatedUserGroups()).thenReturn(Collections.emptyList());
@@ -165,7 +165,7 @@ public class TaskRuntimeImplTest {
     }
 
     @Test
-    public void tasks_should_invokeOrderByTaskCreateTimeDesc_when_sortingByCreatedDateDesc() {
+    void tasks_should_invokeOrderByTaskCreateTimeDesc_when_sortingByCreatedDateDesc() {
         //given
         when(securityManager.getAuthenticatedUserId()).thenReturn(AUTHENTICATED_USER);
         when(securityManager.getAuthenticatedUserGroups()).thenReturn(Collections.emptyList());
@@ -199,7 +199,7 @@ public class TaskRuntimeImplTest {
     }
 
     @Test
-    public void tasks_should_throwException_when_sortingByUnsupportedField() {
+    void tasks_should_throwException_when_sortingByUnsupportedField() {
         //given
         when(securityManager.getAuthenticatedUserId()).thenReturn(AUTHENTICATED_USER);
         when(securityManager.getAuthenticatedUserGroups()).thenReturn(Collections.emptyList());
@@ -227,7 +227,7 @@ public class TaskRuntimeImplTest {
     }
 
     @Test
-    public void tasks_should_handleNullOrder_gracefully() {
+    void tasks_should_handleNullOrder_gracefully() {
         //given
         when(securityManager.getAuthenticatedUserId()).thenReturn(AUTHENTICATED_USER);
         when(securityManager.getAuthenticatedUserGroups()).thenReturn(Collections.emptyList());
