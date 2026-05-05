@@ -20,7 +20,7 @@
     <java-uuid-generator.version>5.2.0</java-uuid-generator.version>
     <javaGeom.version>0.11.1</javaGeom.version>
     <jgraphx.version>4.2.2</jgraphx.version>
-    <joda-time.version>2.14.1</joda-time.version>
+    <joda-time.version>2.14.2</joda-time.version>
     <json-unit.version>4.1.1</json-unit.version>
     <mybatis.version>3.5.19</mybatis.version>
     <subethasmtp-wiser.version>1.2</subethasmtp-wiser.version>
