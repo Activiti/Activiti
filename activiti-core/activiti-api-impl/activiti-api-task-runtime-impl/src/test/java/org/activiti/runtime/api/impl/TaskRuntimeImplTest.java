@@ -28,6 +28,7 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 import org.activiti.api.runtime.shared.query.Order;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.runtime.shared.security.SecurityManager;
@@ -42,6 +43,9 @@ import org.activiti.engine.task.TaskQuery;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
@@ -130,15 +134,20 @@ public class TaskRuntimeImplTest {
         verify(taskService).claim(taskId, newAssignee);
     }
 
-    @Test
-    void tasks_should_invokeOrderByTaskCreateTimeAsc_when_sortingByCreatedDateAsc() {
+    @ParameterizedTest(name = "sorting by createdDate {0}")
+    @MethodSource("provideOrderDirections")
+    void tasks_should_invokeOrderByTaskCreateTime_when_sortingByCreatedDate(
+        Order.Direction direction,
+        java.util.function.Function<TaskQuery, TaskQuery> directionMethod,
+        java.util.function.Consumer<TaskQuery> verifyDirection
+    ) {
         //given
         when(securityManager.getAuthenticatedUserId()).thenReturn(AUTHENTICATED_USER);
         when(securityManager.getAuthenticatedUserGroups()).thenReturn(Collections.emptyList());
 
-        TaskQuery taskQuery = mock(TaskQuery.class);
-        TaskQuery sortedQuery = mock(TaskQuery.class);
-        TaskQuery ascQuery = mock(TaskQuery.class);
+        TaskQuery taskQuery = mock();
+        TaskQuery sortedQuery = mock();
+        TaskQuery directedQuery = mock();
 
         when(taskService.createTaskQuery()).thenReturn(taskQuery);
         when(taskQuery.or()).thenReturn(taskQuery);
@@ -147,12 +156,12 @@ public class TaskRuntimeImplTest {
         when(taskQuery.taskOwner(AUTHENTICATED_USER)).thenReturn(taskQuery);
         when(taskQuery.endOr()).thenReturn(taskQuery);
         when(taskQuery.orderByTaskCreateTime()).thenReturn(sortedQuery);
-        when(sortedQuery.asc()).thenReturn(ascQuery);
-        when(ascQuery.listPage(0, 50)).thenReturn(Collections.emptyList());
-        when(ascQuery.count()).thenReturn(0L);
+        when(directionMethod.apply(sortedQuery)).thenReturn(directedQuery);
+        when(directedQuery.listPage(0, 50)).thenReturn(Collections.emptyList());
+        when(directedQuery.count()).thenReturn(0L);
         when(taskConverter.from(Collections.emptyList())).thenReturn(Collections.emptyList());
 
-        Order order = Order.by("createdDate", Order.Direction.ASC);
+        Order order = Order.by("createdDate", direction);
         Pageable pageable = Pageable.of(0, 50, order);
         GetTasksPayload payload = TaskPayloadBuilder.tasks().build();
 
@@ -161,41 +170,22 @@ public class TaskRuntimeImplTest {
 
         //then
         verify(taskQuery).orderByTaskCreateTime();
-        verify(sortedQuery).asc();
+        verifyDirection.accept(sortedQuery);
     }
 
-    @Test
-    void tasks_should_invokeOrderByTaskCreateTimeDesc_when_sortingByCreatedDateDesc() {
-        //given
-        when(securityManager.getAuthenticatedUserId()).thenReturn(AUTHENTICATED_USER);
-        when(securityManager.getAuthenticatedUserGroups()).thenReturn(Collections.emptyList());
-
-        TaskQuery taskQuery = mock(TaskQuery.class);
-        TaskQuery sortedQuery = mock(TaskQuery.class);
-        TaskQuery descQuery = mock(TaskQuery.class);
-
-        when(taskService.createTaskQuery()).thenReturn(taskQuery);
-        when(taskQuery.or()).thenReturn(taskQuery);
-        when(taskQuery.taskCandidateOrAssigned(AUTHENTICATED_USER, Collections.emptyList()))
-            .thenReturn(taskQuery);
-        when(taskQuery.taskOwner(AUTHENTICATED_USER)).thenReturn(taskQuery);
-        when(taskQuery.endOr()).thenReturn(taskQuery);
-        when(taskQuery.orderByTaskCreateTime()).thenReturn(sortedQuery);
-        when(sortedQuery.desc()).thenReturn(descQuery);
-        when(descQuery.listPage(0, 50)).thenReturn(Collections.emptyList());
-        when(descQuery.count()).thenReturn(0L);
-        when(taskConverter.from(Collections.emptyList())).thenReturn(Collections.emptyList());
-
-        Order order = Order.by("createdDate", Order.Direction.DESC);
-        Pageable pageable = Pageable.of(0, 50, order);
-        GetTasksPayload payload = TaskPayloadBuilder.tasks().build();
-
-        //when
-        taskRuntime.tasks(pageable, payload);
-
-        //then
-        verify(taskQuery).orderByTaskCreateTime();
-        verify(sortedQuery).desc();
+    private static Stream<Arguments> provideOrderDirections() {
+        return Stream.of(
+            Arguments.of(
+                Order.Direction.ASC,
+                (java.util.function.Function<TaskQuery, TaskQuery>) TaskQuery::asc,
+                (java.util.function.Consumer<TaskQuery>) (query) -> verify(query).asc()
+            ),
+            Arguments.of(
+                Order.Direction.DESC,
+                (java.util.function.Function<TaskQuery, TaskQuery>) TaskQuery::desc,
+                (java.util.function.Consumer<TaskQuery>) (query) -> verify(query).desc()
+            )
+        );
     }
 
     @Test
@@ -204,7 +194,7 @@ public class TaskRuntimeImplTest {
         when(securityManager.getAuthenticatedUserId()).thenReturn(AUTHENTICATED_USER);
         when(securityManager.getAuthenticatedUserGroups()).thenReturn(Collections.emptyList());
 
-        TaskQuery taskQuery = mock(TaskQuery.class);
+        TaskQuery taskQuery = mock();
 
         when(taskService.createTaskQuery()).thenReturn(taskQuery);
         when(taskQuery.or()).thenReturn(taskQuery);
@@ -227,13 +217,14 @@ public class TaskRuntimeImplTest {
         verify(taskQuery, never()).orderByTaskCreateTime();
     }
 
-    @Test
-    void tasks_should_handleNullOrder_gracefully() {
+    @ParameterizedTest(name = "with {0}")
+    @MethodSource("provideNullOrderScenarios")
+    void tasks_should_handleNullOrder_gracefully(String scenario, Pageable pageable) {
         //given
         when(securityManager.getAuthenticatedUserId()).thenReturn(AUTHENTICATED_USER);
         when(securityManager.getAuthenticatedUserGroups()).thenReturn(Collections.emptyList());
 
-        TaskQuery taskQuery = mock(TaskQuery.class);
+        TaskQuery taskQuery = mock();
 
         when(taskService.createTaskQuery()).thenReturn(taskQuery);
         when(taskQuery.or()).thenReturn(taskQuery);
@@ -245,7 +236,44 @@ public class TaskRuntimeImplTest {
         when(taskQuery.count()).thenReturn(0L);
         when(taskConverter.from(Collections.emptyList())).thenReturn(Collections.emptyList());
 
-        Pageable pageable = Pageable.of(0, 50);
+        GetTasksPayload payload = TaskPayloadBuilder.tasks().build();
+
+        //when
+        taskRuntime.tasks(pageable, payload);
+
+        //then
+        verify(taskQuery, never()).orderByTaskCreateTime();
+    }
+
+    private static Stream<Arguments> provideNullOrderScenarios() {
+        return Stream.of(
+            Arguments.of("null order", Pageable.of(0, 50)),
+            Arguments.of("null property", Pageable.of(0, 50, Order.by(null, Order.Direction.ASC)))
+        );
+    }
+
+    @Test
+    void tasks_should_handleNullDirection_gracefully() {
+        //given
+        when(securityManager.getAuthenticatedUserId()).thenReturn(AUTHENTICATED_USER);
+        when(securityManager.getAuthenticatedUserGroups()).thenReturn(Collections.emptyList());
+
+        TaskQuery taskQuery = mock();
+        Order mockOrderNullDirection = mock(Order.class);
+        when(mockOrderNullDirection.getProperty()).thenReturn("createdDate");
+        when(mockOrderNullDirection.getDirection()).thenReturn(null);
+
+        when(taskService.createTaskQuery()).thenReturn(taskQuery);
+        when(taskQuery.or()).thenReturn(taskQuery);
+        when(taskQuery.taskCandidateOrAssigned(AUTHENTICATED_USER, Collections.emptyList()))
+            .thenReturn(taskQuery);
+        when(taskQuery.taskOwner(AUTHENTICATED_USER)).thenReturn(taskQuery);
+        when(taskQuery.endOr()).thenReturn(taskQuery);
+        when(taskQuery.listPage(0, 50)).thenReturn(Collections.emptyList());
+        when(taskQuery.count()).thenReturn(0L);
+        when(taskConverter.from(Collections.emptyList())).thenReturn(Collections.emptyList());
+
+        Pageable pageable = Pageable.of(0, 50, mockOrderNullDirection);
         GetTasksPayload payload = TaskPayloadBuilder.tasks().build();
 
         //when

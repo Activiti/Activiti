@@ -18,7 +18,9 @@ package org.activiti.runtime.api.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.runtime.shared.NotFoundException;
 import org.activiti.api.runtime.shared.query.Order;
@@ -68,8 +70,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
 
     private final TaskRuntimeHelper taskRuntimeHelper;
 
-    // Keys are stored in lowercase because applySortOrder() normalizes requested sort properties before lookup.
-    private static final java.util.Map<String, java.util.function.Function<TaskQuery, TaskQuery>> SORT_FIELD_MAPPERS =
+    private static final Map<String, Function<TaskQuery, TaskQuery>> SORT_FIELD_MAPPERS =
         java.util.Map.of("createddate", TaskQuery::orderByTaskCreateTime);
 
     public TaskRuntimeImpl(
@@ -541,8 +542,6 @@ public class TaskRuntimeImpl implements TaskRuntime {
         return switch (order.getDirection()) {
             case ASC -> sortedQuery.asc();
             case DESC -> sortedQuery.desc();
-            default ->
-                throw new IllegalStateException("Sorting direction '" + order.getDirection() + "' is not supported.");
         };
     }
 }
