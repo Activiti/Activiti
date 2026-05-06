@@ -178,12 +178,12 @@ public class TaskRuntimeImplTest {
             Arguments.of(
                 Order.Direction.ASC,
                 (java.util.function.Function<TaskQuery, TaskQuery>) TaskQuery::asc,
-                (java.util.function.Consumer<TaskQuery>) (query) -> verify(query).asc()
+                (java.util.function.Consumer<TaskQuery>) query -> verify(query).asc()
             ),
             Arguments.of(
                 Order.Direction.DESC,
                 (java.util.function.Function<TaskQuery, TaskQuery>) TaskQuery::desc,
-                (java.util.function.Consumer<TaskQuery>) (query) -> verify(query).desc()
+                (java.util.function.Consumer<TaskQuery>) query -> verify(query).desc()
             )
         );
     }
