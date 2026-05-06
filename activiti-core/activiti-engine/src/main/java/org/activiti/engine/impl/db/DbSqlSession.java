@@ -80,7 +80,6 @@ public class DbSqlSession implements Session {
 
     static {
         /* Previous */
-
         ACTIVITI_VERSIONS.add(new ActivitiVersion("5.7"));
         ACTIVITI_VERSIONS.add(new ActivitiVersion("5.8"));
         ACTIVITI_VERSIONS.add(new ActivitiVersion("5.9"));
@@ -574,10 +573,6 @@ public class DbSqlSession implements Session {
     }
 
     protected void flushInsertEntities(Class<? extends Entity> entityClass, Collection<Entity> entitiesToInsert) {
-        // Sort non-execution entities by ID to ensure deterministic lock acquisition
-        // order within the same class, preventing within-table deadlocks across
-        // concurrent transactions. ExecutionEntity is excluded because it has
-        // self-referential FK constraints (parent-child) that require specific ordering.
         Collection<Entity> orderedInserts = entitiesToInsert;
         if (!ExecutionEntity.class.isAssignableFrom(entityClass) && entitiesToInsert.size() > 1) {
             List<Entity> sortedInserts = new ArrayList<>(entitiesToInsert);
@@ -601,7 +596,6 @@ public class DbSqlSession implements Session {
         boolean parentBeforeChildExecution
     ) {
         // For insertion: parent executions should go before child executions
-
         List<Entity> result = new ArrayList<Entity>(executionEntities.size());
 
         // Gather parent-child relationships
@@ -763,9 +757,6 @@ public class DbSqlSession implements Session {
     }
 
     protected void flushUpdates() {
-        // Sort to ensure a deterministic update order across concurrent transactions.
-        // Without this, HashMap iteration produces non-deterministic ordering that can
-        // cause deadlocks when two transactions update the same rows in opposite order.
         updatedObjects.sort(
             Comparator.comparingInt((Entity e) -> {
                 int idx = EntityDependencyOrder.UPDATE_ORDER.indexOf(e.getClass());
@@ -836,10 +827,6 @@ public class DbSqlSession implements Session {
     }
 
     protected void flushDeleteEntities(Class<? extends Entity> entityClass, Collection<Entity> entitiesToDelete) {
-        // Sort non-execution entities by ID to ensure deterministic lock acquisition
-        // order within the same class, preventing within-table deadlocks across
-        // concurrent transactions. ExecutionEntity is excluded because it has
-        // self-referential FK constraints (parent-child) that require specific ordering.
         Collection<Entity> orderedDeletes = entitiesToDelete;
         if (!ExecutionEntity.class.isAssignableFrom(entityClass) && entitiesToDelete.size() > 1) {
             List<Entity> sortedDeletes = new ArrayList<>(entitiesToDelete);
