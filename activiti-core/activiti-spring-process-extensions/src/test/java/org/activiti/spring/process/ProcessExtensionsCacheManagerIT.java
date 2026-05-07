@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,8 +24,8 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cache.CacheManager;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ProcessExtensionsCacheManagerIT {
@@ -33,7 +33,7 @@ public class ProcessExtensionsCacheManagerIT {
     @Autowired
     private CacheManager cacheManager;
 
-    @MockBean
+    @MockitoBean
     private RepositoryService repositoryService;
 
     @Autowired
@@ -49,7 +49,7 @@ public class ProcessExtensionsCacheManagerIT {
 
     @Test
     @Disabled
-    void testProcessExtensionsCache(){
+    void testProcessExtensionsCache() {
         var processExtensionsCache = cacheManager.getCache("processExtensionsById");
         var deploymentResourcesCache = cacheManager.getCache("deploymentResourcesById");
 
@@ -60,5 +60,4 @@ public class ProcessExtensionsCacheManagerIT {
 
         assertThat(result).isNotNull();
     }
-
 }

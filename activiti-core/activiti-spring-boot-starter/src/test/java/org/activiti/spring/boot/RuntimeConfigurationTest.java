@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,9 @@
  */
 package org.activiti.spring.boot;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.spring.boot.security.util.SecurityUtil;
@@ -26,13 +29,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ContextConfiguration;
 
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class RuntimeConfigurationTest {
-
 
     @Autowired
     private SecurityManager securityManager;
@@ -58,11 +56,11 @@ public class RuntimeConfigurationTest {
         List<String> userRoles = userGroupManager.getUserRoles("user");
         assertThat(userRoles).isNotNull();
         assertThat(userRoles).hasSize(1);
-        assertThat(userRoles.get(0)).isEqualTo("ACTIVITI_USER");
+        assertThat(userRoles.getFirst()).isEqualTo("ACTIVITI_USER");
         List<String> userGroups = userGroupManager.getUserGroups("user");
         assertThat(userGroups).isNotNull();
         assertThat(userGroups).hasSize(1);
-        assertThat(userGroups.get(0)).isEqualTo("activitiTeam");
+        assertThat(userGroups.getFirst()).isEqualTo("activitiTeam");
     }
 
     @Test
@@ -77,11 +75,9 @@ public class RuntimeConfigurationTest {
         List<String> userRoles = userGroupManager.getUserRoles("admin");
         assertThat(userRoles).isNotNull();
         assertThat(userRoles).hasSize(1);
-        assertThat(userRoles.get(0)).isEqualTo("ACTIVITI_ADMIN");
+        assertThat(userRoles.getFirst()).isEqualTo("ACTIVITI_ADMIN");
         List<String> userGroups = userGroupManager.getUserGroups("admin");
         assertThat(userGroups).isNotNull();
         assertThat(userGroups).hasSize(0);
-
     }
-
 }

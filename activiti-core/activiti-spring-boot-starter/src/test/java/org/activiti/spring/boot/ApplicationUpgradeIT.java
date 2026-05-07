@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,13 @@ package org.activiti.spring.boot;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import org.activiti.api.process.model.ProcessDefinition;
+import org.activiti.api.process.model.payloads.GetProcessDefinitionsPayload;
 import org.activiti.api.process.runtime.ProcessAdminRuntime;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.runtime.shared.query.Page;
@@ -42,12 +45,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-public class ApplicationUpgradeIT {
+class ApplicationUpgradeIT {
 
     private static final String SINGLE_TASK_PROCESS_DEFINITION_KEY = "SingleTaskProcess";
     private static final String PROCESS_NAME = "single-task";
     private static final String SINGLE_TASK_PROCESS_DEFINITION_PATH = "processes/SingleTaskProcess.bpmn20.xml";
-    private static final String MULTI_INSTANCE_PROCESS_DEFINITION_PATH = "processes/multi-instance-parallel-all-output-data-ref.bpmn20.xml";
+    private static final String MULTI_INSTANCE_PROCESS_DEFINITION_PATH =
+        "processes/multi-instance-parallel-all-output-data-ref.bpmn20.xml";
     private static final String MULTI_INSTANCE_PROCESS_DEFINITION_KEY = "miParallelUserTasksAllOutputCollection";
     private static final String DEPLOYMENT_TYPE_NAME = "SpringAutoDeployment";
     private static final String PROCESS_FROM_CUSTOM_DEPLOYMENT_KEY = "ProcessFromCustomDeployment";
@@ -79,27 +83,28 @@ public class ApplicationUpgradeIT {
     private List<String> deploymentIds;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         deploymentIds = new ArrayList<>();
         securityUtil.logInAs("user");
         eventSubscriptionQuery = new EventSubscriptionQueryImpl(processEngineConfigurationImpl.getCommandExecutor());
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         deploymentIds.forEach(deploymentId -> repositoryService.deleteDeployment(deploymentId, true));
     }
 
     @Test
-    public void should_updateDeploymentVersion_when_manifestIsPresent() {
+    void should_updateDeploymentVersion_when_manifestIsPresent() {
         ProjectManifest projectManifest = new ProjectManifest();
         projectManifest.setVersion("7");
 
-        Deployment deployment1 = repositoryService.createDeployment()
-                .setProjectManifest(projectManifest)
-                .enableDuplicateFiltering()
-                .name("deploymentName")
-                .deploy();
+        Deployment deployment1 = repositoryService
+            .createDeployment()
+            .setProjectManifest(projectManifest)
+            .enableDuplicateFiltering()
+            .name("deploymentName")
+            .deploy();
         deploymentIds.add(deployment1.getId());
 
         assertThat(deployment1.getVersion()).isEqualTo(1);
@@ -107,11 +112,12 @@ public class ApplicationUpgradeIT {
 
         projectManifest.setVersion("17");
 
-        Deployment deployment2 = repositoryService.createDeployment()
-                .setProjectManifest(projectManifest)
-                .enableDuplicateFiltering()
-                .name("deploymentName")
-                .deploy();
+        Deployment deployment2 = repositoryService
+            .createDeployment()
+            .setProjectManifest(projectManifest)
+            .enableDuplicateFiltering()
+            .name("deploymentName")
+            .deploy();
         deploymentIds.add(deployment2.getId());
 
         assertThat(deployment2.getProjectReleaseVersion()).isEqualTo("17");
@@ -119,7 +125,7 @@ public class ApplicationUpgradeIT {
     }
 
     @Test
-    public void should_getLatestProcessDefinitionByKey_when_multipleVersions() {
+    void should_getLatestProcessDefinitionByKey_when_multipleVersions() {
         ProjectManifest projectManifest = new ProjectManifest();
         projectManifest.setVersion("12");
         deployProcesses(projectManifest, SINGLE_TASK_PROCESS_DEFINITION_PATH);
@@ -127,18 +133,16 @@ public class ApplicationUpgradeIT {
         projectManifest.setVersion("34");
         Deployment latestDeployment = deployProcesses(projectManifest, SINGLE_TASK_PROCESS_DEFINITION_PATH);
 
-        ProcessDefinition result = processRuntime.processDefinition(
-            SINGLE_TASK_PROCESS_DEFINITION_KEY);
+        ProcessDefinition result = processRuntime.processDefinition(SINGLE_TASK_PROCESS_DEFINITION_KEY);
 
         assertThat(result).isNotNull();
         assertThat(result.getName()).isEqualTo(PROCESS_NAME);
         assertThat(result.getId()).contains(SINGLE_TASK_PROCESS_DEFINITION_KEY);
         assertThat(result.getAppVersion()).isEqualTo(String.valueOf(latestDeployment.getVersion()));
-
     }
 
     @Test
-    public void should_adminApiGetLatestProcessDefinitionByKey_when_multipleVersions() {
+    void should_adminApiGetLatestProcessDefinitionByKey_when_multipleVersions() {
         ProjectManifest projectManifest = new ProjectManifest();
         projectManifest.setVersion("12");
         deployProcesses(projectManifest, SINGLE_TASK_PROCESS_DEFINITION_PATH);
@@ -148,8 +152,7 @@ public class ApplicationUpgradeIT {
 
         securityUtil.logInAs("admin");
 
-        ProcessDefinition result = processAdminRuntime.processDefinition(
-            SINGLE_TASK_PROCESS_DEFINITION_KEY);
+        ProcessDefinition result = processAdminRuntime.processDefinition(SINGLE_TASK_PROCESS_DEFINITION_KEY);
 
         assertThat(result).isNotNull();
         assertThat(result.getName()).isEqualTo(PROCESS_NAME);
@@ -158,38 +161,101 @@ public class ApplicationUpgradeIT {
     }
 
     @Test
-    public void processDefinitions_should_returnOnlyTheLatestVersion_when_multipleVersions() {
+    void should_adminApiGetSpecificVersionProcessDefinitionById_when_multipleVersions() {
+        ProjectManifest projectManifest = new ProjectManifest();
+        projectManifest.setVersion("12");
+        Deployment firstDeployment = deployProcesses(projectManifest, SINGLE_TASK_PROCESS_DEFINITION_PATH);
+
+        projectManifest.setVersion("34");
+        Deployment latestDeployment = deployProcesses(projectManifest, SINGLE_TASK_PROCESS_DEFINITION_PATH);
+
+        securityUtil.logInAs("admin");
+
+        GetProcessDefinitionsPayload getProcessDefinitionsPayload = new GetProcessDefinitionsPayload();
+        getProcessDefinitionsPayload.setProcessDefinitionKeys(Set.of(SINGLE_TASK_PROCESS_DEFINITION_KEY));
+
+        ProcessDefinition firstProcessDefinition = processAdminRuntime.processDefinitions(
+                Pageable.of(0, 100),
+                getProcessDefinitionsPayload
+            ).getContent()
+            .stream()
+            .filter(processDefinition -> processDefinition.getAppVersion().equals(String.valueOf(firstDeployment.getVersion())))
+            .findFirst()
+            .orElseThrow();
+
+        ProcessDefinition result = processAdminRuntime.processDefinition(firstProcessDefinition.getId());
+
+        assertThat(result).isNotNull();
+        assertThat(result.getName()).isEqualTo(PROCESS_NAME);
+        assertThat(result.getId()).contains(SINGLE_TASK_PROCESS_DEFINITION_KEY);
+        assertThat(result.getAppVersion()).isEqualTo(String.valueOf(firstDeployment.getVersion()));
+        assertThat(firstDeployment.getVersion()).isLessThan(latestDeployment.getVersion());
+    }
+
+    @Test
+    void processDefinitions_should_returnOnlyTheLatestVersion_when_multipleVersions() {
         //given
         ProjectManifest projectManifest = new ProjectManifest();
         projectManifest.setVersion("12");
-        deployProcesses(projectManifest, SINGLE_TASK_PROCESS_DEFINITION_PATH,
-            MULTI_INSTANCE_PROCESS_DEFINITION_PATH);
+        deployProcesses(projectManifest, SINGLE_TASK_PROCESS_DEFINITION_PATH, MULTI_INSTANCE_PROCESS_DEFINITION_PATH);
 
         projectManifest.setVersion("34");
-        Deployment latestDeployment = deployProcesses(projectManifest,
-            MULTI_INSTANCE_PROCESS_DEFINITION_PATH);
+        Deployment latestDeployment = deployProcesses(projectManifest, MULTI_INSTANCE_PROCESS_DEFINITION_PATH);
 
         //when
         Page<ProcessDefinition> result = processRuntime.processDefinitions(Pageable.of(0, 100));
 
         //then
         assertThat(result.getContent())
-            .filteredOn(processDefinition -> processDefinition.getKey().equals(
-                SINGLE_TASK_PROCESS_DEFINITION_KEY) || processDefinition.getKey()
-                .equals(MULTI_INSTANCE_PROCESS_DEFINITION_KEY))
-            .extracting(ProcessDefinition::getKey, ProcessDefinition::getVersion,
-                ProcessDefinition::getAppVersion)
+            .filteredOn(
+                processDefinition ->
+                    processDefinition.getKey().equals(SINGLE_TASK_PROCESS_DEFINITION_KEY) ||
+                    processDefinition.getKey().equals(MULTI_INSTANCE_PROCESS_DEFINITION_KEY)
+            )
+            .extracting(ProcessDefinition::getKey, ProcessDefinition::getVersion, ProcessDefinition::getAppVersion)
             .containsExactly(
-                tuple(MULTI_INSTANCE_PROCESS_DEFINITION_KEY, latestDeployment.getVersion(),
-                    String.valueOf(latestDeployment.getVersion())));
-
+                tuple(
+                    MULTI_INSTANCE_PROCESS_DEFINITION_KEY,
+                    latestDeployment.getVersion(),
+                    String.valueOf(latestDeployment.getVersion())
+                )
+            );
     }
 
     @Test
-    public void processDefinitions_should_returnProcesses_when_deploymentIsCreatedWithoutProjectManifest() {
+    void processDefinitions_should_returnProcesses_when_deploymentIsCreatedWithoutProjectManifest() {
         //given
-        deployProcessesWithoutProjectManifest("customDeployment",
-            "custom-deployment/ProcessFromCustomDeployment.bpmn20.xml");
+        deployProcessesWithoutProjectManifest(
+            "customDeployment",
+            "custom-deployment/ProcessFromCustomDeployment.bpmn20.xml"
+        );
+
+        //when
+        Page<ProcessDefinition> result = processRuntime.processDefinitions(Pageable.of(0, 100));
+
+        //then
+        assertThat(result.getContent())
+            .filteredOn(processDefinition -> PROCESS_FROM_CUSTOM_DEPLOYMENT_KEY.equals(processDefinition.getKey()))
+            .extracting(ProcessDefinition::getKey, ProcessDefinition::getVersion, ProcessDefinition::getAppVersion)
+            .containsExactly(tuple(PROCESS_FROM_CUSTOM_DEPLOYMENT_KEY, 1, null));
+    }
+
+    @Test
+    void processDefinitions_should_returnOnlyTheLatestVersion_when_deploymentIsCreatedWithoutManifestAndIsUpdatedWithManifest() {
+        //given
+        ProjectManifest projectManifest = new ProjectManifest();
+        projectManifest.setVersion("12");
+
+        String deploymentName = "customDeployment";
+        deployProcessesWithoutProjectManifest(
+            deploymentName,
+            "custom-deployment/ProcessFromCustomDeployment.bpmn20.xml"
+        );
+        Deployment latestCustomDeployment = deployProcesses(
+            deploymentName,
+            projectManifest,
+            "custom-deployment/AnotherProcessFromCustomDeployment.bpmn20.xml"
+        );
 
         //when
         Page<ProcessDefinition> result = processRuntime.processDefinitions(Pageable.of(0, 100));
@@ -197,47 +263,24 @@ public class ApplicationUpgradeIT {
         //then
         assertThat(result.getContent())
             .filteredOn(processDefinition ->
-                PROCESS_FROM_CUSTOM_DEPLOYMENT_KEY.equals(processDefinition.getKey()))
-            .extracting(ProcessDefinition::getKey, ProcessDefinition::getVersion,
-                ProcessDefinition::getAppVersion)
+                Arrays.asList(PROCESS_FROM_CUSTOM_DEPLOYMENT_KEY, ANOTHER_PROCESS_FROM_CUSTOM_DEPLOYMENT_KEY).contains(
+                    processDefinition.getKey()
+                )
+            )
+            .extracting(ProcessDefinition::getKey, ProcessDefinition::getVersion, ProcessDefinition::getAppVersion)
             .containsExactly(
-                tuple(PROCESS_FROM_CUSTOM_DEPLOYMENT_KEY, 1, null));
-
+                tuple(
+                    ANOTHER_PROCESS_FROM_CUSTOM_DEPLOYMENT_KEY,
+                    latestCustomDeployment.getVersion(),
+                    String.valueOf(latestCustomDeployment.getVersion())
+                )
+            );
     }
 
     @Test
-    public void processDefinitions_should_returnOnlyTheLatestVersion_when_deploymentIsCreatedWithoutManifestAndIsUpdatedWithManifest() {
-        //given
-        ProjectManifest projectManifest = new ProjectManifest();
-        projectManifest.setVersion("12");
-
-        String deploymentName = "customDeployment";
-        deployProcessesWithoutProjectManifest(deploymentName,
-            "custom-deployment/ProcessFromCustomDeployment.bpmn20.xml");
-        Deployment latestCustomDeployment = deployProcesses(deploymentName, projectManifest,
-            "custom-deployment/AnotherProcessFromCustomDeployment.bpmn20.xml");
-
-        //when
-        Page<ProcessDefinition> result = processRuntime.processDefinitions(Pageable.of(0, 100));
-
-        //then
-        assertThat(result.getContent())
-            .filteredOn(processDefinition -> Arrays.asList(
-                PROCESS_FROM_CUSTOM_DEPLOYMENT_KEY,
-                ANOTHER_PROCESS_FROM_CUSTOM_DEPLOYMENT_KEY)
-                .contains(processDefinition.getKey()))
-            .extracting(ProcessDefinition::getKey, ProcessDefinition::getVersion,
-                ProcessDefinition::getAppVersion)
-            .containsExactly(
-                tuple(ANOTHER_PROCESS_FROM_CUSTOM_DEPLOYMENT_KEY, latestCustomDeployment.getVersion(),
-                    String.valueOf(latestCustomDeployment.getVersion())));
-
-    }
-
-    @Test
-    public void should_updateDeploymentVersion_when_onlyEnforcedAppVersionIsSet(){
-
-        Deployment deployment1 = repositoryService.createDeployment()
+    void should_updateDeploymentVersion_when_onlyEnforcedAppVersionIsSet() {
+        Deployment deployment1 = repositoryService
+            .createDeployment()
             .setEnforcedAppVersion(1)
             .enableDuplicateFiltering()
             .name("deploymentName")
@@ -245,7 +288,8 @@ public class ApplicationUpgradeIT {
         deploymentIds.add(deployment1.getId());
         assertThat(deployment1.getVersion()).isEqualTo(1);
 
-        Deployment deployment2 = repositoryService.createDeployment()
+        Deployment deployment2 = repositoryService
+            .createDeployment()
             .setEnforcedAppVersion(2)
             .enableDuplicateFiltering()
             .name("deploymentName")
@@ -255,11 +299,12 @@ public class ApplicationUpgradeIT {
     }
 
     @Test
-    public void should_updateDeploymentVersion_when_onlyProjectManifestVersionIsSet(){
+    void should_updateDeploymentVersion_when_onlyProjectManifestVersionIsSet() {
         ProjectManifest projectManifest = new ProjectManifest();
         projectManifest.setVersion("2");
 
-        Deployment deployment1 = repositoryService.createDeployment()
+        Deployment deployment1 = repositoryService
+            .createDeployment()
             .setProjectManifest(projectManifest)
             .enableDuplicateFiltering()
             .name("deploymentName")
@@ -271,7 +316,8 @@ public class ApplicationUpgradeIT {
 
         projectManifest.setVersion("17");
 
-        Deployment deployment2 = repositoryService.createDeployment()
+        Deployment deployment2 = repositoryService
+            .createDeployment()
             .setProjectManifest(projectManifest)
             .setEnforcedAppVersion(2)
             .enableDuplicateFiltering()
@@ -283,11 +329,12 @@ public class ApplicationUpgradeIT {
     }
 
     @Test
-    public void should_enforcedAppVersionTakePriorityOverProjectManifestVersion() {
+    void should_enforcedAppVersionTakePriorityOverProjectManifestVersion() {
         ProjectManifest projectManifest = new ProjectManifest();
         projectManifest.setVersion("2");
 
-        Deployment deployment1 = repositoryService.createDeployment()
+        Deployment deployment1 = repositoryService
+            .createDeployment()
             .setEnforcedAppVersion(1)
             .setProjectManifest(projectManifest)
             .enableDuplicateFiltering()
@@ -300,7 +347,8 @@ public class ApplicationUpgradeIT {
 
         projectManifest.setVersion("17");
 
-        Deployment deployment2 = repositoryService.createDeployment()
+        Deployment deployment2 = repositoryService
+            .createDeployment()
             .setEnforcedAppVersion(5)
             .setProjectManifest(projectManifest)
             .enableDuplicateFiltering()
@@ -312,9 +360,9 @@ public class ApplicationUpgradeIT {
     }
 
     @Test
-    public void should_noUpgradeTakePlace_when_enforcedAppVersionAndProjectManifestVersionAreNotSet() {
-
-        Deployment deployment1 = repositoryService.createDeployment()
+    void should_noUpgradeTakePlace_when_enforcedAppVersionAndProjectManifestVersionAreNotSet() {
+        Deployment deployment1 = repositoryService
+            .createDeployment()
             .enableDuplicateFiltering()
             .name("deploymentName")
             .deploy();
@@ -322,7 +370,8 @@ public class ApplicationUpgradeIT {
 
         assertThat(deployment1.getVersion()).isEqualTo(1);
 
-        Deployment deployment2 = repositoryService.createDeployment()
+        Deployment deployment2 = repositoryService
+            .createDeployment()
             .enableDuplicateFiltering()
             .name("deploymentName")
             .deploy();
@@ -331,60 +380,62 @@ public class ApplicationUpgradeIT {
         assertThat(deployment2.getVersion()).isEqualTo(1);
     }
 
-    private Deployment deployProcesses(String deploymentName, ProjectManifest projectManifest,
-        String... processPaths) {
-        DeploymentBuilder deploymentBuilder = repositoryService.createDeployment()
+    private Deployment deployProcesses(String deploymentName, ProjectManifest projectManifest, String... processPaths) {
+        DeploymentBuilder deploymentBuilder = repositoryService
+            .createDeployment()
             .setProjectManifest(projectManifest)
             .enableDuplicateFiltering()
             .name(deploymentName);
         for (String processPath : processPaths) {
             deploymentBuilder.addClasspathResource(processPath);
         }
-        Deployment deployment = deploymentBuilder
-            .deploy();
+        Deployment deployment = deploymentBuilder.deploy();
         deploymentIds.add(deployment.getId());
         return deployment;
     }
 
-    private Deployment deployProcesses(ProjectManifest projectManifest, String ... processPaths) {
+    private Deployment deployProcesses(ProjectManifest projectManifest, String... processPaths) {
         return deployProcesses(DEPLOYMENT_TYPE_NAME, projectManifest, processPaths);
     }
 
-    private Deployment deployProcessesWithoutProjectManifest(String deploymentName, String ... processPaths) {
+    private Deployment deployProcessesWithoutProjectManifest(String deploymentName, String... processPaths) {
         return deployProcesses(deploymentName, null, processPaths);
     }
 
     @Test
-    public void disableAllPreviousStartEvents_shouldBeFalse_when_notSet() {
+    void disableAllPreviousStartEvents_shouldBeFalse_when_notSet() {
         assertThat(activitiProperties.shouldDisableExistingStartEventSubscriptions()).isFalse();
     }
 
     @Test
-    public void should_notDeletePreviousTimerStartEvents_when_projectIsUpgraded_and_disableStartEventsIsFalse() {
+    void should_notDeletePreviousTimerStartEvents_when_projectIsUpgraded_and_disableStartEventsIsFalse() {
         String deploymentName = "startEventDeployment";
 
         String deploymentId = deployProcess(deploymentName, "processes/ProcessWithTimerStartEvent.bpmn20.xml");
 
-        org.activiti.engine.repository.ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().deploymentId(deploymentId).list().getFirst();
+        org.activiti.engine.repository.ProcessDefinition processDefinition = repositoryService
+            .createProcessDefinitionQuery()
+            .deploymentId(deploymentId)
+            .list()
+            .getFirst();
         List<Job> jobs = managementService.createTimerJobQuery().processDefinitionId(processDefinition.getId()).list();
 
-        assertThat(jobs)
-            .extracting(Job::getProcessDefinitionId)
-            .containsExactly(processDefinition.getId());
+        assertThat(jobs).extracting(Job::getProcessDefinitionId).containsExactly(processDefinition.getId());
 
         deployProcess(deploymentName, "processes/ProcessWithoutTimerStartEvent.bpmn20.xml");
 
-        assertThat(jobs)
-            .extracting(Job::getProcessDefinitionId)
-            .containsExactly(processDefinition.getId());
+        assertThat(jobs).extracting(Job::getProcessDefinitionId).containsExactly(processDefinition.getId());
     }
 
     @Test
-    public void should_notDeletePreviousMessageStartEvents_when_projectIsUpgraded_and_disableStartEventsIsFalse() {
+    void should_notDeletePreviousMessageStartEvents_when_projectIsUpgraded_and_disableStartEventsIsFalse() {
         String deploymentName = "testDeployment";
         deployProcess(deploymentName, "processes/ProcessWithMessageStartEvent.bpmn20.xml");
 
-        List<EventSubscriptionEntity> messageSubscriptions = eventSubscriptionQuery.eventType("message").activityId("MessageStartEvent").list();
+        List<EventSubscriptionEntity> messageSubscriptions = eventSubscriptionQuery
+            .eventType("message")
+            .activityId("MessageStartEvent")
+            .list();
         assertThat(messageSubscriptions).hasSize(1);
 
         deployProcess(deploymentName, "processes/ProcessWithoutMessageStartEvent.bpmn20.xml");
@@ -394,12 +445,15 @@ public class ApplicationUpgradeIT {
     }
 
     @Test
-    public void should_notDeletePreviousSignalStartEvents_when_projectIsUpgraded_and_disableStartEventsIsFalse() {
+    void should_notDeletePreviousSignalStartEvents_when_projectIsUpgraded_and_disableStartEventsIsFalse() {
         String deploymentName = "signalDeployment";
 
         deployProcess(deploymentName, "processes/ProcessWithSignalStartEvent.bpmn20.xml");
 
-        List<EventSubscriptionEntity> signalSubscriptions = eventSubscriptionQuery.eventType("signal").activityId("SignalStartEvent").list();
+        List<EventSubscriptionEntity> signalSubscriptions = eventSubscriptionQuery
+            .eventType("signal")
+            .activityId("SignalStartEvent")
+            .list();
         assertThat(signalSubscriptions).hasSize(1);
 
         deployProcess(deploymentName, "processes/ProcessWithoutSignalStartEvent.bpmn20.xml");
@@ -408,10 +462,113 @@ public class ApplicationUpgradeIT {
         assertThat(signalSubscriptions).hasSize(1);
     }
 
+    @Test
+    void should_returnOnlyTheLatestVersions_when_multipleVersions_andRequestForLatestVersions() {
+        //given
+        ProjectManifest projectManifest = new ProjectManifest();
+        projectManifest.setVersion("12");
+        Deployment oldDeployment = deployProcesses(
+            projectManifest,
+            SINGLE_TASK_PROCESS_DEFINITION_PATH,
+            MULTI_INSTANCE_PROCESS_DEFINITION_PATH
+        );
+
+        projectManifest.setVersion("34");
+        Deployment latestDeployment = deployProcesses(projectManifest, MULTI_INSTANCE_PROCESS_DEFINITION_PATH);
+
+        securityUtil.logInAs("admin");
+        GetProcessDefinitionsPayload getProcessDefinitionsPayload = new GetProcessDefinitionsPayload();
+        getProcessDefinitionsPayload.setLatestVersionOnly(true);
+
+        //when
+        Page<ProcessDefinition> result = processAdminRuntime.processDefinitions(
+            Pageable.of(0, 100),
+            getProcessDefinitionsPayload
+        );
+
+        //then
+        assertThat(result.getContent())
+            .filteredOn(
+                processDefinition ->
+                    processDefinition.getKey().equals(SINGLE_TASK_PROCESS_DEFINITION_KEY) ||
+                        processDefinition.getKey().equals(MULTI_INSTANCE_PROCESS_DEFINITION_KEY)
+            )
+            .extracting(ProcessDefinition::getKey, ProcessDefinition::getVersion, ProcessDefinition::getAppVersion)
+            .containsExactlyInAnyOrder(
+                tuple(
+                    SINGLE_TASK_PROCESS_DEFINITION_KEY,
+                    oldDeployment.getVersion(),
+                    String.valueOf(oldDeployment.getVersion())
+                ),
+                tuple(
+                    MULTI_INSTANCE_PROCESS_DEFINITION_KEY,
+                    latestDeployment.getVersion(),
+                    String.valueOf(latestDeployment.getVersion())
+                )
+            );
+    }
+
+    @Test
+    void should_returnAllVersions_when_multipleVersions_andRequestForAllVersions() {
+        //given
+        ProjectManifest projectManifest = new ProjectManifest();
+        int firstVersion = 1;
+        projectManifest.setVersion("12");
+        Deployment oldDeployment = deployProcesses(
+            projectManifest,
+            SINGLE_TASK_PROCESS_DEFINITION_PATH,
+            MULTI_INSTANCE_PROCESS_DEFINITION_PATH
+        );
+
+        projectManifest.setVersion("34");
+        Deployment latestDeployment = deployProcesses(projectManifest, MULTI_INSTANCE_PROCESS_DEFINITION_PATH);
+
+        securityUtil.logInAs("admin");
+
+        GetProcessDefinitionsPayload getProcessDefinitionsPayload = new GetProcessDefinitionsPayload();
+        getProcessDefinitionsPayload.setLatestVersionOnly(false);
+
+        //when
+        Page<ProcessDefinition> result = processAdminRuntime.processDefinitions(
+            Pageable.of(0, 100),
+            getProcessDefinitionsPayload
+        );
+
+        //then
+        assertThat(result.getContent())
+            .filteredOn(
+                processDefinition ->
+                    processDefinition.getKey().equals(SINGLE_TASK_PROCESS_DEFINITION_KEY) ||
+                        processDefinition.getKey().equals(MULTI_INSTANCE_PROCESS_DEFINITION_KEY)
+            )
+            .extracting(ProcessDefinition::getKey, ProcessDefinition::getVersion, ProcessDefinition::getAppVersion)
+            .containsExactlyInAnyOrder(
+                tuple(MULTI_INSTANCE_PROCESS_DEFINITION_KEY, firstVersion, String.valueOf(firstVersion)),
+                tuple(
+                    MULTI_INSTANCE_PROCESS_DEFINITION_KEY,
+                    oldDeployment.getVersion(),
+                    String.valueOf(oldDeployment.getVersion())
+                ),
+                tuple(
+                    MULTI_INSTANCE_PROCESS_DEFINITION_KEY,
+                    latestDeployment.getVersion(),
+                    String.valueOf(latestDeployment.getVersion())
+                ),
+                tuple(SINGLE_TASK_PROCESS_DEFINITION_KEY, firstVersion, String.valueOf(firstVersion)),
+                tuple(
+                    SINGLE_TASK_PROCESS_DEFINITION_KEY,
+                    oldDeployment.getVersion(),
+                    String.valueOf(oldDeployment.getVersion())
+                )
+            );
+    }
+
     private String deployProcess(String deploymentName, String processPath) {
-        Deployment deployment = repositoryService.createDeployment()
-            .addClasspathResource(processPath).
-            name(deploymentName).deploy();
+        Deployment deployment = repositoryService
+            .createDeployment()
+            .addClasspathResource(processPath)
+            .name(deploymentName)
+            .deploy();
         deploymentIds.add(deployment.getId());
         return deployment.getId();
     }

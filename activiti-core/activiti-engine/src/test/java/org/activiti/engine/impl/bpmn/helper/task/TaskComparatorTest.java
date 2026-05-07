@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,8 @@
  */
 package org.activiti.engine.impl.bpmn.helper.task;
 
-import org.activiti.engine.impl.persistence.entity.TaskEntityImpl;
-import org.activiti.engine.task.TaskInfo;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -25,9 +24,9 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
+import org.activiti.engine.impl.persistence.entity.TaskEntityImpl;
+import org.activiti.engine.task.TaskInfo;
+import org.junit.Test;
 
 public class TaskComparatorTest {
 
@@ -73,7 +72,8 @@ public class TaskComparatorTest {
     }
 
     @Test
-    public void checkingChanges_whenThereAreChanges_shouldReturnFalse() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    public void checkingChanges_whenThereAreChanges_shouldReturnFalse()
+        throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         TaskComparatorImpl taskComparator = new TaskComparatorImpl();
 
         // GIVEN: a TaskComparator with a task to be compared to
@@ -84,7 +84,10 @@ public class TaskComparatorTest {
         task.setAssignee("new assignee");
         taskComparator.setUpdatedTask(task);
         // THEN: only "hasTaskAssigneeChanged" and "hasTaskChanged" method indicates that task was changed
-        assertThatAllChangesExceptOneAreFalse(taskComparator, TaskComparator.class.getMethod("hasTaskAssigneeChanged",null));
+        assertThatAllChangesExceptOneAreFalse(
+            taskComparator,
+            TaskComparator.class.getMethod("hasTaskAssigneeChanged", null)
+        );
         assertThat(taskComparator.hasTaskChanged()).isTrue();
 
         // WHEN: we change the category of the updated-task
@@ -92,7 +95,10 @@ public class TaskComparatorTest {
         task.setCategory("new category");
         taskComparator.setUpdatedTask(task);
         // THEN: only "hasTaskCategoryChanged" and "hasTaskChanged" method indicates that task was changed
-        assertThatAllChangesExceptOneAreFalse(taskComparator, TaskComparator.class.getMethod("hasTaskCategoryChanged",null));
+        assertThatAllChangesExceptOneAreFalse(
+            taskComparator,
+            TaskComparator.class.getMethod("hasTaskCategoryChanged", null)
+        );
         assertThat(taskComparator.hasTaskChanged()).isTrue();
 
         // WHEN: we change the description of the updated-task
@@ -100,7 +106,10 @@ public class TaskComparatorTest {
         task.setDescription("new description");
         taskComparator.setUpdatedTask(task);
         // THEN: only "hasTaskDescriptionChanged" and "hasTaskChanged" method indicates that task was changed
-        assertThatAllChangesExceptOneAreFalse(taskComparator, TaskComparator.class.getMethod("hasTaskDescriptionChanged",null));
+        assertThatAllChangesExceptOneAreFalse(
+            taskComparator,
+            TaskComparator.class.getMethod("hasTaskDescriptionChanged", null)
+        );
         assertThat(taskComparator.hasTaskChanged()).isTrue();
 
         // WHEN: we change the dueDate of the updated-task
@@ -108,7 +117,10 @@ public class TaskComparatorTest {
         task.setDueDate(new Date(100));
         taskComparator.setUpdatedTask(task);
         // THEN: only "hasTaskDueDateChanged" and "hasTaskChanged" method indicates that task was changed
-        assertThatAllChangesExceptOneAreFalse(taskComparator, TaskComparator.class.getMethod("hasTaskDueDateChanged",null));
+        assertThatAllChangesExceptOneAreFalse(
+            taskComparator,
+            TaskComparator.class.getMethod("hasTaskDueDateChanged", null)
+        );
         assertThat(taskComparator.hasTaskChanged()).isTrue();
 
         // WHEN: we change the formKey of the updated-task
@@ -116,7 +128,10 @@ public class TaskComparatorTest {
         task.setFormKey("new formKey");
         taskComparator.setUpdatedTask(task);
         // THEN: only "hasTaskFormKeyChanged" and "hasTaskChanged" method indicates that task was changed
-        assertThatAllChangesExceptOneAreFalse(taskComparator, TaskComparator.class.getMethod("hasTaskFormKeyChanged",null));
+        assertThatAllChangesExceptOneAreFalse(
+            taskComparator,
+            TaskComparator.class.getMethod("hasTaskFormKeyChanged", null)
+        );
         assertThat(taskComparator.hasTaskChanged()).isTrue();
 
         // WHEN: we change the name of the updated-task
@@ -124,7 +139,10 @@ public class TaskComparatorTest {
         task.setName("new name");
         taskComparator.setUpdatedTask(task);
         // THEN: only "hasTaskNameChanged" and "hasTaskChanged" method indicates that task was changed
-        assertThatAllChangesExceptOneAreFalse(taskComparator, TaskComparator.class.getMethod("hasTaskNameChanged",null));
+        assertThatAllChangesExceptOneAreFalse(
+            taskComparator,
+            TaskComparator.class.getMethod("hasTaskNameChanged", null)
+        );
         assertThat(taskComparator.hasTaskChanged()).isTrue();
 
         // WHEN: we change the owner of the updated-task
@@ -132,7 +150,10 @@ public class TaskComparatorTest {
         task.setOwner("new owner");
         taskComparator.setUpdatedTask(task);
         // THEN: only "hasTaskOwnerChanged" and "hasTaskChanged" method indicates that task was changed
-        assertThatAllChangesExceptOneAreFalse(taskComparator, TaskComparator.class.getMethod("hasTaskOwnerChanged",null));
+        assertThatAllChangesExceptOneAreFalse(
+            taskComparator,
+            TaskComparator.class.getMethod("hasTaskOwnerChanged", null)
+        );
         assertThat(taskComparator.hasTaskChanged()).isTrue();
 
         // WHEN: we change the parentTaskId of the updated-task
@@ -140,7 +161,10 @@ public class TaskComparatorTest {
         task.setParentTaskId("new parentTaskId");
         taskComparator.setUpdatedTask(task);
         // THEN: only "hasTaskParentIdChanged" and "hasTaskChanged" method indicates that task was changed
-        assertThatAllChangesExceptOneAreFalse(taskComparator, TaskComparator.class.getMethod("hasTaskParentIdChanged",null));
+        assertThatAllChangesExceptOneAreFalse(
+            taskComparator,
+            TaskComparator.class.getMethod("hasTaskParentIdChanged", null)
+        );
         assertThat(taskComparator.hasTaskChanged()).isTrue();
 
         // WHEN: we change the priority of the updated-task
@@ -148,7 +172,10 @@ public class TaskComparatorTest {
         task.setPriority(100);
         taskComparator.setUpdatedTask(task);
         // THEN: only "hasTaskPriorityChanged" and "hasTaskChanged" method indicates that task was changed
-        assertThatAllChangesExceptOneAreFalse(taskComparator, TaskComparator.class.getMethod("hasTaskPriorityChanged",null));
+        assertThatAllChangesExceptOneAreFalse(
+            taskComparator,
+            TaskComparator.class.getMethod("hasTaskPriorityChanged", null)
+        );
         assertThat(taskComparator.hasTaskChanged()).isTrue();
 
         // WHEN: we change the definitionKey of the updated-task
@@ -156,7 +183,10 @@ public class TaskComparatorTest {
         task.setTaskDefinitionKey("new taskDefinitionKey");
         taskComparator.setUpdatedTask(task);
         // THEN: only "hasTaskDefinitionKeyChanged" and "hasTaskChanged" method indicates that task was changed
-        assertThatAllChangesExceptOneAreFalse(taskComparator, TaskComparator.class.getMethod("hasTaskDefinitionKeyChanged",null));
+        assertThatAllChangesExceptOneAreFalse(
+            taskComparator,
+            TaskComparator.class.getMethod("hasTaskDefinitionKeyChanged", null)
+        );
         assertThat(taskComparator.hasTaskChanged()).isTrue();
     }
 
@@ -191,17 +221,18 @@ public class TaskComparatorTest {
         assertThat(taskComparator.hasTaskChanged()).isFalse();
     }
 
-    private void assertThatAllChangesExceptOneAreFalse(TaskComparator taskComparator, Method hasChangedMethod) throws InvocationTargetException, IllegalAccessException {
-        assertThat((Boolean)hasChangedMethod.invoke(taskComparator, null)).isTrue();
+    private void assertThatAllChangesExceptOneAreFalse(TaskComparator taskComparator, Method hasChangedMethod)
+        throws InvocationTargetException, IllegalAccessException {
+        assertThat((Boolean) hasChangedMethod.invoke(taskComparator, null)).isTrue();
 
         final List<Method> remainingMethods = Arrays.stream(TaskComparator.class.getDeclaredMethods())
             .filter(method -> method.getReturnType().isAssignableFrom(Boolean.class))
             .filter(method -> !method.getName().equals("hasTaskChanged"))
-            .filter( method -> !method.equals(hasChangedMethod))
+            .filter(method -> !method.equals(hasChangedMethod))
             .collect(Collectors.toList());
 
         for (Method method : remainingMethods) {
-            assertThat((Boolean)method.invoke(taskComparator, null)).isFalse();
+            assertThat((Boolean) method.invoke(taskComparator, null)).isFalse();
         }
     }
 }

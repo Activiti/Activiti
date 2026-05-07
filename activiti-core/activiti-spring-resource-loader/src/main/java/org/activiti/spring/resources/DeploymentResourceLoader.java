@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,10 +26,10 @@ import org.activiti.engine.RepositoryService;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 
-@CacheConfig(cacheNames = {DEPLOYMENT_RESOURCES_CACHE_NAME})
+@CacheConfig(cacheNames = { DEPLOYMENT_RESOURCES_CACHE_NAME })
 public class DeploymentResourceLoader<T> {
 
-    public final static String DEPLOYMENT_RESOURCES_CACHE_NAME = "deploymentResourcesById";
+    public static final String DEPLOYMENT_RESOURCES_CACHE_NAME = "deploymentResourcesById";
 
     private RepositoryService repositoryService;
 
@@ -40,27 +40,26 @@ public class DeploymentResourceLoader<T> {
         List<String> resourceNames = repositoryService.getDeploymentResourceNames(deploymentId);
 
         if (resourceNames != null && !resourceNames.isEmpty()) {
+            List<String> selectedResources = resourceNames
+                .stream()
+                .filter(resourceLoaderDescriptor.getResourceNameSelector())
+                .collect(Collectors.toList());
 
-            List<String> selectedResources = resourceNames.stream()
-                    .filter(resourceLoaderDescriptor.getResourceNameSelector())
-                    .collect(Collectors.toList());
-
-            resources = loadResources(deploymentId,
-                    resourceLoaderDescriptor,
-                    selectedResources);
+            resources = loadResources(deploymentId, resourceLoaderDescriptor, selectedResources);
         } else {
             resources = new ArrayList<>();
         }
         return resources;
     }
 
-    private List<T> loadResources(String deploymentId,
-                                  ResourceReader<T> resourceReader,
-                                  List<String> selectedResources) {
+    private List<T> loadResources(
+        String deploymentId,
+        ResourceReader<T> resourceReader,
+        List<String> selectedResources
+    ) {
         List<T> resources = new ArrayList<>();
         for (String name : selectedResources) {
-            try (InputStream resourceAsStream = repositoryService.getResourceAsStream(deploymentId,
-                    name)) {
+            try (InputStream resourceAsStream = repositoryService.getResourceAsStream(deploymentId, name)) {
                 T resource = resourceReader.read(resourceAsStream);
                 if (resource != null) {
                     resources.add(resource);

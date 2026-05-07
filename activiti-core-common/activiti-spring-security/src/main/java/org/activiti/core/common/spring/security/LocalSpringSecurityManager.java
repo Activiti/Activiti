@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,21 +20,24 @@ import org.activiti.api.runtime.shared.security.PrincipalGroupsProvider;
 import org.activiti.api.runtime.shared.security.PrincipalIdentityProvider;
 import org.activiti.api.runtime.shared.security.PrincipalRolesProvider;
 import org.activiti.api.runtime.shared.security.SecurityContextPrincipalProvider;
-import org.springframework.lang.NonNull;
+import org.jspecify.annotations.NonNull;
 
 /*
  * This is a simple wrapper for Spring Security Context Holder
  */
 public class LocalSpringSecurityManager extends AbstractSecurityManager {
 
-    public LocalSpringSecurityManager(@NonNull SecurityContextPrincipalProvider securityContextPrincipalProvider,
-                                      @NonNull PrincipalIdentityProvider principalIdentityProvider,
-                                      @NonNull PrincipalGroupsProvider principalGroupsProvider,
-                                      @NonNull PrincipalRolesProvider principalRolesProvider) {
-        super(securityContextPrincipalProvider,
-              principalIdentityProvider,
-              principalGroupsProvider,
-              principalRolesProvider);
+    public LocalSpringSecurityManager(
+        @NonNull SecurityContextPrincipalProvider securityContextPrincipalProvider,
+        @NonNull PrincipalIdentityProvider principalIdentityProvider,
+        @NonNull PrincipalGroupsProvider principalGroupsProvider,
+        @NonNull PrincipalRolesProvider principalRolesProvider
+    ) {
+        super(
+            securityContextPrincipalProvider,
+            principalIdentityProvider,
+            principalGroupsProvider,
+            principalRolesProvider
+        );
     }
-
 }

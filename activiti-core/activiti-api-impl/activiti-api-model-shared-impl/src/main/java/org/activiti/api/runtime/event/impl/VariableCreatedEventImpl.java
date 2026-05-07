@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,13 +21,15 @@ import org.activiti.api.model.shared.model.VariableInstance;
 
 public class VariableCreatedEventImpl extends VariableEventImpl implements VariableCreatedEvent {
 
-    public VariableCreatedEventImpl() {
-    }
+    private boolean isEphemeralVariable;
 
-    public VariableCreatedEventImpl(VariableInstance entity, String processDefinitionId) {
+    public VariableCreatedEventImpl() {}
+
+    public VariableCreatedEventImpl(VariableInstance entity, String processDefinitionId, boolean isEphemeralVariable) {
         super(entity);
         setProcessInstanceId(entity.getProcessInstanceId());
         setProcessDefinitionId(processDefinitionId);
+        this.isEphemeralVariable = isEphemeralVariable;
     }
 
     @Override
@@ -35,4 +37,8 @@ public class VariableCreatedEventImpl extends VariableEventImpl implements Varia
         return VariableEvent.VariableEvents.VARIABLE_CREATED;
     }
 
+    @Override
+    public boolean isEphemeralVariable() {
+        return isEphemeralVariable;
+    }
 }

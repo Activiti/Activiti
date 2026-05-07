@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.validation.validator;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.core.JacksonException;
 import java.io.InputStream;
 import java.util.Map;
 import org.activiti.validation.ValidationError;
@@ -26,38 +25,35 @@ import org.apache.commons.text.StringSubstitutor;
 
 public class ValidationErrorDecorator {
 
-  public static final String PARAM_PREFIX = "{{";
-  public static final String PARAM_SUFFIX = "}}";
+    public static final String PARAM_PREFIX = "{{";
+    public static final String PARAM_SUFFIX = "}}";
 
-  private Map<String, ErrorMessageDefinition> errorMessages;
+    private Map<String, ErrorMessageDefinition> errorMessages;
 
-  public ValidationErrorDecorator() {
-    this.init();
-  }
-
-  public void init() {
-    try {
-      ObjectMapper objectMapper = new ObjectMapper();
-      TypeReference<Map<String, ErrorMessageDefinition>> typeReference = new TypeReference<>() {
-      };
-      InputStream inputStream = getClass().getResourceAsStream("/process-validation-messages.json");
-      this.errorMessages = objectMapper.readValue(inputStream, typeReference);
-    } catch (IOException e) {
-      throw new RuntimeException("Failed to load error messages", e);
+    public ValidationErrorDecorator() {
+        this.init();
     }
-  }
 
-  public void decorate(
-      ValidationError error
-  ) {
-    error.setProblem(
-        resolveMessage(errorMessages.get(error.getKey()).getProblem(), error.getParams()));
-    error.setDefaultDescription(
-        resolveMessage(errorMessages.get(error.getKey()).getDescription(), error.getParams()));
-  }
+    public void init() {
+        try {
+            JsonMapper jsonMapper = new JsonMapper();
+            TypeReference<Map<String, ErrorMessageDefinition>> typeReference = new TypeReference<>() {};
+            InputStream inputStream = getClass().getResourceAsStream("/process-validation-messages.json");
+            this.errorMessages = jsonMapper.readValue(inputStream, typeReference);
+        } catch (JacksonException e) {
+            throw new RuntimeException("Failed to load error messages", e);
+        }
+    }
 
-  public String resolveMessage(String message, Map<String, String> params) {
-    StringSubstitutor sub = new StringSubstitutor(params, PARAM_PREFIX, PARAM_SUFFIX);
-    return sub.replace(message);
-  }
+    public void decorate(ValidationError error) {
+        error.setProblem(resolveMessage(errorMessages.get(error.getKey()).getProblem(), error.getParams()));
+        error.setDefaultDescription(
+            resolveMessage(errorMessages.get(error.getKey()).getDescription(), error.getParams())
+        );
+    }
+
+    public String resolveMessage(String message, Map<String, String> params) {
+        StringSubstitutor sub = new StringSubstitutor(params, PARAM_PREFIX, PARAM_SUFFIX);
+        return sub.replace(message);
+    }
 }

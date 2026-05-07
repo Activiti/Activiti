@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,19 +23,21 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.test.annotation.DirtiesContext;
 
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class ApplicationDeployedEventIT {
+
     @Autowired
     private DeployedApplicationListener listener;
+
     private static final String DEPLOYMENT_TYPE_NAME = "SpringAutoDeployment";
 
     @Test
     public void shouldTriggerApplicationDeployedEvents() {
-       List<Deployment> deployedApplications = listener.getDeployedApplication();
+        List<Deployment> deployedApplications = listener.getDeployedApplication();
 
-       assertThat(deployedApplications)
-               .extracting(Deployment::getName)
-               .containsExactly(DEPLOYMENT_TYPE_NAME);
+        assertThat(deployedApplications).extracting(Deployment::getName).containsExactly(DEPLOYMENT_TYPE_NAME);
     }
 }

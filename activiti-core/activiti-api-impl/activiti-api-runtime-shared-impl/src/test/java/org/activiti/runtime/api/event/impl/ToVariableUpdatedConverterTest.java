@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,32 +19,38 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
-
 import org.activiti.api.model.shared.event.VariableEvent.VariableEvents;
 import org.activiti.api.model.shared.event.VariableUpdatedEvent;
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.engine.delegate.event.impl.ActivitiVariableUpdatedEventImpl;
 import org.activiti.engine.impl.variable.IntegerType;
 import org.activiti.engine.impl.variable.VariableType;
-import org.activiti.spring.process.ProcessExtensionService;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 class ToVariableUpdatedConverterTest {
-    ProcessExtensionService processExtensionService = Mockito.mock(ProcessExtensionService.class);
 
-    private ToVariableUpdatedConverter converter = new ToVariableUpdatedConverter(processExtensionService);
+    @Mock
+    private EphemeralVariableResolver ephemeralVariableResolver;
+
+    @InjectMocks
+    private ToVariableUpdatedConverter converter;
 
     @Test
     void should_convertToVariableUpdatedEvent() {
-        ActivitiVariableUpdatedEventImpl internalEvent = getActivitiVariableUpdatedEvent();
+        ActivitiVariableUpdatedEventImpl internalEvent = buildVariableUpdatedEvent();
 
         Optional<VariableUpdatedEvent> result = converter.from(internalEvent);
 
         assertThat(result).isPresent();
         VariableUpdatedEvent actualEvent = result.get();
+        assertThat(actualEvent.isEphemeralVariable()).isFalse();
 
-        VariableInstance actualEntity = assertVariableUpdatedEvent(actualEvent);
+        VariableInstance actualEntity = assertVariableUpdatedEvent(actualEvent, internalEvent);
 
         Object actualValue = actualEntity.getValue();
         Object actualPreviousValue = actualEvent.getPreviousValue();
@@ -55,39 +61,42 @@ class ToVariableUpdatedConverterTest {
 
     @Test
     void should_convertToVariableUpdatedEvent_withNullValue_when_variableIsEphemeral() {
-        ActivitiVariableUpdatedEventImpl internalEvent = getActivitiVariableUpdatedEvent();
+        ActivitiVariableUpdatedEventImpl internalEvent = buildVariableUpdatedEvent();
 
-        when(processExtensionService.hasEphemeralVariable("processDefinitionId", "variableName")).thenReturn(true);
+        when(ephemeralVariableResolver.isEphemeralVariable(internalEvent)).thenReturn(true);
 
         Optional<VariableUpdatedEvent> result = converter.from(internalEvent);
 
         assertThat(result).isPresent();
         VariableUpdatedEvent actualEvent = result.get();
+        assertThat(actualEvent.isEphemeralVariable()).isTrue();
 
-        VariableInstance actualEntity = assertVariableUpdatedEvent(actualEvent);
+        VariableInstance actualEntity = assertVariableUpdatedEvent(actualEvent, internalEvent);
 
         Object actualValue = actualEntity.getValue();
         Object actualPreviousValue = actualEvent.getPreviousValue();
-        assertThat(actualPreviousValue).isEqualTo(100);
+        assertThat(actualPreviousValue).isNull();
         assertThat(actualValue).isNull();
     }
 
-    private VariableInstance assertVariableUpdatedEvent(VariableUpdatedEvent actualEvent) {
+    private VariableInstance assertVariableUpdatedEvent(
+        VariableUpdatedEvent actualEvent,
+        ActivitiVariableUpdatedEventImpl internalEvent
+    ) {
         assertThat(actualEvent.getEventType()).isEqualTo(VariableEvents.VARIABLE_UPDATED);
         VariableInstance actualEntity = actualEvent.getEntity();
-        assertThat(actualEntity.getName()).isEqualTo("variableName");
-        assertThat(actualEntity.getProcessInstanceId()).isEqualTo("processInstanceId");
-        assertThat(actualEntity.getTaskId()).isEqualTo("taskId");
-        assertThat(actualEntity.getType()).isEqualTo("integer");
+        assertThat(actualEntity.getName()).isEqualTo(internalEvent.getVariableName());
+        assertThat(actualEntity.getProcessInstanceId()).isEqualTo(internalEvent.getProcessInstanceId());
+        assertThat(actualEntity.getTaskId()).isEqualTo(internalEvent.getTaskId());
+        assertThat(actualEntity.getType()).isEqualTo(internalEvent.getVariableType().getTypeName());
         return actualEntity;
     }
 
-    private ActivitiVariableUpdatedEventImpl getActivitiVariableUpdatedEvent() {
+    private ActivitiVariableUpdatedEventImpl buildVariableUpdatedEvent() {
         ActivitiVariableUpdatedEventImpl internalEvent = new ActivitiVariableUpdatedEventImpl();
         internalEvent.setVariableName("variableName");
         internalEvent.setProcessInstanceId("processInstanceId");
         internalEvent.setProcessDefinitionId("processDefinitionId");
-        internalEvent.setTaskId("taskId");
         VariableType variableType = new IntegerType();
         internalEvent.setVariableType(variableType);
         internalEvent.setVariableValue(50);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,23 +48,32 @@ public class TaskUpdater {
         TaskEntity taskEntity = (TaskEntity) task;
         if (taskComparator.hasTaskOwnerChanged()) {
             if (task.getProcessInstanceId() != null) {
-                commandContext.getIdentityLinkEntityManager().involveUser(taskEntity.getProcessInstance(), task.getOwner(), IdentityLinkType.PARTICIPANT);
+                commandContext
+                    .getIdentityLinkEntityManager()
+                    .involveUser(taskEntity.getProcessInstance(), task.getOwner(), IdentityLinkType.PARTICIPANT);
             }
             commandContext.getHistoryManager().recordTaskOwnerChange(task.getId(), task.getOwner());
         }
         if (taskComparator.hasTaskAssigneeChanged()) {
             if (task.getProcessInstanceId() != null) {
-                commandContext.getIdentityLinkEntityManager().involveUser(taskEntity.getProcessInstance(), task.getAssignee(), IdentityLinkType.PARTICIPANT);
+                commandContext
+                    .getIdentityLinkEntityManager()
+                    .involveUser(taskEntity.getProcessInstance(), task.getAssignee(), IdentityLinkType.PARTICIPANT);
             }
             commandContext.getHistoryManager().recordTaskAssigneeChange(task.getId(), task.getAssignee());
 
             if (broadcastEvents) {
-                commandContext.getProcessEngineConfiguration().getListenerNotificationHelper().executeTaskListeners(taskEntity, TaskListener.EVENTNAME_ASSIGNMENT);
+                commandContext
+                    .getProcessEngineConfiguration()
+                    .getListenerNotificationHelper()
+                    .executeTaskListeners(taskEntity, TaskListener.EVENTNAME_ASSIGNMENT);
             }
             commandContext.getHistoryManager().recordTaskAssignment(taskEntity);
 
             if (broadcastEvents && commandContext.getEventDispatcher().isEnabled()) {
-                commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TASK_ASSIGNED, task));
+                commandContext
+                    .getEventDispatcher()
+                    .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TASK_ASSIGNED, task));
             }
         }
     }
@@ -77,25 +86,39 @@ public class TaskUpdater {
                 commandContext.getHistoryManager().recordTaskNameChange(updatedTask.getId(), updatedTask.getName());
             }
             if (taskComparator.hasTaskDescriptionChanged()) {
-                commandContext.getHistoryManager().recordTaskDescriptionChange(updatedTask.getId(), updatedTask.getDescription());
+                commandContext
+                    .getHistoryManager()
+                    .recordTaskDescriptionChange(updatedTask.getId(), updatedTask.getDescription());
             }
             if (taskComparator.hasTaskDueDateChanged()) {
-                commandContext.getHistoryManager().recordTaskDueDateChange(updatedTask.getId(), updatedTask.getDueDate());
+                commandContext
+                    .getHistoryManager()
+                    .recordTaskDueDateChange(updatedTask.getId(), updatedTask.getDueDate());
             }
             if (taskComparator.hasTaskPriorityChanged()) {
-                commandContext.getHistoryManager().recordTaskPriorityChange(updatedTask.getId(), updatedTask.getPriority());
+                commandContext
+                    .getHistoryManager()
+                    .recordTaskPriorityChange(updatedTask.getId(), updatedTask.getPriority());
             }
             if (taskComparator.hasTaskCategoryChanged()) {
-                commandContext.getHistoryManager().recordTaskCategoryChange(updatedTask.getId(), updatedTask.getCategory());
+                commandContext
+                    .getHistoryManager()
+                    .recordTaskCategoryChange(updatedTask.getId(), updatedTask.getCategory());
             }
             if (taskComparator.hasTaskFormKeyChanged()) {
-                commandContext.getHistoryManager().recordTaskFormKeyChange(updatedTask.getId(), updatedTask.getFormKey());
+                commandContext
+                    .getHistoryManager()
+                    .recordTaskFormKeyChange(updatedTask.getId(), updatedTask.getFormKey());
             }
             if (taskComparator.hasTaskParentIdChanged()) {
-                commandContext.getHistoryManager().recordTaskParentTaskIdChange(updatedTask.getId(), updatedTask.getParentTaskId());
+                commandContext
+                    .getHistoryManager()
+                    .recordTaskParentTaskIdChange(updatedTask.getId(), updatedTask.getParentTaskId());
             }
             if (taskComparator.hasTaskDefinitionKeyChanged()) {
-                commandContext.getHistoryManager().recordTaskDefinitionKeyChange(updatedTask.getId(), updatedTask.getTaskDefinitionKey());
+                commandContext
+                    .getHistoryManager()
+                    .recordTaskDefinitionKeyChange(updatedTask.getId(), updatedTask.getTaskDefinitionKey());
             }
         }
     }

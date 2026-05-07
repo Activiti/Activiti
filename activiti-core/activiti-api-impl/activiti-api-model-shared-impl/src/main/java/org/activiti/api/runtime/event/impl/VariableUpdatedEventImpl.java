@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,12 +22,14 @@ public class VariableUpdatedEventImpl<T> extends VariableEventImpl implements Va
 
     private T previousValue;
 
-    public VariableUpdatedEventImpl() {
-    }
+    private boolean isEphemeralVariable;
 
-    public VariableUpdatedEventImpl(VariableInstance entity, T previousValue) {
+    public VariableUpdatedEventImpl() {}
+
+    public VariableUpdatedEventImpl(VariableInstance entity, T previousValue, boolean isEphemeralVariable) {
         super(entity);
         this.previousValue = previousValue;
+        this.isEphemeralVariable = isEphemeralVariable;
     }
 
     @Override
@@ -38,5 +40,10 @@ public class VariableUpdatedEventImpl<T> extends VariableEventImpl implements Va
     @Override
     public T getPreviousValue() {
         return previousValue;
+    }
+
+    @Override
+    public boolean isEphemeralVariable() {
+        return isEphemeralVariable;
     }
 }

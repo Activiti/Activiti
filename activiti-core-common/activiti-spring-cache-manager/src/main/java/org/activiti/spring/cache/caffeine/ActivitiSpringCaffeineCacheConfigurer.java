@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.spring.cache.caffeine;
 
 import com.github.benmanes.caffeine.cache.Cache;
@@ -21,6 +20,5 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public interface ActivitiSpringCaffeineCacheConfigurer extends Predicate<String>, Function<Caffeine<Object,Object>, Cache<Object, Object>> {
-
-}
+public interface ActivitiSpringCaffeineCacheConfigurer
+    extends Predicate<String>, Function<Caffeine<Object, Object>, Cache<Object, Object>> {}

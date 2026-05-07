@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,11 @@
  */
 package org.activiti.engine.impl.event.logger;
 
+import tools.jackson.databind.json.JsonMapper;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
@@ -48,8 +48,6 @@ import org.activiti.engine.runtime.Clock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 public class EventLogger implements ActivitiEventListener {
 
     private static final Logger logger = LoggerFactory.getLogger(EventLogger.class);
@@ -57,11 +55,13 @@ public class EventLogger implements ActivitiEventListener {
     private static final String EVENT_FLUSHER_KEY = "eventFlusher";
 
     protected Clock clock;
-    protected ObjectMapper objectMapper;
+    protected JsonMapper jsonMapper;
 
     // Mapping of type -> handler
-    protected Map<ActivitiEventType, Class<? extends EventLoggerEventHandler>> eventHandlers
-        = new HashMap<ActivitiEventType, Class<? extends EventLoggerEventHandler>>();
+    protected Map<ActivitiEventType, Class<? extends EventLoggerEventHandler>> eventHandlers = new HashMap<
+        ActivitiEventType,
+        Class<? extends EventLoggerEventHandler>
+    >();
 
     // Listeners for new events
     protected List<EventLoggerListener> listeners;
@@ -70,10 +70,10 @@ public class EventLogger implements ActivitiEventListener {
         initializeDefaultHandlers();
     }
 
-    public EventLogger(Clock clock, ObjectMapper objectMapper) {
+    public EventLogger(Clock clock, JsonMapper jsonMapper) {
         this();
         this.clock = clock;
-        this.objectMapper = objectMapper;
+        this.jsonMapper = jsonMapper;
     }
 
     protected void initializeDefaultHandlers() {
@@ -99,13 +99,11 @@ public class EventLogger implements ActivitiEventListener {
     public void onEvent(ActivitiEvent event) {
         EventLoggerEventHandler eventHandler = getEventHandler(event);
         if (eventHandler != null) {
-
             // Events are flushed when command context is closed
             CommandContext currentCommandContext = Context.getCommandContext();
             EventFlusher eventFlusher = (EventFlusher) currentCommandContext.getAttribute(EVENT_FLUSHER_KEY);
 
             if (eventFlusher == null) {
-
                 eventFlusher = createEventFlusher();
                 if (eventFlusher == null) {
                     eventFlusher = new DatabaseEventFlusher(); // Default
@@ -113,12 +111,10 @@ public class EventLogger implements ActivitiEventListener {
                 currentCommandContext.addAttribute(EVENT_FLUSHER_KEY, eventFlusher);
 
                 currentCommandContext.addCloseListener(eventFlusher);
-                currentCommandContext
-                    .addCloseListener(new CommandContextCloseListener() {
-
+                currentCommandContext.addCloseListener(
+                    new CommandContextCloseListener() {
                         @Override
-                        public void closing(CommandContext commandContext) {
-                        }
+                        public void closing(CommandContext commandContext) {}
 
                         @Override
                         public void closed(CommandContext commandContext) {
@@ -130,14 +126,12 @@ public class EventLogger implements ActivitiEventListener {
                             }
                         }
 
-                        public void afterSessionsFlush(CommandContext commandContext) {
-                        }
+                        public void afterSessionsFlush(CommandContext commandContext) {}
 
                         @Override
-                        public void closeFailure(CommandContext commandContext) {
-                        }
-
-                    });
+                        public void closeFailure(CommandContext commandContext) {}
+                    }
+                );
             }
 
             eventFlusher.addEventHandler(eventHandler);
@@ -146,7 +140,6 @@ public class EventLogger implements ActivitiEventListener {
 
     // Subclasses can override this if defaults are not ok
     protected EventLoggerEventHandler getEventHandler(ActivitiEvent event) {
-
         Class<? extends EventLoggerEventHandler> eventHandlerClass = null;
         if (event.getType().equals(ActivitiEventType.ENTITY_INITIALIZED)) {
             Object entity = ((ActivitiEntityEvent) event).getEntity();
@@ -176,13 +169,15 @@ public class EventLogger implements ActivitiEventListener {
         return null;
     }
 
-    protected EventLoggerEventHandler instantiateEventHandler(ActivitiEvent event,
-                                                              Class<? extends EventLoggerEventHandler> eventHandlerClass) {
+    protected EventLoggerEventHandler instantiateEventHandler(
+        ActivitiEvent event,
+        Class<? extends EventLoggerEventHandler> eventHandlerClass
+    ) {
         try {
             EventLoggerEventHandler eventHandler = eventHandlerClass.getDeclaredConstructor().newInstance();
             eventHandler.setTimeStamp(clock.getCurrentTime());
             eventHandler.setEvent(event);
-            eventHandler.setObjectMapper(objectMapper);
+            eventHandler.setObjectMapper(jsonMapper);
             return eventHandler;
         } catch (Exception e) {
             logger.warn("Could not instantiate " + eventHandlerClass + ", this is most likely a programmatic error");
@@ -195,7 +190,10 @@ public class EventLogger implements ActivitiEventListener {
         return false;
     }
 
-    public void addEventHandler(ActivitiEventType eventType, Class<? extends EventLoggerEventHandler> eventHandlerClass) {
+    public void addEventHandler(
+        ActivitiEventType eventType,
+        Class<? extends EventLoggerEventHandler> eventHandlerClass
+    ) {
         eventHandlers.put(eventType, eventHandlerClass);
     }
 
@@ -221,12 +219,12 @@ public class EventLogger implements ActivitiEventListener {
         this.clock = clock;
     }
 
-    public ObjectMapper getObjectMapper() {
-        return objectMapper;
+    public JsonMapper getObjectMapper() {
+        return jsonMapper;
     }
 
-    public void setObjectMapper(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
+    public void setObjectMapper(JsonMapper jsonMapper) {
+        this.jsonMapper = jsonMapper;
     }
 
     public List<EventLoggerListener> getListeners() {
@@ -236,5 +234,4 @@ public class EventLogger implements ActivitiEventListener {
     public void setListeners(List<EventLoggerListener> listeners) {
         this.listeners = listeners;
     }
-
 }

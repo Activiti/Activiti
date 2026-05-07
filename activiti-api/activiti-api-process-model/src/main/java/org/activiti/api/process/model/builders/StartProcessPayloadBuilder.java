@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package org.activiti.api.process.model.builders;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.api.process.model.payloads.StartProcessPayload;
 
 public class StartProcessPayloadBuilder {
@@ -27,19 +26,19 @@ public class StartProcessPayloadBuilder {
     private String name;
     private String businessKey;
     private Map<String, Object> variables = new HashMap<>();
+    private String linkedProcessInstanceId;
+    private String linkedProcessInstanceType;
 
     public StartProcessPayloadBuilder withVariables(Map<String, Object> variables) {
         this.variables = variables;
         return this;
     }
 
-    public StartProcessPayloadBuilder withVariable(String name,
-                                                   Object value) {
+    public StartProcessPayloadBuilder withVariable(String name, Object value) {
         if (this.variables == null) {
             this.variables = new HashMap<>();
         }
-        this.variables.put(name,
-                value);
+        this.variables.put(name, value);
         return this;
     }
 
@@ -63,11 +62,20 @@ public class StartProcessPayloadBuilder {
         return this;
     }
 
+    public StartProcessPayloadBuilder withLinkedProcessInstanceId(String linkedProcessInstanceId) {
+        this.linkedProcessInstanceId = linkedProcessInstanceId;
+        return this;
+    }
+
+    public StartProcessPayloadBuilder withLinkedProcessInstanceType(String linkedProcessInstanceType) {
+        this.linkedProcessInstanceType = linkedProcessInstanceType;
+        return this;
+    }
+
     public StartProcessPayload build() {
-        return new StartProcessPayload(processDefinitionId,
-                processDefinitionKey,
-                name,
-                businessKey,
-                variables);
+        StartProcessPayload startProcessPayload = new StartProcessPayload(processDefinitionId, processDefinitionKey, name, businessKey, variables);
+        startProcessPayload.setLinkedProcessInstanceId(linkedProcessInstanceId);
+        startProcessPayload.setLinkedProcessInstanceType(linkedProcessInstanceType);
+        return startProcessPayload;
     }
 }

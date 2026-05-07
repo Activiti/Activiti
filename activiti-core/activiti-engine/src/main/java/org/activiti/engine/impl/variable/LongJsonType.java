@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.variable;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
 import java.nio.charset.StandardCharsets;
 import org.activiti.engine.ActivitiException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.core.JacksonException;
 
 public class LongJsonType extends SerializableType {
 
@@ -31,66 +29,67 @@ public class LongJsonType extends SerializableType {
     public static final String LONG_JSON = "longJson";
 
     private final int minLength;
-  private ObjectMapper objectMapper;
-  private boolean serializePOJOsInVariablesToJson;
-  private JsonTypeConverter jsonTypeConverter;
+    private JsonMapper jsonMapper;
+    private boolean serializePOJOsInVariablesToJson;
+    private JsonTypeConverter jsonTypeConverter;
 
-  public LongJsonType(int minLength, ObjectMapper objectMapper,
-      boolean serializePOJOsInVariablesToJson,
-      JsonTypeConverter jsonTypeConverter) {
-    this.minLength = minLength;
-    this.objectMapper = objectMapper;
-    this.serializePOJOsInVariablesToJson = serializePOJOsInVariablesToJson;
-    this.jsonTypeConverter = jsonTypeConverter;
-  }
-
-  public String getTypeName() {
-    return LONG_JSON;
-  }
-
-  public boolean isAbleToStore(Object value) {
-    if (value == null) {
-      return true;
+    public LongJsonType(
+        int minLength,
+        JsonMapper jsonMapper,
+        boolean serializePOJOsInVariablesToJson,
+        JsonTypeConverter jsonTypeConverter
+    ) {
+        this.minLength = minLength;
+        this.jsonMapper = jsonMapper;
+        this.serializePOJOsInVariablesToJson = serializePOJOsInVariablesToJson;
+        this.jsonTypeConverter = jsonTypeConverter;
     }
 
-    if (JsonNode.class.isAssignableFrom(value.getClass()) ||
-        (objectMapper.canSerialize(value.getClass()) &&
-            serializePOJOsInVariablesToJson)) {
-      try {
-        return objectMapper.writeValueAsString(value).length() >= minLength;
-      } catch (JsonProcessingException e) {
-        logger.error("Error writing json variable of type " + value.getClass(), e);
-      }
+    public String getTypeName() {
+        return LONG_JSON;
     }
 
-    return false;
-  }
+    public boolean isAbleToStore(Object value) {
+        if (value == null) {
+            return true;
+        }
 
-  public byte[] serialize(Object value, ValueFields valueFields) {
-    if (value == null) {
-      return null;
-    }
-    String json = null;
-    try {
-      json = objectMapper.writeValueAsString(value);
-    } catch (JsonProcessingException e) {
-      logger.error("Error writing long json variable " + valueFields.getName(), e);
-    }
-    try {
-      valueFields.setTextValue2(value.getClass().getName());
-      return json.getBytes(StandardCharsets.UTF_8);
-    } catch (Exception e) {
-      throw new ActivitiException("Error getting bytes from json variable", e);
-    }
-  }
+        if (JsonNode.class.isAssignableFrom(value.getClass()) || serializePOJOsInVariablesToJson) {
+            try {
+                return jsonMapper.writeValueAsString(value).length() >= minLength;
+            } catch (JacksonException e) {
+                logger.error("Error writing json variable of type " + value.getClass(), e);
+            }
+        }
 
-  public Object deserialize(byte[] bytes, ValueFields valueFields) {
-    Object jsonValue = null;
-      try {
-        jsonValue = jsonTypeConverter.convertToValue(objectMapper.readTree(bytes), valueFields);
-      } catch (Exception e) {
-        logger.error("Error reading json variable " + valueFields.getName(), e);
-      }
-    return jsonValue;
-  }
+        return false;
+    }
+
+    public byte[] serialize(Object value, ValueFields valueFields) {
+        if (value == null) {
+            return null;
+        }
+        String json = null;
+        try {
+            json = jsonMapper.writeValueAsString(value);
+        } catch (JacksonException e) {
+            logger.error("Error writing long json variable " + valueFields.getName(), e);
+        }
+        try {
+            valueFields.setTextValue2(value.getClass().getName());
+            return json.getBytes(StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            throw new ActivitiException("Error getting bytes from json variable", e);
+        }
+    }
+
+    public Object deserialize(byte[] bytes, ValueFields valueFields) {
+        Object jsonValue = null;
+        try {
+            jsonValue = jsonTypeConverter.convertToValue(jsonMapper.readTree(bytes), valueFields);
+        } catch (Exception e) {
+            logger.error("Error reading json variable " + valueFields.getName(), e);
+        }
+        return jsonValue;
+    }
 }

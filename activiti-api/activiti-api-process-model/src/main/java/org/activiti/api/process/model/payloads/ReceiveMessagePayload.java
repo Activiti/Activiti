@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-
 import org.activiti.api.model.shared.Payload;
 
 public class ReceiveMessagePayload implements Payload {
 
-    private final String id;
+    private String id;
     private String name;
     private String correlationKey;
     private Map<String, Object> variables = new LinkedHashMap<>();
@@ -33,11 +32,8 @@ public class ReceiveMessagePayload implements Payload {
         this.id = UUID.randomUUID().toString();
     }
 
-    public ReceiveMessagePayload(String name,
-                                 String correlationKey,
-                                 Map<String, Object> variables) {
+    public ReceiveMessagePayload(String name, String correlationKey, Map<String, Object> variables) {
         this();
-
         Objects.requireNonNull(name, "name must not be null");
 
         this.name = name;
@@ -50,16 +46,32 @@ public class ReceiveMessagePayload implements Payload {
         return id;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getCorrelationKey() {
         return correlationKey;
     }
 
+    public void setCorrelationKey(String correlationKey) {
+        this.correlationKey = correlationKey;
+    }
+
     public Map<String, Object> getVariables() {
         return variables;
+    }
+
+    public void setVariables(Map<String, Object> variables) {
+        this.variables = variables;
     }
 
     @Override
@@ -69,17 +81,16 @@ public class ReceiveMessagePayload implements Payload {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
         ReceiveMessagePayload other = (ReceiveMessagePayload) obj;
-        return Objects.equals(correlationKey, other.correlationKey)
-                && Objects.equals(id, other.id)
-                && Objects.equals(name, other.name)
-                && Objects.equals(variables, other.variables);
+        return (
+            Objects.equals(correlationKey, other.correlationKey) &&
+            Objects.equals(id, other.id) &&
+            Objects.equals(name, other.name) &&
+            Objects.equals(variables, other.variables)
+        );
     }
 
     @Override
@@ -96,5 +107,4 @@ public class ReceiveMessagePayload implements Payload {
         builder.append("]");
         return builder.toString();
     }
-
 }

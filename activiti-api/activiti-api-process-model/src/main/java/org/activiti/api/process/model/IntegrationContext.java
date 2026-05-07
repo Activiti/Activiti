@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.activiti.api.process.model;
 import java.util.Map;
 
 public interface IntegrationContext {
-
     String getId();
 
     String getProcessInstanceId();
@@ -60,4 +59,6 @@ public interface IntegrationContext {
     <T> T getOutBoundVariable(String name);
 
     <T> T getOutBoundVariable(String name, Class<T> type);
+
+    boolean hasEphemeralVariables();
 }

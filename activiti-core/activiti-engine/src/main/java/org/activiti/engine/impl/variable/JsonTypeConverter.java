@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
  */
 package org.activiti.engine.impl.variable;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,11 +25,11 @@ public class JsonTypeConverter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JsonType.class);
 
-    private ObjectMapper objectMapper;
+    private JsonMapper jsonMapper;
     private String javaClassFieldForJackson;
 
-    public JsonTypeConverter(ObjectMapper objectMapper, String javaClassFieldForJackson) {
-        this.objectMapper = objectMapper;
+    public JsonTypeConverter(JsonMapper jsonMapper, String javaClassFieldForJackson) {
+        this.jsonMapper = jsonMapper;
         this.javaClassFieldForJackson = javaClassFieldForJackson;
     }
 
@@ -40,16 +40,16 @@ public class JsonTypeConverter {
             JsonNode classNode = jsonValue.get(javaClassFieldForJackson);
             try {
                 if (classNode != null) {
-                    final String type = classNode.asText();
+                    final String type = classNode.asString();
                     convertedValue = convertToType(jsonValue, type);
-                } else if (valueFields.getTextValue2() != null &&
-                    !jsonValue.getClass().getName().equals(valueFields.getTextValue2())) {
+                } else if (
+                    valueFields.getTextValue2() != null &&
+                    !jsonValue.getClass().getName().equals(valueFields.getTextValue2())
+                ) {
                     convertedValue = convertToType(jsonValue, valueFields.getTextValue2());
                 }
             } catch (ClassNotFoundException e) {
-                LOGGER
-                    .warn("Unable to obtain type for json variable object " + valueFields.getName(),
-                        e);
+                LOGGER.warn("Unable to obtain type for json variable object " + valueFields.getName(), e);
             }
         }
 
@@ -57,11 +57,10 @@ public class JsonTypeConverter {
     }
 
     private Object convertToType(JsonNode jsonValue, String type) throws ClassNotFoundException {
-        return objectMapper.convertValue(jsonValue, loadClass(type));
+        return jsonMapper.convertValue(jsonValue, loadClass(type));
     }
 
     private Class<?> loadClass(String type) throws ClassNotFoundException {
         return Class.forName(type, false, this.getClass().getClassLoader());
     }
-
 }

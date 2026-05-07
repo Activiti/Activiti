@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.spring.cache.test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,7 +34,8 @@ import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
         "activiti.spring.cache-manager.simple.allow-null-values=true",
         "activiti.spring.cache-manager.caches.foo.enabled=true",
         "activiti.spring.cache-manager.caches.bar.enabled=false",
-})
+    }
+)
 class ActivitiSpringSimpleCacheManagerTests {
 
     @SpringBootApplication
@@ -49,9 +49,7 @@ class ActivitiSpringSimpleCacheManagerTests {
 
     @Test
     void testCacheManager() {
-        assertThat(cacheManager)
-            .isNotNull()
-            .isInstanceOf(ConcurrentMapCacheManager.class);
+        assertThat(cacheManager).isNotNull().isInstanceOf(ConcurrentMapCacheManager.class);
     }
 
     @Test
@@ -66,7 +64,6 @@ class ActivitiSpringSimpleCacheManagerTests {
         assertThat(cache).isInstanceOf(ConcurrentMapCache.class);
     }
 
-
     @Test
     void testAllowNullValues() {
         assertThat(ConcurrentMapCacheManager.class.cast(cacheManager).isAllowNullValues()).isTrue();
@@ -76,5 +73,4 @@ class ActivitiSpringSimpleCacheManagerTests {
     void springCacheType() {
         assertThat(springCacheType).isEqualTo(CacheType.SIMPLE);
     }
-
 }

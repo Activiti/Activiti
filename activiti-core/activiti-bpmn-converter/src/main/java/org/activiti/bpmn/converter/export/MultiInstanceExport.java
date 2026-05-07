@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,45 +24,55 @@ import org.apache.commons.lang3.StringUtils;
 
 public class MultiInstanceExport implements BpmnXMLConstants {
 
-  public static void writeMultiInstance(Activity activity, XMLStreamWriter xtw) throws Exception {
-    if (activity.getLoopCharacteristics() != null) {
-      MultiInstanceLoopCharacteristics multiInstanceObject = activity.getLoopCharacteristics();
-      if (multiInstanceObject!=null) {
-          xtw.writeStartElement(ELEMENT_MULTIINSTANCE);
-          BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_MULTIINSTANCE_SEQUENTIAL,
-              String.valueOf(multiInstanceObject.isSequential()).toLowerCase(), xtw);
-          if (StringUtils.isNotEmpty(multiInstanceObject.getInputDataItem())) {
-              BpmnXMLUtil.writeQualifiedAttribute(ATTRIBUTE_MULTIINSTANCE_COLLECTION,
-                  multiInstanceObject.getInputDataItem(), xtw);
-          }
-          if (StringUtils.isNotEmpty(multiInstanceObject.getElementVariable())) {
-              BpmnXMLUtil.writeQualifiedAttribute(ATTRIBUTE_MULTIINSTANCE_VARIABLE,
-                  multiInstanceObject.getElementVariable(), xtw);
-          }
-          if (StringUtils.isNotEmpty(multiInstanceObject.getLoopCardinality())) {
-              xtw.writeStartElement(ELEMENT_MULTIINSTANCE_CARDINALITY);
-              xtw.writeCharacters(multiInstanceObject.getLoopCardinality());
-              xtw.writeEndElement();
-          }
-          if (StringUtils.isNotEmpty(multiInstanceObject.getLoopDataOutputRef())) {
-              xtw.writeStartElement(ELEMENT_MULTI_INSTANCE_DATA_OUTPUT);
-              xtw.writeCharacters(multiInstanceObject.getLoopDataOutputRef());
-              xtw.writeEndElement();
-          }
-          if (StringUtils.isNotEmpty(multiInstanceObject.getOutputDataItem())) {
-              xtw.writeStartElement(ELEMENT_MULTI_INSTANCE_OUTPUT_DATA_ITEM);
-              xtw.writeAttribute(ATTRIBUTE_NAME, multiInstanceObject.getOutputDataItem());
-              xtw.writeEndElement();
-          }
-          if (StringUtils.isNotEmpty(multiInstanceObject.getCompletionCondition())) {
-              xtw.writeStartElement(ELEMENT_MULTIINSTANCE_CONDITION);
-              xtw.writeCharacters(multiInstanceObject.getCompletionCondition());
-              xtw.writeEndElement();
-          }
-          xtw.writeEndElement();
-      }
+    public static void writeMultiInstance(Activity activity, XMLStreamWriter xtw) throws Exception {
+        if (activity == null || activity.getLoopCharacteristics() == null) {
+            return;
+        }
 
+        MultiInstanceLoopCharacteristics multiInstanceObject = activity.getLoopCharacteristics();
+
+        xtw.writeStartElement(BPMN2_PREFIX, ELEMENT_MULTIINSTANCE, BPMN2_NAMESPACE);
+
+        BpmnXMLUtil.writeDefaultAttribute(
+            ATTRIBUTE_MULTIINSTANCE_SEQUENTIAL,
+            String.valueOf(multiInstanceObject.isSequential()).toLowerCase(),
+            xtw
+        );
+
+        writeAttributeIfNotEmpty(ATTRIBUTE_MULTIINSTANCE_COLLECTION, multiInstanceObject.getInputDataItem(), xtw);
+        writeAttributeIfNotEmpty(ATTRIBUTE_MULTIINSTANCE_VARIABLE, multiInstanceObject.getElementVariable(), xtw);
+        writeAttributeIfNotEmpty(
+            ATTRIBUTE_MULTIINSTANCE_INDEX_VARIABLE,
+            multiInstanceObject.getElementIndexVariable(),
+            xtw
+        );
+
+        writeElementIfNotEmpty(ELEMENT_MULTIINSTANCE_CARDINALITY, multiInstanceObject.getLoopCardinality(), xtw);
+        writeElementIfNotEmpty(ELEMENT_MULTI_INSTANCE_DATA_OUTPUT, multiInstanceObject.getLoopDataOutputRef(), xtw);
+
+        if (StringUtils.isNotEmpty(multiInstanceObject.getOutputDataItem())) {
+            xtw.writeStartElement(BPMN2_PREFIX, ELEMENT_MULTI_INSTANCE_OUTPUT_DATA_ITEM, BPMN2_NAMESPACE);
+            xtw.writeAttribute(ATTRIBUTE_NAME, multiInstanceObject.getOutputDataItem());
+            xtw.writeEndElement();
+        }
+
+        writeElementIfNotEmpty(ELEMENT_MULTIINSTANCE_CONDITION, multiInstanceObject.getCompletionCondition(), xtw);
+
+        xtw.writeEndElement();
     }
-  }
 
+    private static void writeAttributeIfNotEmpty(String attributeName, String value, XMLStreamWriter xtw)
+        throws Exception {
+        if (StringUtils.isNotEmpty(value)) {
+            BpmnXMLUtil.writeQualifiedAttribute(attributeName, value, xtw);
+        }
+    }
+
+    private static void writeElementIfNotEmpty(String elementName, String value, XMLStreamWriter xtw) throws Exception {
+        if (StringUtils.isNotEmpty(value)) {
+            xtw.writeStartElement(BPMN2_PREFIX, elementName, BPMN2_NAMESPACE);
+            xtw.writeCharacters(value);
+            xtw.writeEndElement();
+        }
+    }
 }

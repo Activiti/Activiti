@@ -1,0 +1,58 @@
+{
+  "id": "taskVarMapping",
+  "extensions": {
+    "Process_jsonPatchMappingOutput": {
+      "properties": {
+        "variable-lastname-id": {
+          "id": "variable-lastname-id",
+          "name": "process_variable_lastname",
+          "type": "string",
+          "required": true,
+          "value": "Miracle"
+        },
+        "variable-output-invalid-path-variable-empty": {
+          "id": "variable-output-invalid-path-variable-empty",
+          "name": "process_variable_output_invalid_path_variable_empty",
+          "type": "json",
+          "required": false,
+          "value": {
+            "firstname": "Bob",
+            "addresses": [
+              {
+                "street": "123 Main St"
+              },
+              {
+                "street": "456 Elm St"
+              }
+            ]
+          }
+        },
+        "variable-empty-id": {
+          "id": "variable-empty-id",
+          "name": "process_variable_empty",
+          "type": "string",
+          "required": true,
+          "value": ""
+        }
+      },
+      "mappings": {
+        "simpleTask": {
+          "inputs": {},
+          "outputs": {
+            "process_variable_output_invalid_path_variable_empty": {
+              "type": "JSONPATCH",
+              "value": [
+                {
+                  "op": "add",
+                  "path": "/${process_variable_empty}",
+                  "value": "${process_variable_lastname}"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "constants": {}
+    }
+  }
+}

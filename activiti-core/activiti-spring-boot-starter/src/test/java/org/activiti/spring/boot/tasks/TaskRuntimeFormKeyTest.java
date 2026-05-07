@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,31 +41,31 @@ public class TaskRuntimeFormKeyTest {
 
     @Autowired
     private TaskRuntime taskRuntime;
+
     @Autowired
     private ProcessRuntime processRuntime;
+
     @Autowired
     private SecurityUtil securityUtil;
+
     @Autowired
     private TaskCleanUpUtil taskCleanUpUtil;
 
     @AfterEach
-    public void taskCleanUp(){
+    public void taskCleanUp() {
         taskCleanUpUtil.cleanUpWithAdmin();
     }
 
     @Test
     public void standaloneTaskHasFormKey() {
         securityUtil.logInAs("garth");
-        taskRuntime.create(TaskPayloadBuilder.create()
-                .withName("atask")
-                .withAssignee("garth")
-                .withFormKey("aFormKey")
-                .build());
+        taskRuntime.create(
+            TaskPayloadBuilder.create().withName("atask").withAssignee("garth").withFormKey("aFormKey").build()
+        );
 
-        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
-                                                         50));
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
         assertThat(tasks.getContent()).hasSize(1);
-        Task task = tasks.getContent().get(0);
+        Task task = tasks.getContent().getFirst();
 
         assertThat(task.getFormKey()).isEqualTo("aFormKey");
 
@@ -75,20 +75,13 @@ public class TaskRuntimeFormKeyTest {
     @Test
     public void shouldUpdateTaskFormKey() {
         securityUtil.logInAs("garth");
-        taskRuntime.create(TaskPayloadBuilder.create()
-                .withName("atask")
-                .withAssignee("garth")
-                .build());
+        taskRuntime.create(TaskPayloadBuilder.create().withName("atask").withAssignee("garth").build());
 
-        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
-                50));
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
         assertThat(tasks.getContent()).hasSize(1);
-        Task task = tasks.getContent().get(0);
+        Task task = tasks.getContent().getFirst();
 
-        taskRuntime.update(new UpdateTaskPayloadBuilder()
-                .withTaskId(task.getId())
-                .withFormKey("aFormKey")
-                .build());
+        taskRuntime.update(new UpdateTaskPayloadBuilder().withTaskId(task.getId()).withFormKey("aFormKey").build());
 
         task = taskRuntime.task(task.getId());
 
@@ -100,20 +93,18 @@ public class TaskRuntimeFormKeyTest {
     @Test
     public void processTaskHasFormKeyAndTaskDefinitionKey() {
         securityUtil.logInAs("garth");
-        ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
-                .withProcessDefinitionKey(SINGLE_TASK_PROCESS)
-                .build());
+        ProcessInstance process = processRuntime.start(
+            ProcessPayloadBuilder.start().withProcessDefinitionKey(SINGLE_TASK_PROCESS).build()
+        );
 
-        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
-                50));
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
 
         assertThat(tasks.getContent()).hasSize(1);
-        Task task = tasks.getContent().get(0);
+        Task task = tasks.getContent().getFirst();
 
         assertThat(task.getFormKey()).isEqualTo("taskForm");
         assertThat(task.getTaskDefinitionKey()).isEqualTo("Task_03l0zc2");
 
         processRuntime.delete(ProcessPayloadBuilder.delete().withProcessInstance(process).build());
     }
-
 }

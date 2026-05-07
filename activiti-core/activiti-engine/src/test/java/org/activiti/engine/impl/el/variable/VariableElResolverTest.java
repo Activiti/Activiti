@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
 import java.util.Arrays;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
@@ -28,8 +28,8 @@ import org.junit.Test;
 
 public class VariableElResolverTest {
 
-    private ObjectMapper objectMapper = new ObjectMapper();
-    private VariableElResolver resolver = new VariableElResolver(objectMapper);
+    private JsonMapper jsonMapper = new JsonMapper();
+    private VariableElResolver resolver = new VariableElResolver(jsonMapper);
 
     @Test
     public void canResolve_should_returnTrueWhenVariableScopeHasVariableForProperty() {
@@ -72,7 +72,7 @@ public class VariableElResolverTest {
     @Test
     public void resolve_should_returnVariableInstanceValueConvertedToListWhenItsJsonArray() throws Exception {
         //given
-        JsonNode jsonNode = objectMapper.readTree("[\"green\", \"blue\", \"red\"]");
+        JsonNode jsonNode = jsonMapper.readTree("[\"green\", \"blue\", \"red\"]");
         VariableScope variableScope = buildVariableScope("colors", jsonNode, "json");
 
         //when
@@ -90,5 +90,4 @@ public class VariableElResolverTest {
         given(variableScope.getVariableInstance(variableName)).willReturn(variableInstance);
         return variableScope;
     }
-
 }

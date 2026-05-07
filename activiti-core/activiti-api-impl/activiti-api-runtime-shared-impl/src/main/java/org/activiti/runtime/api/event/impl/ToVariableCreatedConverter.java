@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,29 +15,28 @@
  */
 package org.activiti.runtime.api.event.impl;
 
+import java.util.Optional;
 import org.activiti.api.model.shared.event.VariableCreatedEvent;
 import org.activiti.api.runtime.event.impl.VariableCreatedEventImpl;
 import org.activiti.api.runtime.model.impl.VariableInstanceImpl;
 import org.activiti.engine.delegate.event.ActivitiVariableEvent;
-import org.activiti.spring.process.ProcessExtensionService;
-
-import java.util.Optional;
 
 public class ToVariableCreatedConverter implements EventConverter<VariableCreatedEvent, ActivitiVariableEvent> {
 
-    private final ProcessExtensionService processExtensionService;
+    private final EphemeralVariableResolver ephemeralVariableResolver;
 
-    public ToVariableCreatedConverter(ProcessExtensionService processExtensionService) {
-        this.processExtensionService = processExtensionService;
+    public ToVariableCreatedConverter(EphemeralVariableResolver ephemeralVariableResolver) {
+        this.ephemeralVariableResolver = ephemeralVariableResolver;
     }
 
     @Override
     public Optional<VariableCreatedEvent> from(ActivitiVariableEvent internalEvent) {
-        boolean isEphemeral = processExtensionService.hasEphemeralVariable(internalEvent.getProcessDefinitionId(),
-            internalEvent.getVariableName());
+        boolean isEphemeral = ephemeralVariableResolver.isEphemeralVariable(internalEvent);
 
         VariableInstanceImpl<Object> variableInstance = createVariableInstance(internalEvent, isEphemeral);
 
-        return Optional.of(new VariableCreatedEventImpl(variableInstance, internalEvent.getProcessDefinitionId()));
+        return Optional.of(
+            new VariableCreatedEventImpl(variableInstance, internalEvent.getProcessDefinitionId(), isEphemeral)
+        );
     }
 }
