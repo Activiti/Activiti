@@ -758,10 +758,9 @@ public class DbSqlSession implements Session {
 
     protected void flushUpdates() {
         updatedObjects.sort(
-            Comparator.comparingInt((Entity e) -> {
-                int idx = EntityDependencyOrder.UPDATE_ORDER.indexOf(e.getClass());
-                return idx >= 0 ? idx : Integer.MAX_VALUE;
-            })
+            Comparator.comparingInt((Entity e) ->
+                EntityDependencyOrder.UPDATE_ORDER.getOrDefault(e.getClass(), Integer.MAX_VALUE)
+            )
             .thenComparing(e -> e.getClass().getName())
             .thenComparing(Entity::getId)
         );

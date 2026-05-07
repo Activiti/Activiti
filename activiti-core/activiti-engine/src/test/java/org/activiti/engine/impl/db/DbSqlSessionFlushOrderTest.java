@@ -32,6 +32,7 @@ import org.activiti.engine.impl.persistence.cache.CachedEntity;
 import org.activiti.engine.impl.persistence.cache.EntityCache;
 import org.activiti.engine.impl.persistence.entity.Entity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityImpl;
+import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityImpl;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.junit.Before;
@@ -85,15 +86,15 @@ public class DbSqlSessionFlushOrderTest {
     }
 
     @Test
-    public void shouldEmitUpdatesInDeterministicOrderRegardlessOfCacheIterationOrder() {
-        TestExec execHigh = new TestExec(EXEC_HIGH_ID);
-        TestExec execLow = new TestExec(EXEC_LOW_ID);
-        TestVar varHigh = new TestVar(VAR_HIGH_ID);
-        TestVar varLow = new TestVar(VAR_LOW_ID);
+    public void should_emitUpdatesUsingUpdateOrderClassRanking_when_cacheIterationOrderDiffers() {
+        CachedEntity execHigh = dirtyExecution(EXEC_HIGH_ID);
+        CachedEntity execLow = dirtyExecution(EXEC_LOW_ID);
+        CachedEntity varHigh = dirtyVariable(VAR_HIGH_ID);
+        CachedEntity varLow = dirtyVariable(VAR_LOW_ID);
 
         Map<Class<?>, Map<String, CachedEntity>> cache = new LinkedHashMap<>();
-        cache.put(TestVar.class, mapOfChanged(varHigh, varLow));
-        cache.put(TestExec.class, mapOfChanged(execHigh, execLow));
+        cache.put(VariableInstanceEntityImpl.class, mapOf(varHigh, varLow));
+        cache.put(ExecutionEntityImpl.class, mapOf(execHigh, execLow));
         given(entityCache.getAllCachedEntities()).willReturn(cache);
 
         dbSqlSession.determineUpdatedObjects();
@@ -104,24 +105,24 @@ public class DbSqlSessionFlushOrderTest {
         assertThat(captor.getAllValues())
             .extracting(value -> ((Entity) value).getClass(), value -> ((Entity) value).getId())
             .containsExactly(
-                tuple(TestExec.class, EXEC_LOW_ID),
-                tuple(TestExec.class, EXEC_HIGH_ID),
-                tuple(TestVar.class, VAR_LOW_ID),
-                tuple(TestVar.class, VAR_HIGH_ID)
+                tuple(ExecutionEntityImpl.class, EXEC_LOW_ID),
+                tuple(ExecutionEntityImpl.class, EXEC_HIGH_ID),
+                tuple(VariableInstanceEntityImpl.class, VAR_LOW_ID),
+                tuple(VariableInstanceEntityImpl.class, VAR_HIGH_ID)
             );
     }
 
     @Test
-    public void shouldExcludeUnchangedEntitiesFromUpdatedObjects() {
-        TestExec changed = new TestExec(EXEC_LOW_ID);
-        TestExec unchanged = new TestExec("exec-bbb");
+    public void should_excludeUnchangedEntities_when_determiningUpdatedObjects() {
+        CachedEntity changed = dirtyExecution(EXEC_LOW_ID);
+        CachedEntity unchanged = unchangedExecution("exec-bbb");
 
         LinkedHashMap<String, CachedEntity> classCache = new LinkedHashMap<>();
-        classCache.put(changed.getId(), markChanged(changed));
-        classCache.put(unchanged.getId(), new CachedEntity(unchanged, true));
+        classCache.put(changed.getEntity().getId(), changed);
+        classCache.put(unchanged.getEntity().getId(), unchanged);
 
         Map<Class<?>, Map<String, CachedEntity>> cache = new LinkedHashMap<>();
-        cache.put(TestExec.class, classCache);
+        cache.put(ExecutionEntityImpl.class, classCache);
         given(entityCache.getAllCachedEntities()).willReturn(cache);
 
         dbSqlSession.determineUpdatedObjects();
@@ -132,11 +133,11 @@ public class DbSqlSessionFlushOrderTest {
     }
 
     @Test
-    public void shouldSortNonExecutionInsertsByIdWhenSizeGreaterThanOne() {
-        TestVar varHigh = new TestVar(VAR_HIGH_ID);
-        TestVar varLow = new TestVar(VAR_LOW_ID);
+    public void should_sortNonExecutionInsertsById_when_collectionHasMoreThanOneEntity() {
+        VariableInstanceEntityImpl varHigh = newVariable(VAR_HIGH_ID);
+        VariableInstanceEntityImpl varLow = newVariable(VAR_LOW_ID);
 
-        dbSqlSession.flushInsertEntities(TestVar.class, asList(varHigh, varLow));
+        dbSqlSession.flushInsertEntities(VariableInstanceEntityImpl.class, asList(varHigh, varLow));
 
         InOrder ordered = inOrder(sqlSession);
         ordered.verify(sqlSession).insert(INSERT_STATEMENT, varLow);
@@ -144,9 +145,9 @@ public class DbSqlSessionFlushOrderTest {
     }
 
     @Test
-    public void shouldPreserveCallerOrderForExecutionInsertsToHonourFkConstraints() {
-        ExecutionEntityImpl parent = newExecutionEntity("4");
-        ExecutionEntityImpl child = newExecutionEntity("10");
+    public void should_preserveCallerOrder_when_insertingExecutionEntities() {
+        ExecutionEntityImpl parent = newExecution("4");
+        ExecutionEntityImpl child = newExecution("10");
 
         dbSqlSession.flushInsertEntities(ExecutionEntityImpl.class, asList(parent, child));
 
@@ -156,20 +157,20 @@ public class DbSqlSessionFlushOrderTest {
     }
 
     @Test
-    public void shouldUseSingleInsertPathWithoutSortingWhenSizeIsOne() {
-        TestVar onlyOne = new TestVar(VAR_HIGH_ID);
+    public void should_useSingleInsertPath_when_collectionHasOneEntity() {
+        VariableInstanceEntityImpl onlyOne = newVariable(VAR_HIGH_ID);
 
-        dbSqlSession.flushInsertEntities(TestVar.class, asList(onlyOne));
+        dbSqlSession.flushInsertEntities(VariableInstanceEntityImpl.class, asList(onlyOne));
 
         verify(sqlSession, times(1)).insert(INSERT_STATEMENT, onlyOne);
     }
 
     @Test
-    public void shouldSortNonExecutionDeletesByIdWhenSizeGreaterThanOne() {
-        TestVar varHigh = new TestVar(VAR_HIGH_ID);
-        TestVar varLow = new TestVar(VAR_LOW_ID);
+    public void should_sortNonExecutionDeletesById_when_collectionHasMoreThanOneEntity() {
+        VariableInstanceEntityImpl varHigh = newVariable(VAR_HIGH_ID);
+        VariableInstanceEntityImpl varLow = newVariable(VAR_LOW_ID);
 
-        dbSqlSession.flushDeleteEntities(TestVar.class, asList(varHigh, varLow));
+        dbSqlSession.flushDeleteEntities(VariableInstanceEntityImpl.class, asList(varHigh, varLow));
 
         InOrder ordered = inOrder(sqlSession);
         ordered.verify(sqlSession).delete(DELETE_STATEMENT, varLow);
@@ -177,9 +178,9 @@ public class DbSqlSessionFlushOrderTest {
     }
 
     @Test
-    public void shouldPreserveCallerOrderForExecutionDeletesToHonourFkConstraints() {
-        ExecutionEntityImpl child = newExecutionEntity("10");
-        ExecutionEntityImpl parent = newExecutionEntity("4");
+    public void should_preserveCallerOrder_when_deletingExecutionEntities() {
+        ExecutionEntityImpl child = newExecution("10");
+        ExecutionEntityImpl parent = newExecution("4");
 
         dbSqlSession.flushDeleteEntities(ExecutionEntityImpl.class, asList(child, parent));
 
@@ -188,96 +189,41 @@ public class DbSqlSessionFlushOrderTest {
         ordered.verify(sqlSession).delete(DELETE_STATEMENT, parent);
     }
 
-    private static ExecutionEntityImpl newExecutionEntity(String id) {
+    private static ExecutionEntityImpl newExecution(String id) {
         ExecutionEntityImpl execution = new ExecutionEntityImpl();
         execution.setId(id);
         return execution;
     }
 
-    private static Map<String, CachedEntity> mapOfChanged(BaseStubEntity... entities) {
-        LinkedHashMap<String, CachedEntity> map = new LinkedHashMap<>();
-        for (BaseStubEntity entity : entities) {
-            map.put(entity.getId(), markChanged(entity));
-        }
-        return map;
+    private static VariableInstanceEntityImpl newVariable(String id) {
+        VariableInstanceEntityImpl variable = new VariableInstanceEntityImpl();
+        variable.setId(id);
+        return variable;
     }
 
-    private static CachedEntity markChanged(BaseStubEntity entity) {
-        CachedEntity cached = new CachedEntity(entity, true);
-        entity.markModified();
+    private static CachedEntity dirtyExecution(String id) {
+        ExecutionEntityImpl execution = newExecution(id);
+        CachedEntity cached = new CachedEntity(execution, true);
+        execution.setBusinessKey("modified-" + id);
         return cached;
     }
 
-    private abstract static class BaseStubEntity implements Entity {
-
-        private final String id;
-        private Object persistentState = "original";
-
-        protected BaseStubEntity(String id) {
-            this.id = id;
-        }
-
-        void markModified() {
-            this.persistentState = "modified";
-        }
-
-        @Override
-        public String getId() {
-            return id;
-        }
-
-        @Override
-        public void setId(String id) {
-            // not needed for this test
-        }
-
-        @Override
-        public boolean isInserted() {
-            return false;
-        }
-
-        @Override
-        public void setInserted(boolean inserted) {
-            // not needed for this test
-        }
-
-        @Override
-        public boolean isUpdated() {
-            return true;
-        }
-
-        @Override
-        public void setUpdated(boolean updated) {
-            // not needed for this test
-        }
-
-        @Override
-        public boolean isDeleted() {
-            return false;
-        }
-
-        @Override
-        public void setDeleted(boolean deleted) {
-            // not needed for this test
-        }
-
-        @Override
-        public Object getPersistentState() {
-            return persistentState;
-        }
+    private static CachedEntity unchangedExecution(String id) {
+        return new CachedEntity(newExecution(id), true);
     }
 
-    private static final class TestExec extends BaseStubEntity {
-
-        TestExec(String id) {
-            super(id);
-        }
+    private static CachedEntity dirtyVariable(String id) {
+        VariableInstanceEntityImpl variable = newVariable(id);
+        CachedEntity cached = new CachedEntity(variable, true);
+        variable.setTextValue("modified-" + id);
+        return cached;
     }
 
-    private static final class TestVar extends BaseStubEntity {
-
-        TestVar(String id) {
-            super(id);
+    private static Map<String, CachedEntity> mapOf(CachedEntity... entries) {
+        LinkedHashMap<String, CachedEntity> map = new LinkedHashMap<>();
+        for (CachedEntity entry : entries) {
+            map.put(entry.getEntity().getId(), entry);
         }
+        return map;
     }
 }

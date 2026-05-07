@@ -16,7 +16,9 @@
 package org.activiti.engine.impl.db;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.activiti.engine.impl.persistence.entity.AttachmentEntityImpl;
 import org.activiti.engine.impl.persistence.entity.ByteArrayEntityImpl;
 import org.activiti.engine.impl.persistence.entity.CommentEntityImpl;
@@ -60,7 +62,7 @@ public class EntityDependencyOrder {
 
     public static final List<Class<? extends Entity>> DELETE_ORDER;
     public static final List<Class<? extends Entity>> INSERT_ORDER;
-    public static final List<Class<? extends Entity>> UPDATE_ORDER;
+    public static final Map<Class<? extends Entity>, Integer> UPDATE_ORDER;
 
     static {
         /*
@@ -211,6 +213,11 @@ public class EntityDependencyOrder {
 
         DELETE_ORDER = List.copyOf(deleteOrder);
         INSERT_ORDER = List.copyOf(deleteOrder.reversed());
-        UPDATE_ORDER = List.copyOf(INSERT_ORDER);
+
+        Map<Class<? extends Entity>, Integer> updateOrder = new HashMap<>();
+        for (int i = 0; i < INSERT_ORDER.size(); i++) {
+            updateOrder.put(INSERT_ORDER.get(i), i);
+        }
+        UPDATE_ORDER = Map.copyOf(updateOrder);
     }
 }

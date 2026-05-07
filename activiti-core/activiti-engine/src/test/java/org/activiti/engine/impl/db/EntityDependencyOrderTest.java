@@ -17,6 +17,7 @@ package org.activiti.engine.impl.db;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.activiti.engine.impl.persistence.entity.Entity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityImpl;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityImpl;
 import org.junit.Test;
@@ -24,15 +25,17 @@ import org.junit.Test;
 public class EntityDependencyOrderTest {
 
     @Test
-    public void updateOrderShouldEqualInsertOrder() {
-        assertThat(EntityDependencyOrder.UPDATE_ORDER)
-            .isNotEmpty()
-            .containsExactlyElementsOf(EntityDependencyOrder.INSERT_ORDER);
+    public void should_rankClassesAccordingToInsertOrder() {
+        assertThat(EntityDependencyOrder.UPDATE_ORDER).isNotEmpty();
+        for (int i = 0; i < EntityDependencyOrder.INSERT_ORDER.size(); i++) {
+            Class<? extends Entity> clazz = EntityDependencyOrder.INSERT_ORDER.get(i);
+            assertThat(EntityDependencyOrder.UPDATE_ORDER.get(clazz)).isEqualTo(i);
+        }
     }
 
     @Test
-    public void updateOrderShouldRankBothExecutionAndVariableInstanceForDeterministicSort() {
+    public void should_containExecutionAndVariableInstanceClasses() {
         assertThat(EntityDependencyOrder.UPDATE_ORDER)
-            .contains(ExecutionEntityImpl.class, VariableInstanceEntityImpl.class);
+            .containsKeys(ExecutionEntityImpl.class, VariableInstanceEntityImpl.class);
     }
 }
