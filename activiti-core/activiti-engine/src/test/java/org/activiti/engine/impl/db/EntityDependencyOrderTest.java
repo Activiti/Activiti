@@ -29,7 +29,7 @@ public class EntityDependencyOrderTest {
         assertThat(EntityDependencyOrder.UPDATE_ORDER).isNotEmpty();
         for (int i = 0; i < EntityDependencyOrder.INSERT_ORDER.size(); i++) {
             Class<? extends Entity> clazz = EntityDependencyOrder.INSERT_ORDER.get(i);
-            assertThat(EntityDependencyOrder.UPDATE_ORDER.get(clazz)).isEqualTo(i);
+            assertThat(EntityDependencyOrder.UPDATE_ORDER).containsEntry(clazz, i);
         }
     }
 
