@@ -17,9 +17,13 @@ package org.activiti.runtime.api.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.runtime.shared.NotFoundException;
+import org.activiti.api.runtime.shared.query.Order;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.runtime.shared.security.SecurityManager;
@@ -65,6 +69,9 @@ public class TaskRuntimeImpl implements TaskRuntime {
     private final SecurityManager securityManager;
 
     private final TaskRuntimeHelper taskRuntimeHelper;
+
+    private static final Map<String, Function<TaskQuery, TaskQuery>> SORT_FIELD_MAPPERS =
+        java.util.Map.of("createddate", TaskQuery::orderByTaskCreateTime);
 
     public TaskRuntimeImpl(
         TaskService taskService,
@@ -135,6 +142,9 @@ public class TaskRuntimeImpl implements TaskRuntime {
         if (getTasksPayload.getParentTaskId() != null) {
             taskQuery = taskQuery.taskParentTaskId(getTasksPayload.getParentTaskId());
         }
+
+        taskQuery = applySortOrder(taskQuery, pageable.getOrder());
+
         List<Task> tasks = taskConverter.from(taskQuery.listPage(pageable.getStartIndex(), pageable.getMaxItems()));
         return new PageImpl<>(tasks, Math.toIntExact(taskQuery.count()));
     }
@@ -514,5 +524,24 @@ public class TaskRuntimeImpl implements TaskRuntime {
         if (!task.getAssignee().equals(authenticatedUserId)) {
             throw new IllegalStateException("You cannot release a task where you are not the assignee");
         }
+    }
+
+    private TaskQuery applySortOrder(TaskQuery taskQuery, Order order) {
+        if (order == null || order.getProperty() == null || order.getDirection() == null) {
+            return taskQuery;
+        }
+
+        String sortField = order.getProperty().trim().toLowerCase(Locale.ROOT);
+
+        if (!SORT_FIELD_MAPPERS.containsKey(sortField)) {
+            return taskQuery;
+        }
+
+        TaskQuery sortedQuery = SORT_FIELD_MAPPERS.get(sortField).apply(taskQuery);
+
+        return switch (order.getDirection()) {
+            case ASC -> sortedQuery.asc();
+            case DESC -> sortedQuery.desc();
+        };
     }
 }
