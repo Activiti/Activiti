@@ -16,8 +16,9 @@
 package org.activiti.engine.impl.db;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.activiti.engine.impl.persistence.entity.AttachmentEntityImpl;
 import org.activiti.engine.impl.persistence.entity.ByteArrayEntityImpl;
 import org.activiti.engine.impl.persistence.entity.CommentEntityImpl;
@@ -59,8 +60,9 @@ import org.activiti.engine.impl.persistence.entity.integration.IntegrationContex
  */
 public class EntityDependencyOrder {
 
-    public static List<Class<? extends Entity>> DELETE_ORDER = new ArrayList<Class<? extends Entity>>();
-    public static List<Class<? extends Entity>> INSERT_ORDER = new ArrayList<Class<? extends Entity>>();
+    public static final List<Class<? extends Entity>> DELETE_ORDER;
+    public static final List<Class<? extends Entity>> INSERT_ORDER;
+    public static final Map<Class<? extends Entity>, Integer> UPDATE_ORDER;
 
     static {
         /*
@@ -71,44 +73,45 @@ public class EntityDependencyOrder {
          * 'FK from X': X should be ABOVE the entity
          *
          */
+        List<Class<? extends Entity>> deleteOrder = new ArrayList<>();
 
         /* No FK */
-        DELETE_ORDER.add(PropertyEntityImpl.class);
+        deleteOrder.add(PropertyEntityImpl.class);
 
         /* No FK */
-        DELETE_ORDER.add(AttachmentEntityImpl.class);
+        deleteOrder.add(AttachmentEntityImpl.class);
 
         /* No FK */
-        DELETE_ORDER.add(CommentEntityImpl.class);
+        deleteOrder.add(CommentEntityImpl.class);
 
         /* No FK */
-        DELETE_ORDER.add(EventLogEntryEntityImpl.class);
+        deleteOrder.add(EventLogEntryEntityImpl.class);
 
         /*
          * FK to Deployment
          * FK to ByteArray
          */
-        DELETE_ORDER.add(ModelEntityImpl.class);
+        deleteOrder.add(ModelEntityImpl.class);
 
         /*
          * FK to ByteArray
          */
-        DELETE_ORDER.add(JobEntityImpl.class);
-        DELETE_ORDER.add(TimerJobEntityImpl.class);
-        DELETE_ORDER.add(SuspendedJobEntityImpl.class);
-        DELETE_ORDER.add(DeadLetterJobEntityImpl.class);
+        deleteOrder.add(JobEntityImpl.class);
+        deleteOrder.add(TimerJobEntityImpl.class);
+        deleteOrder.add(SuspendedJobEntityImpl.class);
+        deleteOrder.add(DeadLetterJobEntityImpl.class);
 
         /*
          * FK to ByteArray
          * FK to Exeution
          */
-        DELETE_ORDER.add(VariableInstanceEntityImpl.class);
+        deleteOrder.add(VariableInstanceEntityImpl.class);
 
         /*
          * FK to ByteArray
          * FK to ProcessDefinition
          */
-        DELETE_ORDER.add(ProcessDefinitionInfoEntityImpl.class);
+        deleteOrder.add(ProcessDefinitionInfoEntityImpl.class);
 
         /*
          * FK from ModelEntity
@@ -117,7 +120,7 @@ public class EntityDependencyOrder {
          *
          * FK to DeploymentEntity
          */
-        DELETE_ORDER.add(ByteArrayEntityImpl.class);
+        deleteOrder.add(ByteArrayEntityImpl.class);
 
         /*
          * FK from ModelEntity
@@ -126,39 +129,39 @@ public class EntityDependencyOrder {
          *
          * FK to DeploymentEntity
          */
-        DELETE_ORDER.add(ResourceEntityImpl.class);
+        deleteOrder.add(ResourceEntityImpl.class);
 
         /*
          * FK from ByteArray
          */
-        DELETE_ORDER.add(DeploymentEntityImpl.class);
+        deleteOrder.add(DeploymentEntityImpl.class);
 
         /*
          * FK to Execution
          */
-        DELETE_ORDER.add(EventSubscriptionEntityImpl.class);
+        deleteOrder.add(EventSubscriptionEntityImpl.class);
 
         /*
          * FK to Execution
          */
-        DELETE_ORDER.add(CompensateEventSubscriptionEntityImpl.class);
+        deleteOrder.add(CompensateEventSubscriptionEntityImpl.class);
 
         /*
          * FK to Execution
          */
-        DELETE_ORDER.add(MessageEventSubscriptionEntityImpl.class);
+        deleteOrder.add(MessageEventSubscriptionEntityImpl.class);
 
         /*
          * FK to Execution
          */
-        DELETE_ORDER.add(SignalEventSubscriptionEntityImpl.class);
+        deleteOrder.add(SignalEventSubscriptionEntityImpl.class);
 
         /*
          * FK to process definition
          * FK to Execution
          * FK to Task
          */
-        DELETE_ORDER.add(IdentityLinkEntityImpl.class);
+        deleteOrder.add(IdentityLinkEntityImpl.class);
 
         /*
          * FK from IdentityLink
@@ -166,13 +169,13 @@ public class EntityDependencyOrder {
          * FK to Execution
          * FK to process definition
          */
-        DELETE_ORDER.add(TaskEntityImpl.class);
+        deleteOrder.add(TaskEntityImpl.class);
 
         /*
          * FK to Execution
          * FK to process definition
          */
-        DELETE_ORDER.add(IntegrationContextEntityImpl.class);
+        deleteOrder.add(IntegrationContextEntityImpl.class);
 
         /*
          * FK from VariableInstance
@@ -182,33 +185,39 @@ public class EntityDependencyOrder {
          *
          * FK to ProcessDefinition
          */
-        DELETE_ORDER.add(ExecutionEntityImpl.class);
+        deleteOrder.add(ExecutionEntityImpl.class);
 
         /*
          * FK from Task
          * FK from IdentityLink
          * FK from execution
          */
-        DELETE_ORDER.add(ProcessDefinitionEntityImpl.class);
+        deleteOrder.add(ProcessDefinitionEntityImpl.class);
 
         // History entities have no FK's
 
-        DELETE_ORDER.add(HistoricIdentityLinkEntityImpl.class);
+        deleteOrder.add(HistoricIdentityLinkEntityImpl.class);
 
-        DELETE_ORDER.add(HistoricActivityInstanceEntityImpl.class);
-        DELETE_ORDER.add(HistoricProcessInstanceEntityImpl.class);
-        DELETE_ORDER.add(HistoricTaskInstanceEntityImpl.class);
-        DELETE_ORDER.add(HistoricScopeInstanceEntityImpl.class);
+        deleteOrder.add(HistoricActivityInstanceEntityImpl.class);
+        deleteOrder.add(HistoricProcessInstanceEntityImpl.class);
+        deleteOrder.add(HistoricTaskInstanceEntityImpl.class);
+        deleteOrder.add(HistoricScopeInstanceEntityImpl.class);
 
-        DELETE_ORDER.add(HistoricVariableInstanceEntityImpl.class);
+        deleteOrder.add(HistoricVariableInstanceEntityImpl.class);
 
-        DELETE_ORDER.add(HistoricDetailAssignmentEntityImpl.class);
-        DELETE_ORDER.add(HistoricDetailTransitionInstanceEntityImpl.class);
-        DELETE_ORDER.add(HistoricDetailVariableInstanceUpdateEntityImpl.class);
-        DELETE_ORDER.add(HistoricFormPropertyEntityImpl.class);
-        DELETE_ORDER.add(HistoricDetailEntityImpl.class);
+        deleteOrder.add(HistoricDetailAssignmentEntityImpl.class);
+        deleteOrder.add(HistoricDetailTransitionInstanceEntityImpl.class);
+        deleteOrder.add(HistoricDetailVariableInstanceUpdateEntityImpl.class);
+        deleteOrder.add(HistoricFormPropertyEntityImpl.class);
+        deleteOrder.add(HistoricDetailEntityImpl.class);
 
-        INSERT_ORDER = new ArrayList<Class<? extends Entity>>(DELETE_ORDER);
-        Collections.reverse(INSERT_ORDER);
+        DELETE_ORDER = List.copyOf(deleteOrder);
+        INSERT_ORDER = List.copyOf(deleteOrder.reversed());
+
+        Map<Class<? extends Entity>, Integer> updateOrder = new HashMap<>();
+        for (int i = 0; i < INSERT_ORDER.size(); i++) {
+            updateOrder.put(INSERT_ORDER.get(i), i);
+        }
+        UPDATE_ORDER = Map.copyOf(updateOrder);
     }
 }
