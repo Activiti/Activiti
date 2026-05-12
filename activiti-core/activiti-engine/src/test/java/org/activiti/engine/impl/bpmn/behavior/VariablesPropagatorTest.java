@@ -28,9 +28,9 @@ import java.util.UUID;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
@@ -49,13 +49,13 @@ public class VariablesPropagatorTest {
 
     private AutoCloseable autoCloseable;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         autoCloseable = openMocks(this);
         doReturn(executionEntityManager).when(variablesPropagator).getExecutionEntityManager();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         autoCloseable.close();
     }

@@ -18,17 +18,17 @@ package org.activiti.spring.test.engine;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.activiti.engine.ProcessEngines;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /**
  * Spring process engine base test
  *
 
  */
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration("classpath:org/activiti/spring/test/engine/springProcessEngine-context.xml")
 public class SpringProcessEngineTest {
 

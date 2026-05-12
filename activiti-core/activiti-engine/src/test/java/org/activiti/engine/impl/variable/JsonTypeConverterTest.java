@@ -25,7 +25,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 import java.util.List;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class JsonTypeConverterTest {
 

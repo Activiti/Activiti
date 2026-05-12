@@ -18,7 +18,7 @@ package org.activiti.engine.delegate.event.impl;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ActivitiVariableEventImplTest {
 
