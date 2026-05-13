@@ -196,7 +196,7 @@ public abstract class MultiInstanceActivityBehavior
         Optional
             .ofNullable(execution)
             .filter(isInnerSubProcessActivity().and(isCallActivityCurrentFlowElement()))
-            .ifPresent(completeSubProcessInstance(subProcessInstance));
+            .ifPresent(completingSubProcessInstance(subProcessInstance));
     }
 
     // required for supporting external subprocesses
@@ -215,7 +215,7 @@ public abstract class MultiInstanceActivityBehavior
         return execution -> this.getInnerActivityBehavior() instanceof SubProcessActivityBehavior;
     }
 
-    private ThrowingConsumer<DelegateExecution> completeSubProcessInstance(DelegateExecution subProcessInstance) {
+    private ThrowingConsumer<DelegateExecution> completingSubProcessInstance(DelegateExecution subProcessInstance) {
         return execution ->
             SubProcessActivityBehavior.class.cast(innerActivityBehavior).completing(execution, subProcessInstance);
     }

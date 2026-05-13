@@ -301,8 +301,22 @@ public class ProcessRuntimeCallActivityMappingIT {
             .extracting(VariableInstance::getValue)
             .asInstanceOf(InstanceOfAssertFactories.list(Map.class))
             .containsExactlyInAnyOrder(
-                Map.of("result", "Result 0", "resultIndex", 0, "multiInstanceLoopCharacteristics", "parallel"),
-                Map.of("result", "Result 1", "resultIndex", 1, "multiInstanceLoopCharacteristics", "parallel")
+                Map.of(
+                    "targetResult",
+                    "Result 0",
+                    "targetResultIndex",
+                    0,
+                    "targetMultiInstanceLoopCharacteristics",
+                    "parallel"
+                ),
+                Map.of(
+                    "targetResult",
+                    "Result 1",
+                    "targetResultIndex",
+                    1,
+                    "targetMultiInstanceLoopCharacteristics",
+                    "parallel"
+                )
             );
 
         final Task task = getTask(processInstance);
@@ -311,8 +325,7 @@ public class ProcessRuntimeCallActivityMappingIT {
 
         taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
 
-        assertThatThrownBy(() -> processRuntime.processInstance(processInstance.getId()))
-            .isInstanceOf(NotFoundException.class);
+        assertProcessCompleted(processInstance);
     }
 
     @Test
@@ -338,8 +351,22 @@ public class ProcessRuntimeCallActivityMappingIT {
             .extracting(VariableInstance::getValue)
             .asInstanceOf(InstanceOfAssertFactories.list(Map.class))
             .containsExactlyInAnyOrder(
-                Map.of("result", "Result 0", "resultIndex", 0, "multiInstanceLoopCharacteristics", "sequential"),
-                Map.of("result", "Result 1", "resultIndex", 1, "multiInstanceLoopCharacteristics", "sequential")
+                Map.of(
+                    "targetResult",
+                    "Result 0",
+                    "targetResultIndex",
+                    0,
+                    "targetMultiInstanceLoopCharacteristics",
+                    "sequential"
+                ),
+                Map.of(
+                    "targetResult",
+                    "Result 1",
+                    "targetResultIndex",
+                    1,
+                    "targetMultiInstanceLoopCharacteristics",
+                    "sequential"
+                )
             );
 
         final Task task = getTask(processInstance);
@@ -348,8 +375,7 @@ public class ProcessRuntimeCallActivityMappingIT {
 
         taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
 
-        assertThatThrownBy(() -> processRuntime.processInstance(processInstance.getId()))
-            .isInstanceOf(NotFoundException.class);
+        assertProcessCompleted(processInstance);
     }
 
     @Test
@@ -385,8 +411,7 @@ public class ProcessRuntimeCallActivityMappingIT {
 
         taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
 
-        assertThatThrownBy(() -> processRuntime.processInstance(processInstance.getId()))
-            .isInstanceOf(NotFoundException.class);
+        assertProcessCompleted(processInstance);
     }
 
     @Test
@@ -412,8 +437,8 @@ public class ProcessRuntimeCallActivityMappingIT {
             .extracting(VariableInstance::getValue)
             .asInstanceOf(InstanceOfAssertFactories.list(Map.class))
             .containsExactlyInAnyOrder(
-                Map.of("result", "Result 1", "resultIndex", 1),
-                Map.of("result", "Result 0", "resultIndex", 0)
+                Map.of("targetResult", "Result 1", "targetResultIndex", 1),
+                Map.of("targetResult", "Result 0", "targetResultIndex", 0)
             );
 
         final Task task = getTask(processInstance);
@@ -422,8 +447,7 @@ public class ProcessRuntimeCallActivityMappingIT {
 
         taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
 
-        assertThatThrownBy(() -> processRuntime.processInstance(processInstance.getId()))
-            .isInstanceOf(NotFoundException.class);
+        assertProcessCompleted(processInstance);
     }
 
     @Test
@@ -456,8 +480,7 @@ public class ProcessRuntimeCallActivityMappingIT {
 
         taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
 
-        assertThatThrownBy(() -> processRuntime.processInstance(processInstance.getId()))
-            .isInstanceOf(NotFoundException.class);
+        assertProcessCompleted(processInstance);
     }
 
     void completeTask(String taskId, Map<String, Object> variables) {
@@ -466,5 +489,10 @@ public class ProcessRuntimeCallActivityMappingIT {
         );
         assertThat(completeTask).isNotNull();
         assertThat(completeTask.getStatus()).isEqualTo(Task.TaskStatus.COMPLETED);
+    }
+
+    void assertProcessCompleted(ProcessInstance processInstance) {
+        assertThatThrownBy(() -> processRuntime.processInstance(processInstance.getId()))
+            .isInstanceOf(NotFoundException.class);
     }
 }

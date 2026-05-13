@@ -16,6 +16,7 @@
 package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.Map;
+import java.util.function.Predicate;
 import org.activiti.bpmn.model.CallActivity;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.context.Context;
@@ -32,8 +33,10 @@ public class VariablesPropagator {
         this.variablesCalculator = variablesCalculator;
     }
 
-    protected Map<String, Object> calculateMultiInstanceCallActivityLocalVariables(DelegateExecution execution,
-                                                                                    Map<String, Object> availableVariables) {
+    protected Map<String, Object> calculateMultiInstanceCallActivityLocalVariables(
+        DelegateExecution execution,
+        Map<String, Object> availableVariables
+    ) {
         Map<String, Object> outputVariables = variablesCalculator.calculateOutPutVariables(
             MappingExecutionContext.buildMappingExecutionContext(execution),
             availableVariables
@@ -42,6 +45,12 @@ public class VariablesPropagator {
         if (outputVariables == null || outputVariables.isEmpty()) {
             return availableVariables;
         }
+
+        availableVariables
+            .keySet()
+            .stream()
+            .filter(Predicate.not(outputVariables::containsKey))
+            .forEach(execution::removeVariableLocal);
 
         return outputVariables;
     }

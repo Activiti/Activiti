@@ -16,15 +16,15 @@
             }
           },
           "outputs": {
-            "result": {
+            "targetResult": {
               "type": "variable",
               "value": "result"
             },
-            "resultIndex": {
+            "targetResultIndex": {
               "type": "variable",
               "value": "resultIndex"
             },
-            "multiInstanceLoopCharacteristics": {
+            "targetMultiInstanceLoopCharacteristics": {
               "type": "variable",
               "value": "multiInstanceLoopCharacteristics"
             }
@@ -46,15 +46,15 @@
             }
           },
           "outputs": {
-            "result": {
+            "targetResult": {
               "type": "variable",
               "value": "result"
             },
-            "resultIndex": {
+            "targetResultIndex": {
               "type": "variable",
               "value": "resultIndex"
             },
-            "multiInstanceLoopCharacteristics": {
+            "targetMultiInstanceLoopCharacteristics": {
               "type": "variable",
               "value": "multiInstanceLoopCharacteristics"
             }
@@ -86,11 +86,11 @@
             }
           },
           "outputs": {
-            "result": {
+            "targetResult": {
               "type": "variable",
               "value": "result"
             },
-            "resultIndex": {
+            "targetResultIndex": {
               "type": "variable",
               "value": "resultIndex"
             }
