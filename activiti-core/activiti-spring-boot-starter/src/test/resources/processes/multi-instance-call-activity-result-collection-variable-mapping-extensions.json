@@ -1,0 +1,143 @@
+{
+  "id": "multi-instance-call-activity-result-collection-all-model",
+  "name": "multi-instance-call-activity-result-collection-all",
+  "extensions": {
+    "multi-instance-parallel-call-activity-result-collection-all": {
+      "mappings": {
+        "parallel-callActivity": {
+          "inputs": {
+            "resultIndex": {
+              "type": "variable",
+              "value": "loopCounter"
+            },
+            "multiInstanceLoopCharacteristics": {
+              "type": "value",
+              "value": "parallel"
+            }
+          },
+          "outputs": {
+            "targetResult": {
+              "type": "variable",
+              "value": "result"
+            },
+            "targetResultIndex": {
+              "type": "variable",
+              "value": "resultIndex"
+            },
+            "targetMultiInstanceLoopCharacteristics": {
+              "type": "variable",
+              "value": "multiInstanceLoopCharacteristics"
+            }
+          }
+        }
+      }
+    },
+    "multi-instance-sequential-call-activity-result-collection-all": {
+      "mappings": {
+        "sequential-callActivity": {
+          "inputs": {
+            "resultIndex": {
+              "type": "variable",
+              "value": "loopCounter"
+            },
+            "multiInstanceLoopCharacteristics": {
+              "type": "value",
+              "value": "sequential"
+            }
+          },
+          "outputs": {
+            "targetResult": {
+              "type": "variable",
+              "value": "result"
+            },
+            "targetResultIndex": {
+              "type": "variable",
+              "value": "resultIndex"
+            },
+            "targetMultiInstanceLoopCharacteristics": {
+              "type": "variable",
+              "value": "multiInstanceLoopCharacteristics"
+            }
+          }
+        }
+      }
+    },
+    "multi-instance-parallel-call-activity-result-collection-empty-outputs": {
+      "mappings": {
+        "empty-outputs-callActivity": {
+          "inputs": {
+            "resultIndex": {
+              "type": "variable",
+              "value": "loopCounter"
+            }
+          },
+          "outputs": {
+          }
+        }
+      }
+    },
+    "multi-instance-parallel-call-activity-result-collection-loop-variables": {
+      "mappings": {
+        "loop-variables-callActivity": {
+          "inputs": {
+            "resultIndex": {
+              "type": "variable",
+              "value": "elementIndex"
+            }
+          },
+          "outputs": {
+            "targetResult": {
+              "type": "variable",
+              "value": "result"
+            },
+            "targetResultIndex": {
+              "type": "variable",
+              "value": "resultIndex"
+            }
+          }
+        }
+      }
+    },
+    "multi-instance-parallel-call-activity-result-collection-output-data-item": {
+      "mappings": {
+        "output-data-item-callActivity": {
+          "inputs": {
+            "resultIndex": {
+              "type": "variable",
+              "value": "elementIndex"
+            }
+          }
+        }
+      }
+    },
+    "multi-instance-call-activity-result-sub-process": {
+      "constants": {},
+      "mappings": {},
+      "properties": {
+        "de3a01c7-e2cc-4f16-b322-d04477288a0b": {
+          "id": "de3a01c7-e2cc-4f16-b322-d04477288a0b",
+          "name": "result",
+          "type": "string",
+          "required": false,
+          "value": "Result ${resultIndex}"
+        },
+        "de3a01c7-e2cc-4f16-b322-d04477288a0c": {
+          "id": "de3a01c7-e2cc-4f16-b322-d04477288a0c",
+          "name": "resultIndex",
+          "type": "integer",
+          "required": false,
+          "value": "${resultIndex}"
+        },
+        "de3a01c7-e2cc-4f16-b322-d04477288a0d": {
+          "id": "de3a01c7-e2cc-4f16-b322-d04477288a0d",
+          "name": "foo",
+          "type": "string",
+          "required": false,
+          "value": "bar",
+          "category": "local"
+        }
+      },
+      "assignments": {}
+    }
+  }
+}

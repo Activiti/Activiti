@@ -75,7 +75,8 @@ public class VariablesPropagatorTest {
                 MappingExecutionContext.buildMappingExecutionContext(execution),
                 availableVariables
             )
-        ).willReturn(outboundVariables);
+        )
+            .willReturn(outboundVariables);
 
         //when
         variablesPropagator.propagate(execution, availableVariables);

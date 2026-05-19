@@ -22,8 +22,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Predicate;
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BoundaryEvent;
+import org.activiti.bpmn.model.CallActivity;
 import org.activiti.bpmn.model.CompensateEventDefinition;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
@@ -36,7 +39,6 @@ import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
-import org.activiti.engine.impl.cmd.CompleteTaskCmd;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.engine.impl.delegate.SubProcessActivityBehavior;
@@ -46,6 +48,7 @@ import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.function.ThrowingConsumer;
 
 /**
  * Implementation of the multi-instance functionality as described in the BPMN 2.0 spec.
@@ -189,7 +192,12 @@ public abstract class MultiInstanceActivityBehavior
     }
 
     // required for supporting external subprocesses
-    public void completing(DelegateExecution execution, DelegateExecution subProcessInstance) throws Exception {}
+    public void completing(DelegateExecution execution, DelegateExecution subProcessInstance) throws Exception {
+        Optional
+            .ofNullable(execution)
+            .filter(isInnerSubProcessActivity().and(isCallActivityCurrentFlowElement()))
+            .ifPresent(completingSubProcessInstance(subProcessInstance));
+    }
 
     // required for supporting external subprocesses
     public void completed(DelegateExecution execution) throws Exception {
@@ -198,6 +206,19 @@ public abstract class MultiInstanceActivityBehavior
 
     // Helpers
     // //////////////////////////////////////////////////////////////////////
+
+    private Predicate<DelegateExecution> isCallActivityCurrentFlowElement() {
+        return execution -> execution.getCurrentFlowElement() instanceof CallActivity;
+    }
+
+    private Predicate<DelegateExecution> isInnerSubProcessActivity() {
+        return execution -> this.getInnerActivityBehavior() instanceof SubProcessActivityBehavior;
+    }
+
+    private ThrowingConsumer<DelegateExecution> completingSubProcessInstance(DelegateExecution subProcessInstance) {
+        return execution ->
+            SubProcessActivityBehavior.class.cast(innerActivityBehavior).completing(execution, subProcessInstance);
+    }
 
     @SuppressWarnings("rawtypes")
     protected int resolveNrOfInstances(DelegateExecution execution) {
