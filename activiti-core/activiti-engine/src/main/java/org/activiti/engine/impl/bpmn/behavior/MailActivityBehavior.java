@@ -42,11 +42,6 @@ import org.apache.commons.mail2.jakarta.SimpleEmail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
-
-
-
- */
 public class MailActivityBehavior extends AbstractBpmnActivityBehavior {
 
   private static final long serialVersionUID = 1L;
