@@ -6,10 +6,10 @@ create table ACT_GE_PROPERTY (
 );
 
 insert into ACT_GE_PROPERTY
-values ('schema.version', '8.1.4', 1);
+values ('schema.version', '8.1.5', 1);
 
 insert into ACT_GE_PROPERTY
-values ('schema.history', 'create(8.1.4)', 1);
+values ('schema.history', 'create(8.1.5)', 1);
 
 insert into ACT_GE_PROPERTY
 values ('next.dbid', '1', 1);
@@ -259,7 +259,7 @@ create table ACT_RU_EVENT_SUBSCR (
 );
 
 create table ACT_EVT_LOG (
-    LOG_NR_ SERIAL PRIMARY KEY,
+    LOG_NR_ BIGSERIAL PRIMARY KEY,
     TYPE_ varchar(64),
     PROC_DEF_ID_ varchar(64),
     PROC_INST_ID_ varchar(64),
