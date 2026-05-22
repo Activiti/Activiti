@@ -24,6 +24,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.ObjectNode;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
@@ -74,6 +76,73 @@ public class JsonTypeConverterTest {
         assertThat(convertedValue).isInstanceOf(Person.class);
         assertThat(((Person) convertedValue).getFirstName()).isEqualTo("John");
         assertThat(((Person) convertedValue).getLastName()).isEqualTo("Doe");
+    }
+
+    @Test
+    public void should_returnArrayNode_whenTextValue2IsArrayNodeClass() throws Exception {
+        //given
+        JsonNode jsonNode = jsonMapper.readTree("[1, 2, 3]");
+
+        //when
+        Object convertedValue = converter.convertToValue(
+            jsonNode,
+            buildValueFields("numbers", ArrayNode.class.getName())
+        );
+
+        //then
+        assertThat(convertedValue).isInstanceOf(ArrayNode.class);
+    }
+
+    @Test
+    public void should_returnArrayNode_whenTextValue2IsLegacyJackson2ArrayNodeClass() throws Exception {
+        //given
+        JsonNode jsonNode = jsonMapper.readTree("[1, 2, 3]");
+
+        //when
+        Object convertedValue = converter.convertToValue(
+            jsonNode,
+            buildValueFields("numbers", "com.fasterxml.jackson.databind.node.ArrayNode")
+        );
+
+        //then
+        assertThat(convertedValue).isInstanceOf(ArrayNode.class);
+    }
+
+    @Test
+    public void should_returnObjectNode_whenTextValue2IsObjectNodeClass() throws Exception {
+        //given
+        JsonNode jsonNode = jsonMapper.readTree("{\"key\":\"value\"}");
+
+        //when
+        Object convertedValue = converter.convertToValue(
+            jsonNode,
+            buildValueFields("object", ObjectNode.class.getName())
+        );
+
+        //then
+        assertThat(convertedValue).isInstanceOf(ObjectNode.class);
+    }
+
+    @Test
+    public void should_returnObjectNode_whenTextValue2IsLegacyJackson2ObjectNodeClass() throws Exception {
+        //given
+        JsonNode jsonNode = jsonMapper.readTree("{\"key\":\"value\"}");
+
+        //when
+        Object convertedValue = converter.convertToValue(
+            jsonNode,
+            buildValueFields("object", "com.fasterxml.jackson.databind.node.ObjectNode")
+        );
+
+        //then
+        assertThat(convertedValue).isInstanceOf(ObjectNode.class);
+    }
+
+    private ValueFields buildValueFields(String name, String textValue2) {
+        ValueFields valueFields = mock(ValueFields.class);
+        given(valueFields.getName()).willReturn(name);
+        given(valueFields.getTextValue2()).willReturn(textValue2);
+        return valueFields;
     }
 
     @JsonTypeInfo(property = TYPE_PROPERTY_NAME, use = Id.CLASS)

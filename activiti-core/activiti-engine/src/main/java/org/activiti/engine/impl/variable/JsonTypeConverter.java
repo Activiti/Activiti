@@ -57,10 +57,19 @@ public class JsonTypeConverter {
     }
 
     private Object convertToType(JsonNode jsonValue, String type) throws ClassNotFoundException {
-        return jsonMapper.convertValue(jsonValue, loadClass(type));
+        Class<?> targetClass = loadClass(type);
+        if (JsonNode.class.isAssignableFrom(targetClass) && targetClass.isInstance(jsonValue)) {
+            return jsonValue;
+        }
+        return jsonMapper.convertValue(jsonValue, targetClass);
     }
 
     private Class<?> loadClass(String type) throws ClassNotFoundException {
-        return Class.forName(type, false, this.getClass().getClassLoader());
+        String resolvedType = type.replace("com.fasterxml.jackson.", "tools.jackson.");
+        try {
+            return Class.forName(resolvedType, false, this.getClass().getClassLoader());
+        } catch (ClassNotFoundException e) {
+            return Class.forName(type, false, this.getClass().getClassLoader());
+        }
     }
 }
