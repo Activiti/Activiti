@@ -195,16 +195,23 @@ public class TaskRuntimeImpl implements TaskRuntime {
                 " due it is not a candidate for it"
             );
         }
-        // validate the task doesn't have an assignee
-        if (task.getAssignee() != null && !task.getAssignee().isEmpty()) {
+
+        String authenticatedUserId = securityManager.getAuthenticatedUserId();
+        claimTaskPayload.setAssignee(authenticatedUserId);
+
+        String assignee = task.getAssignee() == null || task.getAssignee().trim().isEmpty() ? null : task.getAssignee();
+
+        // Reject claiming when the task is already assigned to a different user
+        if (assignee != null && !assignee.equals(authenticatedUserId)) {
             throw new IllegalStateException(
                 "The task was already claimed, the assignee of this task needs to release it first for you to claim it"
             );
         }
 
-        String authenticatedUserId = securityManager.getAuthenticatedUserId();
-        claimTaskPayload.setAssignee(authenticatedUserId);
-        taskService.claim(claimTaskPayload.getTaskId(), claimTaskPayload.getAssignee());
+        // Claim only when currently unassigned; if already assigned to current user, keep it as-is
+        if (assignee == null) {
+            taskService.claim(claimTaskPayload.getTaskId(), claimTaskPayload.getAssignee());
+        }
 
         return task(claimTaskPayload.getTaskId());
     }
