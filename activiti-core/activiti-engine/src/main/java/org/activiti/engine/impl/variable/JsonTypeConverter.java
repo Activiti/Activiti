@@ -60,7 +60,7 @@ public class JsonTypeConverter {
 
     private Object convertToType(JsonNode jsonValue, String type) throws ClassNotFoundException {
         Class<?> targetClass = loadClass(type);
-        if (JsonNode.class.isAssignableFrom(targetClass) && targetClass.isInstance(jsonValue)) {
+        if (targetClass.isInstance(jsonValue) && JsonNode.class.isAssignableFrom(targetClass)) {
             return jsonValue;
         }
         return jsonMapper.convertValue(jsonValue, targetClass);
