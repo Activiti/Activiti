@@ -24,6 +24,8 @@ import org.slf4j.LoggerFactory;
 public class JsonTypeConverter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JsonType.class);
+    private static final String LEGACY_JACKSON_PACKAGE = "com.fasterxml.jackson.";
+    private static final String CURRENT_JACKSON_PACKAGE = "tools.jackson.";
 
     private JsonMapper jsonMapper;
     private String javaClassFieldForJackson;
@@ -65,11 +67,14 @@ public class JsonTypeConverter {
     }
 
     private Class<?> loadClass(String type) throws ClassNotFoundException {
-        String resolvedType = type.replace("com.fasterxml.jackson.", "tools.jackson.");
-        try {
-            return Class.forName(resolvedType, false, this.getClass().getClassLoader());
-        } catch (ClassNotFoundException e) {
-            return Class.forName(type, false, this.getClass().getClassLoader());
+        if (type.startsWith(LEGACY_JACKSON_PACKAGE)) {
+            String resolvedType = CURRENT_JACKSON_PACKAGE + type.substring(LEGACY_JACKSON_PACKAGE.length());
+            try {
+                return Class.forName(resolvedType, false, this.getClass().getClassLoader());
+            } catch (ClassNotFoundException e) {
+                return Class.forName(type, false, this.getClass().getClassLoader());
+            }
         }
+        return Class.forName(type, false, this.getClass().getClassLoader());
     }
 }
