@@ -145,6 +145,7 @@ public class DbSqlSession implements Session {
         ACTIVITI_VERSIONS.add(new ActivitiVersion("8.1.0"));
         ACTIVITI_VERSIONS.add(new ActivitiVersion("8.1.3"));
         ACTIVITI_VERSIONS.add(new ActivitiVersion("8.1.4"));
+        ACTIVITI_VERSIONS.add(new ActivitiVersion("8.1.5"));
         ACTIVITI_VERSIONS.add(new ActivitiVersion(ProcessEngine.VERSION));
     }
 
