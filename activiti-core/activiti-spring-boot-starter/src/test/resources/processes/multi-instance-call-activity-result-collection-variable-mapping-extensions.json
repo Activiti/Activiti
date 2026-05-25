@@ -70,8 +70,6 @@
               "type": "variable",
               "value": "loopCounter"
             }
-          },
-          "outputs": {
           }
         }
       }

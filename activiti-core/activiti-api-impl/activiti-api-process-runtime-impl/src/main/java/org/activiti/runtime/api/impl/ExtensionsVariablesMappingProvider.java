@@ -390,11 +390,9 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
         Map<String, Object> availableVariables
     ) {
         Map<String, Object> outboundVariables = new HashMap<>();
-        Map<String, Mapping> outputMappings = Optional
-            .of(extensions.getMappingForFlowElement(mappingExecutionContext.getActivityId()))
-            .map(ProcessVariablesMapping::getOutputs)
-            .map(LinkedHashMap::new)
-            .get();
+        Map<String, Mapping> outputMappings = new LinkedHashMap<>(
+            extensions.getMappingForFlowElement(mappingExecutionContext.getActivityId()).getOutputs()
+        );
         DelegateExecution execution = mappingExecutionContext.getExecution();
 
         if (outputMappings.isEmpty() && isMultiInstanceCallActivity(execution)) {
