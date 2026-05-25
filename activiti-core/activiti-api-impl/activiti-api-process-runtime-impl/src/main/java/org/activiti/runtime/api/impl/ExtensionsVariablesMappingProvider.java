@@ -21,6 +21,8 @@ import static org.activiti.spring.process.model.Mapping.SourceMappingType.VARIAB
 import com.flipkart.zjsonpatch.Jackson3JsonPatch;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
@@ -391,7 +393,7 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
         ProcessVariablesMapping processVariablesMapping = extensions.getMappingForFlowElement(
             mappingExecutionContext.getActivityId()
         );
-        Map<String, Mapping> outputMappings = processVariablesMapping.getOutputs();
+        Map<String, Mapping> outputMappings = new LinkedHashMap<>(processVariablesMapping.getOutputs());
         DelegateExecution execution = mappingExecutionContext.getExecution();
 
         if (outputMappings.isEmpty() && isMultiInstanceCallActivity(execution)) {
@@ -399,7 +401,7 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
                 Optional
                     .ofNullable(variableDefinition.getCategory())
                     .or(() -> Optional.of("output"))
-                    .map(String::toLowerCase)
+                    .map(it -> it.toLowerCase(Locale.ROOT))
                     .filter(category -> category.contains("output"))
                     .isPresent();
 
