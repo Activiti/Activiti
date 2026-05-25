@@ -151,6 +151,14 @@
           "required": false,
           "value": "bar",
           "category": "input"
+        },
+        "de3a01c7-e2cc-4f16-b322-d04477288a0g": {
+          "id": "de3a01c7-e2cc-4f16-b322-d04477288a0g",
+          "name": "quix",
+          "type": "string",
+          "required": false,
+          "value": "foobar",
+          "category": null
         }
       },
       "assignments": {}

@@ -22,6 +22,7 @@ import com.flipkart.zjsonpatch.Jackson3JsonPatch;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
@@ -67,6 +68,8 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
     private static final Pattern VARIABLE_PATTERN = Pattern.compile("/\\$\\{(\\w+)}");
 
     public static final String JSON_PATCH_MAPPING_ERROR = "Invalid jsonPatch variable mapping";
+
+    private static final List<String> ELIGIBLE_OUTPUT_CATEGORY = List.of("output", "input/output");
 
     public ExtensionsVariablesMappingProvider(
         ProcessExtensionService processExtensionService,
@@ -399,9 +402,9 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
             final Predicate<VariableDefinition> isEligibleOutputVariable = variableDefinition ->
                 Optional
                     .ofNullable(variableDefinition.getCategory())
-                    .or(() -> Optional.of("output"))
+                    .or(() -> Optional.of("local"))
                     .map(it -> it.toLowerCase(Locale.ROOT))
-                    .filter(category -> category.contains("output"))
+                    .filter(ELIGIBLE_OUTPUT_CATEGORY::contains)
                     .isPresent();
 
             final Function<VariableDefinition, Map.Entry<String, Mapping>> toVariableOutputMapping = variableDefinition -> {
