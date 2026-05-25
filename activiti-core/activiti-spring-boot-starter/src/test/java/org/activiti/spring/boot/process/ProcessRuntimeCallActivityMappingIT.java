@@ -401,8 +401,8 @@ public class ProcessRuntimeCallActivityMappingIT {
             .extracting(VariableInstance::getValue)
             .asInstanceOf(InstanceOfAssertFactories.list(Map.class))
             .containsExactlyInAnyOrder(
-                Map.of("result", "Result 1", "resultIndex", 1, "foo", "bar"),
-                Map.of("result", "Result 0", "resultIndex", 0, "foo", "bar")
+                Map.of("result", "Result 1", "resultIndex", 1),
+                Map.of("result", "Result 0", "resultIndex", 0)
             );
 
         final Task task = getTask(processInstance);
