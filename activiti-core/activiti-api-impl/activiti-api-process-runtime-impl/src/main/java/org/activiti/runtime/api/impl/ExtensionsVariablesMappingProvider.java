@@ -20,7 +20,6 @@ import static org.activiti.spring.process.model.Mapping.SourceMappingType.VARIAB
 
 import com.flipkart.zjsonpatch.Jackson3JsonPatch;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -29,6 +28,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import org.activiti.bpmn.model.CallActivity;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.DelegateExecution;
@@ -68,7 +68,7 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
 
     public static final String JSON_PATCH_MAPPING_ERROR = "Invalid jsonPatch variable mapping";
 
-    private static final List<String> ELIGIBLE_OUTPUT_CATEGORY = List.of("output", "input/output");
+    private static final List<String> OUTPUT_CATEGORY = List.of("output", "input/output");
 
     public ExtensionsVariablesMappingProvider(
         ProcessExtensionService processExtensionService,
@@ -392,17 +392,20 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
         Map<String, Object> availableVariables
     ) {
         Map<String, Object> outboundVariables = new HashMap<>();
-        Map<String, Mapping> outputMappings = new LinkedHashMap<>(
-            extensions.getMappingForFlowElement(mappingExecutionContext.getActivityId()).getOutputs()
-        );
+        Map<String, Mapping> outputMappings = Optional
+            .of(extensions.getMappingForFlowElement(mappingExecutionContext.getActivityId()))
+            .map(ProcessVariablesMapping::getOutputs)
+            .map(Map::copyOf)
+            .orElseGet(Map::of);
+
         DelegateExecution execution = mappingExecutionContext.getExecution();
 
         if (outputMappings.isEmpty() && isMultiInstanceCallActivity(execution)) {
-            final Predicate<VariableDefinition> isEligibleOutputVariable = variableDefinition ->
+            final Predicate<VariableDefinition> isOutputVariableCategory = variableDefinition ->
                 Optional
                     .ofNullable(variableDefinition.getCategory())
                     .map(it -> it.toLowerCase(Locale.ROOT))
-                    .filter(ELIGIBLE_OUTPUT_CATEGORY::contains)
+                    .filter(OUTPUT_CATEGORY::contains)
                     .isPresent();
 
             final Function<VariableDefinition, Map.Entry<String, Mapping>> toVariableOutputMapping = variableDefinition -> {
@@ -413,26 +416,28 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
                 return Map.entry(variableDefinition.getName(), mapping);
             };
 
-            Optional
-                .ofNullable(mappingExecutionContext.getSubProcessExecution())
-                .map(DelegateExecution::getProcessDefinitionId)
-                .map(processExtensionService::getExtensionsForId)
-                .map(Extension::getProperties)
-                .ifPresent(properties ->
-                    properties
-                        .values()
-                        .stream()
-                        .filter(variableDefinition ->
-                            Optional
-                                .of(variableDefinition)
-                                .filter(Predicate.not(VariableDefinition::isEphemeral).and(isEligibleOutputVariable))
-                                .isPresent()
-                        )
-                        .map(toVariableOutputMapping)
-                        .forEach(mapping -> {
-                            outputMappings.put(mapping.getKey(), mapping.getValue());
-                        })
-                );
+            outputMappings =
+                Optional
+                    .ofNullable(mappingExecutionContext.getSubProcessExecution())
+                    .map(DelegateExecution::getProcessDefinitionId)
+                    .map(processExtensionService::getExtensionsForId)
+                    .map(Extension::getProperties)
+                    .map(properties ->
+                        properties
+                            .values()
+                            .stream()
+                            .filter(variableDefinition ->
+                                Optional
+                                    .of(variableDefinition)
+                                    .filter(
+                                        Predicate.not(VariableDefinition::isEphemeral).and(isOutputVariableCategory)
+                                    )
+                                    .isPresent()
+                            )
+                            .map(toVariableOutputMapping)
+                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
+                    )
+                    .orElseGet(Map::of);
         }
 
         for (Map.Entry<String, Mapping> mappingEntry : outputMappings.entrySet()) {
