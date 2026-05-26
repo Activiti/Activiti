@@ -19,7 +19,6 @@ import static java.util.Collections.emptyMap;
 import static org.activiti.spring.process.model.Mapping.SourceMappingType.VARIABLE;
 
 import com.flipkart.zjsonpatch.Jackson3JsonPatch;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -402,7 +401,6 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
             final Predicate<VariableDefinition> isEligibleOutputVariable = variableDefinition ->
                 Optional
                     .ofNullable(variableDefinition.getCategory())
-                    .or(() -> Optional.of("local"))
                     .map(it -> it.toLowerCase(Locale.ROOT))
                     .filter(ELIGIBLE_OUTPUT_CATEGORY::contains)
                     .isPresent();
@@ -420,10 +418,10 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
                 .map(DelegateExecution::getProcessDefinitionId)
                 .map(processExtensionService::getExtensionsForId)
                 .map(Extension::getProperties)
-                .map(Map::values)
-                .map(Collection::stream)
-                .ifPresent(stream ->
-                    stream
+                .ifPresent(properties ->
+                    properties
+                        .values()
+                        .stream()
                         .filter(variableDefinition ->
                             Optional
                                 .of(variableDefinition)
