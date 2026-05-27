@@ -25,11 +25,17 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElementsContainer;
 import org.activiti.bpmn.model.GraphicInfo;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
 
  */
 public class AssociationJsonConverter extends BaseBpmnJsonConverter {
+
+    public AssociationJsonConverter(JsonMapper jsonMapper) {
+        super(jsonMapper);
+    }
+
 
     public static void fillTypes(
         Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap,

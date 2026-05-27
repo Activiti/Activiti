@@ -34,7 +34,7 @@ public abstract class AbstractConverterTest {
     protected BpmnModel readJsonFile() throws Exception {
         InputStream jsonStream = this.getClass().getClassLoader().getResourceAsStream(getResource());
         JsonNode modelNode = new JsonMapper().readTree(jsonStream);
-        BpmnModel bpmnModel = new BpmnJsonConverter().convertToBpmnModel(modelNode);
+        BpmnModel bpmnModel = new BpmnJsonConverter(JsonMapper.builder().build()).convertToBpmnModel(modelNode);
         return bpmnModel;
     }
 
@@ -53,8 +53,8 @@ public abstract class AbstractConverterTest {
     }
 
     protected BpmnModel convertToJsonAndBack(BpmnModel bpmnModel) {
-        ObjectNode modelNode = new BpmnJsonConverter().convertToJson(bpmnModel);
-        bpmnModel = new BpmnJsonConverter().convertToBpmnModel(modelNode);
+        ObjectNode modelNode = new BpmnJsonConverter(JsonMapper.builder().build()).convertToJson(bpmnModel);
+        bpmnModel = new BpmnJsonConverter(JsonMapper.builder().build()).convertToBpmnModel(modelNode);
         return bpmnModel;
     }
 

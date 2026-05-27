@@ -21,11 +21,17 @@ import java.util.Map;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.EventGateway;
 import org.activiti.bpmn.model.FlowElement;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
 
  */
 public class EventGatewayJsonConverter extends BaseBpmnJsonConverter {
+
+    public EventGatewayJsonConverter(JsonMapper jsonMapper) {
+        super(jsonMapper);
+    }
+
 
     public static void fillTypes(
         Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap,

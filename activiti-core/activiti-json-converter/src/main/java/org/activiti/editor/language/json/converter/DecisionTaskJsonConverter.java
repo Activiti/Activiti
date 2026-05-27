@@ -24,12 +24,18 @@ import org.activiti.bpmn.model.ExtensionElement;
 import org.activiti.bpmn.model.FieldExtension;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.ServiceTask;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
 
 
  */
 public class DecisionTaskJsonConverter extends BaseBpmnJsonConverter implements DecisionTableAwareConverter {
+
+    public DecisionTaskJsonConverter(JsonMapper jsonMapper) {
+        super(jsonMapper);
+    }
+
 
     protected Map<String, String> decisionTableMap;
 

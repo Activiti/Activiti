@@ -21,11 +21,17 @@ import java.util.Map;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.TextAnnotation;
 import org.apache.commons.lang3.StringUtils;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
 
  */
 public class TextAnnotationJsonConverter extends BaseBpmnJsonConverter {
+
+    public TextAnnotationJsonConverter(JsonMapper jsonMapper) {
+        super(jsonMapper);
+    }
+
 
     public static void fillTypes(
         Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap,

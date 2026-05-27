@@ -28,11 +28,17 @@ import org.activiti.bpmn.model.UserTask;
 import org.activiti.editor.language.json.converter.util.CollectionUtils;
 import org.activiti.editor.language.json.model.ModelInfo;
 import org.apache.commons.lang3.StringUtils;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  *
  */
 public class UserTaskJsonConverter extends BaseBpmnJsonConverter implements FormAwareConverter, FormKeyAwareConverter {
+
+    public UserTaskJsonConverter(JsonMapper jsonMapper) {
+        super(jsonMapper);
+    }
+
 
     protected Map<String, String> formMap;
     protected Map<String, ModelInfo> formKeyMap;
