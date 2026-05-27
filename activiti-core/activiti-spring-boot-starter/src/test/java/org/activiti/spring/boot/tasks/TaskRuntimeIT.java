@@ -208,5 +208,9 @@ class TaskRuntimeIT {
         assertThat(persistedTask.getId()).isEqualTo(createdTask.getId());
         assertThat(persistedTask.getAssignee()).isEqualTo("dean");
         assertThat(persistedTask.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
+
+        Task deletedTask = taskRuntime.delete(TaskPayloadBuilder.delete().withTaskId(createdTask.getId()).build());
+        assertThat(deletedTask.getId()).isEqualTo(createdTask.getId());
+        assertThat(deletedTask.getStatus()).isEqualTo(Task.TaskStatus.CANCELLED);
     }
 }
