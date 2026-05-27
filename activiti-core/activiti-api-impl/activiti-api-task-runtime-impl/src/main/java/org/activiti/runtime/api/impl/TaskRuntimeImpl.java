@@ -184,7 +184,6 @@ public class TaskRuntimeImpl implements TaskRuntime {
 
     @Override
     public Task claim(ClaimTaskPayload claimTaskPayload) {
-        // Validate that the task is visible by the currently authorized user
         Task task;
         try {
             task = task(claimTaskPayload.getTaskId());
@@ -201,14 +200,12 @@ public class TaskRuntimeImpl implements TaskRuntime {
 
         String assignee = task.getAssignee() == null || task.getAssignee().trim().isEmpty() ? null : task.getAssignee();
 
-        // Reject claiming when the task is already assigned to a different user
         if (assignee != null && !assignee.equals(authenticatedUserId)) {
             throw new IllegalStateException(
                 "The task was already claimed, the assignee of this task needs to release it first for you to claim it"
             );
         }
 
-        // Claim only when currently unassigned; if already assigned to current user, keep it as-is
         if (assignee == null) {
             taskService.claim(claimTaskPayload.getTaskId(), claimTaskPayload.getAssignee());
         }
