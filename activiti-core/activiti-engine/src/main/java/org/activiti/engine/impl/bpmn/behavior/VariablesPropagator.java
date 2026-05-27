@@ -57,7 +57,7 @@ public class VariablesPropagator {
         return outputVariables;
     }
 
-    public void propagate(DelegateExecution execution, DelegateExecution subProcessInstance) throws Exception {
+    public void propagate(DelegateExecution execution, DelegateExecution subProcessInstance) {
         if (execution.getParent().isMultiInstanceRoot() && execution.getCurrentFlowElement() instanceof CallActivity) {
             execution.setVariablesLocal(
                 calculateMultiInstanceCallActivityLocalVariables(execution, subProcessInstance)
