@@ -36,6 +36,7 @@ import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.model.impl.TaskImpl;
 import org.activiti.api.task.model.payloads.AssignTaskPayload;
+import org.activiti.api.task.model.payloads.ClaimTaskPayload;
 import org.activiti.api.task.model.payloads.GetTasksPayload;
 import org.activiti.api.task.model.payloads.UpdateTaskPayload;
 import org.activiti.engine.TaskService;
@@ -132,6 +133,94 @@ public class TaskRuntimeImplTest {
 
         verify(taskService).unclaim(taskId);
         verify(taskService).claim(taskId, newAssignee);
+    }
+
+    @Test
+    void claim_should_notReclaimAndShouldNotThrow_when_taskAlreadyAssignedToAuthenticatedUser() {
+        //given
+        when(securityManager.getAuthenticatedUserId()).thenReturn(AUTHENTICATED_USER);
+
+        String taskId = "taskId";
+        ClaimTaskPayload claimTaskPayload = TaskPayloadBuilder.claim().withTaskId(taskId).build();
+
+        TaskImpl claimedTask = mock(TaskImpl.class);
+        when(claimedTask.getAssignee()).thenReturn(AUTHENTICATED_USER);
+        doReturn(claimedTask).when(taskRuntime).task(taskId);
+
+        //when
+        Task result = taskRuntime.claim(claimTaskPayload);
+
+        //then
+        assertThat(result).isEqualTo(claimedTask);
+        verify(taskService, never()).claim(any(), any());
+    }
+
+    @Test
+    void claim_should_claimTask_when_taskIsUnassigned() {
+        //given
+        when(securityManager.getAuthenticatedUserId()).thenReturn(AUTHENTICATED_USER);
+
+        String taskId = "taskId";
+        ClaimTaskPayload claimTaskPayload = TaskPayloadBuilder.claim().withTaskId(taskId).build();
+
+        TaskImpl unassignedTask = mock(TaskImpl.class);
+        when(unassignedTask.getAssignee()).thenReturn(null);
+
+        TaskImpl claimedTask = mock(TaskImpl.class);
+        doReturn(unassignedTask, claimedTask).when(taskRuntime).task(taskId);
+
+        //when
+        Task result = taskRuntime.claim(claimTaskPayload);
+
+        //then
+        assertThat(result).isEqualTo(claimedTask);
+        verify(taskService).claim(taskId, AUTHENTICATED_USER);
+    }
+
+    @Test
+    void claim_should_claimTask_when_taskAssigneeIsEmptyString() {
+        //given
+        when(securityManager.getAuthenticatedUserId()).thenReturn(AUTHENTICATED_USER);
+
+        String taskId = "taskId";
+        ClaimTaskPayload claimTaskPayload = TaskPayloadBuilder.claim().withTaskId(taskId).build();
+
+        TaskImpl taskWithEmptyAssignee = mock(TaskImpl.class);
+        when(taskWithEmptyAssignee.getAssignee()).thenReturn("");
+
+        TaskImpl claimedTask = mock(TaskImpl.class);
+        doReturn(taskWithEmptyAssignee, claimedTask).when(taskRuntime).task(taskId);
+
+        //when
+        Task result = taskRuntime.claim(claimTaskPayload);
+
+        //then
+        assertThat(result).isEqualTo(claimedTask);
+        verify(taskService).claim(taskId, AUTHENTICATED_USER);
+    }
+
+    @Test
+    void claim_should_throwIllegalStateException_when_taskAssignedToDifferentUser() {
+        //given
+        when(securityManager.getAuthenticatedUserId()).thenReturn(AUTHENTICATED_USER);
+
+        String taskId = "taskId";
+        ClaimTaskPayload claimTaskPayload = TaskPayloadBuilder.claim().withTaskId(taskId).build();
+
+        TaskImpl claimedTask = mock(TaskImpl.class);
+        when(claimedTask.getAssignee()).thenReturn("anotherUser");
+        doReturn(claimedTask).when(taskRuntime).task(taskId);
+
+        //when
+        Throwable thrown = catchThrowable(() -> taskRuntime.claim(claimTaskPayload));
+
+        //then
+        assertThat(thrown)
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessageStartingWith(
+                "The task was already claimed, the assignee of this task needs to release it first for you to claim it"
+            );
+        verify(taskService, never()).claim(any(), any());
     }
 
     @ParameterizedTest(name = "sorting by createdDate {0}")

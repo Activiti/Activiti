@@ -16,6 +16,7 @@
 package org.activiti.spring.boot.tasks;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.assertj.core.api.Assertions.tuple;
 
 import org.activiti.api.process.model.ProcessInstance;
@@ -38,6 +39,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 class TaskRuntimeIT {
 
     private static final String INITIATOR = "user";
+    private static final String TWO_TASK_PROCESS = "twoTaskProcess";
 
     @Autowired
     private ProcessCleanUpUtil processCleanUpUtil;
@@ -97,5 +99,118 @@ class TaskRuntimeIT {
         assertThat(taskPage.getContent())
             .extracting(Task::getName, Task::getDescription)
             .containsExactly(tuple("a".repeat(255), "a".repeat(4000)));
+    }
+
+    @Test
+    void should_claimCandidateTaskFromStartedProcess() {
+        //given
+        ProcessInstance processInstance = processRuntime.start(
+            ProcessPayloadBuilder.start().withProcessDefinitionKey(TWO_TASK_PROCESS).build()
+        );
+
+        securityUtil.logInAs("dean");
+
+        //when
+        Page<Task> taskPage = taskRuntime.tasks(
+            Pageable.of(0, 10),
+            TaskPayloadBuilder.tasksForProcess(processInstance).build()
+        );
+
+        assertThat(taskPage.getContent()).hasSize(1);
+
+        Task availableTask = taskPage.getContent().getFirst();
+        Task claimedTask = taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(availableTask.getId()).build());
+
+        Page<Task> claimedTaskPage = taskRuntime.tasks(
+            Pageable.of(0, 10),
+            TaskPayloadBuilder.tasksForProcess(processInstance).build()
+        );
+
+        //then
+        assertThat(taskPage.getContent())
+            .extracting(Task::getName, Task::getAssignee, Task::getStatus)
+            .containsExactly(tuple("User Task", null, Task.TaskStatus.CREATED));
+
+        assertThat(claimedTask.getId()).isEqualTo(availableTask.getId());
+        assertThat(claimedTask.getAssignee()).isEqualTo("dean");
+        assertThat(claimedTask.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
+
+        assertThat(claimedTaskPage.getContent())
+            .extracting(Task::getId, Task::getAssignee, Task::getStatus)
+            .containsExactly(tuple(availableTask.getId(), "dean", Task.TaskStatus.ASSIGNED));
+    }
+
+    @Test
+    void should_notReclaimTaskWhenAlreadyAssignedToAuthenticatedUser() {
+        //given
+        ProcessInstance processInstance = processRuntime.start(
+            ProcessPayloadBuilder.start().withProcessDefinitionKey(TWO_TASK_PROCESS).build()
+        );
+
+        securityUtil.logInAs("dean");
+
+        Page<Task> taskPage = taskRuntime.tasks(
+            Pageable.of(0, 10),
+            TaskPayloadBuilder.tasksForProcess(processInstance).build()
+        );
+
+        assertThat(taskPage.getContent()).hasSize(1);
+
+        Task availableTask = taskPage.getContent().getFirst();
+
+        Task initiallyClaimedTask = taskRuntime.claim(
+            TaskPayloadBuilder.claim().withTaskId(availableTask.getId()).build()
+        );
+
+        //when
+        Task claimedAgainTask = taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(availableTask.getId()).build());
+
+        //then
+        assertThat(initiallyClaimedTask.getId()).isEqualTo(availableTask.getId());
+        assertThat(initiallyClaimedTask.getAssignee()).isEqualTo("dean");
+        assertThat(initiallyClaimedTask.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
+
+        assertThat(claimedAgainTask.getId()).isEqualTo(initiallyClaimedTask.getId());
+        assertThat(claimedAgainTask.getAssignee()).isEqualTo("dean");
+        assertThat(claimedAgainTask.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
+    }
+
+    @Test
+    void should_rejectClaimWhenTaskAlreadyClaimedByAnotherUser() {
+        //given
+        Task createdTask = taskRuntime.create(
+            TaskPayloadBuilder.create().withName("claim-test-task").withCandidateUsers("dean").build()
+        );
+
+        securityUtil.logInAs("dean");
+
+        Task claimedTask = taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(createdTask.getId()).build());
+
+        securityUtil.logInAs(INITIATOR);
+
+        //when
+        Throwable thrown = catchThrowable(() ->
+            taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(createdTask.getId()).build())
+        );
+
+        Task persistedTask = taskRuntime.task(createdTask.getId());
+
+        //then
+        assertThat(claimedTask.getAssignee()).isEqualTo("dean");
+        assertThat(claimedTask.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
+
+        assertThat(thrown)
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessage(
+                "The task was already claimed, the assignee of this task needs to release it first for you to claim it"
+            );
+
+        assertThat(persistedTask.getId()).isEqualTo(createdTask.getId());
+        assertThat(persistedTask.getAssignee()).isEqualTo("dean");
+        assertThat(persistedTask.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
+
+        Task deletedTask = taskRuntime.delete(TaskPayloadBuilder.delete().withTaskId(createdTask.getId()).build());
+        assertThat(deletedTask.getId()).isEqualTo(createdTask.getId());
+        assertThat(deletedTask.getStatus()).isEqualTo(Task.TaskStatus.CANCELLED);
     }
 }
