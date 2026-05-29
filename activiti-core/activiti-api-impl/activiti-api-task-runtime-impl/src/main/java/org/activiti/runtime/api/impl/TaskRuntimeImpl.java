@@ -44,6 +44,7 @@ import org.activiti.api.task.model.payloads.ReleaseTaskPayload;
 import org.activiti.api.task.model.payloads.SaveTaskPayload;
 import org.activiti.api.task.model.payloads.UpdateTaskPayload;
 import org.activiti.api.task.model.payloads.UpdateTaskVariablePayload;
+import org.activiti.api.task.runtime.TaskIdentificationStrategy;
 import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.api.task.runtime.conf.TaskRuntimeConfiguration;
 import org.activiti.engine.ActivitiTaskAlreadyClaimedException;
@@ -291,8 +292,20 @@ public class TaskRuntimeImpl implements TaskRuntime {
         return taskConverter.from(task);
     }
 
+
     @Override
-    public Task nextTask(boolean claimCandidate) {
+    public Task nextTask(TaskIdentificationStrategy strategy) {
+        TaskIdentificationStrategy effectiveStrategy =
+            strategy == null ? TaskIdentificationStrategy.CLAIM_BEFORE_OPEN_OLDEST_FIRST : strategy;
+
+        if (effectiveStrategy == TaskIdentificationStrategy.CLAIM_BEFORE_OPEN_OLDEST_FIRST) {
+            return nextTaskClaimBeforeOpenOldestFirst();
+        }
+
+        throw new IllegalArgumentException("Unsupported task identification strategy: " + effectiveStrategy);
+    }
+
+    private Task nextTaskClaimBeforeOpenOldestFirst() {
         String userId = securityManager.getAuthenticatedUserId();
         if (userId == null || userId.isEmpty()) {
             throw new IllegalStateException("You need an authenticated user to perform this operation");
@@ -319,9 +332,6 @@ public class TaskRuntimeImpl implements TaskRuntime {
 
         List<org.activiti.engine.task.Task> nextCandidateTasks = nextCandidateTaskQuery.listPage(0, 3);
         for (org.activiti.engine.task.Task nextCandidateTask : nextCandidateTasks) {
-            if (!claimCandidate) {
-                return taskConverter.fromWithCandidates(nextCandidateTask);
-            }
             try {
                 taskService.claim(nextCandidateTask.getId(), userId);
                 return task(nextCandidateTask.getId());
@@ -586,9 +596,9 @@ public class TaskRuntimeImpl implements TaskRuntime {
 
         TaskQuery sortedQuery = SORT_FIELD_MAPPERS.get(sortField).apply(taskQuery);
 
-        return switch (order.getDirection()) {
-            case ASC -> sortedQuery.asc();
-            case DESC -> sortedQuery.desc();
-        };
+        if (order.getDirection() == Order.Direction.ASC) {
+            return sortedQuery.asc();
+        }
+        return sortedQuery.desc();
     }
 }
