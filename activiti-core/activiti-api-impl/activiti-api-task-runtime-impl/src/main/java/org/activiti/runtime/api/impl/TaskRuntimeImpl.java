@@ -46,6 +46,7 @@ import org.activiti.api.task.model.payloads.UpdateTaskPayload;
 import org.activiti.api.task.model.payloads.UpdateTaskVariablePayload;
 import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.api.task.runtime.conf.TaskRuntimeConfiguration;
+import org.activiti.engine.ActivitiTaskAlreadyClaimedException;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
@@ -291,35 +292,45 @@ public class TaskRuntimeImpl implements TaskRuntime {
     }
 
     @Override
-    public Task nextTask() {
+    public Task nextTask(boolean claimCandidate) {
         String userId = securityManager.getAuthenticatedUserId();
         if (userId == null || userId.isEmpty()) {
             throw new IllegalStateException("You need an authenticated user to perform this operation");
         }
 
-        Task nextAssignedTask = getFirstTaskOf(
-            taskService.createTaskQuery().taskAssignee(userId).orderByTaskCreateTime().asc()
-        );
+        TaskQuery nextAssignedTasksQuery = taskService
+            .createTaskQuery()
+            .taskAssignee(userId)
+            .orderByTaskCreateTime()
+            .asc();
 
-        if (nextAssignedTask != null) {
-            return nextAssignedTask;
+        List<org.activiti.engine.task.Task> nextAssignedTasks = nextAssignedTasksQuery.listPage(0, 1);
+
+        if (!nextAssignedTasks.isEmpty()) {
+            return taskConverter.fromWithCandidates(nextAssignedTasks.getFirst());
         }
 
         List<String> userGroups = securityManager.getAuthenticatedUserGroups();
+        TaskQuery nextCandidateTaskQuery = taskService
+            .createTaskQuery()
+            .taskCandidateUser(userId, userGroups)
+            .orderByTaskCreateTime()
+            .asc();
 
-        return getFirstTaskOf(
-            taskService.createTaskQuery().taskCandidateUser(userId, userGroups).orderByTaskCreateTime().asc()
-        );
-    }
-
-    private Task getFirstTaskOf(TaskQuery taskQuery) {
-        List<org.activiti.engine.task.Task> tasks = taskQuery.listPage(0, 1);
-
-        if (tasks.isEmpty()) {
-            return null;
+        List<org.activiti.engine.task.Task> nextCandidateTasks = nextCandidateTaskQuery.listPage(0, 3);
+        for (org.activiti.engine.task.Task nextCandidateTask : nextCandidateTasks) {
+            if (!claimCandidate) {
+                return taskConverter.fromWithCandidates(nextCandidateTask);
+            }
+            try {
+                taskService.claim(nextCandidateTask.getId(), userId);
+                return task(nextCandidateTask.getId());
+            } catch (ActivitiTaskAlreadyClaimedException ex) {
+                // Try the next candidate task when the current one was claimed concurrently.
+            }
         }
 
-        return taskConverter.fromWithCandidates(tasks.getFirst());
+        return null;
     }
 
     @Override

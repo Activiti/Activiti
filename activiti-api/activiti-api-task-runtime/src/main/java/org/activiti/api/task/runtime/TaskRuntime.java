@@ -77,12 +77,17 @@ public interface TaskRuntime {
      * Gets the next available task for the authenticated user ordered by creation time (oldest first).
      * <p>
      * The lookup prioritizes tasks already assigned to the user. If none are found,
-     * it returns the next task where the user is a candidate.
+     * it checks up to 3 candidate tasks (oldest first).
+     * <p>
+     * When {@code claimCandidate} is {@code true}, the runtime attempts to claim each candidate
+     * task before returning it. If claiming a candidate fails with an
+     * {@code ActivitiTaskAlreadyClaimedException}, it continues with the next candidate task.
      *
-     * @return the next task for the authenticated user, or {@code null} if no task is available
+     * @param claimCandidate when {@code true}, try to claim a candidate task before returning it
+     * @return the next task for the authenticated user, or {@code null} if no suitable task is available
      * @throws IllegalStateException if there is no authenticated user
      */
-    Task nextTask();
+    Task nextTask(boolean claimCandidate);
 
     /**
      * Claim a task with the currently authenticated user
