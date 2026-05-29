@@ -22,6 +22,7 @@ import static org.assertj.core.api.Assertions.tuple;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.runtime.ProcessRuntime;
+import org.activiti.api.runtime.shared.query.Filter;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
@@ -212,5 +213,31 @@ class TaskRuntimeIT {
         Task deletedTask = taskRuntime.delete(TaskPayloadBuilder.delete().withTaskId(createdTask.getId()).build());
         assertThat(deletedTask.getId()).isEqualTo(createdTask.getId());
         assertThat(deletedTask.getStatus()).isEqualTo(Task.TaskStatus.CANCELLED);
+    }
+
+    @Test
+    void should_rejectInvalidTaskFilterProperty() {
+        //when
+        Throwable thrown = catchThrowable(() ->
+            taskRuntime.tasks(Pageable.of(0, 10, null, Filter.by("owner", "me")))
+        );
+
+        //then
+        assertThat(thrown)
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("Unsupported task filter property: owner. Supported property: assignee");
+    }
+
+    @Test
+    void should_rejectInvalidAssigneeFilterValue() {
+        //when
+        Throwable thrown = catchThrowable(() ->
+            taskRuntime.tasks(Pageable.of(0, 10, null, Filter.by("assignee", "someone-else")))
+        );
+
+        //then
+        assertThat(thrown)
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("Unsupported assignee filter value: someone-else. Supported values: me, my, user");
     }
 }

@@ -111,35 +111,21 @@ public class TaskRuntimeImpl implements TaskRuntime {
 
     @Override
     public Page<Task> tasks(Pageable pageable, GetTasksPayload getTasksPayload) {
-        TaskQuery taskQuery = taskService.createTaskQuery();
         if (getTasksPayload == null) {
             getTasksPayload = TaskPayloadBuilder.tasks().build();
         }
+
         String authenticatedUserId = securityManager.getAuthenticatedUserId();
         if (authenticatedUserId != null && !authenticatedUserId.isEmpty()) {
             List<String> userGroups = securityManager.getAuthenticatedUserGroups();
             getTasksPayload.setAssigneeId(authenticatedUserId);
-
-            Filter filter = pageable != null ? pageable.getFilter() : null;
-
-            boolean onlyAuthenticatedUserAssignedTasks =
-                filter != null
-                && filter.getProperty() != null
-                && "assignee".equalsIgnoreCase(filter.getProperty().trim())
-                && filter.getValue() != null
-                && List.of("me", "my", authenticatedUserId.toLowerCase(Locale.ROOT)).contains(filter.getValue().trim().toLowerCase(Locale.ROOT));
-
-            if (!onlyAuthenticatedUserAssignedTasks) {
-                getTasksPayload.setGroups(userGroups);
-            }
+            getTasksPayload.setGroups(userGroups);
         } else {
             throw new IllegalStateException("You need an authenticated user to perform a task query");
         }
-        taskQuery = taskQuery
-            .or()
-            .taskCandidateOrAssigned(getTasksPayload.getAssigneeId(), getTasksPayload.getGroups())
-            .taskOwner(authenticatedUserId)
-            .endOr();
+
+        TaskQuery taskQuery = taskService.createTaskQuery();
+        taskQuery = applyAssigneeFilter(pageable, getTasksPayload, authenticatedUserId, taskQuery);
 
         if (getTasksPayload.getProcessInstanceId() != null) {
             taskQuery = taskQuery.processInstanceId(getTasksPayload.getProcessInstanceId());
@@ -152,6 +138,62 @@ public class TaskRuntimeImpl implements TaskRuntime {
 
         List<Task> tasks = taskConverter.from(taskQuery.listPage(pageable.getStartIndex(), pageable.getMaxItems()));
         return new PageImpl<>(tasks, Math.toIntExact(taskQuery.count()));
+    }
+
+    private static TaskQuery applyAssigneeFilter(
+        Pageable pageable,
+        GetTasksPayload getTasksPayload,
+        String authenticatedUserId,
+        TaskQuery taskQuery
+    ) {
+        Filter filter = pageable != null ? pageable.getFilter() : null;
+
+        boolean onlyAuthenticatedUserAssignedTasks = false;
+
+        if (filter != null) {
+            String filterProperty = normalizeFilterToken(filter.getProperty());
+            String filterValue = normalizeFilterToken(filter.getValue());
+
+            if (filterProperty == null || filterValue == null) {
+                throw new IllegalArgumentException("Task filter property and value must be provided");
+            }
+
+            if (!"assignee".equals(filterProperty)) {
+                throw new IllegalArgumentException(
+                    "Unsupported task filter property: " + filter.getProperty() + ". Supported property: assignee"
+                );
+            }
+
+            onlyAuthenticatedUserAssignedTasks =
+                List.of("me", "my").contains(filterValue) || authenticatedUserId.equalsIgnoreCase(filterValue);
+
+            if (!onlyAuthenticatedUserAssignedTasks) {
+                throw new IllegalArgumentException(
+                    "Unsupported assignee filter value: " +
+                    filter.getValue() +
+                    ". Supported values: me, my, " +
+                    authenticatedUserId
+                );
+            }
+        }
+
+        taskQuery = taskQuery.or().taskOwner(authenticatedUserId);
+
+        taskQuery =
+            onlyAuthenticatedUserAssignedTasks
+                ? taskQuery.taskAssignee(authenticatedUserId)
+                : taskQuery.taskCandidateOrAssigned(getTasksPayload.getAssigneeId(), getTasksPayload.getGroups());
+
+        return taskQuery.endOr();
+    }
+
+    private static String normalizeFilterToken(String token) {
+        if (token == null) {
+            return null;
+        }
+
+        String normalizedToken = token.trim().toLowerCase(Locale.ROOT);
+        return normalizedToken.isEmpty() ? null : normalizedToken;
     }
 
     @Override
