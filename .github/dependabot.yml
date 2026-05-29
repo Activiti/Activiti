@@ -33,3 +33,6 @@ updates:
         update-types:
           - "minor"
           - "patch"
+    ignore:
+      # Managed by gh aw add. Version-locked to the gh-aw compiler; do not bump.
+      - dependency-name: "github/gh-aw-actions/**"
