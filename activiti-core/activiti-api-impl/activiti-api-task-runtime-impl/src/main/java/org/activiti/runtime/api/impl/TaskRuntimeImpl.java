@@ -291,6 +291,38 @@ public class TaskRuntimeImpl implements TaskRuntime {
     }
 
     @Override
+    public Task nextTask() {
+        String userId = securityManager.getAuthenticatedUserId();
+        if (userId == null || userId.isEmpty()) {
+            throw new IllegalStateException("You need an authenticated user to perform this operation");
+        }
+
+        Task nextAssignedTask = getFirstTaskOf(
+            taskService.createTaskQuery().taskAssignee(userId).orderByTaskCreateTime().asc()
+        );
+
+        if (nextAssignedTask != null) {
+            return nextAssignedTask;
+        }
+
+        List<String> userGroups = securityManager.getAuthenticatedUserGroups();
+
+        return getFirstTaskOf(
+            taskService.createTaskQuery().taskCandidateUser(userId, userGroups).orderByTaskCreateTime().asc()
+        );
+    }
+
+    private Task getFirstTaskOf(TaskQuery taskQuery) {
+        List<org.activiti.engine.task.Task> tasks = taskQuery.listPage(0, 1);
+
+        if (tasks.isEmpty()) {
+            return null;
+        }
+
+        return taskConverter.fromWithCandidates(tasks.getFirst());
+    }
+
+    @Override
     public void addCandidateUsers(CandidateUsersPayload candidateUsersPayload) {
         org.activiti.engine.task.Task internalTask;
         try {

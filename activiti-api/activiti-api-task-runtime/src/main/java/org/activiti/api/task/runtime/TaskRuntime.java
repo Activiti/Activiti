@@ -74,6 +74,17 @@ public interface TaskRuntime {
     Task create(CreateTaskPayload createTaskPayload);
 
     /**
+     * Gets the next available task for the authenticated user ordered by creation time (oldest first).
+     * <p>
+     * The lookup prioritizes tasks already assigned to the user. If none are found,
+     * it returns the next task where the user is a candidate.
+     *
+     * @return the next task for the authenticated user, or {@code null} if no task is available
+     * @throws IllegalStateException if there is no authenticated user
+     */
+    Task nextTask();
+
+    /**
      * Claim a task with the currently authenticated user
      *  - If there is no authenticated user throw an IllegalStateException
      *  - If the currently authenticated user is not a candidate throw an IllegalStateException
