@@ -71,7 +71,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
     private final TaskRuntimeHelper taskRuntimeHelper;
 
     private static final Map<String, Function<TaskQuery, TaskQuery>> SORT_FIELD_MAPPERS =
-        java.util.Map.of("createddate", TaskQuery::orderByTaskCreateTime);
+        java.util.Map.of("createddate", TaskQuery::orderByTaskCreateTime, "assignee", TaskQuery::orderByTaskAssignee);
 
     public TaskRuntimeImpl(
         TaskService taskService,
