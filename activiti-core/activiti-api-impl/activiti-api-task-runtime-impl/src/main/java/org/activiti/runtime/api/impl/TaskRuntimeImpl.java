@@ -23,6 +23,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.runtime.shared.NotFoundException;
+import org.activiti.api.runtime.shared.query.Filter;
 import org.activiti.api.runtime.shared.query.Order;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
@@ -71,7 +72,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
     private final TaskRuntimeHelper taskRuntimeHelper;
 
     private static final Map<String, Function<TaskQuery, TaskQuery>> SORT_FIELD_MAPPERS =
-        java.util.Map.of("createddate", TaskQuery::orderByTaskCreateTime, "assignee", TaskQuery::orderByTaskAssignee);
+        java.util.Map.of("createddate", TaskQuery::orderByTaskCreateTime);
 
     public TaskRuntimeImpl(
         TaskService taskService,
@@ -105,15 +106,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
 
     @Override
     public Page<Task> tasks(Pageable pageable) {
-        String authenticatedUserId = securityManager.getAuthenticatedUserId();
-        if (authenticatedUserId != null && !authenticatedUserId.isEmpty()) {
-            List<String> userGroups = securityManager.getAuthenticatedUserGroups();
-            return tasks(
-                pageable,
-                TaskPayloadBuilder.tasks().withAssignee(authenticatedUserId).withGroups(userGroups).build()
-            );
-        }
-        throw new IllegalStateException("You need an authenticated user to perform a task query");
+        return tasks(pageable, null);
     }
 
     @Override
@@ -126,7 +119,19 @@ public class TaskRuntimeImpl implements TaskRuntime {
         if (authenticatedUserId != null && !authenticatedUserId.isEmpty()) {
             List<String> userGroups = securityManager.getAuthenticatedUserGroups();
             getTasksPayload.setAssigneeId(authenticatedUserId);
-            getTasksPayload.setGroups(userGroups);
+
+            Filter filter = pageable != null ? pageable.getFilter() : null;
+
+            boolean onlyAuthenticatedUserAssignedTasks =
+                filter != null
+                && filter.getProperty() != null
+                && "assignee".equalsIgnoreCase(filter.getProperty().trim())
+                && filter.getValue() != null
+                && List.of("me", "my", authenticatedUserId.toLowerCase(Locale.ROOT)).contains(filter.getValue().trim().toLowerCase(Locale.ROOT));
+
+            if (!onlyAuthenticatedUserAssignedTasks) {
+                getTasksPayload.setGroups(userGroups);
+            }
         } else {
             throw new IllegalStateException("You need an authenticated user to perform a task query");
         }

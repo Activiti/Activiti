@@ -20,11 +20,17 @@ public class Pageable {
     private int startIndex;
     private int maxItems;
     private Order order;
+    private Filter filter;
 
     private Pageable(int startIndex, int maxItems, Order order) {
         this.startIndex = startIndex;
         this.maxItems = maxItems;
         this.order = order;
+    }
+
+    private Pageable(int startIndex, int maxItems, Order order, Filter filter) {
+        this(startIndex, maxItems, order);
+        this.filter = filter;
     }
 
     public static Pageable of(int startIndex, int maxItems) {
@@ -33,6 +39,10 @@ public class Pageable {
 
     public static Pageable of(int startIndex, int maxItems, Order order) {
         return new Pageable(startIndex, maxItems, order);
+    }
+
+    public static Pageable of(int startIndex, int maxItems, Order order, Filter filter) {
+        return new Pageable(startIndex, maxItems, order, filter);
     }
 
     public int getStartIndex() {
@@ -45,5 +55,9 @@ public class Pageable {
 
     public Order getOrder() {
         return order;
+    }
+
+    public Filter getFilter() {
+        return filter;
     }
 }
