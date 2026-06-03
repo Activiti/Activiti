@@ -33,6 +33,8 @@ import tools.jackson.databind.json.JsonMapper;
 @ExtendWith(MockitoExtension.class)
 public class ProcessEngineAutoConfigurationTest {
 
+    private static final JsonMapper JSON_MAPPER = JsonMapper.builder().build();
+
     @InjectMocks
     private ProcessEngineAutoConfiguration processEngineAutoConfiguration;
 
@@ -46,7 +48,7 @@ public class ProcessEngineAutoConfigurationTest {
         activitiProperties.setAsyncExecutorActivate(false);
         SpringProcessEngineConfiguration conf = new SpringProcessEngineConfiguration(
             applicationUpgradeContextServiceMock,
-            JsonMapper.builder().build()
+            JSON_MAPPER
         );
 
         //when
@@ -73,7 +75,7 @@ public class ProcessEngineAutoConfigurationTest {
         activitiProperties.setAsyncExecutorActivate(true);
         SpringProcessEngineConfiguration conf = new SpringProcessEngineConfiguration(
             applicationUpgradeContextServiceMock,
-            JsonMapper.builder().build()
+            JSON_MAPPER
         );
 
         //when
