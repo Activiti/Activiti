@@ -252,6 +252,9 @@ class TaskRuntimeIT {
         Task oldestCandidateTask = taskRuntime.create(
             TaskPayloadBuilder.create().withName("oldest-candidate-task").withCandidateUsers("dean").build()
         );
+
+        waitForNextClockTick();
+
         Task newerCandidateTask = taskRuntime.create(
             TaskPayloadBuilder.create().withName("newer-candidate-task").withCandidateUsers("dean").build()
         );
@@ -266,6 +269,19 @@ class TaskRuntimeIT {
 
         taskRuntime.delete(TaskPayloadBuilder.delete().withTaskId(nextTask.getId()).build());
         taskRuntime.delete(TaskPayloadBuilder.delete().withTaskId(newerCandidateTask.getId()).build());
+    }
+
+    private static void waitForNextClockTick() {
+        long currentTime = System.currentTimeMillis();
+
+        while (System.currentTimeMillis() == currentTime) {
+            try {
+                Thread.sleep(1L);
+            } catch (InterruptedException exception) {
+                Thread.currentThread().interrupt();
+                throw new AssertionError("Interrupted while waiting for the system clock to advance", exception);
+            }
+        }
     }
 
     @Test

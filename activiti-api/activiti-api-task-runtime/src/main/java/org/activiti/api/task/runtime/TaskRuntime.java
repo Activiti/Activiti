@@ -80,6 +80,7 @@ public interface TaskRuntime {
      * @return the next task for the authenticated user, or {@code null} if no suitable task is available
      * @throws IllegalStateException if there is no authenticated user
      * @throws IllegalArgumentException if the strategy is not supported
+     * @throws UnsupportedOperationException if this TaskRuntime implementation does not support this operation
      */
     default Task nextTask(TaskIdentificationStrategy taskIdentificationStrategy) {
         throw new UnsupportedOperationException("nextTask is not supported by this TaskRuntime implementation");

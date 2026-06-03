@@ -25,9 +25,9 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 import org.activiti.api.runtime.shared.query.Order;
 import org.activiti.api.runtime.shared.query.Pageable;
@@ -125,7 +125,7 @@ public class TaskRuntimeImplTest {
             .withTaskId(taskId)
             .withAssignee(newAssignee)
             .build();
-        List<String> userCandidates = Arrays.asList(newAssignee);
+        List<String> userCandidates = List.of(newAssignee);
         doReturn(userCandidates).when(taskRuntime).userCandidates(taskId);
         TaskImpl task = mock(TaskImpl.class);
         given(task.getAssignee()).willReturn("user");
@@ -423,7 +423,8 @@ public class TaskRuntimeImplTest {
         when(candidateTaskQuery.orderByTaskCreateTime()).thenReturn(candidateTaskQuery);
         when(candidateTaskQuery.asc()).thenReturn(candidateTaskQuery);
         when(candidateTaskQuery.listPage(0, 3)).thenReturn(List.of(candidateEngineTask));
-        doReturn(claimedTask).when(taskRuntime).task("candidate-task-id");
+        when(taskRuntimeHelper.getInternalTaskWithChecks("candidate-task-id")).thenReturn(candidateEngineTask);
+        when(taskConverter.fromWithCandidates(candidateEngineTask)).thenReturn(claimedTask);
 
         //when
         Task result = taskRuntime.nextTask(null);
@@ -461,10 +462,24 @@ public class TaskRuntimeImplTest {
         when(candidateTaskQuery.asc()).thenReturn(candidateTaskQuery);
         when(candidateTaskQuery.listPage(0, 3)).thenReturn(List.of(firstCandidate, secondCandidate));
 
+        Map<String, org.activiti.engine.task.Task> internalTasksById = Map.of(
+            "candidate-task-id-1",
+            firstCandidate,
+            "candidate-task-id-2",
+            secondCandidate
+        );
+        Map<String, Task> apiTasksById = Map.of("candidate-task-id-2", claimedTask);
+        when(taskRuntimeHelper.getInternalTaskWithChecks(any())).thenAnswer(invocation ->
+            internalTasksById.get(invocation.getArgument(0, String.class))
+        );
+        when(taskConverter.fromWithCandidates(any())).thenAnswer(invocation -> {
+            org.activiti.engine.task.Task engineTask = invocation.getArgument(0, org.activiti.engine.task.Task.class);
+            return engineTask == null ? null : apiTasksById.get(engineTask.getId());
+        });
+
         org.mockito.Mockito.doThrow(new ActivitiTaskAlreadyClaimedException("candidate-task-id-1", "other-user"))
             .when(taskService)
             .claim("candidate-task-id-1", AUTHENTICATED_USER);
-        doReturn(claimedTask).when(taskRuntime).task("candidate-task-id-2");
 
         //when
         Task result = taskRuntime.nextTask(TaskIdentificationStrategy.CLAIM_BEFORE_OPEN_OLDEST_FIRST);

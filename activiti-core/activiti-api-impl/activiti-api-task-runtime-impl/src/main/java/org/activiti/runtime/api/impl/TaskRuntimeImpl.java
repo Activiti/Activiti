@@ -304,13 +304,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
         TaskIdentificationStrategy effectiveStrategy =
             strategy == null ? TaskIdentificationStrategy.CLAIM_BEFORE_OPEN_OLDEST_FIRST : strategy;
 
-        Supplier<Task> nextTaskStrategy = nextTaskStrategies.get(effectiveStrategy);
-        if (nextTaskStrategy == null) {
-            throw new IllegalArgumentException("Unsupported task identification strategy: " + effectiveStrategy);
-        }
-
-
-        return nextTaskStrategy.get();
+        return nextTaskStrategies.get(effectiveStrategy).get();
     }
 
     private Task nextTaskClaimBeforeOpenOldestFirst() {
