@@ -32,7 +32,7 @@ safe-outputs:
     allowed: [security:low, security:medium, security:high]
   submit-pull-request-review:
 
-source: Alfresco/alfresco-build-tools/.github/workflows/supply-chain-review.md@ccf3ddbc10205c171ca84ad88d9a05b1c60069b2
+source: Alfresco/alfresco-build-tools/.github/workflows/supply-chain-review.md@b2070730e7482fb8d2791e97d7b288fdf3b106ef
 ---
 
 # Supply Chain Review
@@ -59,8 +59,8 @@ Before collecting external data, identify and exclude internal/private dependenc
 
 **Internal dependency namespaces (skip these):**
 
-- **Maven**: Any dependency with a `groupId` starting with `com.hyland.` or `org.alfresco.`
-- **npm**: Any package under the `@hyland/` or `@alfresco/` scopes
+- **Maven**: Any dependency with a `groupId` starting with `com.hyland.`, `org.alfresco.`, or `org.activiti.`
+- **npm**: Any package under the `@hyland/`, `@hylandsoftware/`, or `@alfresco/` scopes
 
 For each internal dependency found:
 
