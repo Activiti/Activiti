@@ -70,8 +70,6 @@
               "type": "variable",
               "value": "loopCounter"
             }
-          },
-          "outputs": {
           }
         }
       }
@@ -119,14 +117,16 @@
           "name": "result",
           "type": "string",
           "required": false,
-          "value": "Result ${resultIndex}"
+          "value": "Result ${resultIndex}",
+          "category": "output"
         },
         "de3a01c7-e2cc-4f16-b322-d04477288a0c": {
           "id": "de3a01c7-e2cc-4f16-b322-d04477288a0c",
           "name": "resultIndex",
           "type": "integer",
           "required": false,
-          "value": "${resultIndex}"
+          "value": "${resultIndex}",
+          "category": "input/output"
         },
         "de3a01c7-e2cc-4f16-b322-d04477288a0d": {
           "id": "de3a01c7-e2cc-4f16-b322-d04477288a0d",
@@ -135,6 +135,30 @@
           "required": false,
           "value": "bar",
           "category": "local"
+        },
+        "de3a01c7-e2cc-4f16-b322-d04477288a0e": {
+          "id": "de3a01c7-e2cc-4f16-b322-d04477288a0e",
+          "name": "bar",
+          "type": "string",
+          "required": false,
+          "value": "foo",
+          "ephemeral": true
+        },
+        "de3a01c7-e2cc-4f16-b322-d04477288a0f": {
+          "id": "de3a01c7-e2cc-4f16-b322-d04477288a0f",
+          "name": "baz",
+          "type": "string",
+          "required": false,
+          "value": "bar",
+          "category": "input"
+        },
+        "de3a01c7-e2cc-4f16-b322-d04477288a0g": {
+          "id": "de3a01c7-e2cc-4f16-b322-d04477288a0g",
+          "name": "quix",
+          "type": "string",
+          "required": false,
+          "value": "foobar",
+          "category": null
         }
       },
       "assignments": {}
