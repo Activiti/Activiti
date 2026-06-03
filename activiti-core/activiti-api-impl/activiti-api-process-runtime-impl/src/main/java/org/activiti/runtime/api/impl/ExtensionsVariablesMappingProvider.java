@@ -16,19 +16,19 @@
 package org.activiti.runtime.api.impl;
 
 import static java.util.Collections.emptyMap;
+import static org.activiti.spring.process.model.Mapping.SourceMappingType.VARIABLE;
 
-import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.json.JsonMapper;
-import tools.jackson.databind.node.ArrayNode;
-import tools.jackson.databind.node.NullNode;
-import tools.jackson.databind.node.ObjectNode;
 import com.flipkart.zjsonpatch.Jackson3JsonPatch;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import org.activiti.bpmn.model.CallActivity;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.DelegateExecution;
@@ -46,6 +46,11 @@ import org.activiti.spring.process.variable.VariableParsingService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.NullNode;
+import tools.jackson.databind.node.ObjectNode;
 
 public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
 
@@ -62,6 +67,8 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
     private static final Pattern VARIABLE_PATTERN = Pattern.compile("/\\$\\{(\\w+)}");
 
     public static final String JSON_PATCH_MAPPING_ERROR = "Invalid jsonPatch variable mapping";
+
+    private static final List<String> OUTPUT_CATEGORY = List.of("output", "input/output");
 
     public ExtensionsVariablesMappingProvider(
         ProcessExtensionService processExtensionService,
@@ -83,7 +90,7 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
                 return Optional.of(inputMapping.getValue());
             }
 
-            if (Mapping.SourceMappingType.VARIABLE.equals(inputMapping.getType())) {
+            if (VARIABLE.equals(inputMapping.getType())) {
                 String name = inputMapping.getValue().toString();
 
                 if (isTargetProcessVariableDefined(extensions, execution, name)) {
@@ -391,6 +398,46 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
         Map<String, Mapping> outputMappings = processVariablesMapping.getOutputs();
         DelegateExecution execution = mappingExecutionContext.getExecution();
 
+        if (outputMappings.isEmpty() && isMultiInstanceCallActivity(execution)) {
+            final Predicate<VariableDefinition> isOutputVariableCategory = variableDefinition ->
+                Optional
+                    .ofNullable(variableDefinition.getCategory())
+                    .map(it -> it.toLowerCase(Locale.ROOT))
+                    .filter(OUTPUT_CATEGORY::contains)
+                    .isPresent();
+
+            final Function<VariableDefinition, Map.Entry<String, Mapping>> toVariableOutputMapping = variableDefinition -> {
+                final var mapping = new Mapping();
+                mapping.setType(VARIABLE);
+                mapping.setValue(variableDefinition.getName());
+
+                return Map.entry(variableDefinition.getName(), mapping);
+            };
+
+            outputMappings =
+                Optional
+                    .ofNullable(mappingExecutionContext.getSubProcessExecution())
+                    .map(DelegateExecution::getProcessDefinitionId)
+                    .map(processExtensionService::getExtensionsForId)
+                    .map(Extension::getProperties)
+                    .map(properties ->
+                        properties
+                            .values()
+                            .stream()
+                            .filter(variableDefinition ->
+                                Optional
+                                    .of(variableDefinition)
+                                    .filter(
+                                        Predicate.not(VariableDefinition::isEphemeral).and(isOutputVariableCategory)
+                                    )
+                                    .isPresent()
+                            )
+                            .map(toVariableOutputMapping)
+                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
+                    )
+                    .orElseGet(Map::of);
+        }
+
         for (Map.Entry<String, Mapping> mappingEntry : outputMappings.entrySet()) {
             String name = mappingEntry.getKey();
 
@@ -467,7 +514,8 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
     }
 
     private boolean isMultiInstanceCallActivity(DelegateExecution execution) {
-        return Optional.ofNullable(execution)
+        return Optional
+            .ofNullable(execution)
             .filter(isMultiInstanceRootParent().and(isCallActivityFlowElement()))
             .isPresent();
     }
