@@ -21,6 +21,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.runtime.shared.NotFoundException;
 import org.activiti.api.runtime.shared.query.Order;
@@ -71,6 +72,11 @@ public class TaskRuntimeImpl implements TaskRuntime {
     private final SecurityManager securityManager;
 
     private final TaskRuntimeHelper taskRuntimeHelper;
+
+    private final Map<TaskIdentificationStrategy, Supplier<Task>> nextTaskStrategies = Map.of(
+        TaskIdentificationStrategy.CLAIM_BEFORE_OPEN_OLDEST_FIRST,
+        this::nextTaskClaimBeforeOpenOldestFirst
+    );
 
     private static final Map<String, Function<TaskQuery, TaskQuery>> SORT_FIELD_MAPPERS =
         java.util.Map.of("createddate", TaskQuery::orderByTaskCreateTime);
@@ -298,11 +304,13 @@ public class TaskRuntimeImpl implements TaskRuntime {
         TaskIdentificationStrategy effectiveStrategy =
             strategy == null ? TaskIdentificationStrategy.CLAIM_BEFORE_OPEN_OLDEST_FIRST : strategy;
 
-        if (effectiveStrategy == TaskIdentificationStrategy.CLAIM_BEFORE_OPEN_OLDEST_FIRST) {
-            return nextTaskClaimBeforeOpenOldestFirst();
+        Supplier<Task> nextTaskStrategy = nextTaskStrategies.get(effectiveStrategy);
+        if (nextTaskStrategy == null) {
+            throw new IllegalArgumentException("Unsupported task identification strategy: " + effectiveStrategy);
         }
 
-        throw new IllegalArgumentException("Unsupported task identification strategy: " + effectiveStrategy);
+
+        return nextTaskStrategy.get();
     }
 
     private Task nextTaskClaimBeforeOpenOldestFirst() {
@@ -335,7 +343,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
             try {
                 taskService.claim(nextCandidateTask.getId(), userId);
                 return task(nextCandidateTask.getId());
-            } catch (ActivitiTaskAlreadyClaimedException ex) {
+            } catch (ActivitiTaskAlreadyClaimedException _) {
                 // Try the next candidate task when the current one was claimed concurrently.
             }
         }
@@ -596,9 +604,9 @@ public class TaskRuntimeImpl implements TaskRuntime {
 
         TaskQuery sortedQuery = SORT_FIELD_MAPPERS.get(sortField).apply(taskQuery);
 
-        if (order.getDirection() == Order.Direction.ASC) {
-            return sortedQuery.asc();
-        }
-        return sortedQuery.desc();
+        return switch (order.getDirection()) {
+            case ASC -> sortedQuery.asc();
+            case DESC -> sortedQuery.desc();
+        };
     }
 }

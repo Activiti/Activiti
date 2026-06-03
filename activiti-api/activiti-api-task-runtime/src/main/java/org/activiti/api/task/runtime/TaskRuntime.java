@@ -81,7 +81,9 @@ public interface TaskRuntime {
      * @throws IllegalStateException if there is no authenticated user
      * @throws IllegalArgumentException if the strategy is not supported
      */
-    Task nextTask(TaskIdentificationStrategy taskIdentificationStrategy);
+    default Task nextTask(TaskIdentificationStrategy taskIdentificationStrategy) {
+        throw new UnsupportedOperationException("nextTask is not supported by this TaskRuntime implementation");
+    }
 
     /**
      * Claim a task with the currently authenticated user
