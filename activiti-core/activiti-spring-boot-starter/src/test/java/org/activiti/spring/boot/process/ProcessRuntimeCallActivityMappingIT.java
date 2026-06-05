@@ -415,6 +415,44 @@ public class ProcessRuntimeCallActivityMappingIT {
     }
 
     @Test
+    void shouldMapOutputVariablesFromMultiInstanceParallelCallActivityResultCollectionForEmptyOutputsWithElementVariable() {
+        securityUtil.logInAs("user");
+
+        ProcessInstance processInstance = processRuntime.start(
+            ProcessPayloadBuilder
+                .start()
+                .withProcessDefinitionKey(
+                    "multi-instance-parallel-call-activity-result-collection-empty-outputs-with-element-variable"
+                )
+                .build()
+        );
+        assertThat(processInstance).isNotNull();
+
+        List<VariableInstance> procVariables = processRuntime.variables(
+            ProcessPayloadBuilder.variables().withProcessInstanceId(processInstance.getId()).build()
+        );
+
+        assertThat(procVariables)
+            .isNotNull()
+            .singleElement(InstanceOfAssertFactories.type(VariableInstance.class))
+            .satisfies(variable -> assertThat(variable.getName()).isEqualTo("miResult"))
+            .extracting(VariableInstance::getValue)
+            .asInstanceOf(InstanceOfAssertFactories.list(Map.class))
+            .containsExactlyInAnyOrder(
+                Map.of("result", "Result 1", "resultIndex", 1),
+                Map.of("result", "Result 0", "resultIndex", 0)
+            );
+
+        final Task task = getTask(processInstance);
+
+        taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).withAssignee("user").build());
+
+        taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
+
+        assertProcessCompleted(processInstance);
+    }
+
+    @Test
     void shouldMapOutputVariablesFromMultiInstanceCallActivityResultCollectionWithLoopVariables() {
         securityUtil.logInAs("user");
 

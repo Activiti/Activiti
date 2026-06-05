@@ -49,6 +49,21 @@
     <endEvent id="empty-outputs-end"/>
   </process>
 
+  <process id="multi-instance-parallel-call-activity-result-collection-empty-outputs-with-element-variable">
+    <startEvent id="empty-outputs-element-variable-start"/>
+    <sequenceFlow id="empty-outputs-element-variable-flow1" sourceRef="empty-outputs-element-variable-start" targetRef="empty-outputs-element-variable-callActivity"/>
+    <callActivity id="empty-outputs-element-variable-callActivity" calledElement="multi-instance-call-activity-result-sub-process" >
+      <multiInstanceLoopCharacteristics isSequential="false" activiti:collection="${list(0,1)}" activiti:elementVariable="item">
+        <loopCardinality>2</loopCardinality>
+        <loopDataOutputRef>miResult</loopDataOutputRef>
+      </multiInstanceLoopCharacteristics>
+    </callActivity>
+    <sequenceFlow id="empty-outputs-element-variable-flow2" sourceRef="empty-outputs-element-variable-callActivity" targetRef="empty-outputs-element-variable-userTask"/>
+    <userTask id="empty-outputs-element-variable-userTask" name="My user task" activiti:candidateUsers="user"/>
+    <sequenceFlow id="empty-outputs-element-variable-flow3" sourceRef="empty-outputs-element-variable-userTask" targetRef="empty-outputs-element-variable-end"/>
+    <endEvent id="empty-outputs-element-variable-end"/>
+  </process>
+
   <process id="multi-instance-parallel-call-activity-result-collection-loop-variables">
     <startEvent id="loop-variables-start"/>
     <sequenceFlow id="loop-variables-flow1" sourceRef="loop-variables-start" targetRef="loop-variables-callActivity"/>

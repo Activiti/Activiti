@@ -74,6 +74,18 @@
         }
       }
     },
+    "multi-instance-parallel-call-activity-result-collection-empty-outputs-with-element-variable": {
+      "mappings": {
+        "empty-outputs-element-variable-callActivity": {
+          "inputs": {
+            "resultIndex": {
+              "type": "variable",
+              "value": "loopCounter"
+            }
+          }
+        }
+      }
+    },
     "multi-instance-parallel-call-activity-result-collection-loop-variables": {
       "mappings": {
         "loop-variables-callActivity": {

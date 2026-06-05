@@ -16,6 +16,7 @@
 package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Predicate;
 import org.activiti.bpmn.model.CallActivity;
 import org.activiti.engine.delegate.DelegateExecution;
@@ -54,7 +55,23 @@ public class VariablesPropagator {
             .filter(Predicate.not(outputVariables::containsKey))
             .forEach(execution::removeVariableLocal);
 
+        removeOutputCollectionElementVariableIfNotPresentInOutputs(execution, outputVariables);
+
         return outputVariables;
+    }
+
+    private void removeOutputCollectionElementVariableIfNotPresentInOutputs(
+        DelegateExecution execution,
+        Map<String, Object> outputVariables
+    ) {
+        if (execution.getCurrentFlowElement() instanceof CallActivity callActivity) {
+            if (callActivity.getBehavior() instanceof MultiInstanceActivityBehavior multiInstanceActivityBehavior) {
+                Optional
+                    .ofNullable(multiInstanceActivityBehavior.getCollectionElementVariable())
+                    .filter(Predicate.not(outputVariables::containsKey))
+                    .ifPresent(execution::removeVariableLocal);
+            }
+        }
     }
 
     public void propagate(DelegateExecution execution, DelegateExecution subProcessInstance) {
