@@ -21,6 +21,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.runtime.shared.NotFoundException;
 import org.activiti.api.runtime.shared.query.Order;
@@ -44,8 +45,10 @@ import org.activiti.api.task.model.payloads.ReleaseTaskPayload;
 import org.activiti.api.task.model.payloads.SaveTaskPayload;
 import org.activiti.api.task.model.payloads.UpdateTaskPayload;
 import org.activiti.api.task.model.payloads.UpdateTaskVariablePayload;
+import org.activiti.api.task.runtime.TaskIdentificationStrategy;
 import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.api.task.runtime.conf.TaskRuntimeConfiguration;
+import org.activiti.engine.ActivitiTaskAlreadyClaimedException;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
@@ -69,6 +72,11 @@ public class TaskRuntimeImpl implements TaskRuntime {
     private final SecurityManager securityManager;
 
     private final TaskRuntimeHelper taskRuntimeHelper;
+
+    private final Map<TaskIdentificationStrategy, Supplier<Task>> nextTaskStrategies = Map.of(
+        TaskIdentificationStrategy.CLAIM_BEFORE_OPEN_OLDEST_FIRST,
+        this::nextTaskClaimBeforeOpenOldestFirst
+    );
 
     private static final Map<String, Function<TaskQuery, TaskQuery>> SORT_FIELD_MAPPERS =
         java.util.Map.of("createddate", TaskQuery::orderByTaskCreateTime);
@@ -288,6 +296,53 @@ public class TaskRuntimeImpl implements TaskRuntime {
         }
 
         return taskConverter.from(task);
+    }
+
+
+    @Override
+    public Task nextTask(TaskIdentificationStrategy strategy) {
+        TaskIdentificationStrategy effectiveStrategy =
+            strategy == null ? TaskIdentificationStrategy.CLAIM_BEFORE_OPEN_OLDEST_FIRST : strategy;
+
+        return nextTaskStrategies.get(effectiveStrategy).get();
+    }
+
+    private Task nextTaskClaimBeforeOpenOldestFirst() {
+        String userId = securityManager.getAuthenticatedUserId();
+        if (userId == null || userId.isEmpty()) {
+            throw new IllegalStateException("You need an authenticated user to perform this operation");
+        }
+
+        TaskQuery nextAssignedTasksQuery = taskService
+            .createTaskQuery()
+            .taskAssignee(userId)
+            .orderByTaskCreateTime()
+            .asc();
+
+        List<org.activiti.engine.task.Task> nextAssignedTasks = nextAssignedTasksQuery.listPage(0, 1);
+
+        if (!nextAssignedTasks.isEmpty()) {
+            return taskConverter.fromWithCandidates(nextAssignedTasks.getFirst());
+        }
+
+        List<String> userGroups = securityManager.getAuthenticatedUserGroups();
+        TaskQuery nextCandidateTaskQuery = taskService
+            .createTaskQuery()
+            .taskCandidateUser(userId, userGroups)
+            .orderByTaskCreateTime()
+            .asc();
+
+        List<org.activiti.engine.task.Task> nextCandidateTasks = nextCandidateTaskQuery.listPage(0, 3);
+        for (org.activiti.engine.task.Task nextCandidateTask : nextCandidateTasks) {
+            try {
+                taskService.claim(nextCandidateTask.getId(), userId);
+                return task(nextCandidateTask.getId());
+            } catch (ActivitiTaskAlreadyClaimedException _) {
+                // Try the next candidate task when the current one was claimed concurrently.
+            }
+        }
+
+        return null;
     }
 
     @Override

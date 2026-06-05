@@ -25,9 +25,9 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 import org.activiti.api.runtime.shared.query.Order;
 import org.activiti.api.runtime.shared.query.Pageable;
@@ -39,6 +39,8 @@ import org.activiti.api.task.model.payloads.AssignTaskPayload;
 import org.activiti.api.task.model.payloads.ClaimTaskPayload;
 import org.activiti.api.task.model.payloads.GetTasksPayload;
 import org.activiti.api.task.model.payloads.UpdateTaskPayload;
+import org.activiti.api.task.runtime.TaskIdentificationStrategy;
+import org.activiti.engine.ActivitiTaskAlreadyClaimedException;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
@@ -123,7 +125,7 @@ public class TaskRuntimeImplTest {
             .withTaskId(taskId)
             .withAssignee(newAssignee)
             .build();
-        List<String> userCandidates = Arrays.asList(newAssignee);
+        List<String> userCandidates = List.of(newAssignee);
         doReturn(userCandidates).when(taskRuntime).userCandidates(taskId);
         TaskImpl task = mock(TaskImpl.class);
         given(task.getAssignee()).willReturn("user");
@@ -370,5 +372,137 @@ public class TaskRuntimeImplTest {
 
         //then
         verify(taskQuery, never()).orderByTaskCreateTime();
+    }
+
+    @Test
+    void nextTask_should_returnOldestAssignedTask_beforeTryingCandidateTasks() {
+        //given
+        when(securityManager.getAuthenticatedUserId()).thenReturn(AUTHENTICATED_USER);
+
+        TaskQuery assignedTaskQuery = mock();
+        org.activiti.engine.task.Task assignedEngineTask = mock();
+        Task assignedTask = mock();
+
+        when(taskService.createTaskQuery()).thenReturn(assignedTaskQuery);
+        when(assignedTaskQuery.taskAssignee(AUTHENTICATED_USER)).thenReturn(assignedTaskQuery);
+        when(assignedTaskQuery.orderByTaskCreateTime()).thenReturn(assignedTaskQuery);
+        when(assignedTaskQuery.asc()).thenReturn(assignedTaskQuery);
+        when(assignedTaskQuery.listPage(0, 1)).thenReturn(List.of(assignedEngineTask));
+        when(taskConverter.fromWithCandidates(assignedEngineTask)).thenReturn(assignedTask);
+
+        //when
+        Task result = taskRuntime.nextTask(TaskIdentificationStrategy.CLAIM_BEFORE_OPEN_OLDEST_FIRST);
+
+        //then
+        assertThat(result).isEqualTo(assignedTask);
+        verify(taskService, never()).claim(any(), any());
+    }
+
+    @Test
+    void nextTask_should_claimOldestCandidateTask_whenNoAssignedTasksAreAvailable() {
+        //given
+        when(securityManager.getAuthenticatedUserId()).thenReturn(AUTHENTICATED_USER);
+        when(securityManager.getAuthenticatedUserGroups()).thenReturn(Collections.singletonList("group"));
+
+        TaskQuery assignedTaskQuery = mock();
+        TaskQuery candidateTaskQuery = mock();
+        org.activiti.engine.task.Task candidateEngineTask = mock();
+        Task claimedTask = mock();
+
+        when(candidateEngineTask.getId()).thenReturn("candidate-task-id");
+
+        when(taskService.createTaskQuery()).thenReturn(assignedTaskQuery, candidateTaskQuery);
+
+        when(assignedTaskQuery.taskAssignee(AUTHENTICATED_USER)).thenReturn(assignedTaskQuery);
+        when(assignedTaskQuery.orderByTaskCreateTime()).thenReturn(assignedTaskQuery);
+        when(assignedTaskQuery.asc()).thenReturn(assignedTaskQuery);
+        when(assignedTaskQuery.listPage(0, 1)).thenReturn(Collections.emptyList());
+
+        when(candidateTaskQuery.taskCandidateUser(AUTHENTICATED_USER, Collections.singletonList("group")))
+            .thenReturn(candidateTaskQuery);
+        when(candidateTaskQuery.orderByTaskCreateTime()).thenReturn(candidateTaskQuery);
+        when(candidateTaskQuery.asc()).thenReturn(candidateTaskQuery);
+        when(candidateTaskQuery.listPage(0, 3)).thenReturn(List.of(candidateEngineTask));
+        when(taskRuntimeHelper.getInternalTaskWithChecks("candidate-task-id")).thenReturn(candidateEngineTask);
+        when(taskConverter.fromWithCandidates(candidateEngineTask)).thenReturn(claimedTask);
+
+        //when
+        Task result = taskRuntime.nextTask(null);
+
+        //then
+        assertThat(result).isEqualTo(claimedTask);
+        verify(taskService).claim("candidate-task-id", AUTHENTICATED_USER);
+    }
+
+    @Test
+    void nextTask_should_tryNextCandidateTask_whenOldestCandidateWasClaimedConcurrently() {
+        //given
+        when(securityManager.getAuthenticatedUserId()).thenReturn(AUTHENTICATED_USER);
+        when(securityManager.getAuthenticatedUserGroups()).thenReturn(Collections.singletonList("group"));
+
+        TaskQuery assignedTaskQuery = mock();
+        TaskQuery candidateTaskQuery = mock();
+        org.activiti.engine.task.Task firstCandidate = mock();
+        org.activiti.engine.task.Task secondCandidate = mock();
+        Task claimedTask = mock();
+
+        when(firstCandidate.getId()).thenReturn("candidate-task-id-1");
+        when(secondCandidate.getId()).thenReturn("candidate-task-id-2");
+
+        when(taskService.createTaskQuery()).thenReturn(assignedTaskQuery, candidateTaskQuery);
+
+        when(assignedTaskQuery.taskAssignee(AUTHENTICATED_USER)).thenReturn(assignedTaskQuery);
+        when(assignedTaskQuery.orderByTaskCreateTime()).thenReturn(assignedTaskQuery);
+        when(assignedTaskQuery.asc()).thenReturn(assignedTaskQuery);
+        when(assignedTaskQuery.listPage(0, 1)).thenReturn(Collections.emptyList());
+
+        when(candidateTaskQuery.taskCandidateUser(AUTHENTICATED_USER, Collections.singletonList("group")))
+            .thenReturn(candidateTaskQuery);
+        when(candidateTaskQuery.orderByTaskCreateTime()).thenReturn(candidateTaskQuery);
+        when(candidateTaskQuery.asc()).thenReturn(candidateTaskQuery);
+        when(candidateTaskQuery.listPage(0, 3)).thenReturn(List.of(firstCandidate, secondCandidate));
+
+        Map<String, org.activiti.engine.task.Task> internalTasksById = Map.of(
+            "candidate-task-id-1",
+            firstCandidate,
+            "candidate-task-id-2",
+            secondCandidate
+        );
+        Map<String, Task> apiTasksById = Map.of("candidate-task-id-2", claimedTask);
+        when(taskRuntimeHelper.getInternalTaskWithChecks(any())).thenAnswer(invocation ->
+            internalTasksById.get(invocation.getArgument(0, String.class))
+        );
+        when(taskConverter.fromWithCandidates(any())).thenAnswer(invocation -> {
+            org.activiti.engine.task.Task engineTask = invocation.getArgument(0, org.activiti.engine.task.Task.class);
+            return engineTask == null ? null : apiTasksById.get(engineTask.getId());
+        });
+
+        org.mockito.Mockito.doThrow(new ActivitiTaskAlreadyClaimedException("candidate-task-id-1", "other-user"))
+            .when(taskService)
+            .claim("candidate-task-id-1", AUTHENTICATED_USER);
+
+        //when
+        Task result = taskRuntime.nextTask(TaskIdentificationStrategy.CLAIM_BEFORE_OPEN_OLDEST_FIRST);
+
+        //then
+        assertThat(result).isEqualTo(claimedTask);
+        verify(taskService).claim("candidate-task-id-1", AUTHENTICATED_USER);
+        verify(taskService).claim("candidate-task-id-2", AUTHENTICATED_USER);
+    }
+
+    @Test
+    void nextTask_should_throwIllegalStateException_whenNoAuthenticatedUserIsPresent() {
+        //given
+        when(securityManager.getAuthenticatedUserId()).thenReturn(null);
+
+        //when
+        Throwable thrown = catchThrowable(() ->
+            taskRuntime.nextTask(TaskIdentificationStrategy.CLAIM_BEFORE_OPEN_OLDEST_FIRST)
+        );
+
+        //then
+        assertThat(thrown)
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessage("You need an authenticated user to perform this operation");
     }
 }

@@ -19,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.assertj.core.api.Assertions.tuple;
 
+import java.util.Date;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.runtime.ProcessRuntime;
@@ -26,7 +27,9 @@ import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
+import org.activiti.api.task.runtime.TaskIdentificationStrategy;
 import org.activiti.api.task.runtime.TaskRuntime;
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
 import org.junit.jupiter.api.AfterEach;
@@ -53,6 +56,9 @@ class TaskRuntimeIT {
     @Autowired
     private SecurityUtil securityUtil;
 
+    @Autowired
+    private ProcessEngineConfiguration processEngineConfiguration;
+
     @BeforeEach
     void setUp() {
         securityUtil.logInAs(INITIATOR);
@@ -60,6 +66,7 @@ class TaskRuntimeIT {
 
     @AfterEach
     void taskCleanUp() {
+        processEngineConfiguration.getClock().reset();
         processCleanUpUtil.cleanUpWithAdmin();
     }
 
@@ -212,5 +219,84 @@ class TaskRuntimeIT {
         Task deletedTask = taskRuntime.delete(TaskPayloadBuilder.delete().withTaskId(createdTask.getId()).build());
         assertThat(deletedTask.getId()).isEqualTo(createdTask.getId());
         assertThat(deletedTask.getStatus()).isEqualTo(Task.TaskStatus.CANCELLED);
+    }
+
+    @Test
+    void should_returnAssignedTaskBeforeTryingCandidateTasks_whenSelectingNextTask() {
+        //given
+        securityUtil.logInAs("dean");
+        Task assignedTask = taskRuntime.create(
+            TaskPayloadBuilder.create()
+                .withName("assigned-task")
+                .withAssignee("dean")
+                .withCandidateUsers("dean")
+                .build()
+        );
+        Task candidateTask = taskRuntime.create(
+            TaskPayloadBuilder.create().withName("candidate-task").withCandidateUsers("dean").build()
+        );
+
+        //when
+        Task nextTask = taskRuntime.nextTask(TaskIdentificationStrategy.CLAIM_BEFORE_OPEN_OLDEST_FIRST);
+        Task persistedCandidateTask = taskRuntime.task(candidateTask.getId());
+
+        //then
+        assertThat(nextTask.getId()).isEqualTo(assignedTask.getId());
+        assertThat(nextTask.getAssignee()).isEqualTo("dean");
+        assertThat(nextTask.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
+        assertThat(persistedCandidateTask.getAssignee()).isNull();
+        assertThat(persistedCandidateTask.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
+
+        taskRuntime.delete(TaskPayloadBuilder.delete().withTaskId(assignedTask.getId()).build());
+        taskRuntime.delete(TaskPayloadBuilder.delete().withTaskId(candidateTask.getId()).build());
+    }
+
+    @Test
+    void should_claimOldestCandidateTask_whenNoAssignedTaskExists() {
+        //given
+        securityUtil.logInAs("dean");
+
+        Date firstTaskTime = new Date(1_000_000_000_000L);
+        processEngineConfiguration.getClock().setCurrentTime(firstTaskTime);
+        Task oldestCandidateTask = taskRuntime.create(
+            TaskPayloadBuilder.create().withName("oldest-candidate-task").withCandidateUsers("dean").build()
+        );
+
+        Date secondTaskTime = new Date(firstTaskTime.getTime() + 60_000L);
+        processEngineConfiguration.getClock().setCurrentTime(secondTaskTime);
+        Task newerCandidateTask = taskRuntime.create(
+            TaskPayloadBuilder.create().withName("newer-candidate-task").withCandidateUsers("dean").build()
+        );
+
+        //when
+        Task nextTask = taskRuntime.nextTask(TaskIdentificationStrategy.CLAIM_BEFORE_OPEN_OLDEST_FIRST);
+
+        //then
+        assertThat(nextTask.getId()).isEqualTo(oldestCandidateTask.getId());
+        assertThat(nextTask.getAssignee()).isEqualTo("dean");
+        assertThat(nextTask.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
+
+        taskRuntime.delete(TaskPayloadBuilder.delete().withTaskId(nextTask.getId()).build());
+        taskRuntime.delete(TaskPayloadBuilder.delete().withTaskId(newerCandidateTask.getId()).build());
+    }
+
+
+    @Test
+    void should_defaultToClaimBeforeOpenOldestFirst_whenStrategyIsNull() {
+        //given
+        securityUtil.logInAs("dean");
+        Task oldestCandidateTask = taskRuntime.create(
+            TaskPayloadBuilder.create().withName("oldest-candidate-task").withCandidateUsers("dean").build()
+        );
+
+        //when
+        Task nextTask = taskRuntime.nextTask(null);
+
+        //then
+        assertThat(nextTask.getId()).isEqualTo(oldestCandidateTask.getId());
+        assertThat(nextTask.getAssignee()).isEqualTo("dean");
+        assertThat(nextTask.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
+
+        taskRuntime.delete(TaskPayloadBuilder.delete().withTaskId(nextTask.getId()).build());
     }
 }
