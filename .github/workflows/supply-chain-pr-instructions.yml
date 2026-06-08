@@ -1,0 +1,32 @@
+name: Supply Chain Review - PR Instructions
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+    paths:
+      - "package.json"
+      - "package-lock.json"
+      - "**/package.json"
+      - "**/package-lock.json"
+      - "pom.xml"
+      - "**/pom.xml"
+
+jobs:
+  instructions:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: Alfresco/alfresco-build-tools/.github/actions/github-upsert-comment@a6a8be7429080c132815d0482a55ae4fd28f15ba # v18.7.0
+        with:
+          comment-identifier: supply-chain-review-instructions
+          comment-body: |
+            ## 🔒 Supply Chain Security
+
+            This PR modifies dependencies. To run a security analysis, comment:
+
+            ```
+            /supply-chain-review
+            ```
+
+            The analysis will check for vulnerabilities, typosquatting, maintainer takeovers, and other supply chain risks.
