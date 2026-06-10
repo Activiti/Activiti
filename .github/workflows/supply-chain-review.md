@@ -32,7 +32,7 @@ safe-outputs:
     allowed: [security:low, security:medium, security:high]
   submit-pull-request-review:
 
-source: Alfresco/alfresco-build-tools/.github/workflows/supply-chain-review.md@b2070730e7482fb8d2791e97d7b288fdf3b106ef
+source: Alfresco/alfresco-build-tools/.github/workflows/supply-chain-review.md@52467f0241079de71fe14591f97bdec7555ab545
 ---
 
 # Supply Chain Review
@@ -65,7 +65,7 @@ Before collecting external data, identify and exclude internal/private dependenc
 For each internal dependency found:
 
 1. Remove it from the analysis pipeline — do NOT query OSV.dev, OpenSSF Scorecard, or registry APIs for these packages (they will fail or return irrelevant data).
-2. Record the package name, ecosystem, old version, and new version in a separate "Internal Dependencies (Skipped)" list.
+2. Record the package name (with `@` replaced by `(at)` for GitHub comment compatibility), ecosystem, old version, and new version in a separate "Internal Dependencies (Skipped)" list.
 3. Continue with Step 2 only for the remaining external/public dependencies.
 
 If ALL changed dependencies are internal, skip Steps 2-4 and proceed directly to Step 5, posting a report that lists the internal dependencies and notes that no external supply chain analysis was performed.
@@ -276,7 +276,18 @@ If no suspicious patterns are found, assign a score of 0-10 and risk level LOW. 
 
 ## Step 5 — Post Findings as PR Comment
 
-Post a structured report in the following format:
+Post a structured report in the following format.
+
+**CRITICAL: Sanitize all `@` symbols before posting**
+
+GitHub enforces a maximum of 10 mentions per comment. Package names containing `@` (like `@hyland/core`, `@alfresco/js-api`) are interpreted as user/team mentions and trigger this limit, causing comment post failures.
+
+**Before generating the comment text**:
+
+1. Replace **every** `@` symbol in package names with `(at)` — e.g., `@hyland/core` → `(at)hyland/core`
+2. Apply this transformation to ALL occurrences: table cells, headings, inline code blocks, findings sections, reason columns
+3. This applies to both external and internal dependencies
+4. Do NOT skip this step — even if only a few packages are affected, GitHub counts all `@` symbols
 
 ```txt
 ## Supply Chain Security Review
@@ -287,15 +298,15 @@ Post a structured report in the following format:
 
 ### Internal Dependencies (Skipped)
 
-| Package      | Ecosystem | Old Version | New Version | Reason                     |
-|--------------|-----------|-------------|-------------|----------------------------|
-| @hyland/core | npm       | 3.1.0       | 3.2.0       | Internal (@hyland/* scope) |
+| Package           | Ecosystem | Old Version | New Version | Reason                          |
+|-------------------|-----------|-------------|-------------|---------------------------------|
+| (at)hyland/core   | npm       | 3.1.0       | 3.2.0       | Internal ((at)hyland/* scope)   |
 
 _These dependencies are internal packages not available on public registries. External API checks were skipped._
 
 ### Findings
 
-#### `<package-name>` (<old-version> -> <new-version>) — <RISK_LEVEL>
+#### `<package-name-sanitized>` (<old-version> -> <new-version>) — <RISK_LEVEL>
 
 **Risk Score**: <score>/100
 
