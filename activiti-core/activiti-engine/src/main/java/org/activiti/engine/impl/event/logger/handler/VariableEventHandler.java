@@ -15,7 +15,6 @@
  */
 package org.activiti.engine.impl.event.logger.handler;
 
-import tools.jackson.databind.json.JsonMapper;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
