@@ -30,11 +30,17 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.GraphicInfo;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.SignalEventDefinition;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
 
  */
 public class BoundaryEventJsonConverter extends BaseBpmnJsonConverter {
+
+    public BoundaryEventJsonConverter(JsonMapper jsonMapper) {
+        super(jsonMapper);
+    }
+
 
     public static void fillTypes(
         Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap,

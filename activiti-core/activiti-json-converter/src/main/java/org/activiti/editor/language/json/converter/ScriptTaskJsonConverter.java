@@ -21,11 +21,17 @@ import java.util.Map;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.ScriptTask;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
 
  */
 public class ScriptTaskJsonConverter extends BaseBpmnJsonConverter {
+
+    public ScriptTaskJsonConverter(JsonMapper jsonMapper) {
+        super(jsonMapper);
+    }
+
 
     public static void fillTypes(
         Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap,

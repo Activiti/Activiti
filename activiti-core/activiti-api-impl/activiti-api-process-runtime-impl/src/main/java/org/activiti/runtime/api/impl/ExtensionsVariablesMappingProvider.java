@@ -54,7 +54,7 @@ import tools.jackson.databind.node.ObjectNode;
 
 public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
 
-    private static final JsonMapper jsonMapper = new JsonMapper();
+    private final JsonMapper jsonMapper;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ExtensionsVariablesMappingProvider.class);
 
@@ -73,11 +73,13 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
     public ExtensionsVariablesMappingProvider(
         ProcessExtensionService processExtensionService,
         ExpressionResolver expressionResolver,
-        VariableParsingService variableParsingService
+        VariableParsingService variableParsingService,
+        JsonMapper jsonMapper
     ) {
         this.processExtensionService = processExtensionService;
         this.expressionResolver = expressionResolver;
         this.variableParsingService = variableParsingService;
+        this.jsonMapper = jsonMapper;
     }
 
     protected Optional<Object> calculateMappedValue(

@@ -74,6 +74,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.Resource;
 import org.springframework.transaction.PlatformTransactionManager;
+import tools.jackson.databind.json.JsonMapper;
 
 @AutoConfiguration
 @AutoConfigureAfter(
@@ -109,9 +110,10 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
         ApplicationUpgradeContextService applicationUpgradeContextService,
         @Autowired(required = false) List<ProcessEngineConfigurationConfigurer> processEngineConfigurationConfigurers,
         @Autowired(required = false) List<ProcessEngineConfigurator> processEngineConfigurators,
-        ObjectProvider<DeploymentCache<ProcessDefinitionCacheEntry>> processDefinitionCacheProvider
+        ObjectProvider<DeploymentCache<ProcessDefinitionCacheEntry>> processDefinitionCacheProvider,
+        JsonMapper jsonMapper
     ) throws IOException {
-        SpringProcessEngineConfiguration conf = new SpringProcessEngineConfiguration(applicationUpgradeContextService);
+        SpringProcessEngineConfiguration conf = new SpringProcessEngineConfiguration(applicationUpgradeContextService, jsonMapper);
         conf.setConfigurators(processEngineConfigurators);
 
         processDefinitionCacheProvider.ifAvailable(conf::setProcessDefinitionCache);
