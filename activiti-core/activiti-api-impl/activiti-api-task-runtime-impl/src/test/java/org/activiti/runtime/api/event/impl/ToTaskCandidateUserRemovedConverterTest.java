@@ -33,7 +33,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class ToTaskCandidateUserRemovedConverterTest {
+class ToTaskCandidateUserRemovedConverterTest {
 
     @InjectMocks
     private ToTaskCandidateUserRemovedConverter converter;
@@ -42,7 +42,7 @@ public class ToTaskCandidateUserRemovedConverterTest {
     private APITaskCandidateUserConverter candidateConverter;
 
     @Test
-    public void from_should_propagateProcessInstanceAndDefinitionIds_when_taskBelongsToProcessInstance() {
+    void from_should_propagateProcessInstanceAndDefinitionIds_when_taskBelongsToProcessInstance() {
         IdentityLink identityLink = mock(IdentityLink.class);
         given(identityLink.getType()).willReturn(IdentityLinkType.CANDIDATE);
         given(identityLink.getUserId()).willReturn("user1");
@@ -65,7 +65,7 @@ public class ToTaskCandidateUserRemovedConverterTest {
     }
 
     @Test
-    public void from_should_leaveProcessInstanceIdNull_when_taskIsStandalone() {
+    void from_should_leaveProcessInstanceIdNull_when_taskIsStandalone() {
         IdentityLink identityLink = mock(IdentityLink.class);
         given(identityLink.getType()).willReturn(IdentityLinkType.CANDIDATE);
         given(identityLink.getUserId()).willReturn("user1");
@@ -88,7 +88,7 @@ public class ToTaskCandidateUserRemovedConverterTest {
     }
 
     @Test
-    public void from_should_returnEmpty_when_entityIsNotIdentityLink() {
+    void from_should_returnEmpty_when_entityIsNotIdentityLink() {
         ActivitiEntityEvent internalEvent = mock(ActivitiEntityEvent.class);
         given(internalEvent.getEntity()).willReturn(new Object());
 
