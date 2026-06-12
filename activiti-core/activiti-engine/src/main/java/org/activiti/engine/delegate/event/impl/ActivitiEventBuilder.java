@@ -574,17 +574,35 @@ public class ActivitiEventBuilder {
                     event.setActor(actor);
                 }
             } else if (persistedObject instanceof IdentityLinkEntity idLink) {
+                String branch;
                 if (idLink.getProcessDefinitionId() != null) {
                     event.setProcessDefinitionId(idLink.getProcessDefId());
+                    branch = "processDefinitionId";
                 } else if (idLink.getProcessInstance() != null) {
                     event.setProcessDefinitionId(idLink.getProcessInstance().getProcessDefinitionId());
                     event.setProcessInstanceId(idLink.getProcessInstanceId());
                     event.setExecutionId(idLink.getProcessInstanceId());
+                    branch = "processInstance";
                 } else if (idLink.getTask() != null) {
                     event.setProcessDefinitionId(idLink.getTask().getProcessDefinitionId());
                     event.setProcessInstanceId(idLink.getTask().getProcessInstanceId());
                     event.setExecutionId(idLink.getTask().getExecutionId());
+                    branch = "task";
+                } else {
+                    branch = "none";
                 }
+                LOGGER.debug(
+                    "IdentityLinkEntity event populated: type={}, taskId={}, userId={}, groupId={}, link.pid={}, link.pdefId={}, branch={}, event.pid={}, event.pdefId={}",
+                    idLink.getType(),
+                    idLink.getTaskId(),
+                    idLink.getUserId(),
+                    idLink.getGroupId(),
+                    idLink.getProcessInstanceId(),
+                    idLink.getProcessDefinitionId(),
+                    branch,
+                    event.getProcessInstanceId(),
+                    event.getProcessDefinitionId()
+                );
             } else if (persistedObject instanceof Task task) {
                 event.setProcessInstanceId(task.getProcessInstanceId());
                 event.setExecutionId(task.getExecutionId());

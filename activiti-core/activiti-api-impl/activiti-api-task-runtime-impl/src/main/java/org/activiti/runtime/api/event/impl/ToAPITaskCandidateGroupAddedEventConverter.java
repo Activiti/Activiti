@@ -20,9 +20,13 @@ import org.activiti.api.task.runtime.events.TaskCandidateGroupAddedEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.runtime.api.model.impl.APITaskCandidateGroupConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ToAPITaskCandidateGroupAddedEventConverter
     implements EventConverter<TaskCandidateGroupAddedEvent, ActivitiEntityEvent> {
+
+    private static final Logger logger = LoggerFactory.getLogger(ToAPITaskCandidateGroupAddedEventConverter.class);
 
     private APITaskCandidateGroupConverter converter;
     private TaskCandidateEventConverterHelper taskCandidateEventConverterHelper =
@@ -39,6 +43,17 @@ public class ToAPITaskCandidateGroupAddedEventConverter
             IdentityLink identityLink = (IdentityLink) internalEvent.getEntity();
             if (taskCandidateEventConverterHelper.isTaskCandidateGroupLink(identityLink)) {
                 event = new TaskCandidateGroupAddedEventImpl(converter.from(identityLink));
+                event.setProcessInstanceId(internalEvent.getProcessInstanceId());
+                event.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
+                logger.debug(
+                    "TaskCandidateGroupAdded converted: taskId={}, groupId={}, link.pid={}, link.pdefId={}, event.pid={}, event.pdefId={}",
+                    identityLink.getTaskId(),
+                    identityLink.getGroupId(),
+                    identityLink.getProcessInstanceId(),
+                    identityLink.getProcessDefinitionId(),
+                    event.getProcessInstanceId(),
+                    event.getProcessDefinitionId()
+                );
             }
         }
         return Optional.ofNullable(event);
