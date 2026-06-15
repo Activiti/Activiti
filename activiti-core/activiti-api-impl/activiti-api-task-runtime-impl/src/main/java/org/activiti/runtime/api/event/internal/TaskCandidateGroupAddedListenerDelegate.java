@@ -22,8 +22,12 @@ import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.runtime.api.event.impl.ToAPITaskCandidateGroupAddedEventConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TaskCandidateGroupAddedListenerDelegate implements ActivitiEventListener {
+
+    private static final Logger logger = LoggerFactory.getLogger(TaskCandidateGroupAddedListenerDelegate.class);
 
     private final List<TaskRuntimeEventListener<TaskCandidateGroupAddedEvent>> listeners;
 
@@ -39,6 +43,13 @@ public class TaskCandidateGroupAddedListenerDelegate implements ActivitiEventLis
 
     @Override
     public void onEvent(ActivitiEvent event) {
+        logger.debug(
+            "TaskCandidateGroupAddedListenerDelegate.onEvent: type={}, eventClass={}, engine.pid={}, engine.pdefId={}",
+            event.getType(),
+            event.getClass().getSimpleName(),
+            event.getProcessInstanceId(),
+            event.getProcessDefinitionId()
+        );
         if (event instanceof ActivitiEntityEvent) {
             converter
                 .from((ActivitiEntityEvent) event)

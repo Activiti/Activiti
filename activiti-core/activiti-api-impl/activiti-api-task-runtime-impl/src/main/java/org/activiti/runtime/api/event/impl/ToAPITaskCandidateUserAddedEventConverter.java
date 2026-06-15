@@ -20,9 +20,13 @@ import org.activiti.api.task.runtime.events.TaskCandidateUserAddedEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.runtime.api.model.impl.APITaskCandidateUserConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ToAPITaskCandidateUserAddedEventConverter
     implements EventConverter<TaskCandidateUserAddedEvent, ActivitiEntityEvent> {
+
+    private static final Logger logger = LoggerFactory.getLogger(ToAPITaskCandidateUserAddedEventConverter.class);
 
     private APITaskCandidateUserConverter converter;
     private TaskCandidateEventConverterHelper taskCandidateEventConverterHelper =
@@ -39,6 +43,17 @@ public class ToAPITaskCandidateUserAddedEventConverter
             IdentityLink identityLink = (IdentityLink) internalEvent.getEntity();
             if (taskCandidateEventConverterHelper.isTaskCandidateUserLink(identityLink)) {
                 event = new TaskCandidateUserAddedEventImpl(converter.from(identityLink));
+                event.setProcessInstanceId(internalEvent.getProcessInstanceId());
+                event.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
+                logger.debug(
+                    "TaskCandidateUserAdded converted: taskId={}, userId={}, link.pid={}, link.pdefId={}, event.pid={}, event.pdefId={}",
+                    identityLink.getTaskId(),
+                    identityLink.getUserId(),
+                    identityLink.getProcessInstanceId(),
+                    identityLink.getProcessDefinitionId(),
+                    event.getProcessInstanceId(),
+                    event.getProcessDefinitionId()
+                );
             }
         }
         return Optional.ofNullable(event);
