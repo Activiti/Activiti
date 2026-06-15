@@ -75,12 +75,14 @@ public class ConnectorsAutoConfiguration {
     public ExtensionsVariablesMappingProvider variablesMappingProvider(
         ProcessExtensionService processExtensionService,
         ExpressionResolver expressionResolver,
-        VariableParsingService variableParsingService
+        VariableParsingService variableParsingService,
+        JsonMapper mapper
     ) {
         return new ExtensionsVariablesMappingProvider(
             processExtensionService,
             expressionResolver,
-            variableParsingService
+            variableParsingService,
+            mapper
         );
     }
 

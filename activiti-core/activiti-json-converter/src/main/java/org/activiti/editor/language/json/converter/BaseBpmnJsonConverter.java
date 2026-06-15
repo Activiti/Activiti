@@ -72,13 +72,17 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
 
     public static final String NAMESPACE = "http://activiti.com/modeler";
 
-    protected JsonMapper jsonMapper = new JsonMapper();
+    protected final JsonMapper jsonMapper;
     protected ActivityProcessor processor;
     protected BpmnModel model;
     protected ObjectNode flowElementNode;
     protected double subProcessX;
     protected double subProcessY;
     protected ArrayNode shapesArrayNode;
+
+    public BaseBpmnJsonConverter(JsonMapper jsonMapper) {
+        this.jsonMapper = jsonMapper;
+    }
 
     public void convertToJson(
         BaseElement baseElement,

@@ -24,11 +24,17 @@ import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.bpmn.model.ThrowEvent;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
 
  */
 public class ThrowEventJsonConverter extends BaseBpmnJsonConverter {
+
+    public ThrowEventJsonConverter(JsonMapper jsonMapper) {
+        super(jsonMapper);
+    }
+
 
     public static void fillTypes(
         Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap,
