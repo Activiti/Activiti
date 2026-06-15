@@ -28,9 +28,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import tools.jackson.databind.json.JsonMapper;
 
 @ExtendWith(MockitoExtension.class)
 public class ProcessEngineAutoConfigurationTest {
+
+    private static final JsonMapper JSON_MAPPER = JsonMapper.builder().build();
 
     @InjectMocks
     private ProcessEngineAutoConfiguration processEngineAutoConfiguration;
@@ -44,7 +47,8 @@ public class ProcessEngineAutoConfigurationTest {
         ActivitiProperties activitiProperties = new ActivitiProperties();
         activitiProperties.setAsyncExecutorActivate(false);
         SpringProcessEngineConfiguration conf = new SpringProcessEngineConfiguration(
-            applicationUpgradeContextServiceMock
+            applicationUpgradeContextServiceMock,
+            JSON_MAPPER
         );
 
         //when
@@ -70,7 +74,8 @@ public class ProcessEngineAutoConfigurationTest {
         ActivitiProperties activitiProperties = new ActivitiProperties();
         activitiProperties.setAsyncExecutorActivate(true);
         SpringProcessEngineConfiguration conf = new SpringProcessEngineConfiguration(
-            applicationUpgradeContextServiceMock
+            applicationUpgradeContextServiceMock,
+            JSON_MAPPER
         );
 
         //when

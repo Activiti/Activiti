@@ -20,11 +20,17 @@ import tools.jackson.databind.node.ObjectNode;
 import java.util.Map;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.DataStoreReference;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
 
  */
 public class DataStoreJsonConverter extends BaseBpmnJsonConverter {
+
+    public DataStoreJsonConverter(JsonMapper jsonMapper) {
+        super(jsonMapper);
+    }
+
 
     public static void fillTypes(
         Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap,

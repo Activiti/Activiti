@@ -22,11 +22,12 @@ import org.activiti.core.common.project.model.ProjectManifest;
 import org.activiti.core.common.spring.project.conf.ApplicationUpgradeContextAutoConfiguration;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.jackson.autoconfigure.JacksonAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest(
-    classes = ApplicationUpgradeContextAutoConfiguration.class,
+    classes = { ApplicationUpgradeContextAutoConfiguration.class, JacksonAutoConfiguration.class },
     webEnvironment = SpringBootTest.WebEnvironment.NONE
 )
 @TestPropertySource(locations = "classpath:application.properties")

@@ -65,20 +65,30 @@ public class ActivitiEventDispatcherImpl implements ActivitiEventDispatcher {
 
     @Override
     public void dispatchEvent(ActivitiEvent event) {
+        // Stamp the commandId from the active CommandContext onto the event, unless already set
+        CommandContext commandContext = Context.getCommandContext();
+        if (
+            commandContext != null &&
+            event instanceof ActivitiEventImpl activitiEventImpl &&
+            activitiEventImpl.getCommandId() == null
+        ) {
+            activitiEventImpl.setCommandId(commandContext.getCommandId());
+        }
+
         if (enabled) {
             eventSupport.dispatchEvent(event);
         }
 
-        if (event.getType() == ActivitiEventType.ENTITY_DELETED && event instanceof ActivitiEntityEvent) {
-            ActivitiEntityEvent entityEvent = (ActivitiEntityEvent) event;
-            if (entityEvent.getEntity() instanceof ProcessDefinition) {
-                // process definition deleted event doesn't need to be dispatched to event listeners
-                return;
-            }
+        if (
+            event.getType() == ActivitiEventType.ENTITY_DELETED &&
+            event instanceof ActivitiEntityEvent entityEvent &&
+            entityEvent.getEntity() instanceof ProcessDefinition
+        ) {
+            // process definition deleted event doesn't need to be dispatched to event listeners
+            return;
         }
 
         // Try getting hold of the Process definition, based on the process definition key, if a context is active
-        CommandContext commandContext = Context.getCommandContext();
         if (commandContext != null) {
             BpmnModel bpmnModel = extractBpmnModelFromEvent(event);
             if (bpmnModel != null) {
@@ -100,16 +110,18 @@ public class ActivitiEventDispatcherImpl implements ActivitiEventDispatcher {
     protected BpmnModel extractBpmnModelFromEvent(ActivitiEvent event) {
         BpmnModel result = null;
 
-        if (result == null && event.getProcessDefinitionId() != null) {
+        if (event.getProcessDefinitionId() != null) {
             ProcessDefinition processDefinition = ProcessDefinitionUtil.getProcessDefinition(
                 event.getProcessDefinitionId(),
                 true
             );
             if (processDefinition != null) {
-                result = Context.getProcessEngineConfiguration()
-                    .getDeploymentManager()
-                    .resolveProcessDefinition(processDefinition)
-                    .getBpmnModel();
+                result =
+                    Context
+                        .getProcessEngineConfiguration()
+                        .getDeploymentManager()
+                        .resolveProcessDefinition(processDefinition)
+                        .getBpmnModel();
             }
         }
 
