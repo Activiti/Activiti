@@ -34,8 +34,8 @@ import java.util.List;
  */
 public class JsonNodeELResolver extends ELResolver {
 
+    private static final JsonMapper DEFAULT_OBJECT_MAPPER = JsonMapper.builder().build();
     private final boolean readOnly;
-    private final JsonMapper defaultObjectMapper = new JsonMapper();
 
     /**
      * Creates a new read/write BeanELResolver.
@@ -180,7 +180,7 @@ public class JsonNodeELResolver extends ELResolver {
      * properties. Subclasses may override this method to provide a specific one
      */
     protected JsonMapper getObjectMapper() {
-        return defaultObjectMapper;
+        return DEFAULT_OBJECT_MAPPER;
     }
 
     /**

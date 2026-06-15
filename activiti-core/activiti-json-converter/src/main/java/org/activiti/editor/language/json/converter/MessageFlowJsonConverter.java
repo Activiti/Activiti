@@ -25,11 +25,17 @@ import org.activiti.bpmn.model.FlowElementsContainer;
 import org.activiti.bpmn.model.GraphicInfo;
 import org.activiti.bpmn.model.MessageFlow;
 import org.apache.commons.lang3.StringUtils;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
 
  */
 public class MessageFlowJsonConverter extends BaseBpmnJsonConverter {
+
+    public MessageFlowJsonConverter(JsonMapper jsonMapper) {
+        super(jsonMapper);
+    }
+
 
     public static void fillTypes(
         Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap,

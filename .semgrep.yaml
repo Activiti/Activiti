@@ -47,3 +47,10 @@ rules:
     severity: ERROR
     languages: [xml]
     pattern-regex: "<groupId>\\s*org\\.projectlombok"
+
+  - id: disallow-jackson2-imports
+    languages: [java]
+    message: |
+      Usage of Jackson 2 (com.fasterxml.jackson) is forbidden. Use Jackson 3 (tools.jackson) instead.
+    severity: ERROR
+    pattern-regex: "com\\.fasterxml\\.jackson\\.(?!annotation\\b)"
