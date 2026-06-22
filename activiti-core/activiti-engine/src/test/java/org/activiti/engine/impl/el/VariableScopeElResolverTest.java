@@ -23,7 +23,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import jakarta.el.ELContext;
 import java.util.Arrays;
 import java.util.List;
@@ -36,15 +36,18 @@ import org.activiti.engine.impl.el.variable.ProcessInitiatorELResolver;
 import org.activiti.engine.impl.el.variable.TaskElResolver;
 import org.activiti.engine.impl.el.variable.VariableElResolver;
 import org.activiti.engine.impl.el.variable.VariableScopeItemELResolver;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class VariableScopeElResolverTest {
 
     @Spy
@@ -63,7 +66,7 @@ public class VariableScopeElResolverTest {
     @Mock
     private VariableScopeItemELResolver thirdItemResolver;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         doReturn(Arrays.asList(firstItemResolver, secondItemResolver, thirdItemResolver))
             .when(variableScopeElResolver)
@@ -111,7 +114,7 @@ public class VariableScopeElResolverTest {
     public void getVariableScopeItemELResolvers_should_return_defaultItemResolvers() {
         //given
         ProcessEngineConfigurationImpl processEngineConfiguration = mock(ProcessEngineConfigurationImpl.class);
-        given(processEngineConfiguration.getObjectMapper()).willReturn(new ObjectMapper());
+        given(processEngineConfiguration.getObjectMapper()).willReturn(new JsonMapper());
         Context.setProcessEngineConfiguration(processEngineConfiguration);
         doCallRealMethod().when(variableScopeElResolver).getVariableScopeItemELResolvers();
 

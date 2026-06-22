@@ -20,7 +20,7 @@ import org.activiti.api.runtime.shared.security.PrincipalGroupsProvider;
 import org.activiti.api.runtime.shared.security.PrincipalIdentityProvider;
 import org.activiti.api.runtime.shared.security.PrincipalRolesProvider;
 import org.activiti.api.runtime.shared.security.SecurityContextPrincipalProvider;
-import org.springframework.lang.NonNull;
+import org.jspecify.annotations.NonNull;
 
 /*
  * This is a simple wrapper for Spring Security Context Holder

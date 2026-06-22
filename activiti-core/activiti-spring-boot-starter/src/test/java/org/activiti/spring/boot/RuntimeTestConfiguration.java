@@ -18,8 +18,8 @@ package org.activiti.spring.boot;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -391,7 +391,7 @@ public class RuntimeTestConfiguration {
 
     @Bean(name = "OutputMappingExpValueConnector.outputMappingExpValueActionName")
     public Connector outputMappingValueExpressionActionName() throws Exception {
-        JsonNode value = new ObjectMapper().readTree(
+        JsonNode value = new JsonMapper().readTree(
             "{\n" +
             "  \"city\": {\n" +
             "    \"name\": \"London\",\n" +

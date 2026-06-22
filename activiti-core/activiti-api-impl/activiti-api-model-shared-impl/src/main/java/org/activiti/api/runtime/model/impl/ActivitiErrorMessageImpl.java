@@ -15,6 +15,7 @@
  */
 package org.activiti.api.runtime.model.impl;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import org.activiti.api.model.shared.model.ActivitiErrorMessage;
 
 public class ActivitiErrorMessageImpl implements ActivitiErrorMessage {
@@ -22,10 +23,11 @@ public class ActivitiErrorMessageImpl implements ActivitiErrorMessage {
     private int code;
     private String message;
 
+    @JsonCreator
     public ActivitiErrorMessageImpl() {}
 
-    public ActivitiErrorMessageImpl(int status, String message) {
-        this.code = status;
+    public ActivitiErrorMessageImpl(int code, String message) {
+        this.code = code;
         this.message = message;
     }
 
@@ -34,8 +36,8 @@ public class ActivitiErrorMessageImpl implements ActivitiErrorMessage {
         return code;
     }
 
-    public void setCode(int status) {
-        this.code = status;
+    public void setCode(int code) {
+        this.code = code;
     }
 
     @Override

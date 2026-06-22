@@ -25,14 +25,14 @@ import org.activiti.bpmn.model.ThrowEvent;
 import org.activiti.engine.impl.bpmn.behavior.IntermediateThrowLinkEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.factory.ActivityBehaviorFactory;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class IntermediateThrowEventParserHandlerTest {
 
     @InjectMocks
@@ -44,7 +44,7 @@ public class IntermediateThrowEventParserHandlerTest {
     @Mock
     private ActivityBehaviorFactory activityBehaviorFactory;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         given(bpmnParse.getActivityBehaviorFactory()).willReturn(activityBehaviorFactory);
     }

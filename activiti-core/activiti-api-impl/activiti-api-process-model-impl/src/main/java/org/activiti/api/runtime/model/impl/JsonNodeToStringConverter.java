@@ -15,23 +15,23 @@
  */
 package org.activiti.api.runtime.model.impl;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
 import org.springframework.core.convert.converter.Converter;
 
 @ProcessVariableTypeConverter
 public class JsonNodeToStringConverter implements Converter<JsonNode, String> {
 
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
 
-    public JsonNodeToStringConverter(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
+    public JsonNodeToStringConverter(JsonMapper jsonMapper) {
+        this.jsonMapper = jsonMapper;
     }
 
     @Override
     public String convert(JsonNode source) {
         try {
-            return objectMapper.writeValueAsString(source);
+            return jsonMapper.writeValueAsString(source);
         } catch (Exception cause) {
             throw new RuntimeException(cause);
         }

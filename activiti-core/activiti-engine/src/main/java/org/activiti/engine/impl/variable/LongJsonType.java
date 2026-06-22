@@ -15,13 +15,13 @@
  */
 package org.activiti.engine.impl.variable;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
 import java.nio.charset.StandardCharsets;
 import org.activiti.engine.ActivitiException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.core.JacksonException;
 
 public class LongJsonType extends SerializableType {
 
@@ -29,18 +29,18 @@ public class LongJsonType extends SerializableType {
     public static final String LONG_JSON = "longJson";
 
     private final int minLength;
-    private ObjectMapper objectMapper;
+    private JsonMapper jsonMapper;
     private boolean serializePOJOsInVariablesToJson;
     private JsonTypeConverter jsonTypeConverter;
 
     public LongJsonType(
         int minLength,
-        ObjectMapper objectMapper,
+        JsonMapper jsonMapper,
         boolean serializePOJOsInVariablesToJson,
         JsonTypeConverter jsonTypeConverter
     ) {
         this.minLength = minLength;
-        this.objectMapper = objectMapper;
+        this.jsonMapper = jsonMapper;
         this.serializePOJOsInVariablesToJson = serializePOJOsInVariablesToJson;
         this.jsonTypeConverter = jsonTypeConverter;
     }
@@ -54,13 +54,10 @@ public class LongJsonType extends SerializableType {
             return true;
         }
 
-        if (
-            JsonNode.class.isAssignableFrom(value.getClass()) ||
-            (objectMapper.canSerialize(value.getClass()) && serializePOJOsInVariablesToJson)
-        ) {
+        if (JsonNode.class.isAssignableFrom(value.getClass()) || serializePOJOsInVariablesToJson) {
             try {
-                return objectMapper.writeValueAsString(value).length() >= minLength;
-            } catch (JsonProcessingException e) {
+                return jsonMapper.writeValueAsString(value).length() >= minLength;
+            } catch (JacksonException e) {
                 logger.error("Error writing json variable of type " + value.getClass(), e);
             }
         }
@@ -74,8 +71,8 @@ public class LongJsonType extends SerializableType {
         }
         String json = null;
         try {
-            json = objectMapper.writeValueAsString(value);
-        } catch (JsonProcessingException e) {
+            json = jsonMapper.writeValueAsString(value);
+        } catch (JacksonException e) {
             logger.error("Error writing long json variable " + valueFields.getName(), e);
         }
         try {
@@ -89,7 +86,7 @@ public class LongJsonType extends SerializableType {
     public Object deserialize(byte[] bytes, ValueFields valueFields) {
         Object jsonValue = null;
         try {
-            jsonValue = jsonTypeConverter.convertToValue(objectMapper.readTree(bytes), valueFields);
+            jsonValue = jsonTypeConverter.convertToValue(jsonMapper.readTree(bytes), valueFields);
         } catch (Exception e) {
             logger.error("Error reading json variable " + valueFields.getName(), e);
         }

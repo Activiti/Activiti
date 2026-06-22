@@ -15,7 +15,7 @@
  */
 package org.activiti.core.common.spring.connector;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -31,17 +31,17 @@ public class ConnectorDefinitionService {
 
     private String connectorRoot;
 
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
 
     private ResourcePatternResolver resourceLoader;
 
     public ConnectorDefinitionService(
         String connectorRoot,
-        ObjectMapper objectMapper,
+        JsonMapper jsonMapper,
         ResourcePatternResolver resourceLoader
     ) {
         this.connectorRoot = connectorRoot;
-        this.objectMapper = objectMapper;
+        this.jsonMapper = jsonMapper;
         this.resourceLoader = resourceLoader;
     }
 
@@ -56,7 +56,7 @@ public class ConnectorDefinitionService {
     }
 
     private ConnectorDefinition read(InputStream inputStream) throws IOException {
-        return objectMapper.readValue(inputStream, ConnectorDefinition.class);
+        return jsonMapper.readValue(inputStream, ConnectorDefinition.class);
     }
 
     public List<ConnectorDefinition> get() throws IOException {

@@ -20,16 +20,15 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
-import org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 
 @AutoConfiguration
 @ConditionalOnProperty(name = "spring.activiti.security.enabled", matchIfMissing = true)
-@ConditionalOnClass(GlobalMethodSecurityConfiguration.class)
-@ConditionalOnMissingBean(annotation = EnableGlobalMethodSecurity.class)
+@ConditionalOnClass(EnableMethodSecurity.class)
+@ConditionalOnMissingBean(annotation = EnableMethodSecurity.class)
 public class ActivitiMethodSecurityAutoConfiguration {
 
     @Configuration
-    @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
-    public static class ActivitiMethodSecurityConfiguration extends GlobalMethodSecurityConfiguration {}
+    @EnableMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
+    public static class ActivitiMethodSecurityConfiguration {}
 }

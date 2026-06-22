@@ -15,9 +15,9 @@
  */
 package org.activiti.editor.language.json.converter;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.ObjectNode;
 import java.util.Map;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.EventSubProcess;
@@ -25,6 +25,7 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.GraphicInfo;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.editor.language.json.model.ModelInfo;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
 
@@ -32,6 +33,11 @@ import org.activiti.editor.language.json.model.ModelInfo;
 public class EventSubProcessJsonConverter
     extends BaseBpmnJsonConverter
     implements FormAwareConverter, FormKeyAwareConverter, DecisionTableAwareConverter, DecisionTableKeyAwareConverter {
+
+    public EventSubProcessJsonConverter(JsonMapper jsonMapper) {
+        super(jsonMapper);
+    }
+
 
     protected Map<String, String> formMap;
     protected Map<String, ModelInfo> formKeyMap;
@@ -64,7 +70,7 @@ public class EventSubProcessJsonConverter
         SubProcess subProcess = (SubProcess) baseElement;
         propertiesNode.put("activitytype", "Event-Sub-Process");
         propertiesNode.put("subprocesstype", "Embedded");
-        ArrayNode subProcessShapesArrayNode = objectMapper.createArrayNode();
+        ArrayNode subProcessShapesArrayNode = jsonMapper.createArrayNode();
         GraphicInfo graphicInfo = model.getGraphicInfo(subProcess.getId());
         processor.processFlowElements(
             subProcess,

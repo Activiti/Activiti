@@ -15,8 +15,8 @@
  */
 package org.activiti.editor.language.json.converter;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.ObjectNode;
 import java.util.Map;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.ExtensionAttribute;
@@ -24,12 +24,18 @@ import org.activiti.bpmn.model.ExtensionElement;
 import org.activiti.bpmn.model.FieldExtension;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.ServiceTask;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
 
 
  */
 public class DecisionTaskJsonConverter extends BaseBpmnJsonConverter implements DecisionTableAwareConverter {
+
+    public DecisionTaskJsonConverter(JsonMapper jsonMapper) {
+        super(jsonMapper);
+    }
+
 
     protected Map<String, String> decisionTableMap;
 
@@ -67,7 +73,7 @@ public class DecisionTaskJsonConverter extends BaseBpmnJsonConverter implements 
             decisionTableReferenceNode.has("id") &&
             !(decisionTableReferenceNode.get("id").isNull())
         ) {
-            String decisionTableId = decisionTableReferenceNode.get("id").asText();
+            String decisionTableId = decisionTableReferenceNode.get("id").asString();
             if (decisionTableMap != null) {
                 String decisionTableKey = decisionTableMap.get(decisionTableId);
 

@@ -15,9 +15,9 @@
  */
 package org.activiti.runtime.api.impl;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.ObjectNode;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,14 +42,14 @@ public class ExpressionResolver {
     private static final Pattern EXPRESSION_PATTERN = Pattern.compile(EXPRESSION_PATTERN_STRING);
     private static final int EXPRESSION_KEY_INDEX = 1;
 
-    private ObjectMapper mapper;
+    private JsonMapper mapper;
     private final DelegateInterceptor delegateInterceptor;
 
     private ExpressionManager expressionManager;
 
     public ExpressionResolver(
         ExpressionManager expressionManager,
-        ObjectMapper mapper,
+        JsonMapper mapper,
         DelegateInterceptor delegateInterceptor
     ) {
         this.expressionManager = expressionManager;

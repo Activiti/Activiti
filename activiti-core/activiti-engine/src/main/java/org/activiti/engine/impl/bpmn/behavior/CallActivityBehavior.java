@@ -182,7 +182,7 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
 
     public void completing(DelegateExecution execution, DelegateExecution subProcessInstance) throws Exception {
         copyOutParameters(execution, subProcessInstance);
-        variablesPropagator.propagate(execution, subProcessInstance.getVariables());
+        variablesPropagator.propagate(execution, subProcessInstance);
     }
 
     public void completed(DelegateExecution execution) throws Exception {

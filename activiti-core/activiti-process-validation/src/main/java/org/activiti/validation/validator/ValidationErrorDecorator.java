@@ -15,9 +15,9 @@
  */
 package org.activiti.validation.validator;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.core.JacksonException;
 import java.io.InputStream;
 import java.util.Map;
 import org.activiti.validation.ValidationError;
@@ -25,6 +25,7 @@ import org.apache.commons.text.StringSubstitutor;
 
 public class ValidationErrorDecorator {
 
+    private static final JsonMapper JSON_MAPPER = JsonMapper.builder().build();
     public static final String PARAM_PREFIX = "{{";
     public static final String PARAM_SUFFIX = "}}";
 
@@ -36,11 +37,10 @@ public class ValidationErrorDecorator {
 
     public void init() {
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
             TypeReference<Map<String, ErrorMessageDefinition>> typeReference = new TypeReference<>() {};
             InputStream inputStream = getClass().getResourceAsStream("/process-validation-messages.json");
-            this.errorMessages = objectMapper.readValue(inputStream, typeReference);
-        } catch (IOException e) {
+            this.errorMessages = JSON_MAPPER.readValue(inputStream, typeReference);
+        } catch (JacksonException e) {
             throw new RuntimeException("Failed to load error messages", e);
         }
     }

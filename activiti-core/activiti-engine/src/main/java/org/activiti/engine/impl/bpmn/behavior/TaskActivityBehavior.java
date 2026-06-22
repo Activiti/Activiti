@@ -15,8 +15,8 @@
  */
 package org.activiti.engine.impl.bpmn.behavior;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.ObjectNode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +39,7 @@ public class TaskActivityBehavior extends AbstractBpmnActivityBehavior {
                 if (overrideValueNode.isNull()) {
                     activeValue = null;
                 } else {
-                    activeValue = overrideValueNode.asText();
+                    activeValue = overrideValueNode.asString();
                 }
             }
         }
@@ -60,7 +60,7 @@ public class TaskActivityBehavior extends AbstractBpmnActivityBehavior {
                 } else {
                     activeValues = new ArrayList<String>();
                     for (JsonNode valueNode : overrideValuesNode) {
-                        activeValues.add(valueNode.asText());
+                        activeValues.add(valueNode.asString());
                     }
                 }
             }

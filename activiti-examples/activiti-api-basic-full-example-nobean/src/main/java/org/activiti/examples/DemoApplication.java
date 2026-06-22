@@ -17,8 +17,8 @@ package org.activiti.examples;
 
 import static java.util.Collections.singletonList;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -56,18 +56,18 @@ public class DemoApplication implements CommandLineRunner {
 
     private final SecurityUtil securityUtil;
 
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
 
     public DemoApplication(
         ProcessRuntime processRuntime,
         TaskRuntime taskRuntime,
         SecurityUtil securityUtil,
-        ObjectMapper objectMapper
+        JsonMapper jsonMapper
     ) {
         this.processRuntime = processRuntime;
         this.taskRuntime = taskRuntime;
         this.securityUtil = securityUtil;
-        this.objectMapper = objectMapper;
+        this.jsonMapper = jsonMapper;
     }
 
     public static void main(String[] args) {
@@ -102,7 +102,7 @@ public class DemoApplication implements CommandLineRunner {
             ProcessPayloadBuilder.start()
                 .withProcessDefinitionKey("categorizeHumanProcess")
                 .withName("Processing Content: " + content)
-                .withVariable("content", objectMapper.convertValue(content, JsonNode.class))
+                .withVariable("content", jsonMapper.convertValue(content, JsonNode.class))
                 .build()
         );
         logger.info(">>> Created Process Instance: " + processInstance);
@@ -123,7 +123,7 @@ public class DemoApplication implements CommandLineRunner {
                 );
                 VariableInstance variableInstance = variables.getFirst();
                 if (variableInstance.getName().equals("content")) {
-                    LinkedHashMap contentToProcess = objectMapper.convertValue(
+                    LinkedHashMap contentToProcess = jsonMapper.convertValue(
                         variableInstance.getValue(),
                         LinkedHashMap.class
                     );

@@ -15,23 +15,23 @@
  */
 package org.activiti.api.runtime.model.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import java.util.Map;
 import org.springframework.core.convert.converter.Converter;
 
 @ProcessVariableTypeConverter
 public class MapToStringConverter implements Converter<Map<String, Object>, String> {
 
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
 
-    public MapToStringConverter(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
+    public MapToStringConverter(JsonMapper jsonMapper) {
+        this.jsonMapper = jsonMapper;
     }
 
     @Override
     public String convert(Map<String, Object> source) {
         try {
-            return objectMapper.writeValueAsString(source);
+            return jsonMapper.writeValueAsString(source);
         } catch (Exception cause) {
             throw new RuntimeException(cause);
         }

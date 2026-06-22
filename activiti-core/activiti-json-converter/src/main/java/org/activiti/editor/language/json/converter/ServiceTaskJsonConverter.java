@@ -15,8 +15,8 @@
  */
 package org.activiti.editor.language.json.converter;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.ObjectNode;
 import java.util.Map;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.FieldExtension;
@@ -25,11 +25,17 @@ import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.editor.language.json.model.ModelInfo;
 import org.apache.commons.lang3.StringUtils;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
 
  */
 public class ServiceTaskJsonConverter extends BaseBpmnJsonConverter implements DecisionTableKeyAwareConverter {
+
+    public ServiceTaskJsonConverter(JsonMapper jsonMapper) {
+        super(jsonMapper);
+    }
+
 
     protected Map<String, ModelInfo> decisionTableKeyMap;
 
@@ -86,7 +92,7 @@ public class ServiceTaskJsonConverter extends BaseBpmnJsonConverter implements D
                     decisionTableKeyMap != null &&
                     decisionTableKeyMap.containsKey(fieldExtension.getStringValue())
                 ) {
-                    ObjectNode decisionReferenceNode = objectMapper.createObjectNode();
+                    ObjectNode decisionReferenceNode = jsonMapper.createObjectNode();
                     propertiesNode.set(PROPERTY_DECISIONTABLE_REFERENCE, decisionReferenceNode);
 
                     ModelInfo modelInfo = decisionTableKeyMap.get(fieldExtension.getStringValue());
@@ -143,9 +149,9 @@ public class ServiceTaskJsonConverter extends BaseBpmnJsonConverter implements D
             if (itemsArrayNode != null) {
                 for (JsonNode itemNode : itemsArrayNode) {
                     JsonNode nameNode = itemNode.get(PROPERTY_SERVICETASK_FIELD_NAME);
-                    if (nameNode != null && StringUtils.isNotEmpty(nameNode.asText())) {
+                    if (nameNode != null && StringUtils.isNotEmpty(nameNode.asString())) {
                         FieldExtension field = new FieldExtension();
-                        field.setFieldName(nameNode.asText());
+                        field.setFieldName(nameNode.asString());
                         if (
                             StringUtils.isNotEmpty(getValueAsString(PROPERTY_SERVICETASK_FIELD_STRING_VALUE, itemNode))
                         ) {

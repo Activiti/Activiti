@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import org.activiti.engine.ActivitiEngineAgenda;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiOptimisticLockingException;
@@ -79,6 +80,7 @@ public class CommandContext {
     protected List<CommandContextCloseListener> closeListeners;
     protected Map<String, Object> attributes; // General-purpose storing of anything during the lifetime of a command context
     protected boolean reused;
+    private final String commandId = UUID.randomUUID().toString();
 
     protected ActivitiEngineAgenda agenda;
     protected Map<String, ExecutionEntity> involvedExecutions = new HashMap<>(1); // The executions involved with the command
@@ -491,5 +493,14 @@ public class CommandContext {
 
     public void setReused(boolean reused) {
         this.reused = reused;
+    }
+
+    /**
+     * Returns a stable identifier for this command execution. All {@link org.activiti.engine.delegate.event.ActivitiEvent}s
+     * produced within the same {@link CommandContext} share the same {@code commandId}, allowing consumers to
+     * correlate them as a single, atomic unit of work.
+     */
+    public String getCommandId() {
+        return commandId;
     }
 }

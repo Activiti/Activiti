@@ -15,8 +15,8 @@
  */
 package org.activiti.engine.impl.cmd;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.ObjectNode;
 import java.io.Serializable;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.SubProcess;
@@ -122,11 +122,11 @@ public class GetDataObjectCmd implements Command<DataObject>, Serializable {
                 if (variableEntity != null && languageNode != null) {
                     JsonNode nameNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_NAME);
                     if (nameNode != null) {
-                        localizedName = nameNode.asText();
+                        localizedName = nameNode.asString();
                     }
                     JsonNode descriptionNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_DESCRIPTION);
                     if (descriptionNode != null) {
-                        localizedDescription = descriptionNode.asText();
+                        localizedDescription = descriptionNode.asString();
                     }
                 }
             }

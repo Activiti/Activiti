@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.tuple;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.payloads.GetProcessDefinitionsPayload;
 import org.activiti.api.process.runtime.ProcessAdminRuntime;
@@ -44,7 +45,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-public class ApplicationUpgradeIT {
+class ApplicationUpgradeIT {
 
     private static final String SINGLE_TASK_PROCESS_DEFINITION_KEY = "SingleTaskProcess";
     private static final String PROCESS_NAME = "single-task";
@@ -82,19 +83,19 @@ public class ApplicationUpgradeIT {
     private List<String> deploymentIds;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         deploymentIds = new ArrayList<>();
         securityUtil.logInAs("user");
         eventSubscriptionQuery = new EventSubscriptionQueryImpl(processEngineConfigurationImpl.getCommandExecutor());
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         deploymentIds.forEach(deploymentId -> repositoryService.deleteDeployment(deploymentId, true));
     }
 
     @Test
-    public void should_updateDeploymentVersion_when_manifestIsPresent() {
+    void should_updateDeploymentVersion_when_manifestIsPresent() {
         ProjectManifest projectManifest = new ProjectManifest();
         projectManifest.setVersion("7");
 
@@ -124,7 +125,7 @@ public class ApplicationUpgradeIT {
     }
 
     @Test
-    public void should_getLatestProcessDefinitionByKey_when_multipleVersions() {
+    void should_getLatestProcessDefinitionByKey_when_multipleVersions() {
         ProjectManifest projectManifest = new ProjectManifest();
         projectManifest.setVersion("12");
         deployProcesses(projectManifest, SINGLE_TASK_PROCESS_DEFINITION_PATH);
@@ -141,7 +142,7 @@ public class ApplicationUpgradeIT {
     }
 
     @Test
-    public void should_adminApiGetLatestProcessDefinitionByKey_when_multipleVersions() {
+    void should_adminApiGetLatestProcessDefinitionByKey_when_multipleVersions() {
         ProjectManifest projectManifest = new ProjectManifest();
         projectManifest.setVersion("12");
         deployProcesses(projectManifest, SINGLE_TASK_PROCESS_DEFINITION_PATH);
@@ -160,7 +161,39 @@ public class ApplicationUpgradeIT {
     }
 
     @Test
-    public void processDefinitions_should_returnOnlyTheLatestVersion_when_multipleVersions() {
+    void should_adminApiGetSpecificVersionProcessDefinitionById_when_multipleVersions() {
+        ProjectManifest projectManifest = new ProjectManifest();
+        projectManifest.setVersion("12");
+        Deployment firstDeployment = deployProcesses(projectManifest, SINGLE_TASK_PROCESS_DEFINITION_PATH);
+
+        projectManifest.setVersion("34");
+        Deployment latestDeployment = deployProcesses(projectManifest, SINGLE_TASK_PROCESS_DEFINITION_PATH);
+
+        securityUtil.logInAs("admin");
+
+        GetProcessDefinitionsPayload getProcessDefinitionsPayload = new GetProcessDefinitionsPayload();
+        getProcessDefinitionsPayload.setProcessDefinitionKeys(Set.of(SINGLE_TASK_PROCESS_DEFINITION_KEY));
+
+        ProcessDefinition firstProcessDefinition = processAdminRuntime.processDefinitions(
+                Pageable.of(0, 100),
+                getProcessDefinitionsPayload
+            ).getContent()
+            .stream()
+            .filter(processDefinition -> processDefinition.getAppVersion().equals(String.valueOf(firstDeployment.getVersion())))
+            .findFirst()
+            .orElseThrow();
+
+        ProcessDefinition result = processAdminRuntime.processDefinition(firstProcessDefinition.getId());
+
+        assertThat(result).isNotNull();
+        assertThat(result.getName()).isEqualTo(PROCESS_NAME);
+        assertThat(result.getId()).contains(SINGLE_TASK_PROCESS_DEFINITION_KEY);
+        assertThat(result.getAppVersion()).isEqualTo(String.valueOf(firstDeployment.getVersion()));
+        assertThat(firstDeployment.getVersion()).isLessThan(latestDeployment.getVersion());
+    }
+
+    @Test
+    void processDefinitions_should_returnOnlyTheLatestVersion_when_multipleVersions() {
         //given
         ProjectManifest projectManifest = new ProjectManifest();
         projectManifest.setVersion("12");
@@ -190,7 +223,7 @@ public class ApplicationUpgradeIT {
     }
 
     @Test
-    public void processDefinitions_should_returnProcesses_when_deploymentIsCreatedWithoutProjectManifest() {
+    void processDefinitions_should_returnProcesses_when_deploymentIsCreatedWithoutProjectManifest() {
         //given
         deployProcessesWithoutProjectManifest(
             "customDeployment",
@@ -208,7 +241,7 @@ public class ApplicationUpgradeIT {
     }
 
     @Test
-    public void processDefinitions_should_returnOnlyTheLatestVersion_when_deploymentIsCreatedWithoutManifestAndIsUpdatedWithManifest() {
+    void processDefinitions_should_returnOnlyTheLatestVersion_when_deploymentIsCreatedWithoutManifestAndIsUpdatedWithManifest() {
         //given
         ProjectManifest projectManifest = new ProjectManifest();
         projectManifest.setVersion("12");
@@ -245,7 +278,7 @@ public class ApplicationUpgradeIT {
     }
 
     @Test
-    public void should_updateDeploymentVersion_when_onlyEnforcedAppVersionIsSet() {
+    void should_updateDeploymentVersion_when_onlyEnforcedAppVersionIsSet() {
         Deployment deployment1 = repositoryService
             .createDeployment()
             .setEnforcedAppVersion(1)
@@ -266,7 +299,7 @@ public class ApplicationUpgradeIT {
     }
 
     @Test
-    public void should_updateDeploymentVersion_when_onlyProjectManifestVersionIsSet() {
+    void should_updateDeploymentVersion_when_onlyProjectManifestVersionIsSet() {
         ProjectManifest projectManifest = new ProjectManifest();
         projectManifest.setVersion("2");
 
@@ -296,7 +329,7 @@ public class ApplicationUpgradeIT {
     }
 
     @Test
-    public void should_enforcedAppVersionTakePriorityOverProjectManifestVersion() {
+    void should_enforcedAppVersionTakePriorityOverProjectManifestVersion() {
         ProjectManifest projectManifest = new ProjectManifest();
         projectManifest.setVersion("2");
 
@@ -327,7 +360,7 @@ public class ApplicationUpgradeIT {
     }
 
     @Test
-    public void should_noUpgradeTakePlace_when_enforcedAppVersionAndProjectManifestVersionAreNotSet() {
+    void should_noUpgradeTakePlace_when_enforcedAppVersionAndProjectManifestVersionAreNotSet() {
         Deployment deployment1 = repositoryService
             .createDeployment()
             .enableDuplicateFiltering()
@@ -370,12 +403,12 @@ public class ApplicationUpgradeIT {
     }
 
     @Test
-    public void disableAllPreviousStartEvents_shouldBeFalse_when_notSet() {
+    void disableAllPreviousStartEvents_shouldBeFalse_when_notSet() {
         assertThat(activitiProperties.shouldDisableExistingStartEventSubscriptions()).isFalse();
     }
 
     @Test
-    public void should_notDeletePreviousTimerStartEvents_when_projectIsUpgraded_and_disableStartEventsIsFalse() {
+    void should_notDeletePreviousTimerStartEvents_when_projectIsUpgraded_and_disableStartEventsIsFalse() {
         String deploymentName = "startEventDeployment";
 
         String deploymentId = deployProcess(deploymentName, "processes/ProcessWithTimerStartEvent.bpmn20.xml");
@@ -395,7 +428,7 @@ public class ApplicationUpgradeIT {
     }
 
     @Test
-    public void should_notDeletePreviousMessageStartEvents_when_projectIsUpgraded_and_disableStartEventsIsFalse() {
+    void should_notDeletePreviousMessageStartEvents_when_projectIsUpgraded_and_disableStartEventsIsFalse() {
         String deploymentName = "testDeployment";
         deployProcess(deploymentName, "processes/ProcessWithMessageStartEvent.bpmn20.xml");
 
@@ -412,7 +445,7 @@ public class ApplicationUpgradeIT {
     }
 
     @Test
-    public void should_notDeletePreviousSignalStartEvents_when_projectIsUpgraded_and_disableStartEventsIsFalse() {
+    void should_notDeletePreviousSignalStartEvents_when_projectIsUpgraded_and_disableStartEventsIsFalse() {
         String deploymentName = "signalDeployment";
 
         deployProcess(deploymentName, "processes/ProcessWithSignalStartEvent.bpmn20.xml");
@@ -430,7 +463,7 @@ public class ApplicationUpgradeIT {
     }
 
     @Test
-    public void should_returnOnlyTheLatestVersions_when_multipleVersions_andRequestForLatestVersions() {
+    void should_returnOnlyTheLatestVersions_when_multipleVersions_andRequestForLatestVersions() {
         //given
         ProjectManifest projectManifest = new ProjectManifest();
         projectManifest.setVersion("12");
@@ -458,7 +491,7 @@ public class ApplicationUpgradeIT {
             .filteredOn(
                 processDefinition ->
                     processDefinition.getKey().equals(SINGLE_TASK_PROCESS_DEFINITION_KEY) ||
-                    processDefinition.getKey().equals(MULTI_INSTANCE_PROCESS_DEFINITION_KEY)
+                        processDefinition.getKey().equals(MULTI_INSTANCE_PROCESS_DEFINITION_KEY)
             )
             .extracting(ProcessDefinition::getKey, ProcessDefinition::getVersion, ProcessDefinition::getAppVersion)
             .containsExactlyInAnyOrder(
@@ -476,7 +509,7 @@ public class ApplicationUpgradeIT {
     }
 
     @Test
-    public void should_returnAllVersions_when_multipleVersions_andRequestForAllVersions() {
+    void should_returnAllVersions_when_multipleVersions_andRequestForAllVersions() {
         //given
         ProjectManifest projectManifest = new ProjectManifest();
         int firstVersion = 1;
@@ -506,7 +539,7 @@ public class ApplicationUpgradeIT {
             .filteredOn(
                 processDefinition ->
                     processDefinition.getKey().equals(SINGLE_TASK_PROCESS_DEFINITION_KEY) ||
-                    processDefinition.getKey().equals(MULTI_INSTANCE_PROCESS_DEFINITION_KEY)
+                        processDefinition.getKey().equals(MULTI_INSTANCE_PROCESS_DEFINITION_KEY)
             )
             .extracting(ProcessDefinition::getKey, ProcessDefinition::getVersion, ProcessDefinition::getAppVersion)
             .containsExactlyInAnyOrder(

@@ -30,8 +30,8 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.NullNode;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.NullNode;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -71,7 +71,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 @SpringBootTest
 public class ExtensionsVariablesMappingProviderTest {
 
-    public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    public static final JsonMapper OBJECT_MAPPER = new JsonMapper();
     private static final String EXPRESSION_TEST_FILES_PATH = "src/test/resources/expressions/";
 
     private static final String JSONPATCH_TEST_FILES_PATH = "src/test/resources/jsonPatch/";

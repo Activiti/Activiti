@@ -17,9 +17,14 @@ package org.activiti.runtime.api.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.runtime.shared.NotFoundException;
+import org.activiti.api.runtime.shared.query.Order;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.runtime.shared.security.SecurityManager;
@@ -40,8 +45,10 @@ import org.activiti.api.task.model.payloads.ReleaseTaskPayload;
 import org.activiti.api.task.model.payloads.SaveTaskPayload;
 import org.activiti.api.task.model.payloads.UpdateTaskPayload;
 import org.activiti.api.task.model.payloads.UpdateTaskVariablePayload;
+import org.activiti.api.task.runtime.TaskIdentificationStrategy;
 import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.api.task.runtime.conf.TaskRuntimeConfiguration;
+import org.activiti.engine.ActivitiTaskAlreadyClaimedException;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
@@ -65,6 +72,14 @@ public class TaskRuntimeImpl implements TaskRuntime {
     private final SecurityManager securityManager;
 
     private final TaskRuntimeHelper taskRuntimeHelper;
+
+    private final Map<TaskIdentificationStrategy, Supplier<Task>> nextTaskStrategies = Map.of(
+        TaskIdentificationStrategy.CLAIM_BEFORE_OPEN_OLDEST_FIRST,
+        this::nextTaskClaimBeforeOpenOldestFirst
+    );
+
+    private static final Map<String, Function<TaskQuery, TaskQuery>> SORT_FIELD_MAPPERS =
+        java.util.Map.of("createddate", TaskQuery::orderByTaskCreateTime);
 
     public TaskRuntimeImpl(
         TaskService taskService,
@@ -135,6 +150,9 @@ public class TaskRuntimeImpl implements TaskRuntime {
         if (getTasksPayload.getParentTaskId() != null) {
             taskQuery = taskQuery.taskParentTaskId(getTasksPayload.getParentTaskId());
         }
+
+        taskQuery = applySortOrder(taskQuery, pageable.getOrder());
+
         List<Task> tasks = taskConverter.from(taskQuery.listPage(pageable.getStartIndex(), pageable.getMaxItems()));
         return new PageImpl<>(tasks, Math.toIntExact(taskQuery.count()));
     }
@@ -174,7 +192,6 @@ public class TaskRuntimeImpl implements TaskRuntime {
 
     @Override
     public Task claim(ClaimTaskPayload claimTaskPayload) {
-        // Validate that the task is visible by the currently authorized user
         Task task;
         try {
             task = task(claimTaskPayload.getTaskId());
@@ -185,16 +202,21 @@ public class TaskRuntimeImpl implements TaskRuntime {
                 " due it is not a candidate for it"
             );
         }
-        // validate the task doesn't have an assignee
-        if (task.getAssignee() != null && !task.getAssignee().isEmpty()) {
+
+        String authenticatedUserId = securityManager.getAuthenticatedUserId();
+        claimTaskPayload.setAssignee(authenticatedUserId);
+
+        String assignee = task.getAssignee() == null || task.getAssignee().trim().isEmpty() ? null : task.getAssignee();
+
+        if (assignee != null && !assignee.equals(authenticatedUserId)) {
             throw new IllegalStateException(
                 "The task was already claimed, the assignee of this task needs to release it first for you to claim it"
             );
         }
 
-        String authenticatedUserId = securityManager.getAuthenticatedUserId();
-        claimTaskPayload.setAssignee(authenticatedUserId);
-        taskService.claim(claimTaskPayload.getTaskId(), claimTaskPayload.getAssignee());
+        if (assignee == null) {
+            taskService.claim(claimTaskPayload.getTaskId(), claimTaskPayload.getAssignee());
+        }
 
         return task(claimTaskPayload.getTaskId());
     }
@@ -274,6 +296,53 @@ public class TaskRuntimeImpl implements TaskRuntime {
         }
 
         return taskConverter.from(task);
+    }
+
+
+    @Override
+    public Task nextTask(TaskIdentificationStrategy strategy) {
+        TaskIdentificationStrategy effectiveStrategy =
+            strategy == null ? TaskIdentificationStrategy.CLAIM_BEFORE_OPEN_OLDEST_FIRST : strategy;
+
+        return nextTaskStrategies.get(effectiveStrategy).get();
+    }
+
+    private Task nextTaskClaimBeforeOpenOldestFirst() {
+        String userId = securityManager.getAuthenticatedUserId();
+        if (userId == null || userId.isEmpty()) {
+            throw new IllegalStateException("You need an authenticated user to perform this operation");
+        }
+
+        TaskQuery nextAssignedTasksQuery = taskService
+            .createTaskQuery()
+            .taskAssignee(userId)
+            .orderByTaskCreateTime()
+            .asc();
+
+        List<org.activiti.engine.task.Task> nextAssignedTasks = nextAssignedTasksQuery.listPage(0, 1);
+
+        if (!nextAssignedTasks.isEmpty()) {
+            return taskConverter.fromWithCandidates(nextAssignedTasks.getFirst());
+        }
+
+        List<String> userGroups = securityManager.getAuthenticatedUserGroups();
+        TaskQuery nextCandidateTaskQuery = taskService
+            .createTaskQuery()
+            .taskCandidateUser(userId, userGroups)
+            .orderByTaskCreateTime()
+            .asc();
+
+        List<org.activiti.engine.task.Task> nextCandidateTasks = nextCandidateTaskQuery.listPage(0, 3);
+        for (org.activiti.engine.task.Task nextCandidateTask : nextCandidateTasks) {
+            try {
+                taskService.claim(nextCandidateTask.getId(), userId);
+                return task(nextCandidateTask.getId());
+            } catch (ActivitiTaskAlreadyClaimedException _) {
+                // Try the next candidate task when the current one was claimed concurrently.
+            }
+        }
+
+        return null;
     }
 
     @Override
@@ -514,5 +583,24 @@ public class TaskRuntimeImpl implements TaskRuntime {
         if (!task.getAssignee().equals(authenticatedUserId)) {
             throw new IllegalStateException("You cannot release a task where you are not the assignee");
         }
+    }
+
+    private TaskQuery applySortOrder(TaskQuery taskQuery, Order order) {
+        if (order == null || order.getProperty() == null || order.getDirection() == null) {
+            return taskQuery;
+        }
+
+        String sortField = order.getProperty().trim().toLowerCase(Locale.ROOT);
+
+        if (!SORT_FIELD_MAPPERS.containsKey(sortField)) {
+            return taskQuery;
+        }
+
+        TaskQuery sortedQuery = SORT_FIELD_MAPPERS.get(sortField).apply(taskQuery);
+
+        return switch (order.getDirection()) {
+            case ASC -> sortedQuery.asc();
+            case DESC -> sortedQuery.desc();
+        };
     }
 }

@@ -15,7 +15,7 @@
  */
 package org.activiti.engine;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.node.ObjectNode;
 import org.activiti.engine.repository.ProcessDefinition;
 
 /** Service providing access to the repository of process definitions and deployments.

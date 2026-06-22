@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.lang.reflect.InvocationTargetException;
 import org.activiti.bpmn.model.helper.LinkThrowEventFlowNodeHelper;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class LinkThrowEventFlowNodeHelperTest {
 

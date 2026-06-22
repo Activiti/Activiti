@@ -15,7 +15,7 @@
  */
 package org.activiti.engine.impl.bpmn.behavior;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.node.ObjectNode;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.DynamicBpmnConstants;
 import org.activiti.engine.delegate.BpmnError;
@@ -75,7 +75,7 @@ public class ServiceTaskExpressionActivityBehavior extends TaskActivityBehavior 
                     ) {
                         String overrideExpression = taskElementProperties
                             .get(DynamicBpmnConstants.SERVICE_TASK_EXPRESSION)
-                            .asText();
+                            .asString();
                         if (
                             StringUtils.isNotEmpty(overrideExpression) &&
                             !overrideExpression.equals(expression.getExpressionText())
