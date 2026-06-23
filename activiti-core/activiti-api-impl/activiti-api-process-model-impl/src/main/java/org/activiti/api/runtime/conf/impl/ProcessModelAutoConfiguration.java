@@ -15,14 +15,6 @@
  */
 package org.activiti.api.runtime.conf.impl;
 
-import tools.jackson.core.Version;
-import tools.jackson.databind.BeanDescription;
-import tools.jackson.databind.DeserializationConfig;
-import tools.jackson.databind.JavaType;
-import tools.jackson.databind.json.JsonMapper;
-import tools.jackson.databind.jsontype.NamedType;
-import tools.jackson.databind.module.SimpleAbstractTypeResolver;
-import tools.jackson.databind.module.SimpleModule;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
@@ -98,8 +90,8 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
-import org.springframework.boot.jackson.autoconfigure.JacksonAutoConfiguration;
 import org.springframework.boot.convert.ApplicationConversionService;
+import org.springframework.boot.jackson.autoconfigure.JacksonAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.Ordered;
@@ -107,7 +99,15 @@ import org.springframework.core.annotation.Order;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.format.support.FormattingConversionService;
+import tools.jackson.core.Version;
+import tools.jackson.databind.BeanDescription;
+import tools.jackson.databind.DeserializationConfig;
 import tools.jackson.databind.JacksonModule;
+import tools.jackson.databind.JavaType;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.jsontype.NamedType;
+import tools.jackson.databind.module.SimpleAbstractTypeResolver;
+import tools.jackson.databind.module.SimpleModule;
 
 @AutoConfiguration
 @AutoConfigureBefore({ JacksonAutoConfiguration.class })
@@ -121,7 +121,9 @@ public class ProcessModelAutoConfiguration {
     //this bean will be automatically injected inside boot's JsonMapper
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
-    public JacksonModule customizeProcessModelObjectMapper(ObjectProvider<ConversionService> conversionServiceProvider) {
+    public JacksonModule customizeProcessModelObjectMapper(
+        ObjectProvider<ConversionService> conversionServiceProvider
+    ) {
         SimpleModule module = new SimpleModule("mapProcessModelInterfaces", Version.unknownVersion());
         SimpleAbstractTypeResolver resolver = new SimpleAbstractTypeResolver();
 
@@ -177,10 +179,14 @@ public class ProcessModelAutoConfiguration {
         module.registerSubtypes(new NamedType(MessageEventPayload.class, MessageEventPayload.class.getSimpleName()));
         module.setAbstractTypes(resolver);
 
-        Supplier<ConversionService> conversionServiceSupplier = () -> Objects.requireNonNullElse(conversionServiceProvider.getIfUnique(), this.conversionService());
+        Supplier<ConversionService> conversionServiceSupplier = () ->
+            Objects.requireNonNullElse(conversionServiceProvider.getIfUnique(), this.conversionService());
         module.addSerializer(new ProcessVariablesMapSerializer(conversionServiceSupplier));
 
-        module.addDeserializer(ProcessVariablesMap.class, new ProcessVariablesMapDeserializer(conversionServiceSupplier));
+        module.addDeserializer(
+            ProcessVariablesMap.class,
+            new ProcessVariablesMapDeserializer(conversionServiceSupplier)
+        );
 
         return module;
     }

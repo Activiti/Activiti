@@ -94,8 +94,6 @@ public class CommandIdStampingTest extends PluggableActivitiTestCase {
 
         dispatcher.dispatchEvent(event);
 
-        assertThat(event.getCommandId())
-            .as("commandId should remain null when no CommandContext is active")
-            .isNull();
+        assertThat(event.getCommandId()).as("commandId should remain null when no CommandContext is active").isNull();
     }
 }

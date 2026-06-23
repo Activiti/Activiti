@@ -31,8 +31,8 @@ import org.activiti.engine.impl.bpmn.behavior.VariablesPropagator;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.assertj.core.groups.Tuple;
@@ -70,11 +70,7 @@ public class DuplicateVariableInsertViaPropagatorTest extends PluggableActivitiT
                 public void run() {
                     try {
                         managementService.executeCommand(
-                            new PropagateVariablesWithBarriersCommand(
-                                startBarrier,
-                                endBarrier,
-                                childExecutionId
-                            )
+                            new PropagateVariablesWithBarriersCommand(startBarrier, endBarrier, childExecutionId)
                         );
                     } catch (Exception e) {
                         exceptions.add(e);
@@ -89,11 +85,7 @@ public class DuplicateVariableInsertViaPropagatorTest extends PluggableActivitiT
                 public void run() {
                     try {
                         managementService.executeCommand(
-                            new PropagateVariablesWithBarriersCommand(
-                                startBarrier,
-                                endBarrier,
-                                childExecutionId
-                            )
+                            new PropagateVariablesWithBarriersCommand(startBarrier, endBarrier, childExecutionId)
                         );
                     } catch (Exception e) {
                         exceptions.add(e);
@@ -116,9 +108,7 @@ public class DuplicateVariableInsertViaPropagatorTest extends PluggableActivitiT
         // Only one variable instance should exist (no duplicates)
         assertThat(variableInstances)
             .extracting(VariableInstance::getName, VariableInstance::getValue)
-            .containsExactly(
-                Tuple.tuple("var", "12345"),
-                Tuple.tuple("var", "12345"));
+            .containsExactly(Tuple.tuple("var", "12345"), Tuple.tuple("var", "12345"));
 
         assertThat(exceptions).isEmpty();
 

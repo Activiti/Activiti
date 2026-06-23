@@ -35,7 +35,9 @@ public class EntityDependencyOrderTest {
 
     @Test
     public void should_containExecutionAndVariableInstanceClasses() {
-        assertThat(EntityDependencyOrder.UPDATE_ORDER)
-            .containsKeys(ExecutionEntityImpl.class, VariableInstanceEntityImpl.class);
+        assertThat(EntityDependencyOrder.UPDATE_ORDER).containsKeys(
+            ExecutionEntityImpl.class,
+            VariableInstanceEntityImpl.class
+        );
     }
 }

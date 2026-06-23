@@ -15,9 +15,6 @@
  */
 package org.activiti.core.el;
 
-import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.json.JsonMapper;
-import tools.jackson.databind.node.ObjectNode;
 import jakarta.el.CompositeELResolver;
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
@@ -25,6 +22,9 @@ import jakarta.el.ELResolver;
 import jakarta.el.PropertyNotWritableException;
 import java.math.BigDecimal;
 import java.util.List;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.ObjectNode;
 
 /**
  * Defines property resolution behavior on JsonNodes.

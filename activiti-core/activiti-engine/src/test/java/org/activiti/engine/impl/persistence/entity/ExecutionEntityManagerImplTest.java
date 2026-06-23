@@ -153,7 +153,8 @@ public class ExecutionEntityManagerImplTest {
             processDefinition,
             businessKey,
             tenantId,
-            null);
+            null
+        );
 
         assertThat(processInstanceResult.getProcessDefinitionId()).isEqualTo("processDefinitionId");
         assertThat(processInstanceResult.getProcessDefinitionKey()).isEqualTo("processDefinitionKey");
@@ -344,7 +345,8 @@ public class ExecutionEntityManagerImplTest {
             processDefinition,
             businessKey,
             tenantId,
-            null);
+            null
+        );
         assertThat(processInstanceResult.getStartTime()).isNull();
 
         ExecutionEntity processInstanceUpdated = executionEntityManager.updateProcessInstanceStartDate(
@@ -475,7 +477,6 @@ public class ExecutionEntityManagerImplTest {
 
     @Test
     public void shouldDispatchProcessCompletedEventWithActorWhenCancelFlagIsFalse() {
-
         ArgumentCaptor<ActivitiEvent> activitiEventCaptor = ArgumentCaptor.forClass(ActivitiEvent.class);
 
         Context.setCommandContext(commandContext);
@@ -487,9 +488,9 @@ public class ExecutionEntityManagerImplTest {
         var actorRow = buildIdentityLink("actor", "userId");
         var candidateRow = buildCandidateIdentityLink();
 
-        given(identityLinkEntityManager.findIdentityLinksByProcessInstanceId(processInstanceEntity.getProcessInstanceId())).willReturn(List.of(
-            actorRow, candidateRow
-        ));
+        given(
+            identityLinkEntityManager.findIdentityLinksByProcessInstanceId(processInstanceEntity.getProcessInstanceId())
+        ).willReturn(List.of(actorRow, candidateRow));
 
         given(executionEntityManager.findById("validProcessInstanceId")).willReturn(processInstanceEntity);
 
@@ -524,7 +525,6 @@ public class ExecutionEntityManagerImplTest {
 
     @Test
     public void shouldDispatchProcessCompletedEventWithServiceUserAsActorWhenCancelFlagIsFalse() {
-
         ArgumentCaptor<ActivitiEvent> activitiEventCaptor = ArgumentCaptor.forClass(ActivitiEvent.class);
 
         Context.setCommandContext(commandContext);
@@ -535,9 +535,9 @@ public class ExecutionEntityManagerImplTest {
 
         var candidateRow = buildCandidateIdentityLink();
 
-        given(identityLinkEntityManager.findIdentityLinksByProcessInstanceId(processInstanceEntity.getProcessInstanceId())).willReturn(List.of(
-            candidateRow
-        ));
+        given(
+            identityLinkEntityManager.findIdentityLinksByProcessInstanceId(processInstanceEntity.getProcessInstanceId())
+        ).willReturn(List.of(candidateRow));
 
         given(executionEntityManager.findById("validProcessInstanceId")).willReturn(processInstanceEntity);
 
@@ -557,6 +557,4 @@ public class ExecutionEntityManagerImplTest {
         assertThat(processInstanceEntity.isDeleted()).isTrue();
         Context.setCommandContext(null);
     }
-
-
 }

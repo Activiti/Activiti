@@ -78,8 +78,10 @@ public class TaskRuntimeImpl implements TaskRuntime {
         this::nextTaskClaimBeforeOpenOldestFirst
     );
 
-    private static final Map<String, Function<TaskQuery, TaskQuery>> SORT_FIELD_MAPPERS =
-        java.util.Map.of("createddate", TaskQuery::orderByTaskCreateTime);
+    private static final Map<String, Function<TaskQuery, TaskQuery>> SORT_FIELD_MAPPERS = java.util.Map.of(
+        "createddate",
+        TaskQuery::orderByTaskCreateTime
+    );
 
     public TaskRuntimeImpl(
         TaskService taskService,
@@ -298,11 +300,11 @@ public class TaskRuntimeImpl implements TaskRuntime {
         return taskConverter.from(task);
     }
 
-
     @Override
     public Task nextTask(TaskIdentificationStrategy strategy) {
-        TaskIdentificationStrategy effectiveStrategy =
-            strategy == null ? TaskIdentificationStrategy.CLAIM_BEFORE_OPEN_OLDEST_FIRST : strategy;
+        TaskIdentificationStrategy effectiveStrategy = strategy == null
+            ? TaskIdentificationStrategy.CLAIM_BEFORE_OPEN_OLDEST_FIRST
+            : strategy;
 
         return nextTaskStrategies.get(effectiveStrategy).get();
     }

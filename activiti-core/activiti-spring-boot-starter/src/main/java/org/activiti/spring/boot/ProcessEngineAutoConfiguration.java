@@ -113,7 +113,10 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
         ObjectProvider<DeploymentCache<ProcessDefinitionCacheEntry>> processDefinitionCacheProvider,
         JsonMapper jsonMapper
     ) throws IOException {
-        SpringProcessEngineConfiguration conf = new SpringProcessEngineConfiguration(applicationUpgradeContextService, jsonMapper);
+        SpringProcessEngineConfiguration conf = new SpringProcessEngineConfiguration(
+            applicationUpgradeContextService,
+            jsonMapper
+        );
         conf.setConfigurators(processEngineConfigurators);
 
         processDefinitionCacheProvider.ifAvailable(conf::setProcessDefinitionCache);

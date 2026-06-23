@@ -15,9 +15,6 @@
  */
 package org.activiti.editor.language.json.converter;
 
-import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.node.ArrayNode;
-import tools.jackson.databind.node.ObjectNode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +25,10 @@ import org.activiti.bpmn.model.UserTask;
 import org.activiti.editor.language.json.converter.util.CollectionUtils;
 import org.activiti.editor.language.json.model.ModelInfo;
 import org.apache.commons.lang3.StringUtils;
+import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.ObjectNode;
 
 /**
  *
@@ -38,7 +38,6 @@ public class UserTaskJsonConverter extends BaseBpmnJsonConverter implements Form
     public UserTaskJsonConverter(JsonMapper jsonMapper) {
         super(jsonMapper);
     }
-
 
     protected Map<String, String> formMap;
     protected Map<String, ModelInfo> formKeyMap;
@@ -132,7 +131,10 @@ public class UserTaskJsonConverter extends BaseBpmnJsonConverter implements Form
 
                     if (
                         userTask.getCandidateUsers().size() == 1 &&
-                        userTask.getCandidateUsers().getFirst().contains("${taskAssignmentBean.assignTaskToCandidateUsers(")
+                        userTask
+                            .getCandidateUsers()
+                            .getFirst()
+                            .contains("${taskAssignmentBean.assignTaskToCandidateUsers(")
                     ) {
                         idmNode.put("type", "users");
 
@@ -488,7 +490,9 @@ public class UserTaskJsonConverter extends BaseBpmnJsonConverter implements Form
                         addExtensionElement("user-info-firstname-" + id, userNode.get("firstName"), task);
                         addExtensionElement("user-info-lastname-" + id, userNode.get("lastName"), task);
                         addExtensionElement("user-info-externalid-" + id, userNode.get("externalId"), task);
-                    } else if (emailNode != null && !emailNode.isNull() && StringUtils.isNotEmpty(emailNode.asString())) {
+                    } else if (
+                        emailNode != null && !emailNode.isNull() && StringUtils.isNotEmpty(emailNode.asString())
+                    ) {
                         String email = emailNode.asString();
                         candidateUsers.add(email);
                         emails.add(email);

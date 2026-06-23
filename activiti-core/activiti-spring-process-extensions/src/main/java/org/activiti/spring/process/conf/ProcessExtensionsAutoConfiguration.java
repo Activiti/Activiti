@@ -15,7 +15,6 @@
  */
 package org.activiti.spring.process.conf;
 
-import tools.jackson.databind.json.JsonMapper;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,6 +42,7 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.PropertySource;
+import tools.jackson.databind.json.JsonMapper;
 
 @AutoConfiguration
 @EnableCaching

@@ -15,7 +15,6 @@
  */
 package org.activiti.api.runtime.model.impl;
 
-import tools.jackson.databind.JsonNode;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -27,6 +26,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
+import tools.jackson.databind.JsonNode;
 
 public class ProcessVariablesMapTypeRegistry {
 

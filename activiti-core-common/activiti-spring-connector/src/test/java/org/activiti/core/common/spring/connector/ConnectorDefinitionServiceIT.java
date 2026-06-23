@@ -27,7 +27,10 @@ import org.springframework.boot.jackson.autoconfigure.JacksonAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
-@SpringBootTest(classes = { ConnectorAutoConfiguration.class, JacksonAutoConfiguration.class }, webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest(
+    classes = { ConnectorAutoConfiguration.class, JacksonAutoConfiguration.class },
+    webEnvironment = SpringBootTest.WebEnvironment.NONE
+)
 @TestPropertySource(locations = "classpath:application-single-test.properties")
 public class ConnectorDefinitionServiceIT {
 
@@ -42,11 +45,11 @@ public class ConnectorDefinitionServiceIT {
         assertThat(connectorDefinitions.getFirst().getName()).isEqualTo("Name-of-the-connector");
         assertThat(connectorDefinitions.getFirst().getActions().size()).isEqualTo(2);
         assertThat(connectorDefinitions.getFirst().getActions().get("actionId1").getName()).isEqualTo("actionName1");
-        assertThat(connectorDefinitions.getFirst().getActions().get("actionId1").getInputs().getFirst().getName()).isEqualTo(
-            "input-variable-name-1"
-        );
-        assertThat(connectorDefinitions.getFirst().getActions().get("actionId1").getOutputs().getFirst().getName()).isEqualTo(
-            "output-variable-name-1"
-        );
+        assertThat(
+            connectorDefinitions.getFirst().getActions().get("actionId1").getInputs().getFirst().getName()
+        ).isEqualTo("input-variable-name-1");
+        assertThat(
+            connectorDefinitions.getFirst().getActions().get("actionId1").getOutputs().getFirst().getName()
+        ).isEqualTo("output-variable-name-1");
     }
 }

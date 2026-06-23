@@ -15,10 +15,10 @@
  */
 package org.activiti.api.runtime.model.impl;
 
-import tools.jackson.databind.JavaType;
-import tools.jackson.databind.json.JsonMapper;
 import java.util.List;
 import org.springframework.core.convert.converter.Converter;
+import tools.jackson.databind.JavaType;
+import tools.jackson.databind.json.JsonMapper;
 
 @ProcessVariableTypeConverter
 public class StringToListConverter implements Converter<String, List<Object>> {

@@ -15,26 +15,24 @@
  */
 package org.activiti.engine.test.bpmn.usertask;
 
+import java.util.Calendar;
+import java.util.Date;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
 
-import java.util.Calendar;
-import java.util.Date;
-
 public class UpdateTaskDetailsTaskListener implements TaskListener {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  @Override
-  public void notify(DelegateTask delegateTask) {
-      // calculate new dueDate
-      Calendar cal = Calendar.getInstance();
-      cal.setTime (delegateTask.getDueDate());
-      cal.add (Calendar.DATE, 1);
-      Date newDueDate = cal.getTime();
+    @Override
+    public void notify(DelegateTask delegateTask) {
+        // calculate new dueDate
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(delegateTask.getDueDate());
+        cal.add(Calendar.DATE, 1);
+        Date newDueDate = cal.getTime();
 
-      // set new dueDate
-      delegateTask.setDueDate(newDueDate);
-  }
-
+        // set new dueDate
+        delegateTask.setDueDate(newDueDate);
+    }
 }

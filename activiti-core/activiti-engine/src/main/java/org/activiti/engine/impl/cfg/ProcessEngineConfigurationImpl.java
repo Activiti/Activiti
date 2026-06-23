@@ -17,7 +17,6 @@ package org.activiti.engine.impl.cfg;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import tools.jackson.databind.json.JsonMapper;
 import jakarta.el.ELResolver;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -335,6 +334,7 @@ import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
 import org.apache.ibatis.type.JdbcType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.databind.json.JsonMapper;
 
 public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfiguration {
 
@@ -862,7 +862,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     protected ProcessEngineConfigurationImpl(JsonMapper jsonMapper) {
         this.jsonMapper = jsonMapper;
     }
-
 
     // buildProcessEngine
     // ///////////////////////////////////////////////////////
@@ -2043,8 +2042,11 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
             variableTypes.addType(new UUIDType());
             variableTypes.addType(new BigDecimalType());
 
-            jsonMapper = jsonMapper.rebuild()
-                .withConfigOverride(BigDecimal.class, o -> o.setFormat(JsonFormat.Value.forShape(JsonFormat.Shape.STRING)))
+            jsonMapper = jsonMapper
+                .rebuild()
+                .withConfigOverride(BigDecimal.class, o ->
+                    o.setFormat(JsonFormat.Value.forShape(JsonFormat.Shape.STRING))
+                )
                 .build();
             JsonTypeConverter jsonTypeConverter = new JsonTypeConverter(jsonMapper, javaClassFieldForJackson);
             variableTypes.addType(
