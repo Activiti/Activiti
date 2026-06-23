@@ -19,6 +19,5 @@ import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.events.ProcessRuntimeEvent;
 
 public interface ProcessCompletedEvent extends ProcessRuntimeEvent<ProcessInstance> {
-
     String getActor();
 }

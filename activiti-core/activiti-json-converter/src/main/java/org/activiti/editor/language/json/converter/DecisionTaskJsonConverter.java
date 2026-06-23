@@ -15,8 +15,6 @@
  */
 package org.activiti.editor.language.json.converter;
 
-import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.node.ObjectNode;
 import java.util.Map;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.ExtensionAttribute;
@@ -24,7 +22,9 @@ import org.activiti.bpmn.model.ExtensionElement;
 import org.activiti.bpmn.model.FieldExtension;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.ServiceTask;
+import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.ObjectNode;
 
 /**
 
@@ -35,7 +35,6 @@ public class DecisionTaskJsonConverter extends BaseBpmnJsonConverter implements 
     public DecisionTaskJsonConverter(JsonMapper jsonMapper) {
         super(jsonMapper);
     }
-
 
     protected Map<String, String> decisionTableMap;
 

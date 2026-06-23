@@ -54,8 +54,9 @@ public abstract class Event extends FlowNode {
     }
 
     public Optional<ErrorEventDefinition> getErrorEventDefinition() {
-        return eventDefinitions != null && !eventDefinitions.isEmpty() &&
-               eventDefinitions.getFirst() instanceof ErrorEventDefinition errorEventDefinition
+        return eventDefinitions != null &&
+            !eventDefinitions.isEmpty() &&
+            eventDefinitions.getFirst() instanceof ErrorEventDefinition errorEventDefinition
             ? Optional.of(errorEventDefinition)
             : Optional.empty();
     }

@@ -433,11 +433,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
                     bpmnEdgeParser.parse(xtr, model);
                 } else {
                     if (!activeSubProcessList.isEmpty() && ELEMENT_MULTIINSTANCE.equalsIgnoreCase(xtr.getLocalName())) {
-                        multiInstanceParser.parseChildElement(
-                            xtr,
-                            activeSubProcessList.getLast(),
-                            model
-                        );
+                        multiInstanceParser.parseChildElement(xtr, activeSubProcessList.getLast(), model);
                     } else if (convertersToBpmnMap.containsKey(xtr.getLocalName())) {
                         if (activeProcess != null) {
                             BaseBpmnXMLConverter converter = convertersToBpmnMap.get(xtr.getLocalName());

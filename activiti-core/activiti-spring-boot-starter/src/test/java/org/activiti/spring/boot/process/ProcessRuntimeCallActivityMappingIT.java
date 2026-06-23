@@ -226,8 +226,7 @@ public class ProcessRuntimeCallActivityMappingIT {
         securityUtil.logInAs("user");
 
         ProcessInstance processInstance = processRuntime.start(
-            ProcessPayloadBuilder
-                .start()
+            ProcessPayloadBuilder.start()
                 .withProcessDefinitionKey(PARENT_PROCESS_CALL_ACTIVITY_NO_MAPPING_WITH_TASK)
                 .build()
         );
@@ -283,8 +282,7 @@ public class ProcessRuntimeCallActivityMappingIT {
         securityUtil.logInAs("user");
 
         ProcessInstance processInstance = processRuntime.start(
-            ProcessPayloadBuilder
-                .start()
+            ProcessPayloadBuilder.start()
                 .withProcessDefinitionKey("multi-instance-parallel-call-activity-result-collection-all")
                 .build()
         );
@@ -333,8 +331,7 @@ public class ProcessRuntimeCallActivityMappingIT {
         securityUtil.logInAs("user");
 
         ProcessInstance processInstance = processRuntime.start(
-            ProcessPayloadBuilder
-                .start()
+            ProcessPayloadBuilder.start()
                 .withProcessDefinitionKey("multi-instance-sequential-call-activity-result-collection-all")
                 .build()
         );
@@ -383,8 +380,7 @@ public class ProcessRuntimeCallActivityMappingIT {
         securityUtil.logInAs("user");
 
         ProcessInstance processInstance = processRuntime.start(
-            ProcessPayloadBuilder
-                .start()
+            ProcessPayloadBuilder.start()
                 .withProcessDefinitionKey("multi-instance-parallel-call-activity-result-collection-empty-outputs")
                 .build()
         );
@@ -419,8 +415,7 @@ public class ProcessRuntimeCallActivityMappingIT {
         securityUtil.logInAs("user");
 
         ProcessInstance processInstance = processRuntime.start(
-            ProcessPayloadBuilder
-                .start()
+            ProcessPayloadBuilder.start()
                 .withProcessDefinitionKey(
                     "multi-instance-parallel-call-activity-result-collection-empty-outputs-with-element-variable"
                 )
@@ -457,8 +452,7 @@ public class ProcessRuntimeCallActivityMappingIT {
         securityUtil.logInAs("user");
 
         ProcessInstance processInstance = processRuntime.start(
-            ProcessPayloadBuilder
-                .start()
+            ProcessPayloadBuilder.start()
                 .withProcessDefinitionKey("multi-instance-parallel-call-activity-result-collection-loop-variables")
                 .build()
         );
@@ -493,8 +487,7 @@ public class ProcessRuntimeCallActivityMappingIT {
         securityUtil.logInAs("user");
 
         ProcessInstance processInstance = processRuntime.start(
-            ProcessPayloadBuilder
-                .start()
+            ProcessPayloadBuilder.start()
                 .withProcessDefinitionKey("multi-instance-parallel-call-activity-result-collection-output-data-item")
                 .build()
         );
@@ -530,7 +523,8 @@ public class ProcessRuntimeCallActivityMappingIT {
     }
 
     void assertProcessCompleted(ProcessInstance processInstance) {
-        assertThatThrownBy(() -> processRuntime.processInstance(processInstance.getId()))
-            .isInstanceOf(NotFoundException.class);
+        assertThatThrownBy(() -> processRuntime.processInstance(processInstance.getId())).isInstanceOf(
+            NotFoundException.class
+        );
     }
 }

@@ -43,7 +43,8 @@ public class DbSchemaUpdateTest extends AbstractTestCase {
                 Path.of("target/activiti-engine/org/activiti/db/create/activiti.postgres.create.history.sql")
             ),
             "/docker-entrypoint-initdb.d/history.sql"
-        ).waitingFor(Wait.forListeningPort());
+        )
+        .waitingFor(Wait.forListeningPort());
 
     @Override
     protected void setUp() throws Exception {

@@ -17,7 +17,6 @@ package org.activiti.spring.process;
 
 import static java.util.Collections.emptyMap;
 
-import tools.jackson.databind.node.ObjectNode;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -38,6 +37,7 @@ import org.activiti.spring.process.model.Extension;
 import org.activiti.spring.process.model.VariableDefinition;
 import org.activiti.spring.process.variable.VariableParsingService;
 import org.activiti.spring.process.variable.VariableValidationService;
+import tools.jackson.databind.node.ObjectNode;
 
 public class ProcessVariablesInitiator extends ProcessInstanceHelper {
 

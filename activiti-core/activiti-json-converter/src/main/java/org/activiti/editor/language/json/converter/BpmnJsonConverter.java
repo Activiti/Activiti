@@ -15,10 +15,6 @@
  */
 package org.activiti.editor.language.json.converter;
 
-import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.json.JsonMapper;
-import tools.jackson.databind.node.ArrayNode;
-import tools.jackson.databind.node.ObjectNode;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -64,6 +60,10 @@ import org.activiti.editor.language.json.model.ModelInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.ObjectNode;
 
 /**
 
@@ -448,7 +448,9 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
         Class<? extends BaseBpmnJsonConverter> converter = convertersToJsonMap.get(flowElement.getClass());
         if (converter != null) {
             try {
-                BaseBpmnJsonConverter converterInstance = converter.getDeclaredConstructor(JsonMapper.class).newInstance(this.jsonMapper);
+                BaseBpmnJsonConverter converterInstance = converter
+                    .getDeclaredConstructor(JsonMapper.class)
+                    .newInstance(this.jsonMapper);
                 if (converterInstance instanceof FormKeyAwareConverter) {
                     ((FormKeyAwareConverter) converterInstance).setFormKeyMap(formKeyMap);
                 }
@@ -764,7 +766,9 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
             String stencilId = BpmnJsonConverterUtil.getStencilId(shapeNode);
             Class<? extends BaseBpmnJsonConverter> converter = convertersToBpmnMap.get(stencilId);
             try {
-                BaseBpmnJsonConverter converterInstance = converter.getDeclaredConstructor(JsonMapper.class).newInstance(this.jsonMapper);
+                BaseBpmnJsonConverter converterInstance = converter
+                    .getDeclaredConstructor(JsonMapper.class)
+                    .newInstance(this.jsonMapper);
                 if (converterInstance instanceof DecisionTableAwareConverter) {
                     ((DecisionTableAwareConverter) converterInstance).setDecisionTableMap(decisionTableMap);
                 }

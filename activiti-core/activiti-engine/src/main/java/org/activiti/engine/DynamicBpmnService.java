@@ -15,8 +15,8 @@
  */
 package org.activiti.engine;
 
-import tools.jackson.databind.node.ObjectNode;
 import org.activiti.engine.repository.ProcessDefinition;
+import tools.jackson.databind.node.ObjectNode;
 
 /** Service providing access to the repository of process definitions and deployments.
  *

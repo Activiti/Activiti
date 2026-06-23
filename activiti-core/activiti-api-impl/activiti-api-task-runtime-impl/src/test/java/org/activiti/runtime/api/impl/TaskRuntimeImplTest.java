@@ -242,8 +242,7 @@ public class TaskRuntimeImplTest {
 
         when(taskService.createTaskQuery()).thenReturn(taskQuery);
         when(taskQuery.or()).thenReturn(taskQuery);
-        when(taskQuery.taskCandidateOrAssigned(AUTHENTICATED_USER, Collections.emptyList()))
-            .thenReturn(taskQuery);
+        when(taskQuery.taskCandidateOrAssigned(AUTHENTICATED_USER, Collections.emptyList())).thenReturn(taskQuery);
         when(taskQuery.taskOwner(AUTHENTICATED_USER)).thenReturn(taskQuery);
         when(taskQuery.endOr()).thenReturn(taskQuery);
         when(taskQuery.orderByTaskCreateTime()).thenReturn(sortedQuery);
@@ -289,8 +288,7 @@ public class TaskRuntimeImplTest {
 
         when(taskService.createTaskQuery()).thenReturn(taskQuery);
         when(taskQuery.or()).thenReturn(taskQuery);
-        when(taskQuery.taskCandidateOrAssigned(AUTHENTICATED_USER, Collections.emptyList()))
-            .thenReturn(taskQuery);
+        when(taskQuery.taskCandidateOrAssigned(AUTHENTICATED_USER, Collections.emptyList())).thenReturn(taskQuery);
         when(taskQuery.taskOwner(AUTHENTICATED_USER)).thenReturn(taskQuery);
         when(taskQuery.endOr()).thenReturn(taskQuery);
         when(taskQuery.listPage(0, 50)).thenReturn(Collections.emptyList());
@@ -319,8 +317,7 @@ public class TaskRuntimeImplTest {
 
         when(taskService.createTaskQuery()).thenReturn(taskQuery);
         when(taskQuery.or()).thenReturn(taskQuery);
-        when(taskQuery.taskCandidateOrAssigned(AUTHENTICATED_USER, Collections.emptyList()))
-            .thenReturn(taskQuery);
+        when(taskQuery.taskCandidateOrAssigned(AUTHENTICATED_USER, Collections.emptyList())).thenReturn(taskQuery);
         when(taskQuery.taskOwner(AUTHENTICATED_USER)).thenReturn(taskQuery);
         when(taskQuery.endOr()).thenReturn(taskQuery);
         when(taskQuery.listPage(0, 50)).thenReturn(Collections.emptyList());
@@ -356,8 +353,7 @@ public class TaskRuntimeImplTest {
 
         when(taskService.createTaskQuery()).thenReturn(taskQuery);
         when(taskQuery.or()).thenReturn(taskQuery);
-        when(taskQuery.taskCandidateOrAssigned(AUTHENTICATED_USER, Collections.emptyList()))
-            .thenReturn(taskQuery);
+        when(taskQuery.taskCandidateOrAssigned(AUTHENTICATED_USER, Collections.emptyList())).thenReturn(taskQuery);
         when(taskQuery.taskOwner(AUTHENTICATED_USER)).thenReturn(taskQuery);
         when(taskQuery.endOr()).thenReturn(taskQuery);
         when(taskQuery.listPage(0, 50)).thenReturn(Collections.emptyList());
@@ -418,8 +414,9 @@ public class TaskRuntimeImplTest {
         when(assignedTaskQuery.asc()).thenReturn(assignedTaskQuery);
         when(assignedTaskQuery.listPage(0, 1)).thenReturn(Collections.emptyList());
 
-        when(candidateTaskQuery.taskCandidateUser(AUTHENTICATED_USER, Collections.singletonList("group")))
-            .thenReturn(candidateTaskQuery);
+        when(candidateTaskQuery.taskCandidateUser(AUTHENTICATED_USER, Collections.singletonList("group"))).thenReturn(
+            candidateTaskQuery
+        );
         when(candidateTaskQuery.orderByTaskCreateTime()).thenReturn(candidateTaskQuery);
         when(candidateTaskQuery.asc()).thenReturn(candidateTaskQuery);
         when(candidateTaskQuery.listPage(0, 3)).thenReturn(List.of(candidateEngineTask));
@@ -456,8 +453,9 @@ public class TaskRuntimeImplTest {
         when(assignedTaskQuery.asc()).thenReturn(assignedTaskQuery);
         when(assignedTaskQuery.listPage(0, 1)).thenReturn(Collections.emptyList());
 
-        when(candidateTaskQuery.taskCandidateUser(AUTHENTICATED_USER, Collections.singletonList("group")))
-            .thenReturn(candidateTaskQuery);
+        when(candidateTaskQuery.taskCandidateUser(AUTHENTICATED_USER, Collections.singletonList("group"))).thenReturn(
+            candidateTaskQuery
+        );
         when(candidateTaskQuery.orderByTaskCreateTime()).thenReturn(candidateTaskQuery);
         when(candidateTaskQuery.asc()).thenReturn(candidateTaskQuery);
         when(candidateTaskQuery.listPage(0, 3)).thenReturn(List.of(firstCandidate, secondCandidate));
@@ -473,9 +471,12 @@ public class TaskRuntimeImplTest {
             internalTasksById.get(invocation.getArgument(0, String.class))
         );
         when(taskConverter.fromWithCandidates(any())).thenAnswer(invocation -> {
-            org.activiti.engine.task.Task engineTask = invocation.getArgument(0, org.activiti.engine.task.Task.class);
-            return engineTask == null ? null : apiTasksById.get(engineTask.getId());
-        });
+                org.activiti.engine.task.Task engineTask = invocation.getArgument(
+                    0,
+                    org.activiti.engine.task.Task.class
+                );
+                return engineTask == null ? null : apiTasksById.get(engineTask.getId());
+            });
 
         org.mockito.Mockito.doThrow(new ActivitiTaskAlreadyClaimedException("candidate-task-id-1", "other-user"))
             .when(taskService)
