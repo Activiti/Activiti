@@ -22,6 +22,8 @@ import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.EventSubProcess;
 import org.activiti.bpmn.model.Message;
 import org.activiti.bpmn.model.MessageEventDefinition;
+import org.activiti.bpmn.model.Signal;
+import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
@@ -63,6 +65,18 @@ public class StartEventParseHandler extends AbstractActivityBpmnParseHandler<Sta
                         bpmnParse
                             .getActivityBehaviorFactory()
                             .createEventSubProcessErrorStartEventActivityBehavior(element)
+                    );
+                } else if (eventDefinition instanceof SignalEventDefinition) {
+                    SignalEventDefinition signalDefinition = (SignalEventDefinition) eventDefinition;
+                    BpmnModel bpmnModel = bpmnParse.getBpmnModel();
+                    Signal signal = null;
+                    if (bpmnModel.containsSignalId(signalDefinition.getSignalRef())) {
+                        signal = bpmnModel.getSignal(signalDefinition.getSignalRef());
+                    }
+                    element.setBehavior(
+                        bpmnParse
+                            .getActivityBehaviorFactory()
+                            .createEventSubProcessSignalStartEventActivityBehavior(element, signalDefinition, signal)
                     );
                 }
             }

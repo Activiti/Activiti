@@ -28,6 +28,8 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.Message;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.Process;
+import org.activiti.bpmn.model.Signal;
+import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.ValuedDataObject;
 import org.activiti.engine.ActivitiException;
@@ -329,6 +331,26 @@ public class ProcessInstanceHelper {
                                 correlationKey.ifPresent(subscription::setConfiguration);
 
                                 messageEventSubscriptions.add(subscription);
+                            } else if (eventDefinition instanceof SignalEventDefinition) {
+                                SignalEventDefinition signalEventDefinition = (SignalEventDefinition) eventDefinition;
+                                BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(
+                                    processInstance.getProcessDefinitionId()
+                                );
+                                Signal signal = null;
+                                String signalName = signalEventDefinition.getSignalRef();
+                                if (bpmnModel.containsSignalId(signalEventDefinition.getSignalRef())) {
+                                    signal = bpmnModel.getSignal(signalEventDefinition.getSignalRef());
+                                    signalName = signal.getName();
+                                }
+                                ExecutionEntity signalExecution = commandContext
+                                    .getExecutionEntityManager()
+                                    .createChildExecution(processInstance);
+                                signalExecution.setCurrentFlowElement(startEvent);
+                                signalExecution.setEventScope(true);
+
+                                commandContext
+                                    .getEventSubscriptionEntityManager()
+                                    .insertSignalEvent(signalName, signal, signalExecution);
                             }
                         }
                     }
