@@ -223,7 +223,7 @@
     <maven-source-plugin.version>3.4.0</maven-source-plugin.version>
     <maven-surefire-plugin.version>3.5.6</maven-surefire-plugin.version>
     <sonar-maven-plugin.version>5.6.0.6792</sonar-maven-plugin.version>
-    <spring-boot.version>4.0.6</spring-boot.version>
+    <spring-boot.version>4.0.7</spring-boot.version>
     <!-- AAE-46198 temporary Tomcat version override. Remove when upgrading to Spring Boot 4.1.x -->
     <tomcat.version>11.0.22</tomcat.version>
     <jakarta.el-api.version>6.0.1</jakarta.el-api.version>
