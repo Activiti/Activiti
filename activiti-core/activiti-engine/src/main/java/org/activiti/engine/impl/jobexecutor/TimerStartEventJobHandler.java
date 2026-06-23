@@ -71,8 +71,9 @@ public class TimerStartEventJobHandler extends TimerEventHandler implements JobH
                         .getProcessEngineConfiguration()
                         .getProcessInstanceHelper();
 
-                    ProcessInstanceCreationOptions options = ProcessInstanceCreationOptions
-                        .builder(processDefinitionEntity)
+                    ProcessInstanceCreationOptions options = ProcessInstanceCreationOptions.builder(
+                        processDefinitionEntity
+                    )
                         .variables(new HashMap<>())
                         .build();
 

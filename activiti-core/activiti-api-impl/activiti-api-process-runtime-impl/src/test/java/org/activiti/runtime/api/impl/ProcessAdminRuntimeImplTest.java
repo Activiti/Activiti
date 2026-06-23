@@ -162,7 +162,9 @@ class ProcessAdminRuntimeImplTest {
     @Test
     void should_applyProcessDefinitionKeysFilter_whenSearchingWithKeys() {
         var processDefinitionQuery = mock(ProcessDefinitionQuery.class, Answers.RETURNS_SELF);
-        var payload = ProcessPayloadBuilder.processDefinitions().withProcessDefinitionKeys(Set.of("key1", "key2")).build();
+        var payload = ProcessPayloadBuilder.processDefinitions()
+            .withProcessDefinitionKeys(Set.of("key1", "key2"))
+            .build();
 
         given(repositoryService.createProcessDefinitionQuery()).willReturn(processDefinitionQuery);
         given(processDefinitionQuery.listPage(0, 10)).willReturn(Collections.emptyList());
@@ -238,8 +240,9 @@ class ProcessAdminRuntimeImplTest {
         given(repositoryService.createProcessDefinitionQuery()).willReturn(processDefinitionQuery);
         given(processDefinitionQuery.list()).willReturn(Collections.emptyList());
 
-        assertThatThrownBy(() -> processAdminRuntime.processDefinition("unknownId"))
-            .isInstanceOf(ActivitiObjectNotFoundException.class);
+        assertThatThrownBy(() -> processAdminRuntime.processDefinition("unknownId")).isInstanceOf(
+            ActivitiObjectNotFoundException.class
+        );
         verify(processDefinitionQuery).singleResult();
         verify(processDefinitionQuery).list();
     }
@@ -470,8 +473,7 @@ class ProcessAdminRuntimeImplTest {
         given(processInstanceQuery.processInstanceId("unknownId")).willReturn(processInstanceQuery);
         given(processInstanceQuery.singleResult()).willReturn(null);
 
-        assertThatThrownBy(() -> processAdminRuntime.delete(deletePayload))
-            .isInstanceOf(NotFoundException.class);
+        assertThatThrownBy(() -> processAdminRuntime.delete(deletePayload)).isInstanceOf(NotFoundException.class);
     }
 
     @Test
@@ -670,8 +672,9 @@ class ProcessAdminRuntimeImplTest {
         var internalProcessInstance = mock(org.activiti.engine.runtime.ProcessInstance.class);
         var apiProcessInstance = new ProcessInstanceImpl();
 
-        given(runtimeService.startProcessInstanceByMessage("messageName", "businessKey", variables))
-            .willReturn(internalProcessInstance);
+        given(runtimeService.startProcessInstanceByMessage("messageName", "businessKey", variables)).willReturn(
+            internalProcessInstance
+        );
         given(processInstanceConverter.from(internalProcessInstance)).willReturn(apiProcessInstance);
 
         var result = processAdminRuntime.start(messagePayload);
@@ -763,10 +766,13 @@ class ProcessAdminRuntimeImplTest {
         var apiProcessInstance2 = new ProcessInstanceImpl();
 
         given(runtimeService.createProcessInstanceQuery()).willReturn(processInstanceQuery);
-        given(processInstanceQuery.listPage(0, 10)).willReturn(List.of(internalProcessInstance1, internalProcessInstance2));
+        given(processInstanceQuery.listPage(0, 10)).willReturn(
+            List.of(internalProcessInstance1, internalProcessInstance2)
+        );
         given(processInstanceQuery.count()).willReturn(2L);
-        given(processInstanceConverter.from(List.of(internalProcessInstance1, internalProcessInstance2)))
-            .willReturn(List.of(apiProcessInstance1, apiProcessInstance2));
+        given(processInstanceConverter.from(List.of(internalProcessInstance1, internalProcessInstance2))).willReturn(
+            List.of(apiProcessInstance1, apiProcessInstance2)
+        );
 
         var result = processAdminRuntime.processInstances(Pageable.of(0, 10));
 
@@ -820,8 +826,9 @@ class ProcessAdminRuntimeImplTest {
         given(repositoryService.createProcessDefinitionQuery()).willReturn(processDefinitionQuery);
         given(processDefinitionQuery.listPage(0, 10)).willReturn(List.of(internalProcessDef1, internalProcessDef2));
         given(processDefinitionQuery.count()).willReturn(2L);
-        given(processDefinitionConverter.from(List.of(internalProcessDef1, internalProcessDef2)))
-            .willReturn(List.of(apiProcessDef1, apiProcessDef2));
+        given(processDefinitionConverter.from(List.of(internalProcessDef1, internalProcessDef2))).willReturn(
+            List.of(apiProcessDef1, apiProcessDef2)
+        );
 
         var result = processAdminRuntime.processDefinitions(Pageable.of(0, 10));
 

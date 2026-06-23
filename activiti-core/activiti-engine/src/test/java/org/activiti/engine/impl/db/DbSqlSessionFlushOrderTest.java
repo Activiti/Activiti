@@ -43,7 +43,6 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-
 @RunWith(MockitoJUnitRunner.class)
 public class DbSqlSessionFlushOrderTest {
 
@@ -127,9 +126,7 @@ public class DbSqlSessionFlushOrderTest {
 
         dbSqlSession.determineUpdatedObjects();
 
-        assertThat(dbSqlSession.updatedObjects)
-            .extracting(Entity::getId)
-            .containsExactly(EXEC_LOW_ID);
+        assertThat(dbSqlSession.updatedObjects).extracting(Entity::getId).containsExactly(EXEC_LOW_ID);
     }
 
     @Test

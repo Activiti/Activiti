@@ -844,7 +844,9 @@ public class ProcessRuntimeIT {
             "processWithSignalStart1"
         );
 
-        processAdminRuntimeMock.delete(ProcessPayloadBuilder.delete(processInstancePage.getContent().getFirst().getId()));
+        processAdminRuntimeMock.delete(
+            ProcessPayloadBuilder.delete(processInstancePage.getContent().getFirst().getId())
+        );
     }
 
     @Test
@@ -1084,15 +1086,16 @@ public class ProcessRuntimeIT {
 
     @Test
     public void should_ReturnProcessDefinitionsFromLatestVersionAndNotStartable() {
-
-        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(PAGEABLE,  List.of("noUserStartableProcesses"));
+        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(
+            PAGEABLE,
+            List.of("noUserStartableProcesses")
+        );
 
         assertThat(
             processDefinitionPage
                 .getContent()
                 .stream()
                 .filter(c -> c.getKey().equals(UNSTARTABLE_PROCESS))
-        )
-            .isNotEmpty();
+        ).isNotEmpty();
     }
 }

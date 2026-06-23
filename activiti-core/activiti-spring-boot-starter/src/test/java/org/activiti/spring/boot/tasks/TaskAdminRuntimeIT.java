@@ -58,8 +58,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 class TaskAdminRuntimeIT {
+
     @Nested
     class AutowiredITs {
+
         private static final String ADMIN = "admin";
 
         @Autowired
@@ -87,15 +89,9 @@ class TaskAdminRuntimeIT {
         @Test
         void should_returnLastCreatedTaskByProcessInstanceIdAndTaskDefinitionKey() {
             ProcessInstance processInstance = processAdminRuntime.start(
-                ProcessPayloadBuilder
-                    .start()
-                    .withProcessDefinitionKey("Process_at2zjUes")
-                    .build()
+                ProcessPayloadBuilder.start().withProcessDefinitionKey("Process_at2zjUes").build()
             );
-            Task task = taskAdminRuntime
-                .tasks(Pageable.of(0, 1))
-                .getContent()
-                .getFirst();
+            Task task = taskAdminRuntime.tasks(Pageable.of(0, 1)).getContent().getFirst();
 
             Task retrievedTask = taskAdminRuntime.lastCreatedTaskByProcessInstanceIdAndTaskDefinitionKey(
                 processInstance.getId(),
@@ -108,9 +104,7 @@ class TaskAdminRuntimeIT {
         void should_returnLastCreatedTaskByProcessInstanceIdAndTaskDefinitionKey_whenTaskIsInALoop() {
             String taskDefinitionKey = "Task_125yjke";
             final ProcessInstance processInstance = processAdminRuntime.start(
-                new StartProcessPayloadBuilder()
-                    .withProcessDefinitionKey("Process_N4qkN051N")
-                    .build()
+                new StartProcessPayloadBuilder().withProcessDefinitionKey("Process_N4qkN051N").build()
             );
             Task task1 = taskAdminRuntime.lastCreatedTaskByProcessInstanceIdAndTaskDefinitionKey(
                 processInstance.getId(),
@@ -119,23 +113,17 @@ class TaskAdminRuntimeIT {
 
             //complete task and provide a value that causes a loop back
             taskAdminRuntime.complete(
-                new CompleteTaskPayload(
-                    task1.getId(),
-                    singletonMap("formInput", "provided-it1")
-                )
+                new CompleteTaskPayload(task1.getId(), singletonMap("formInput", "provided-it1"))
             );
 
             Task task2 = taskAdminRuntime.lastCreatedTaskByProcessInstanceIdAndTaskDefinitionKey(
                 processInstance.getId(),
                 taskDefinitionKey
             );
-            assertThat(task2)
-                .satisfies(t -> {
+            assertThat(task2).satisfies(t -> {
                     assertThat(t.getId()).isNotEqualTo(task1.getId());
-                    assertThat(t.getProcessInstanceId())
-                        .isEqualTo(processInstance.getId());
-                    assertThat(t.getTaskDefinitionKey())
-                        .isEqualTo(taskDefinitionKey);
+                    assertThat(t.getProcessInstanceId()).isEqualTo(processInstance.getId());
+                    assertThat(t.getTaskDefinitionKey()).isEqualTo(taskDefinitionKey);
                 });
         }
     }
@@ -155,29 +143,19 @@ class TaskAdminRuntimeIT {
         HistoryManager historyManager = mock();
 
         AssignTaskPayload payload = new AssignTaskPayload(taskId, assignee);
-        TaskServiceImpl taskService = new TaskServiceImpl(
-            processEngineConfiguration
-        );
-        TaskEntityManager taskEntityManager = new TaskEntityManagerImpl(
-            processEngineConfiguration,
-            mock()
-        );
+        TaskServiceImpl taskService = new TaskServiceImpl(processEngineConfiguration);
+        TaskEntityManager taskEntityManager = new TaskEntityManagerImpl(processEngineConfiguration, mock());
 
         when(eventDispatcher.isEnabled()).thenReturn(true);
-        when(processEngineConfiguration.getEventDispatcher())
-            .thenReturn(eventDispatcher);
-        when(processEngineConfiguration.getListenerNotificationHelper())
-            .thenReturn(mock());
+        when(processEngineConfiguration.getEventDispatcher()).thenReturn(eventDispatcher);
+        when(processEngineConfiguration.getListenerNotificationHelper()).thenReturn(mock());
         when(processEngineConfiguration.getClock()).thenReturn(mock());
-        when(commandContext.getTaskEntityManager())
-            .thenReturn(taskEntityManager);
+        when(commandContext.getTaskEntityManager()).thenReturn(taskEntityManager);
         when(commandContext.getHistoryManager()).thenReturn(historyManager);
         when(commandContext.getProcessEngineConfiguration()).thenReturn(processEngineConfiguration);
-        when(processEngineConfiguration.getHistoryManager())
-            .thenReturn(historyManager);
+        when(processEngineConfiguration.getHistoryManager()).thenReturn(historyManager);
         when(taskEntityManager.findById(any())).thenReturn(task);
-        when(interceptor.execute(any(), any()))
-            .thenAnswer(
+        when(interceptor.execute(any(), any())).thenAnswer(
                 (Answer<Void>) invocation -> {
                     Command<Void> command = invocation.getArgument(1);
                     command.execute(commandContext);
@@ -185,23 +163,12 @@ class TaskAdminRuntimeIT {
                 }
             );
 
-        taskService.setCommandExecutor(
-            new CommandExecutorImpl(mock(), interceptor)
-        );
-        TaskAdminRuntime taskAdminRuntime = new TaskAdminRuntimeImpl(
-            taskService,
-            mock(),
-            mock(),
-            mock(),
-            mock()
-        );
+        taskService.setCommandExecutor(new CommandExecutorImpl(mock(), interceptor));
+        TaskAdminRuntime taskAdminRuntime = new TaskAdminRuntimeImpl(taskService, mock(), mock(), mock(), mock());
 
         taskAdminRuntime.assign(payload);
 
         verify(eventDispatcher, times(1)).dispatchEvent(any());
-        verify(eventDispatcher)
-            .dispatchEvent(
-                argThat(event -> event.getType().name().equals("TASK_ASSIGNED"))
-            );
+        verify(eventDispatcher).dispatchEvent(argThat(event -> event.getType().name().equals("TASK_ASSIGNED")));
     }
 }
