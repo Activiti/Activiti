@@ -23,7 +23,7 @@ jobs:
     outputs:
       skip: ${{ steps.dependabot.outputs.result }}
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - name: dependabot check
         id: dependabot
         uses: Alfresco/alfresco-build-tools/.github/actions/github-pr-check-metadata@ed80b0eef8e432f517ea1aa51d8a82637c1d1cc1 # v18.12.0
@@ -44,7 +44,7 @@ jobs:
     if: ${{ needs.pre-checks.outputs.skip != 'true' }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
