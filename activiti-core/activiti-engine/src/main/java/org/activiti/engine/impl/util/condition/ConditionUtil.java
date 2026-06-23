@@ -15,8 +15,6 @@
  */
 package org.activiti.engine.impl.util.condition;
 
-import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.node.ObjectNode;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.engine.DynamicBpmnConstants;
 import org.activiti.engine.delegate.DelegateExecution;
@@ -25,6 +23,8 @@ import org.activiti.engine.impl.Condition;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.UelExpressionCondition;
 import org.apache.commons.lang3.StringUtils;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.ObjectNode;
 
 /**
 

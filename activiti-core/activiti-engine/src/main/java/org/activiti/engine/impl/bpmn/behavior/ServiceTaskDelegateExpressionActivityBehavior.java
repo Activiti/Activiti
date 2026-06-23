@@ -15,7 +15,6 @@
  */
 package org.activiti.engine.impl.bpmn.behavior;
 
-import tools.jackson.databind.node.ObjectNode;
 import java.util.List;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -34,6 +33,7 @@ import org.activiti.engine.impl.delegate.ActivityBehaviorInvocation;
 import org.activiti.engine.impl.delegate.TriggerableActivityBehavior;
 import org.activiti.engine.impl.delegate.invocation.JavaDelegateInvocation;
 import org.apache.commons.lang3.StringUtils;
+import tools.jackson.databind.node.ObjectNode;
 
 /**
  * {@link ActivityBehavior} used when 'delegateExpression' is used for a serviceTask.

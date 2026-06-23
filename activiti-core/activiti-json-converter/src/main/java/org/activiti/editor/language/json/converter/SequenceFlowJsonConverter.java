@@ -15,9 +15,6 @@
  */
 package org.activiti.editor.language.json.converter;
 
-import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.node.ArrayNode;
-import tools.jackson.databind.node.ObjectNode;
 import java.util.Map;
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BaseElement;
@@ -29,7 +26,10 @@ import org.activiti.bpmn.model.FlowElementsContainer;
 import org.activiti.bpmn.model.GraphicInfo;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.apache.commons.lang3.StringUtils;
+import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.ObjectNode;
 
 /**
 
@@ -39,7 +39,6 @@ public class SequenceFlowJsonConverter extends BaseBpmnJsonConverter {
     public SequenceFlowJsonConverter(JsonMapper jsonMapper) {
         super(jsonMapper);
     }
-
 
     public static void fillTypes(
         Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap,

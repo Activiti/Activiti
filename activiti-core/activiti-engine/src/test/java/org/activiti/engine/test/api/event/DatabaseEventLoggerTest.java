@@ -18,8 +18,6 @@ package org.activiti.engine.test.api.event;
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import tools.jackson.core.type.TypeReference;
-import tools.jackson.databind.json.JsonMapper;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -35,7 +33,9 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import tools.jackson.core.exc.StreamReadException;
+import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.DatabindException;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  */

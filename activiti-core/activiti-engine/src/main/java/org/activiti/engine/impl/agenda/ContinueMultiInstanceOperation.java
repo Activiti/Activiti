@@ -122,7 +122,11 @@ public class ContinueMultiInstanceOperation extends AbstractOperation {
         Context.getProcessEngineConfiguration()
             .getEventDispatcher()
             .dispatchEvent(
-                ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_STARTED, execution, execution.getCurrentFlowElement())
+                ActivitiEventBuilder.createActivityEvent(
+                    ActivitiEventType.ACTIVITY_STARTED,
+                    execution,
+                    execution.getCurrentFlowElement()
+                )
             );
         commandContext.getJobManager().scheduleAsyncJob(job);
     }

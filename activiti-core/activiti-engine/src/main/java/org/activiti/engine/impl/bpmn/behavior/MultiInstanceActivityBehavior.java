@@ -193,8 +193,7 @@ public abstract class MultiInstanceActivityBehavior
 
     // required for supporting external subprocesses
     public void completing(DelegateExecution execution, DelegateExecution subProcessInstance) throws Exception {
-        Optional
-            .ofNullable(execution)
+        Optional.ofNullable(execution)
             .filter(isInnerSubProcessActivity().and(isCallActivityCurrentFlowElement()))
             .ifPresent(completingSubProcessInstance(subProcessInstance));
     }

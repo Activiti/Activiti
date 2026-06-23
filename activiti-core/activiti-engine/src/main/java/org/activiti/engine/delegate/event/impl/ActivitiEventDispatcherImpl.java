@@ -116,12 +116,10 @@ public class ActivitiEventDispatcherImpl implements ActivitiEventDispatcher {
                 true
             );
             if (processDefinition != null) {
-                result =
-                    Context
-                        .getProcessEngineConfiguration()
-                        .getDeploymentManager()
-                        .resolveProcessDefinition(processDefinition)
-                        .getBpmnModel();
+                result = Context.getProcessEngineConfiguration()
+                    .getDeploymentManager()
+                    .resolveProcessDefinition(processDefinition)
+                    .getBpmnModel();
             }
         }
 

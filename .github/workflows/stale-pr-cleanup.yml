@@ -11,4 +11,4 @@ permissions:
 
 jobs:
   stale-pr-cleanup:
-    uses: Alfresco/alfresco-build-tools/.github/workflows/stale-pr-cleanup.yml@4e61fa01622e3f3a1898eb059d9a3af208897515 # v18.9.0
+    uses: Alfresco/alfresco-build-tools/.github/workflows/stale-pr-cleanup.yml@ed80b0eef8e432f517ea1aa51d8a82637c1d1cc1 # v18.12.0

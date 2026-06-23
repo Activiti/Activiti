@@ -119,8 +119,10 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
         }
 
         Map<String, Object> inboundVariables = calculateInputVariables(execution, extensions);
-        inboundVariables =
-            expressionResolver.resolveExpressionsMap(new VariableScopeExpressionEvaluator(execution), inboundVariables);
+        inboundVariables = expressionResolver.resolveExpressionsMap(
+            new VariableScopeExpressionEvaluator(execution),
+            inboundVariables
+        );
         inboundVariables.putAll(constants);
         return inboundVariables;
     }
@@ -129,8 +131,7 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
         String processDefinitionId = execution.getProcessDefinitionId();
         String activityId = execution.getCurrentActivityId();
 
-        return Optional
-            .ofNullable(processExtensionService.getExtensionsForId(processDefinitionId))
+        return Optional.ofNullable(processExtensionService.getExtensionsForId(processDefinitionId))
             .map(Extension::getMappings)
             .map(mappings -> mappings.get(activityId))
             .map(ProcessVariablesMapping::isEphemeral)
@@ -402,50 +403,44 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
 
         if (outputMappings.isEmpty() && isMultiInstanceCallActivity(execution)) {
             final Predicate<VariableDefinition> isOutputVariableCategory = variableDefinition ->
-                Optional
-                    .ofNullable(variableDefinition.getCategory())
+                Optional.ofNullable(variableDefinition.getCategory())
                     .map(it -> it.toLowerCase(Locale.ROOT))
                     .filter(OUTPUT_CATEGORY::contains)
                     .isPresent();
 
-            final Function<VariableDefinition, Map.Entry<String, Mapping>> toVariableOutputMapping = variableDefinition -> {
-                final var mapping = new Mapping();
-                mapping.setType(VARIABLE);
-                mapping.setValue(variableDefinition.getName());
+            final Function<VariableDefinition, Map.Entry<String, Mapping>> toVariableOutputMapping =
+                variableDefinition -> {
+                    final var mapping = new Mapping();
+                    mapping.setType(VARIABLE);
+                    mapping.setValue(variableDefinition.getName());
 
-                return Map.entry(variableDefinition.getName(), mapping);
-            };
+                    return Map.entry(variableDefinition.getName(), mapping);
+                };
 
-            outputMappings =
-                Optional
-                    .ofNullable(mappingExecutionContext.getSubProcessExecution())
-                    .map(DelegateExecution::getProcessDefinitionId)
-                    .map(processExtensionService::getExtensionsForId)
-                    .map(Extension::getProperties)
-                    .map(properties ->
-                        properties
-                            .values()
-                            .stream()
-                            .filter(variableDefinition ->
-                                Optional
-                                    .of(variableDefinition)
-                                    .filter(
-                                        Predicate.not(VariableDefinition::isEphemeral).and(isOutputVariableCategory)
-                                    )
-                                    .isPresent()
-                            )
-                            .map(toVariableOutputMapping)
-                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
-                    )
-                    .orElseGet(Map::of);
+            outputMappings = Optional.ofNullable(mappingExecutionContext.getSubProcessExecution())
+                .map(DelegateExecution::getProcessDefinitionId)
+                .map(processExtensionService::getExtensionsForId)
+                .map(Extension::getProperties)
+                .map(properties ->
+                    properties
+                        .values()
+                        .stream()
+                        .filter(variableDefinition ->
+                            Optional.of(variableDefinition)
+                                .filter(Predicate.not(VariableDefinition::isEphemeral).and(isOutputVariableCategory))
+                                .isPresent()
+                        )
+                        .map(toVariableOutputMapping)
+                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
+                )
+                .orElseGet(Map::of);
         }
 
         for (Map.Entry<String, Mapping> mappingEntry : outputMappings.entrySet()) {
             String name = mappingEntry.getKey();
 
             if (isTargetProcessVariableDefined(extensions, execution, name) || isMultiInstanceCallActivity(execution)) {
-                calculateOutPutMappedValue(mappingEntry, availableVariables, execution, extensions)
-                    .ifPresent(value -> {
+                calculateOutPutMappedValue(mappingEntry, availableVariables, execution, extensions).ifPresent(value -> {
                         extensions
                             .getProperties()
                             .values()
@@ -516,8 +511,7 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
     }
 
     private boolean isMultiInstanceCallActivity(DelegateExecution execution) {
-        return Optional
-            .ofNullable(execution)
+        return Optional.ofNullable(execution)
             .filter(isMultiInstanceRootParent().and(isCallActivityFlowElement()))
             .isPresent();
     }

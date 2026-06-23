@@ -65,9 +65,7 @@ public class CommandScopedEventGroupIdTest extends PluggableActivitiTestCase {
             .doesNotContainNull();
 
         Set<String> uniqueCommandIds = new HashSet<>(commandIds);
-        assertThat(uniqueCommandIds)
-            .as("all events from the same start command must share one commandId")
-            .hasSize(1);
+        assertThat(uniqueCommandIds).as("all events from the same start command must share one commandId").hasSize(1);
     }
 
     /**

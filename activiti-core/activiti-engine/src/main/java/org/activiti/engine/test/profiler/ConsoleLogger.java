@@ -49,17 +49,21 @@ public class ConsoleLogger {
                 IO.println("Command class: " + classFqn);
                 IO.println("Number of times invoked: " + stats.getCount());
                 double commandPercentage = (double) stats.getTotalCommandTime / (double) profileSession.getTotalTime();
-                IO.println(((100.0 * Math.round(commandPercentage * 100.0)) / 100.0) +
-                    "% of profile session was spent executing this command");
+                IO.println(
+                    ((100.0 * Math.round(commandPercentage * 100.0)) / 100.0) +
+                    "% of profile session was spent executing this command"
+                );
 
                 IO.println();
-                IO.println("Average execution time: " +
+                IO.println(
+                    "Average execution time: " +
                     stats.getAverageExecutionTime() +
                     " ms (Average database time: " +
                     stats.getAverageDatabaseExecutionTime() +
                     " ms (" +
                     stats.getAverageDatabaseExecutionTimePercentage() +
-                    "%) )");
+                    "%) )"
+                );
 
                 IO.println();
                 IO.println("Database selects:");

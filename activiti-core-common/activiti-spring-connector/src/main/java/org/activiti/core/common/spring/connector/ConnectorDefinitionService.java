@@ -15,7 +15,6 @@
  */
 package org.activiti.core.common.spring.connector;
 
-import tools.jackson.databind.json.JsonMapper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -26,6 +25,7 @@ import java.util.Set;
 import org.activiti.core.common.model.connector.ConnectorDefinition;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
+import tools.jackson.databind.json.JsonMapper;
 
 public class ConnectorDefinitionService {
 

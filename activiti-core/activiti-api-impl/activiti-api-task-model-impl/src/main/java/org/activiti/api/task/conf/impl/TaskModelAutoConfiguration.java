@@ -15,10 +15,6 @@
  */
 package org.activiti.api.task.conf.impl;
 
-import tools.jackson.core.Version;
-import tools.jackson.databind.jsontype.NamedType;
-import tools.jackson.databind.module.SimpleAbstractTypeResolver;
-import tools.jackson.databind.module.SimpleModule;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.TaskCandidateGroup;
 import org.activiti.api.task.model.TaskCandidateUser;
@@ -39,7 +35,11 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.jackson.autoconfigure.JacksonAutoConfiguration;
 import org.springframework.context.annotation.Bean;
+import tools.jackson.core.Version;
 import tools.jackson.databind.JacksonModule;
+import tools.jackson.databind.jsontype.NamedType;
+import tools.jackson.databind.module.SimpleAbstractTypeResolver;
+import tools.jackson.databind.module.SimpleModule;
 
 @AutoConfiguration
 @AutoConfigureBefore({ JacksonAutoConfiguration.class })
