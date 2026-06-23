@@ -28,6 +28,7 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cmd.AddCommentCmd;
 import org.activiti.engine.impl.cmd.AddIdentityLinkCmd;
+import org.activiti.engine.impl.cmd.ClaimNextCandidateTaskCmd;
 import org.activiti.engine.impl.cmd.ClaimTaskCmd;
 import org.activiti.engine.impl.cmd.CompleteTaskCmd;
 import org.activiti.engine.impl.cmd.CreateAttachmentCmd;
@@ -202,6 +203,11 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
 
     public void unclaim(String taskId) {
         commandExecutor.execute(new ClaimTaskCmd(taskId, null));
+    }
+
+    @Override
+    public boolean claimNextCandidateTask(String userId, List<String> userGroups) {
+        return commandExecutor.execute(new ClaimNextCandidateTaskCmd(userId, userGroups));
     }
 
     public void complete(String taskId) {

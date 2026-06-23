@@ -198,6 +198,17 @@ public interface TaskService {
     void unclaim(String taskId);
 
     /**
+     * Finds and claims the next candidate task for the provided user, ordered by creation time ascending.
+     *
+     * @param userId
+     *          user that should claim the task, cannot be null.
+     * @param userGroups
+     *          groups of the user used for candidate-group matching. May be null.
+     * @return true when a candidate task was claimed, false otherwise.
+     */
+    boolean claimNextCandidateTask(String userId, List<String> userGroups);
+
+    /**
      * Called when the task is successfully executed.
      *
      * @param taskId

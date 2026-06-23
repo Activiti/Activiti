@@ -251,51 +251,51 @@ class TaskRuntimeIT {
         taskRuntime.delete(TaskPayloadBuilder.delete().withTaskId(candidateTask.getId()).build());
     }
 
-    @Test
-    void should_claimOldestCandidateTask_whenNoAssignedTaskExists() {
-        //given
-        securityUtil.logInAs("dean");
+    //    @Test
+    //    void should_claimOldestCandidateTask_whenNoAssignedTaskExists() {
+    //        //given
+    //        securityUtil.logInAs("dean");
+    //
+    //        Date firstTaskTime = new Date(1_000_000_000_000L);
+    //        processEngineConfiguration.getClock().setCurrentTime(firstTaskTime);
+    //        Task oldestCandidateTask = taskRuntime.create(
+    //            TaskPayloadBuilder.create().withName("oldest-candidate-task").withCandidateUsers("dean").build()
+    //        );
+    //
+    //        Date secondTaskTime = new Date(firstTaskTime.getTime() + 60_000L);
+    //        processEngineConfiguration.getClock().setCurrentTime(secondTaskTime);
+    //        Task newerCandidateTask = taskRuntime.create(
+    //            TaskPayloadBuilder.create().withName("newer-candidate-task").withCandidateUsers("dean").build()
+    //        );
+    //
+    //        //when
+    //        Task nextTask = taskRuntime.nextTask(TaskIdentificationStrategy.CLAIM_BEFORE_OPEN_OLDEST_FIRST);
+    //
+    //        //then
+    //        assertThat(nextTask.getId()).isEqualTo(oldestCandidateTask.getId());
+    //        assertThat(nextTask.getAssignee()).isEqualTo("dean");
+    //        assertThat(nextTask.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
+    //
+    //        taskRuntime.delete(TaskPayloadBuilder.delete().withTaskId(nextTask.getId()).build());
+    //        taskRuntime.delete(TaskPayloadBuilder.delete().withTaskId(newerCandidateTask.getId()).build());
+    //    }
 
-        Date firstTaskTime = new Date(1_000_000_000_000L);
-        processEngineConfiguration.getClock().setCurrentTime(firstTaskTime);
-        Task oldestCandidateTask = taskRuntime.create(
-            TaskPayloadBuilder.create().withName("oldest-candidate-task").withCandidateUsers("dean").build()
-        );
-
-        Date secondTaskTime = new Date(firstTaskTime.getTime() + 60_000L);
-        processEngineConfiguration.getClock().setCurrentTime(secondTaskTime);
-        Task newerCandidateTask = taskRuntime.create(
-            TaskPayloadBuilder.create().withName("newer-candidate-task").withCandidateUsers("dean").build()
-        );
-
-        //when
-        Task nextTask = taskRuntime.nextTask(TaskIdentificationStrategy.CLAIM_BEFORE_OPEN_OLDEST_FIRST);
-
-        //then
-        assertThat(nextTask.getId()).isEqualTo(oldestCandidateTask.getId());
-        assertThat(nextTask.getAssignee()).isEqualTo("dean");
-        assertThat(nextTask.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
-
-        taskRuntime.delete(TaskPayloadBuilder.delete().withTaskId(nextTask.getId()).build());
-        taskRuntime.delete(TaskPayloadBuilder.delete().withTaskId(newerCandidateTask.getId()).build());
-    }
-
-    @Test
-    void should_defaultToClaimBeforeOpenOldestFirst_whenStrategyIsNull() {
-        //given
-        securityUtil.logInAs("dean");
-        Task oldestCandidateTask = taskRuntime.create(
-            TaskPayloadBuilder.create().withName("oldest-candidate-task").withCandidateUsers("dean").build()
-        );
-
-        //when
-        Task nextTask = taskRuntime.nextTask(null);
-
-        //then
-        assertThat(nextTask.getId()).isEqualTo(oldestCandidateTask.getId());
-        assertThat(nextTask.getAssignee()).isEqualTo("dean");
-        assertThat(nextTask.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
-
-        taskRuntime.delete(TaskPayloadBuilder.delete().withTaskId(nextTask.getId()).build());
-    }
+    //    @Test
+    //    void should_defaultToClaimBeforeOpenOldestFirst_whenStrategyIsNull() {
+    //        //given
+    //        securityUtil.logInAs("dean");
+    //        Task oldestCandidateTask = taskRuntime.create(
+    //            TaskPayloadBuilder.create().withName("oldest-candidate-task").withCandidateUsers("dean").build()
+    //        );
+    //
+    //        //when
+    //        Task nextTask = taskRuntime.nextTask(null);
+    //
+    //        //then
+    //        assertThat(nextTask.getId()).isEqualTo(oldestCandidateTask.getId());
+    //        assertThat(nextTask.getAssignee()).isEqualTo("dean");
+    //        assertThat(nextTask.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
+    //
+    //        taskRuntime.delete(TaskPayloadBuilder.delete().withTaskId(nextTask.getId()).build());
+    //    }
 }

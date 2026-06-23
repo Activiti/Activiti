@@ -271,6 +271,70 @@
     where T.PROC_INST_ID_ = #{parameter}
   </select>
 
+  <update id="claimNextUnassignedCandidateTask" parameterType="java.util.Map">
+    update ${prefix}ACT_RU_TASK
+    set
+      REV_ = COALESCE(REV_, 0) + 1,
+      ASSIGNEE_ = #{userId, jdbcType=VARCHAR},
+      CLAIM_TIME_ = #{claimTime, jdbcType=TIMESTAMP}
+    where ID_ = (
+      select T.ID_
+      from ${prefix}ACT_RU_TASK T
+      where T.ASSIGNEE_ is null
+      and T.SUSPENSION_STATE_ = 1
+      and exists (
+        select 1
+        from ${prefix}ACT_RU_IDENTITYLINK L
+        where L.TASK_ID_ = T.ID_
+        and L.TYPE_ = 'candidate'
+        and (
+          L.USER_ID_ = #{userId}
+          <if test="userGroups != null and userGroups.size() &gt; 0">
+            or L.GROUP_ID_ in
+            <foreach item="group" index="index" collection="userGroups" open="(" separator="," close=")">
+              #{group}
+            </foreach>
+          </if>
+        )
+      )
+      order by T.CREATE_TIME_ asc, T.ID_ asc
+      limit 1
+    )
+    and ASSIGNEE_ is null
+  </update>
+
+  <update id="claimNextUnassignedCandidateTask" databaseId="mysql" parameterType="java.util.Map">
+    update ${prefix}ACT_RU_TASK TARGET
+    inner join (
+      select T.ID_
+      from ${prefix}ACT_RU_TASK T
+      where T.ASSIGNEE_ is null
+      and T.SUSPENSION_STATE_ = 1
+      and exists (
+        select 1
+        from ${prefix}ACT_RU_IDENTITYLINK L
+        where L.TASK_ID_ = T.ID_
+        and L.TYPE_ = 'candidate'
+        and (
+          L.USER_ID_ = #{userId}
+          <if test="userGroups != null and userGroups.size() &gt; 0">
+            or L.GROUP_ID_ in
+            <foreach item="group" index="index" collection="userGroups" open="(" separator="," close=")">
+              #{group}
+            </foreach>
+          </if>
+        )
+      )
+      order by T.CREATE_TIME_ asc, T.ID_ asc
+      limit 1
+    ) SELECTED on TARGET.ID_ = SELECTED.ID_
+    set
+      TARGET.REV_ = COALESCE(TARGET.REV_, 0) + 1,
+      TARGET.ASSIGNEE_ = #{userId, jdbcType=VARCHAR},
+      TARGET.CLAIM_TIME_ = #{claimTime, jdbcType=TIMESTAMP}
+    where TARGET.ASSIGNEE_ is null
+  </update>
+
   <select id="selectTaskByQueryCriteria" parameterType="org.activiti.engine.impl.TaskQueryImpl" resultMap="taskResultMap">
     <include refid="selectTaskByQueryCriteria"/>
   </select>
