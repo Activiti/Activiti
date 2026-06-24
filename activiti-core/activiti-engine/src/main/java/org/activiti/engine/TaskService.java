@@ -201,7 +201,7 @@ public interface TaskService {
      * Finds and claims the next candidate task for the provided user, ordered by creation time ascending.
      *
      * @param userId
-     *          user that should claim the task, cannot be null.
+     *          user that should claim the task, cannot be null or empty.
      * @param userGroups
      *          groups of the user used for candidate-group matching. May be null.
      * @return true when a candidate task was claimed, false otherwise.
@@ -696,7 +696,7 @@ public interface TaskService {
      * @param locale
      *          locale the DataObject name and description should be returned in (if available).
      * @param withLocalizationFallback
-     *          When true localization will fallback to more general locales if the specified locale is not found.
+     *          When true localization will fallback to more general locales including the default locale of the JVM if the specified locale is not found.
      * @return the DataObjects or an empty map if no such dataObjects are found.
      * @throws ActivitiObjectNotFoundException
      *           when no task is found for the given task.

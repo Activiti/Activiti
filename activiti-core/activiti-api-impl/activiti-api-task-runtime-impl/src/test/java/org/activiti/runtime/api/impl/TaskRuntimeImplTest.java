@@ -377,9 +377,7 @@ public class TaskRuntimeImplTest {
         org.activiti.engine.task.Task assignedEngineTask = mock();
         Task assignedTask = mock();
 
-        TaskQuery claimedTaskQuery = mock();
-
-        when(taskService.createTaskQuery()).thenReturn(assignedTaskQuery, claimedTaskQuery);
+        when(taskService.createTaskQuery()).thenReturn(assignedTaskQuery);
         when(assignedTaskQuery.taskAssignee(AUTHENTICATED_USER)).thenReturn(assignedTaskQuery);
         when(assignedTaskQuery.orderByTaskCreateTime()).thenReturn(assignedTaskQuery);
         when(assignedTaskQuery.asc()).thenReturn(assignedTaskQuery);
