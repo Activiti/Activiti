@@ -31,15 +31,12 @@ public class ToProcessCompletedConverter implements EventConverter<ProcessComple
 
     @Override
     public Optional<ProcessCompletedEvent> from(ActivitiEntityEvent internalEvent) {
-
-        var processInstance = processInstanceConverter.from(((ExecutionEntity) internalEvent.getEntity()).getProcessInstance());
+        var processInstance = processInstanceConverter.from(
+            ((ExecutionEntity) internalEvent.getEntity()).getProcessInstance()
+        );
 
         String actor = internalEvent.getActor();
 
-        return Optional.of(
-            new ProcessCompletedImpl(
-                processInstance, actor
-            )
-        );
+        return Optional.of(new ProcessCompletedImpl(processInstance, actor));
     }
 }

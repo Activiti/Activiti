@@ -15,7 +15,6 @@
  */
 package org.activiti.runtime.api.conf;
 
-import tools.jackson.databind.json.JsonMapper;
 import java.util.List;
 import org.activiti.core.el.CustomFunctionProvider;
 import org.activiti.engine.impl.bpmn.behavior.VariablesCalculator;
@@ -33,6 +32,7 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import tools.jackson.databind.json.JsonMapper;
 
 @AutoConfiguration
 public class ConnectorsAutoConfiguration {

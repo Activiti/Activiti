@@ -515,7 +515,9 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                                 graphicInfo,
                                 boundaryEvent.isCancelActivity()
                             );
-                        } else if (boundaryEvent.getEventDefinitions().getFirst() instanceof CompensateEventDefinition) {
+                        } else if (
+                            boundaryEvent.getEventDefinitions().getFirst() instanceof CompensateEventDefinition
+                        ) {
                             processDiagramCanvas.drawCatchingCompensateEvent(
                                 flowNode.getId(),
                                 graphicInfo,

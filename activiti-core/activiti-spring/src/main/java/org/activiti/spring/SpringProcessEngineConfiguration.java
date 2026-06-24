@@ -55,7 +55,10 @@ public class SpringProcessEngineConfiguration
         this(null, JsonMapper.builder().build());
     }
 
-    public SpringProcessEngineConfiguration(ApplicationUpgradeContextService applicationUpgradeContextService, JsonMapper jsonMapper) {
+    public SpringProcessEngineConfiguration(
+        ApplicationUpgradeContextService applicationUpgradeContextService,
+        JsonMapper jsonMapper
+    ) {
         super(jsonMapper);
         this.transactionsExternallyManaged = true;
         defaultAutoDeploymentStrategy = new DefaultAutoDeploymentStrategy(applicationUpgradeContextService);
@@ -110,8 +113,10 @@ public class SpringProcessEngineConfiguration
     @Override
     public void initTransactionContextFactory() {
         if (transactionContextFactory == null && transactionManager != null) {
-            transactionContextFactory =
-                new SpringTransactionContextFactory(transactionManager, transactionSynchronizationAdapterOrder);
+            transactionContextFactory = new SpringTransactionContextFactory(
+                transactionManager,
+                transactionSynchronizationAdapterOrder
+            );
         }
     }
 

@@ -342,7 +342,10 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
     }
 
     public void assertProcessNotEnded(final String processInstanceId) {
-        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
+        ProcessInstance processInstance = runtimeService
+            .createProcessInstanceQuery()
+            .processInstanceId(processInstanceId)
+            .singleResult();
         assertThat(processInstance).isNotNull();
     }
 

@@ -280,7 +280,6 @@ class TaskRuntimeIT {
         taskRuntime.delete(TaskPayloadBuilder.delete().withTaskId(newerCandidateTask.getId()).build());
     }
 
-
     @Test
     void should_defaultToClaimBeforeOpenOldestFirst_whenStrategyIsNull() {
         //given

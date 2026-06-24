@@ -23,20 +23,20 @@ jobs:
     outputs:
       skip: ${{ steps.dependabot.outputs.result }}
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - name: dependabot check
         id: dependabot
-        uses: Alfresco/alfresco-build-tools/.github/actions/github-pr-check-metadata@4e61fa01622e3f3a1898eb059d9a3af208897515 # v18.9.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/github-pr-check-metadata@ed80b0eef8e432f517ea1aa51d8a82637c1d1cc1 # v18.12.0
         with:
           gh-token: ${{ secrets.BOT_GITHUB_TOKEN }}
           actor: "dependabot[bot]"
           label: github_actions
       - name: pre-commit
-        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@4e61fa01622e3f3a1898eb059d9a3af208897515 # v18.9.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@ed80b0eef8e432f517ea1aa51d8a82637c1d1cc1 # v18.12.0
         with:
           skip_checkout: true
       - name: Ensure SHA pinned actions
-        uses: hyland/github-actions-ensure-sha-pinned-actions@7d494b6b53e71f75194d74b4dd890a2266d060b5 # v2.0.0
+        uses: hyland/github-actions-ensure-sha-pinned-actions@7957efb76aba0eec7580a9c0392d3e5bec381359 # v2.0.1
 
   build:
     runs-on: ubuntu-latest
@@ -44,7 +44,7 @@ jobs:
     if: ${{ needs.pre-checks.outputs.skip != 'true' }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
@@ -56,12 +56,12 @@ jobs:
             ${{ runner.os }}-maven-
 
       - name: Setup Java JDK 25
-        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # 5.2.0
+        uses: actions/setup-java@ad2b38190b15e4d6bdf0c97fb4fca8412226d287 # 5.3.0
         with:
           java-version: 25
           distribution: "corretto"
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/update-pom-to-next-pre-release@4e61fa01622e3f3a1898eb059d9a3af208897515 # v18.9.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/update-pom-to-next-pre-release@ed80b0eef8e432f517ea1aa51d8a82637c1d1cc1 # v18.12.0
         id: update-pom-to-next-version
 
       - name: Update VERSION file
@@ -122,10 +122,10 @@ jobs:
           git push -f -q origin $VERSION
 
       - name: Get branch name
-        uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@4e61fa01622e3f3a1898eb059d9a3af208897515 # v18.9.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@ed80b0eef8e432f517ea1aa51d8a82637c1d1cc1 # v18.12.0
 
       - name: Propagate
-        uses: Alfresco/alfresco-build-tools/.github/actions/jx-updatebot-pr@4e61fa01622e3f3a1898eb059d9a3af208897515 # v18.9.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/jx-updatebot-pr@ed80b0eef8e432f517ea1aa51d8a82637c1d1cc1 # v18.12.0
         if: ${{ env.BRANCH_NAME == 'develop' }}
         env:
           DEVELOPMENT_BRANCH: ${{ github.ref_name }}
@@ -144,6 +144,6 @@ jobs:
     if: always() && failure()
     steps:
       - name: Teams Notification
-        uses: Alfresco/alfresco-build-tools/.github/actions/send-teams-notification@4e61fa01622e3f3a1898eb059d9a3af208897515 # v18.9.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/send-teams-notification@ed80b0eef8e432f517ea1aa51d8a82637c1d1cc1 # v18.12.0
         with:
           webhook-url: ${{ secrets.TEAMS_NOTIFICATION_WORKFLOW_WEBHOOK }}

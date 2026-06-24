@@ -30,8 +30,6 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import tools.jackson.databind.json.JsonMapper;
-import tools.jackson.databind.node.NullNode;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -65,6 +63,8 @@ import org.mockito.quality.Strictness;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.util.ReflectionTestUtils;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.NullNode;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -532,7 +532,6 @@ public class ExtensionsVariablesMappingProviderTest {
         Map<String, Object> expectedAddress6 = Map.of("street", "456 Elm St", "propertyFromVariable", "Street Name");
         Map<String, Object> expectedAddress7 = Map.of("street", "100 Replaced address");
 
-
         assertThat(outputVariables).isNotEmpty();
         assertThat(outputVariables.entrySet())
             .extracting(Map.Entry::getKey, Map.Entry::getValue)
@@ -559,7 +558,7 @@ public class ExtensionsVariablesMappingProviderTest {
                         "firstname",
                         "Bob",
                         "addresses",
-                        List.of(expectedAddress0, expectedAddress2,expectedAddress7, expectedAddress3)
+                        List.of(expectedAddress0, expectedAddress2, expectedAddress7, expectedAddress3)
                     )
                 ),
                 tuple(
@@ -1110,9 +1109,8 @@ public class ExtensionsVariablesMappingProviderTest {
         );
         Extension processExtensions = extensions.getExtensions("Process_taskVarMapping");
         DelegateExecution executionEphemeralTask = buildExecution(processExtensions, "ephemeralTask");
-        DelegateExecution implicitNonEphemeralTask= buildExecution(processExtensions, "implicitNonEphemeralTask");
-        DelegateExecution explicitNonEphemeralTask= buildExecution(processExtensions, "explicitNonEphemeralTask");
-
+        DelegateExecution implicitNonEphemeralTask = buildExecution(processExtensions, "implicitNonEphemeralTask");
+        DelegateExecution explicitNonEphemeralTask = buildExecution(processExtensions, "explicitNonEphemeralTask");
 
         //then
         assertThat(variablesMappingProvider.isMappingEphemeral(executionEphemeralTask)).isTrue();

@@ -15,7 +15,6 @@
  */
 package org.activiti.engine.impl.event.logger.handler;
 
-import tools.jackson.databind.json.JsonMapper;
 import java.util.Date;
 import java.util.Map;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
@@ -28,6 +27,7 @@ import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
 

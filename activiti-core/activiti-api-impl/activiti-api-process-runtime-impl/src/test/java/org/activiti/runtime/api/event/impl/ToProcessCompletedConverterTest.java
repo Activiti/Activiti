@@ -15,23 +15,21 @@
  */
 package org.activiti.runtime.api.event.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.when;
+
+import java.util.Optional;
 import org.activiti.api.process.runtime.events.ProcessCompletedEvent;
 import org.activiti.api.runtime.model.impl.ProcessInstanceImpl;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ToProcessCompletedConverterTest {
@@ -54,10 +52,8 @@ class ToProcessCompletedConverterTest {
 
     @Test
     void shouldConvertToProcessCompletedEventWhenInternalEventIsValid() {
-
         ProcessInstanceImpl processInstance = new ProcessInstanceImpl();
         processInstance.setId("processInstanceId");
-
 
         when(internalEvent.getEntity()).thenReturn(executionEntity);
         when(executionEntity.getProcessInstance()).thenReturn(executionEntity);

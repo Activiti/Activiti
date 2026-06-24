@@ -15,9 +15,6 @@
  */
 package org.activiti.runtime.api.impl;
 
-import tools.jackson.core.type.TypeReference;
-import tools.jackson.databind.json.JsonMapper;
-import tools.jackson.databind.node.ObjectNode;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -32,6 +29,9 @@ import org.activiti.engine.impl.interceptor.DelegateInterceptor;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.ObjectNode;
 
 public class ExpressionResolver {
 

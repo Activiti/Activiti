@@ -763,8 +763,8 @@ public class DbSqlSession implements Session {
             Comparator.comparingInt((Entity e) ->
                 EntityDependencyOrder.UPDATE_ORDER.getOrDefault(e.getClass(), Integer.MAX_VALUE)
             )
-            .thenComparing(e -> e.getClass().getName())
-            .thenComparing(Entity::getId)
+                .thenComparing(e -> e.getClass().getName())
+                .thenComparing(Entity::getId)
         );
 
         for (Entity updatedObject : updatedObjects) {

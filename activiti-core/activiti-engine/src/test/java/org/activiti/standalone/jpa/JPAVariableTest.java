@@ -408,7 +408,9 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
         list = (List<?>) subclassFieldResult;
         assertThat(list).hasSize(3);
         assertThat(list.getFirst()).isInstanceOf(SubclassFieldAccessJPAEntity.class);
-        assertThat(simpleEntityPropertyAccess.getId()).isEqualTo(((SubclassFieldAccessJPAEntity) list.getFirst()).getId());
+        assertThat(simpleEntityPropertyAccess.getId()).isEqualTo(
+            ((SubclassFieldAccessJPAEntity) list.getFirst()).getId()
+        );
 
         // Read entity with @Id on property of mapped superclass
         Object subclassPropertyResult = runtimeService.getVariable(processInstance.getId(), "subclassPropertyAccess");

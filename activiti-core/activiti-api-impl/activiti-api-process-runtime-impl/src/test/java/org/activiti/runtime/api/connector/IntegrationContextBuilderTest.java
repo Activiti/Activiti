@@ -175,7 +175,7 @@ public class IntegrationContextBuilderTest {
     }
 
     @Test
-     void should_setEphemeral_when_mappingIsEphemeral() {
+    void should_setEphemeral_when_mappingIsEphemeral() {
         //given
         given(execution.getProcessDefinitionId()).willReturn(PROCESS_DEFINITION_ID);
         given(inboundVariablesProvider.isMappingEphemeral(any())).willReturn(true);
@@ -184,7 +184,7 @@ public class IntegrationContextBuilderTest {
         IntegrationContext integrationContext = builder.from(execution);
 
         //then
-       assertThat(integrationContext.hasEphemeralVariables()).isTrue();
+        assertThat(integrationContext.hasEphemeralVariables()).isTrue();
     }
 
     @Test

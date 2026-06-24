@@ -117,13 +117,13 @@ public class ProcessInstanceBuilderImpl implements ProcessInstanceBuilder {
     @Override
     public ProcessInstanceBuilder linkedProcessInstanceId(String linkedProcessInstanceId) {
         this.linkedProcessInstanceId = linkedProcessInstanceId;
-        return  this;
+        return this;
     }
 
     @Override
     public ProcessInstanceBuilder linkedProcessInstanceType(String linkedProcessInstanceType) {
         this.linkedProcessInstanceType = linkedProcessInstanceType;
-        return  this;
+        return this;
     }
 
     public boolean hasProcessDefinitionIdOrKey() {

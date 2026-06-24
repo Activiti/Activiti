@@ -26,14 +26,14 @@ jobs:
     steps:
       - name: Check dependabot/fork build
         if: github.secret_source == 'Dependabot' || (github.secret_source == 'None' && github.event.action != 'milestoned')
-        uses: Alfresco/alfresco-build-tools/.github/actions/github-require-secrets@4e61fa01622e3f3a1898eb059d9a3af208897515 # v18.9.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/github-require-secrets@ed80b0eef8e432f517ea1aa51d8a82637c1d1cc1 # v18.12.0
         with:
           dependabot-error-message: "This PR requires additional validation, please set the milestone to 'Validating' or ask a reviewer to approve it."
           none-error-message: "This PR requires additional validation, please set the milestone to 'Validating'."
       - name: pre-commit
-        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@4e61fa01622e3f3a1898eb059d9a3af208897515 # v18.9.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@ed80b0eef8e432f517ea1aa51d8a82637c1d1cc1 # v18.12.0
       - name: Ensure SHA pinned actions
-        uses: hyland/github-actions-ensure-sha-pinned-actions@7d494b6b53e71f75194d74b4dd890a2266d060b5 # v2.0.0
+        uses: hyland/github-actions-ensure-sha-pinned-actions@7957efb76aba0eec7580a9c0392d3e5bec381359 # v2.0.1
       - name: Check PR preview
         id: check_pr_preview
         shell: bash
@@ -45,7 +45,7 @@ jobs:
     needs: pre-checks
     steps:
       - name: Checkout repository
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
       - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
@@ -55,7 +55,7 @@ jobs:
             ${{ runner.os }}-maven-
 
       - name: Setup Java JDK 25
-        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # 5.2.0
+        uses: actions/setup-java@ad2b38190b15e4d6bdf0c97fb4fca8412226d287 # 5.3.0
         with:
           java-version: 25
           distribution: "corretto"

@@ -15,9 +15,9 @@
  */
 package org.activiti.api.runtime.model.impl;
 
-import tools.jackson.databind.json.JsonMapper;
 import java.util.Set;
 import org.springframework.core.convert.converter.Converter;
+import tools.jackson.databind.json.JsonMapper;
 
 @ProcessVariableTypeConverter
 public class SetToStringConverter implements Converter<Set<Object>, String> {

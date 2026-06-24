@@ -15,13 +15,13 @@
  */
 package org.activiti.engine.impl.el.variable;
 
-import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.json.JsonMapper;
 import java.util.List;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
 import org.activiti.engine.impl.variable.JsonType;
 import org.activiti.engine.impl.variable.LongJsonType;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
 
 public class VariableElResolver implements VariableScopeItemELResolver {
 

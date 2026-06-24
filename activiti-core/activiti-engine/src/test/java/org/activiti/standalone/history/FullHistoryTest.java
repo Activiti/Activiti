@@ -717,17 +717,21 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
         );
     }
 
-    @Deployment(resources = {"org/activiti/standalone/history/FullHistoryTest.testHistoricTaskInstanceVariableUpdates.bpmn20.xml"})
+    @Deployment(
+        resources = {
+            "org/activiti/standalone/history/FullHistoryTest.testHistoricTaskInstanceVariableUpdates.bpmn20.xml",
+        }
+    )
     public void testHistoricTaskInstanceWithMaxResults() {
         // GIVEN: 5 running process
-        for (int i=0;i<5;i++) {
+        for (int i = 0; i < 5; i++) {
             runtimeService.startProcessInstanceByKey("HistoricTaskInstanceTest");
         }
 
         final HistoricTaskInstanceQuery query = historyService.createHistoricTaskInstanceQuery();
         // WHEN: listing, at most, 3 running process instances
         // THEN: the result must have 3 results
-        assertThat(query.listPage(0,3)).hasSize(3);
+        assertThat(query.listPage(0, 3)).hasSize(3);
         // THEN: total number of process instances is 5
         assertThat(query.count()).isEqualTo(5);
     }

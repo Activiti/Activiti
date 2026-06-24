@@ -15,8 +15,16 @@
  */
 package org.activiti.engine.impl.el;
 
-import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.node.ObjectNode;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import jakarta.el.ELContext;
 import jakarta.el.MethodNotFoundException;
 import jakarta.el.PropertyNotFoundException;
@@ -46,16 +54,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.ObjectNode;
 
 class JuelExpressionTest {
 
@@ -109,7 +109,9 @@ class JuelExpressionTest {
             when(valueExpression.getValue(elContext)).thenReturn(expectedValue);
             getInvocation.proceed();
             return null;
-        }).when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
+        })
+            .when(delegateInterceptor)
+            .handleInvocation(any(ExpressionGetInvocation.class));
 
         Object result = juelExpression.getValue(variableScope);
 
@@ -120,7 +122,8 @@ class JuelExpressionTest {
     @Test
     void should_wrapPropertyNotFound_when_resolvingValue() {
         doThrow(new PropertyNotFoundException("Property not found"))
-            .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
+            .when(delegateInterceptor)
+            .handleInvocation(any(ExpressionGetInvocation.class));
 
         assertThatThrownBy(() -> juelExpression.getValue(variableScope))
             .isInstanceOf(ActivitiException.class)
@@ -131,7 +134,8 @@ class JuelExpressionTest {
     @Test
     void should_wrapMethodNotFound_when_resolvingValue() {
         doThrow(new MethodNotFoundException("Method not found"))
-            .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
+            .when(delegateInterceptor)
+            .handleInvocation(any(ExpressionGetInvocation.class));
 
         assertThatThrownBy(() -> juelExpression.getValue(variableScope))
             .isInstanceOf(ActivitiException.class)
@@ -142,7 +146,8 @@ class JuelExpressionTest {
     @Test
     void should_wrapGenericException_when_resolvingValue() {
         doThrow(new RuntimeException("Generic error"))
-            .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
+            .when(delegateInterceptor)
+            .handleInvocation(any(ExpressionGetInvocation.class));
 
         assertThatThrownBy(() -> juelExpression.getValue(variableScope))
             .isInstanceOf(ActivitiException.class)
@@ -157,7 +162,8 @@ class JuelExpressionTest {
         when(delegateExecution.getCurrentFlowElement()).thenReturn(flowNode);
 
         doThrow(new PropertyNotFoundException("Property not found"))
-            .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
+            .when(delegateInterceptor)
+            .handleInvocation(any(ExpressionGetInvocation.class));
 
         assertThatThrownBy(() -> juelExpression.getValue(delegateExecution))
             .isInstanceOf(ActivitiException.class)
@@ -181,7 +187,8 @@ class JuelExpressionTest {
         setupDefaultBpmnOverrideContext();
 
         doThrow(new PropertyNotFoundException("Property not found"))
-            .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
+            .when(delegateInterceptor)
+            .handleInvocation(any(ExpressionGetInvocation.class));
 
         assertThatThrownBy(() -> expressionWithCondition.getValue(delegateExecution))
             .isInstanceOf(ActivitiException.class)
@@ -193,7 +200,8 @@ class JuelExpressionTest {
     @Test
     void should_showUnknownContext_when_noDelegateExecution() {
         doThrow(new PropertyNotFoundException("Property not found"))
-            .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
+            .when(delegateInterceptor)
+            .handleInvocation(any(ExpressionGetInvocation.class));
 
         assertThatThrownBy(() -> juelExpression.getValue(variableScope))
             .isInstanceOf(ActivitiException.class)
@@ -209,7 +217,9 @@ class JuelExpressionTest {
             Object[] params = setInvocation.getInvocationParameters();
             assertThat(params).containsExactly(valueToSet);
             return null;
-        }).when(delegateInterceptor).handleInvocation(any(ExpressionSetInvocation.class));
+        })
+            .when(delegateInterceptor)
+            .handleInvocation(any(ExpressionSetInvocation.class));
 
         juelExpression.setValue(valueToSet, variableScope);
 
@@ -219,7 +229,8 @@ class JuelExpressionTest {
     @Test
     void should_wrapException_when_settingValue() {
         doThrow(new RuntimeException("Set value error"))
-            .when(delegateInterceptor).handleInvocation(any(ExpressionSetInvocation.class));
+            .when(delegateInterceptor)
+            .handleInvocation(any(ExpressionSetInvocation.class));
 
         assertThatThrownBy(() -> juelExpression.setValue("value", variableScope))
             .isInstanceOf(ActivitiException.class)
@@ -266,7 +277,9 @@ class JuelExpressionTest {
             when(valueExpression.getValue(elContext)).thenReturn(expectedValue);
             getInvocation.proceed();
             return null;
-        }).when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
+        })
+            .when(delegateInterceptor)
+            .handleInvocation(any(ExpressionGetInvocation.class));
 
         Object result = juelExpression.getValue(expressionManager, delegateInterceptor, variables);
 
@@ -280,7 +293,8 @@ class JuelExpressionTest {
         when(expressionManager.getElContext(variables)).thenReturn(elContext);
 
         doThrow(new PropertyNotFoundException("Property not found"))
-            .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
+            .when(delegateInterceptor)
+            .handleInvocation(any(ExpressionGetInvocation.class));
 
         assertThatThrownBy(() -> juelExpression.getValue(expressionManager, delegateInterceptor, variables))
             .isInstanceOf(ActivitiException.class)
@@ -291,13 +305,13 @@ class JuelExpressionTest {
 
     @Test
     void should_showUnknown_when_flowElementIdEmpty() {
-
         FlowNode flowNode = mockFlowNodeWithoutOutgoingFlows("");
 
         when(delegateExecution.getCurrentFlowElement()).thenReturn(flowNode);
 
         doThrow(new PropertyNotFoundException("Property not found"))
-            .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
+            .when(delegateInterceptor)
+            .handleInvocation(any(ExpressionGetInvocation.class));
 
         assertThatThrownBy(() -> juelExpression.getValue(delegateExecution))
             .isInstanceOf(ActivitiException.class)
@@ -311,7 +325,8 @@ class JuelExpressionTest {
         when(delegateExecution.getCurrentFlowElement()).thenReturn(flowNode);
 
         doThrow(new PropertyNotFoundException("Property not found"))
-            .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
+            .when(delegateInterceptor)
+            .handleInvocation(any(ExpressionGetInvocation.class));
 
         assertThatThrownBy(() -> juelExpression.getValue(delegateExecution))
             .isInstanceOf(ActivitiException.class)
@@ -326,7 +341,8 @@ class JuelExpressionTest {
         when(delegateExecution.getCurrentFlowElement()).thenReturn(flowElement);
 
         doThrow(new PropertyNotFoundException("Property not found"))
-            .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
+            .when(delegateInterceptor)
+            .handleInvocation(any(ExpressionGetInvocation.class));
 
         assertThatThrownBy(() -> juelExpression.getValue(delegateExecution))
             .isInstanceOf(ActivitiException.class)
@@ -339,7 +355,8 @@ class JuelExpressionTest {
         when(delegateExecution.getCurrentFlowElement()).thenReturn(null);
 
         doThrow(new PropertyNotFoundException("Property not found"))
-            .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
+            .when(delegateInterceptor)
+            .handleInvocation(any(ExpressionGetInvocation.class));
 
         assertThatThrownBy(() -> juelExpression.getValue(delegateExecution))
             .isInstanceOf(ActivitiException.class)
@@ -358,7 +375,8 @@ class JuelExpressionTest {
         setupDefaultBpmnOverrideContext();
 
         doThrow(new PropertyNotFoundException("Property not found"))
-            .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
+            .when(delegateInterceptor)
+            .handleInvocation(any(ExpressionGetInvocation.class));
 
         assertThatThrownBy(() -> juelExpression.getValue(delegateExecution))
             .isInstanceOf(ActivitiException.class)
@@ -377,7 +395,8 @@ class JuelExpressionTest {
         setupDefaultBpmnOverrideContext();
 
         doThrow(new PropertyNotFoundException("Property not found"))
-            .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
+            .when(delegateInterceptor)
+            .handleInvocation(any(ExpressionGetInvocation.class));
 
         assertThatThrownBy(() -> juelExpression.getValue(delegateExecution))
             .isInstanceOf(ActivitiException.class)
@@ -396,7 +415,8 @@ class JuelExpressionTest {
         setupDefaultBpmnOverrideContext();
 
         doThrow(new PropertyNotFoundException("Property not found"))
-            .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
+            .when(delegateInterceptor)
+            .handleInvocation(any(ExpressionGetInvocation.class));
 
         assertThatThrownBy(() -> juelExpression.getValue(delegateExecution))
             .isInstanceOf(ActivitiException.class)
@@ -417,7 +437,8 @@ class JuelExpressionTest {
         setupDefaultBpmnOverrideContext();
 
         doThrow(new PropertyNotFoundException("Property not found"))
-            .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
+            .when(delegateInterceptor)
+            .handleInvocation(any(ExpressionGetInvocation.class));
 
         assertThatThrownBy(() -> juelExpression.getValue(delegateExecution))
             .isInstanceOf(ActivitiException.class)
@@ -438,7 +459,8 @@ class JuelExpressionTest {
         setupDefaultBpmnOverrideContext();
 
         doThrow(new PropertyNotFoundException("Property not found"))
-            .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
+            .when(delegateInterceptor)
+            .handleInvocation(any(ExpressionGetInvocation.class));
 
         assertThatThrownBy(() -> juelExpression.getValue(delegateExecution))
             .isInstanceOf(ActivitiException.class)
@@ -450,7 +472,6 @@ class JuelExpressionTest {
     void should_matchSequenceFlowByConditionExpression_when_multipleOutgoingFlows() {
         String targetCondition = "${approved == true}";
         JuelExpression targetExpression = new JuelExpression(valueExpression, targetCondition);
-
 
         SequenceFlow flow1 = mock(SequenceFlow.class);
         when(flow1.getConditionExpression()).thenReturn("${rejected}");
@@ -468,7 +489,8 @@ class JuelExpressionTest {
         setupDefaultBpmnOverrideContext();
 
         doThrow(new PropertyNotFoundException("Property not found"))
-            .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
+            .when(delegateInterceptor)
+            .handleInvocation(any(ExpressionGetInvocation.class));
 
         assertThatThrownBy(() -> targetExpression.getValue(delegateExecution))
             .isInstanceOf(ActivitiException.class)
@@ -482,7 +504,8 @@ class JuelExpressionTest {
         when(delegateExecution.getCurrentFlowElement()).thenReturn(flowNode);
 
         doThrow(new MethodNotFoundException("Method not found"))
-            .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
+            .when(delegateInterceptor)
+            .handleInvocation(any(ExpressionGetInvocation.class));
 
         assertThatThrownBy(() -> juelExpression.getValue(delegateExecution))
             .isInstanceOf(ActivitiException.class)
@@ -498,7 +521,8 @@ class JuelExpressionTest {
         when(delegateExecution.getCurrentFlowElement()).thenReturn(flowNode);
 
         doThrow(new RuntimeException("Generic error"))
-            .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
+            .when(delegateInterceptor)
+            .handleInvocation(any(ExpressionGetInvocation.class));
 
         assertThatThrownBy(() -> juelExpression.getValue(delegateExecution))
             .isInstanceOf(ActivitiException.class)
@@ -534,7 +558,8 @@ class JuelExpressionTest {
         setupBpmnOverrideContext(processDefinitionId, sequenceFlowId, elementProperties);
 
         doThrow(new PropertyNotFoundException("Property not found"))
-            .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
+            .when(delegateInterceptor)
+            .handleInvocation(any(ExpressionGetInvocation.class));
 
         assertThatThrownBy(() -> expressionWithOverriddenCondition.getValue(delegateExecution))
             .isInstanceOf(ActivitiException.class)
@@ -561,7 +586,8 @@ class JuelExpressionTest {
         setupBpmnOverrideContext(processDefinitionId, sequenceFlowId, null);
 
         doThrow(new PropertyNotFoundException("Property not found"))
-            .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
+            .when(delegateInterceptor)
+            .handleInvocation(any(ExpressionGetInvocation.class));
 
         assertThatThrownBy(() -> expressionWithCondition.getValue(delegateExecution))
             .isInstanceOf(ActivitiException.class)
@@ -591,7 +617,8 @@ class JuelExpressionTest {
         setupBpmnOverrideContext(processDefinitionId, sequenceFlowId, elementProperties);
 
         doThrow(new PropertyNotFoundException("Property not found"))
-            .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
+            .when(delegateInterceptor)
+            .handleInvocation(any(ExpressionGetInvocation.class));
 
         assertThatThrownBy(() -> expressionWithCondition.getValue(delegateExecution))
             .isInstanceOf(ActivitiException.class)
@@ -623,7 +650,8 @@ class JuelExpressionTest {
         setupBpmnOverrideContext(processDefinitionId, sequenceFlowId, elementProperties);
 
         doThrow(new PropertyNotFoundException("Property not found"))
-            .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
+            .when(delegateInterceptor)
+            .handleInvocation(any(ExpressionGetInvocation.class));
 
         assertThatThrownBy(() -> expressionWithNull.getValue(delegateExecution))
             .isInstanceOf(ActivitiException.class)
@@ -658,7 +686,8 @@ class JuelExpressionTest {
         setupBpmnOverrideContext(processDefinitionId, sequenceFlowId, elementProperties);
 
         doThrow(new PropertyNotFoundException("Property not found"))
-            .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
+            .when(delegateInterceptor)
+            .handleInvocation(any(ExpressionGetInvocation.class));
 
         assertThatThrownBy(() -> expression.getValue(delegateExecution))
             .isInstanceOf(ActivitiException.class)
@@ -677,7 +706,8 @@ class JuelExpressionTest {
         when(sequenceFlow.getConditionExpression()).thenReturn(conditionExpression);
 
         doThrow(new PropertyNotFoundException("Property not found"))
-            .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
+            .when(delegateInterceptor)
+            .handleInvocation(any(ExpressionGetInvocation.class));
 
         assertThatThrownBy(() -> expressionWithCondition.getValue(variableScope))
             .isInstanceOf(ActivitiException.class)
@@ -697,7 +727,8 @@ class JuelExpressionTest {
         when(delegateExecution.getCurrentFlowElement()).thenReturn(flowNode);
 
         doThrow(new PropertyNotFoundException("Property not found"))
-            .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
+            .when(delegateInterceptor)
+            .handleInvocation(any(ExpressionGetInvocation.class));
 
         assertThatThrownBy(() -> expressionWithCondition.getValue(delegateExecution))
             .isInstanceOf(ActivitiException.class)
@@ -726,7 +757,8 @@ class JuelExpressionTest {
         when(deploymentManager.getProcessDefinitionInfoCache()).thenThrow(new RuntimeException("Cache access failed"));
 
         doThrow(new PropertyNotFoundException("Property not found"))
-            .when(delegateInterceptor).handleInvocation(any(ExpressionGetInvocation.class));
+            .when(delegateInterceptor)
+            .handleInvocation(any(ExpressionGetInvocation.class));
 
         assertThatThrownBy(() -> expressionWithCondition.getValue(delegateExecution))
             .isInstanceOf(ActivitiException.class)
@@ -735,7 +767,11 @@ class JuelExpressionTest {
             .hasMessageNotContaining("Cache access failed");
     }
 
-    private void setupBpmnOverrideContext(String processDefinitionId, String flowElementId, ObjectNode elementProperties) {
+    private void setupBpmnOverrideContext(
+        String processDefinitionId,
+        String flowElementId,
+        ObjectNode elementProperties
+    ) {
         DynamicBpmnService dynamicBpmnService = mock(DynamicBpmnService.class);
         DeploymentManager deploymentManager = mock(DeploymentManager.class);
         ProcessDefinitionInfoCache processDefinitionInfoCache = mock(ProcessDefinitionInfoCache.class);
@@ -747,7 +783,9 @@ class JuelExpressionTest {
         when(deploymentManager.getProcessDefinitionInfoCache()).thenReturn(processDefinitionInfoCache);
         when(processDefinitionInfoCache.get(processDefinitionId)).thenReturn(cacheObject);
         when(cacheObject.getInfoNode()).thenReturn(infoNode);
-        when(dynamicBpmnService.getBpmnElementProperties(eq(flowElementId), any(ObjectNode.class))).thenReturn(elementProperties);
+        when(dynamicBpmnService.getBpmnElementProperties(eq(flowElementId), any(ObjectNode.class))).thenReturn(
+            elementProperties
+        );
     }
 
     private void setupDefaultBpmnOverrideContext() {
