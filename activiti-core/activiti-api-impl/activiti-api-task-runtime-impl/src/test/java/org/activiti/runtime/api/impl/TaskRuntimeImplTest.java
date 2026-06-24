@@ -450,6 +450,32 @@ public class TaskRuntimeImplTest {
     }
 
     @Test
+    void nextTask_should_returnNull_whenClaimSucceedsButClaimedTaskCannotBeLoaded() {
+        //given
+        when(securityManager.getAuthenticatedUserId()).thenReturn(AUTHENTICATED_USER);
+        when(securityManager.getAuthenticatedUserGroups()).thenReturn(Collections.singletonList("group"));
+
+        TaskQuery assignedTaskQuery = mock();
+
+        when(taskService.createTaskQuery()).thenReturn(assignedTaskQuery);
+
+        when(assignedTaskQuery.taskAssignee(AUTHENTICATED_USER)).thenReturn(assignedTaskQuery);
+        when(assignedTaskQuery.orderByTaskCreateTime()).thenReturn(assignedTaskQuery);
+        when(assignedTaskQuery.asc()).thenReturn(assignedTaskQuery);
+        when(assignedTaskQuery.listPage(0, 1)).thenReturn(Collections.emptyList(), Collections.emptyList());
+        when(taskService.claimNextCandidateTask(AUTHENTICATED_USER, Collections.singletonList("group"))).thenReturn(
+            true
+        );
+
+        //when
+        Task result = taskRuntime.nextTask(TaskIdentificationStrategy.CLAIM_BEFORE_OPEN_OLDEST_FIRST);
+
+        //then
+        assertThat(result).isNull();
+        verify(taskService).claimNextCandidateTask(AUTHENTICATED_USER, Collections.singletonList("group"));
+    }
+
+    @Test
     void nextTask_should_throwIllegalStateException_whenNoAuthenticatedUserIsPresent() {
         //given
         when(securityManager.getAuthenticatedUserId()).thenReturn(null);

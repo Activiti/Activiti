@@ -333,9 +333,9 @@ public class TaskRuntimeImpl implements TaskRuntime {
             return null;
         }
 
-        List<org.activiti.engine.task.Task> claimedTasks = nextAssignedTasksQuery.listPage(0, 1);
-        if (!claimedTasks.isEmpty()) {
-            return taskConverter.fromWithCandidates(claimedTasks.getFirst());
+        List<org.activiti.engine.task.Task> assignedTasks = nextAssignedTasksQuery.listPage(0, 1);
+        if (!assignedTasks.isEmpty()) {
+            return taskConverter.fromWithCandidates(assignedTasks.getFirst());
         }
 
         return null;
