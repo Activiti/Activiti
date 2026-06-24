@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
 import jakarta.el.ELException;
+import jakarta.el.FunctionMapper;
 import org.activiti.core.el.juel.ObjectValueExpression;
 import org.activiti.core.el.juel.misc.TypeConverter;
 import org.activiti.core.el.juel.test.TestCase;
@@ -63,48 +64,43 @@ public class TreeTest extends TestCase {
         bindings = parse("${ns:f0()}").bind(context.getFunctionMapper(), null);
         assertSame(context.getFunctionMapper().resolveFunction("ns", "f0"), bindings.getFunction(0));
         Bindings bindingsF0 = bindings;
-        assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class)
-            .isThrownBy(() -> bindingsF0.getFunction(1));
+        assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class).isThrownBy(() -> bindingsF0.getFunction(1));
 
         bindings = parse("${ns:f1(1)}").bind(context.getFunctionMapper(), null);
         assertSame(context.getFunctionMapper().resolveFunction("ns", "f1"), bindings.getFunction(0));
         Bindings bindingsF1 = bindings;
-        assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class)
-            .isThrownBy(() -> bindingsF1.getFunction(1));
+        assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class).isThrownBy(() -> bindingsF1.getFunction(1));
 
         bindings = parse("${ns:f0()+ns:f1(1)}").bind(context.getFunctionMapper(), null);
         assertSame(context.getFunctionMapper().resolveFunction("ns", "f0"), bindings.getFunction(0));
         assertSame(context.getFunctionMapper().resolveFunction("ns", "f1"), bindings.getFunction(1));
         Bindings bindingsF01 = bindings;
-        assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class)
-            .isThrownBy(() -> bindingsF01.getFunction(2));
+        assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class).isThrownBy(() -> bindingsF01.getFunction(2));
 
         // the same for default namespace functions g0(), g1()
         bindings = parse("${g0()}").bind(context.getFunctionMapper(), null);
         assertSame(context.getFunctionMapper().resolveFunction("", "g0"), bindings.getFunction(0));
         Bindings bindingsG0 = bindings;
-        assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class)
-            .isThrownBy(() -> bindingsG0.getFunction(1));
+        assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class).isThrownBy(() -> bindingsG0.getFunction(1));
 
         bindings = parse("${g1(1)}").bind(context.getFunctionMapper(), null);
         assertSame(context.getFunctionMapper().resolveFunction("", "g1"), bindings.getFunction(0));
         Bindings bindingsG1 = bindings;
-        assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class)
-            .isThrownBy(() -> bindingsG1.getFunction(1));
+        assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class).isThrownBy(() -> bindingsG1.getFunction(1));
 
         bindings = parse("${g0()+g1(1)}").bind(context.getFunctionMapper(), null);
         assertSame(context.getFunctionMapper().resolveFunction("", "g0"), bindings.getFunction(0));
         assertSame(context.getFunctionMapper().resolveFunction("", "g1"), bindings.getFunction(1));
         Bindings bindingsG01 = bindings;
-        assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class)
-            .isThrownBy(() -> bindingsG01.getFunction(2));
+        assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class).isThrownBy(() -> bindingsG01.getFunction(2));
 
-        assertThatExceptionOfType(ELException.class)
-            .isThrownBy(() -> parse("${foo()}").bind(context.getFunctionMapper(), null));
-        assertThatExceptionOfType(ELException.class)
-            .isThrownBy(() -> parse("${g1()}").bind(context.getFunctionMapper(), null));
-        assertThatExceptionOfType(ELException.class)
-            .isThrownBy(() -> parse("${g1(1,2)}").bind(context.getFunctionMapper(), null));
+        FunctionMapper functionMapper = context.getFunctionMapper();
+        Tree fooTree = parse("${foo()}");
+        assertThatExceptionOfType(ELException.class).isThrownBy(() -> fooTree.bind(functionMapper, null));
+        Tree g1NoArgTree = parse("${g1()}");
+        assertThatExceptionOfType(ELException.class).isThrownBy(() -> g1NoArgTree.bind(functionMapper, null));
+        Tree g1TwoArgsTree = parse("${g1(1,2)}");
+        assertThatExceptionOfType(ELException.class).isThrownBy(() -> g1TwoArgsTree.bind(functionMapper, null));
     }
 
     @Test
@@ -114,27 +110,23 @@ public class TreeTest extends TestCase {
         bindings = parse("${v0}").bind(null, context.getVariableMapper());
         assertSame(context.getVariableMapper().resolveVariable("v0"), bindings.getVariable(0));
         Bindings bindingsV0 = bindings;
-        assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class)
-            .isThrownBy(() -> bindingsV0.getVariable(1));
+        assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class).isThrownBy(() -> bindingsV0.getVariable(1));
 
         bindings = parse("${v1}").bind(null, context.getVariableMapper());
         assertSame(context.getVariableMapper().resolveVariable("v1"), bindings.getVariable(0));
         Bindings bindingsV1 = bindings;
-        assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class)
-            .isThrownBy(() -> bindingsV1.getVariable(1));
+        assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class).isThrownBy(() -> bindingsV1.getVariable(1));
 
         bindings = parse("${v0+v1}").bind(null, context.getVariableMapper());
         assertSame(context.getVariableMapper().resolveVariable("v0"), bindings.getVariable(0));
         assertSame(context.getVariableMapper().resolveVariable("v1"), bindings.getVariable(1));
         Bindings bindingsV01 = bindings;
-        assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class)
-            .isThrownBy(() -> bindingsV01.getVariable(2));
+        assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class).isThrownBy(() -> bindingsV01.getVariable(2));
 
         bindings = parse("${foo}").bind(null, context.getVariableMapper());
         assertNull(bindings.getVariable(0));
         Bindings bindingsFoo = bindings;
-        assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class)
-            .isThrownBy(() -> bindingsFoo.getVariable(1));
+        assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class).isThrownBy(() -> bindingsFoo.getVariable(1));
     }
 
     @Test
@@ -145,12 +137,10 @@ public class TreeTest extends TestCase {
         );
         assertSame(context.getFunctionMapper().resolveFunction("ns", "f0"), bindings.getFunction(0));
         assertSame(context.getFunctionMapper().resolveFunction("", "g1"), bindings.getFunction(1));
-        assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class)
-            .isThrownBy(() -> bindings.getFunction(2));
+        assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class).isThrownBy(() -> bindings.getFunction(2));
         assertSame(context.getVariableMapper().resolveVariable("v0"), bindings.getVariable(0));
         assertSame(context.getVariableMapper().resolveVariable("v1"), bindings.getVariable(1));
         assertNull(bindings.getVariable(2));
-        assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class)
-            .isThrownBy(() -> bindings.getVariable(3));
+        assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class).isThrownBy(() -> bindings.getVariable(3));
     }
 }

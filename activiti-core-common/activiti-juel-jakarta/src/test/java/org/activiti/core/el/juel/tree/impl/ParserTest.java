@@ -21,8 +21,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.activiti.core.el.juel.test.TestCase;
-import org.activiti.core.el.juel.tree.TreeBuilderException;
 import org.activiti.core.el.juel.tree.Tree;
+import org.activiti.core.el.juel.tree.TreeBuilderException;
 import org.activiti.core.el.juel.tree.impl.ast.AstBinary;
 import org.junit.jupiter.api.Test;
 
@@ -151,8 +151,7 @@ public class ParserTest extends TestCase {
         verifyCompositeExpression("a${a}a");
         verifyCompositeExpression("a ${a} a");
         verifyCompositeExpression("${a}${a}");
-        assertThatExceptionOfType(TreeBuilderException.class)
-            .isThrownBy(() -> parse("#{a}${a}"));
+        assertThatExceptionOfType(TreeBuilderException.class).isThrownBy(() -> parse("#{a}${a}"));
     }
 
     @Test
@@ -197,8 +196,7 @@ public class ParserTest extends TestCase {
         verifyEvalExpression("${a ? f() : a}", "${a?f():a}");
         verifyEvalExpression("${a ? a : a:f()}", "${a?a:a:f()}");
         verifyEvalExpression("${a ? a:f() : a}", "${a?a:f():a}");
-        assertThatExceptionOfType(TreeBuilderException.class)
-            .isThrownBy(() -> parse("${a?a:f()}"));
+        assertThatExceptionOfType(TreeBuilderException.class).isThrownBy(() -> parse("${a?a:f()}"));
     }
 
     @Test

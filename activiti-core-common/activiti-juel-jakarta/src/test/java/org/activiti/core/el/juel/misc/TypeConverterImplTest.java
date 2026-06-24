@@ -358,11 +358,12 @@ public class TypeConverterImplTest extends TestCase {
         assertSame(value, converter.coerceToType(value, Object.class));
         assertEquals(new Date(0), converter.coerceToType("0", Date.class));
         assertNull(converter.coerceToType("", Date.class));
-        assertThatExceptionOfType(ELException.class)
-            .isThrownBy(() -> converter.coerceToType("foo", Date.class));
-        assertNull(converter.coerceToType("", getClass()));
-        assertThatExceptionOfType(ELException.class)
-            .isThrownBy(() -> converter.coerceToType("bar", getClass()));
+        assertThatExceptionOfType(ELException.class).isThrownBy(() -> converter.coerceToType("foo", Date.class));
+        Class<?> unsupportedTargetType = getClass();
+        assertNull(converter.coerceToType("", unsupportedTargetType));
+        assertThatExceptionOfType(ELException.class).isThrownBy(() ->
+            converter.coerceToType("bar", unsupportedTargetType)
+        );
         assertEquals(false, converter.coerceToType("false", boolean.class));
         assertEquals((byte) 0, converter.coerceToType("0", byte.class));
         assertEquals((short) 0, converter.coerceToType("0", short.class));
