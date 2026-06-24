@@ -225,7 +225,7 @@
     <sonar-maven-plugin.version>5.6.0.6792</sonar-maven-plugin.version>
     <spring-boot.version>4.0.7</spring-boot.version>
     <!-- AAE-46198 temporary Tomcat version override. Remove when upgrading to Spring Boot 4.1.x -->
-    <tomcat.version>11.0.22</tomcat.version>
+    <tomcat.version>11.0.23</tomcat.version>
     <jakarta.el-api.version>6.0.1</jakarta.el-api.version>
     <!-- AAE-44603 temporary security fix (CVE-2025-7962). -->
     <sun-jakarta-mail.version>2.0.2</sun-jakarta-mail.version>
