@@ -1174,7 +1174,9 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
             ProcessInstance processInstance = runtimeService.startProcessInstance(builder);
 
             // Capture the StartProcessInstanceCmd
-            ArgumentCaptor<StartProcessInstanceCmd> commandCaptor = ArgumentCaptor.forClass(StartProcessInstanceCmd.class);
+            ArgumentCaptor<StartProcessInstanceCmd> commandCaptor = ArgumentCaptor.forClass(
+                StartProcessInstanceCmd.class
+            );
             verify(commandExecutor).execute(commandCaptor.capture());
 
             StartProcessInstanceCmd capturedCommand = commandCaptor.getValue();
@@ -1209,7 +1211,9 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
             ProcessInstance processInstance = runtimeService.startProcessInstance(builder);
 
             // Capture the StartProcessInstanceByMessageCmd
-            ArgumentCaptor<StartProcessInstanceByMessageCmd> commandCaptor = ArgumentCaptor.forClass(StartProcessInstanceByMessageCmd.class);
+            ArgumentCaptor<StartProcessInstanceByMessageCmd> commandCaptor = ArgumentCaptor.forClass(
+                StartProcessInstanceByMessageCmd.class
+            );
             verify(commandExecutor).execute(commandCaptor.capture());
 
             StartProcessInstanceByMessageCmd capturedCommand = commandCaptor.getValue();
@@ -1224,7 +1228,6 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
             runtimeService.setCommandExecutor(originalExecutor);
         }
     }
-
 
     @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
     public void testStartsProcessInstanceWithEmptyBusinessKey() {

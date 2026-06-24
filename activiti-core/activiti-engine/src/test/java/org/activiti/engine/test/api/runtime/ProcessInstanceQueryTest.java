@@ -22,7 +22,6 @@ import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-import tools.jackson.databind.node.ObjectNode;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -43,6 +42,7 @@ import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
 import org.activiti.engine.test.Deployment;
+import tools.jackson.databind.node.ObjectNode;
 
 /**
  */
@@ -2678,7 +2678,9 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
             .list();
         assertThat(processes).hasSize(1);
         assertThat(processes.getFirst().getName()).isEqualTo("The One Task Process 'en-GB' localized name");
-        assertThat(processes.getFirst().getDescription()).isEqualTo("The One Task Process 'en-GB' localized description");
+        assertThat(processes.getFirst().getDescription()).isEqualTo(
+            "The One Task Process 'en-GB' localized description"
+        );
 
         processes = runtimeService
             .createProcessInstanceQuery()
@@ -2704,7 +2706,9 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
             .listPage(0, 10);
         assertThat(processes).hasSize(1);
         assertThat(processes.getFirst().getName()).isEqualTo("The One Task Process 'en-GB' localized name");
-        assertThat(processes.getFirst().getDescription()).isEqualTo("The One Task Process 'en-GB' localized description");
+        assertThat(processes.getFirst().getDescription()).isEqualTo(
+            "The One Task Process 'en-GB' localized description"
+        );
 
         processInstance = runtimeService
             .createProcessInstanceQuery()

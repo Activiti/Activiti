@@ -41,12 +41,17 @@ public class ScriptTaskListener implements TaskListener {
         validateParameters();
 
         ScriptingEngines scriptingEngines = Context.getProcessEngineConfiguration().getScriptingEngines();
-        Object result = scriptingEngines.evaluate(script.getExpressionText(), language.getExpressionText(), delegateTask, autoStoreVariables);
+        Object result = scriptingEngines.evaluate(
+            script.getExpressionText(),
+            language.getExpressionText(),
+            delegateTask,
+            autoStoreVariables
+        );
 
         if (resultVariable != null) {
-          delegateTask.setVariable(resultVariable.getExpressionText(), result);
+            delegateTask.setVariable(resultVariable.getExpressionText(), result);
         }
-      }
+    }
 
     protected void validateParameters() {
         if (script == null) {

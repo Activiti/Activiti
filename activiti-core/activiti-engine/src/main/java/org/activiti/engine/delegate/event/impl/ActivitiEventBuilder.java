@@ -653,7 +653,11 @@ public class ActivitiEventBuilder {
         }
     }
 
-    public static ActivitiEvent createEntityEventWithActor(ActivitiEventType type, ExecutionEntity entity, String actor) {
+    public static ActivitiEvent createEntityEventWithActor(
+        ActivitiEventType type,
+        ExecutionEntity entity,
+        String actor
+    ) {
         ActivitiEntityEventImpl newEvent = new ActivitiEntityEventImpl(entity, type);
 
         populateEventWithCurrentContextAndActor(newEvent, actor);

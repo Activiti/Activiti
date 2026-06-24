@@ -66,8 +66,7 @@ public class VariablesPropagator {
     ) {
         if (execution.getCurrentFlowElement() instanceof CallActivity callActivity) {
             if (callActivity.getBehavior() instanceof MultiInstanceActivityBehavior multiInstanceActivityBehavior) {
-                Optional
-                    .ofNullable(multiInstanceActivityBehavior.getCollectionElementVariable())
+                Optional.ofNullable(multiInstanceActivityBehavior.getCollectionElementVariable())
                     .filter(Predicate.not(outputVariables::containsKey))
                     .ifPresent(execution::removeVariableLocal);
             }
@@ -91,8 +90,9 @@ public class VariablesPropagator {
             if (execution.getParent().isMultiInstanceRoot()) {
                 execution.setVariablesLocal(availableVariables);
             } else if (execution.getProcessInstanceId() != null) {
-                final ExecutionEntity processInstanceEntity = getExecutionEntityManager()
-                    .findById(execution.getProcessInstanceId());
+                final ExecutionEntity processInstanceEntity = getExecutionEntityManager().findById(
+                    execution.getProcessInstanceId()
+                );
                 processInstanceEntity.setVariables(
                     variablesCalculator.calculateOutPutVariables(
                         MappingExecutionContext.buildMappingExecutionContext(execution),

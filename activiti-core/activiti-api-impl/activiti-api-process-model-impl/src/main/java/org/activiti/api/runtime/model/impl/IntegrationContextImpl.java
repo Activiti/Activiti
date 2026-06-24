@@ -15,6 +15,7 @@
  */
 package org.activiti.api.runtime.model.impl;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -22,7 +23,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.activiti.api.process.model.IntegrationContext;
 
 public class IntegrationContextImpl implements IntegrationContext {
@@ -286,7 +286,8 @@ public class IntegrationContextImpl implements IntegrationContext {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("IntegrationContextImpl [id=")
+        builder
+            .append("IntegrationContextImpl [id=")
             .append(id)
             .append(", inboundVariablesKeys=")
             .append(inBoundVariables != null ? printKeys(inBoundVariables.keySet()) : null)

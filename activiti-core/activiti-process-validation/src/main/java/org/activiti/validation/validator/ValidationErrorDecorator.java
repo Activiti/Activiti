@@ -15,13 +15,13 @@
  */
 package org.activiti.validation.validator;
 
-import tools.jackson.core.type.TypeReference;
-import tools.jackson.databind.json.JsonMapper;
-import tools.jackson.core.JacksonException;
 import java.io.InputStream;
 import java.util.Map;
 import org.activiti.validation.ValidationError;
 import org.apache.commons.text.StringSubstitutor;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.json.JsonMapper;
 
 public class ValidationErrorDecorator {
 
