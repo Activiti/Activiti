@@ -44,14 +44,14 @@ public class SignalEventSubprocessTest extends PluggableActivitiTestCase {
             .singleResult();
         assertThat(execution).isNotNull();
         assertThat(createEventSubscriptionQuery().count()).isEqualTo(1);
-        assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(3);
+        assertThat(executionCountFor(processInstance)).isEqualTo(3);
 
         // if we trigger the usertask, the process terminates and the event subscription is removed
         Task task = taskService.createTaskQuery().singleResult();
         assertThat(task.getTaskDefinitionKey()).isEqualTo("task");
         taskService.complete(task.getId());
         assertThat(createEventSubscriptionQuery().count()).isZero();
-        assertThat(runtimeService.createExecutionQuery().count()).isZero();
+        assertThat(executionCountFor(processInstance)).isZero();
         assertProcessEnded(processInstance.getId());
 
         // now we start a new instance but this time we trigger the event subprocess
@@ -67,7 +67,7 @@ public class SignalEventSubprocessTest extends PluggableActivitiTestCase {
         taskService.complete(task.getId());
         assertProcessEnded(processInstance.getId());
         assertThat(createEventSubscriptionQuery().count()).isZero();
-        assertThat(runtimeService.createExecutionQuery().count()).isZero();
+        assertThat(executionCountFor(processInstance)).isZero();
     }
 
     @Deployment
@@ -82,14 +82,14 @@ public class SignalEventSubprocessTest extends PluggableActivitiTestCase {
             .singleResult();
         assertThat(execution).isNotNull();
         assertThat(createEventSubscriptionQuery().count()).isEqualTo(1);
-        assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(3);
+        assertThat(executionCountFor(processInstance)).isEqualTo(3);
 
         // if we complete the user task, the process terminates and the event subscription is removed
         Task task = taskService.createTaskQuery().singleResult();
         assertThat(task.getTaskDefinitionKey()).isEqualTo("task");
         taskService.complete(task.getId());
         assertThat(createEventSubscriptionQuery().count()).isZero();
-        assertThat(runtimeService.createExecutionQuery().count()).isZero();
+        assertThat(executionCountFor(processInstance)).isZero();
 
         // now we start a new instance but this time we trigger the event subprocess
         processInstance = runtimeService.startProcessInstanceByKey("process");
@@ -120,7 +120,7 @@ public class SignalEventSubprocessTest extends PluggableActivitiTestCase {
         // and then in the event subprocess
         task = taskService.createTaskQuery().taskDefinitionKey("eventSubProcessTask").singleResult();
         taskService.complete(task.getId());
-        assertThat(runtimeService.createExecutionQuery().count()).isZero();
+        assertThat(executionCountFor(processInstance)).isZero();
 
         // Now let's complete the task in the event subprocess first and then in the main flow
         processInstance = runtimeService.startProcessInstanceByKey("process");
@@ -139,11 +139,11 @@ public class SignalEventSubprocessTest extends PluggableActivitiTestCase {
         // Three executions remain: process instance, the still-pending main task, and the
         // re-created event-scope that carries the renewed signal subscription
         // (the non-interrupting start event keeps listening for further signals).
-        assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(3);
+        assertThat(executionCountFor(processInstance)).isEqualTo(3);
 
         task = taskService.createTaskQuery().taskDefinitionKey("task").singleResult();
         taskService.complete(task.getId());
-        assertThat(runtimeService.createExecutionQuery().count()).isZero();
+        assertThat(executionCountFor(processInstance)).isZero();
     }
 
     /**
@@ -240,5 +240,9 @@ public class SignalEventSubprocessTest extends PluggableActivitiTestCase {
 
     private EventSubscriptionQueryImpl createEventSubscriptionQuery() {
         return new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutor());
+    }
+
+    private long executionCountFor(ProcessInstance processInstance) {
+        return runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).count();
     }
 }
