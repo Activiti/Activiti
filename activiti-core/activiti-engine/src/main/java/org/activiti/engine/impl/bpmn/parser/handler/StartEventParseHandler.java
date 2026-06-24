@@ -66,8 +66,7 @@ public class StartEventParseHandler extends AbstractActivityBpmnParseHandler<Sta
                             .getActivityBehaviorFactory()
                             .createEventSubProcessErrorStartEventActivityBehavior(element)
                     );
-                } else if (eventDefinition instanceof SignalEventDefinition) {
-                    SignalEventDefinition signalDefinition = (SignalEventDefinition) eventDefinition;
+                } else if (eventDefinition instanceof SignalEventDefinition signalDefinition) {
                     BpmnModel bpmnModel = bpmnParse.getBpmnModel();
                     Signal signal = null;
                     if (bpmnModel.containsSignalId(signalDefinition.getSignalRef())) {

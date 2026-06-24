@@ -331,8 +331,7 @@ public class ProcessInstanceHelper {
                                 correlationKey.ifPresent(subscription::setConfiguration);
 
                                 messageEventSubscriptions.add(subscription);
-                            } else if (eventDefinition instanceof SignalEventDefinition) {
-                                SignalEventDefinition signalEventDefinition = (SignalEventDefinition) eventDefinition;
+                            } else if (eventDefinition instanceof SignalEventDefinition signalEventDefinition) {
                                 BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(
                                     processInstance.getProcessDefinitionId()
                                 );

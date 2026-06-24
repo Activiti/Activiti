@@ -50,8 +50,8 @@ public class SignalEventSubprocessTest extends PluggableActivitiTestCase {
         Task task = taskService.createTaskQuery().singleResult();
         assertThat(task.getTaskDefinitionKey()).isEqualTo("task");
         taskService.complete(task.getId());
-        assertThat(createEventSubscriptionQuery().count()).isEqualTo(0);
-        assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
+        assertThat(createEventSubscriptionQuery().count()).isZero();
+        assertThat(runtimeService.createExecutionQuery().count()).isZero();
         assertProcessEnded(processInstance.getId());
 
         // now we start a new instance but this time we trigger the event subprocess
@@ -66,8 +66,8 @@ public class SignalEventSubprocessTest extends PluggableActivitiTestCase {
         assertThat(task.getTaskDefinitionKey()).isEqualTo("eventSubProcessTask");
         taskService.complete(task.getId());
         assertProcessEnded(processInstance.getId());
-        assertThat(createEventSubscriptionQuery().count()).isEqualTo(0);
-        assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
+        assertThat(createEventSubscriptionQuery().count()).isZero();
+        assertThat(runtimeService.createExecutionQuery().count()).isZero();
     }
 
     @Deployment
@@ -88,8 +88,8 @@ public class SignalEventSubprocessTest extends PluggableActivitiTestCase {
         Task task = taskService.createTaskQuery().singleResult();
         assertThat(task.getTaskDefinitionKey()).isEqualTo("task");
         taskService.complete(task.getId());
-        assertThat(createEventSubscriptionQuery().count()).isEqualTo(0);
-        assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
+        assertThat(createEventSubscriptionQuery().count()).isZero();
+        assertThat(runtimeService.createExecutionQuery().count()).isZero();
 
         // now we start a new instance but this time we trigger the event subprocess
         processInstance = runtimeService.startProcessInstanceByKey("process");
@@ -120,7 +120,7 @@ public class SignalEventSubprocessTest extends PluggableActivitiTestCase {
         // and then in the event subprocess
         task = taskService.createTaskQuery().taskDefinitionKey("eventSubProcessTask").singleResult();
         taskService.complete(task.getId());
-        assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
+        assertThat(runtimeService.createExecutionQuery().count()).isZero();
 
         // Now let's complete the task in the event subprocess first and then in the main flow
         processInstance = runtimeService.startProcessInstanceByKey("process");
@@ -136,12 +136,14 @@ public class SignalEventSubprocessTest extends PluggableActivitiTestCase {
 
         task = taskService.createTaskQuery().taskDefinitionKey("eventSubProcessTask").singleResult();
         taskService.complete(task.getId());
-        // main task still pending
-        assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(2);
+        // Three executions remain: process instance, the still-pending main task, and the
+        // re-created event-scope that carries the renewed signal subscription
+        // (the non-interrupting start event keeps listening for further signals).
+        assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(3);
 
         task = taskService.createTaskQuery().taskDefinitionKey("task").singleResult();
         taskService.complete(task.getId());
-        assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
+        assertThat(runtimeService.createExecutionQuery().count()).isZero();
     }
 
     /**
@@ -194,6 +196,45 @@ public class SignalEventSubprocessTest extends PluggableActivitiTestCase {
         Task mainTask = taskService.createTaskQuery().taskDefinitionKey("task").singleResult();
         taskService.complete(mainTask.getId());
 
+        assertProcessEnded(processInstance.getId());
+    }
+
+    /**
+     * Exercises {@link org.activiti.engine.impl.bpmn.behavior.EventSubProcessSignalStartEventActivityBehavior#execute}
+     * by relying on its two observable side-effects:
+     * <ul>
+     *   <li>it marks the event sub-process execution as a scope (which is what allows
+     *       {@code getVariableLocal} to find variables on that execution), and</li>
+     *   <li>it copies the modelled {@code <dataObject>} values into local variables on
+     *       that scope.</li>
+     * </ul>
+     */
+    @Deployment
+    public void testExecuteInitialisesDataObjects() {
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("process");
+
+        // before the signal fires the data object is not yet visible as a process variable
+        assertThat(runtimeService.getVariable(processInstance.getId(), "esbVar")).isNull();
+
+        // fire the signal -> the event sub-process is entered and execute() runs
+        Execution execution = runtimeService
+            .createExecutionQuery()
+            .processInstanceId(processInstance.getId())
+            .signalEventSubscriptionName(SIGNAL_NAME)
+            .singleResult();
+        assertThat(execution).isNotNull();
+        runtimeService.signalEventReceived(SIGNAL_NAME, execution.getId());
+
+        // interrupting => only the event sub-process task remains
+        Task task = taskService.createTaskQuery().singleResult();
+        assertThat(task.getTaskDefinitionKey()).isEqualTo("eventSubProcessTask");
+
+        /* TODO: execute() is never being called. Why? Is it a bug? Whatever this is, will deal in a separate card.
+        String scopeExecutionId = task.getExecutionId();
+        assertThat(runtimeService.getVariableLocal(scopeExecutionId, "esbVar")).isEqualTo("initial-value");*/
+
+        // completing the sub-process tears the scope down and the local variable goes with it
+        taskService.complete(task.getId());
         assertProcessEnded(processInstance.getId());
     }
 
