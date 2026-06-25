@@ -15,6 +15,7 @@
  */
 package org.activiti.validation.validator;
 
+import java.util.Map;
 import org.activiti.validation.validator.impl.ActivitiEventListenerValidator;
 import org.activiti.validation.validator.impl.AssociationValidator;
 import org.activiti.validation.validator.impl.BoundaryEventValidator;
@@ -48,6 +49,10 @@ import org.activiti.validation.validator.impl.UserTaskValidator;
 public class ValidatorSetFactory {
 
     public ValidatorSet createActivitiExecutableProcessValidatorSet() {
+        return createActivitiExecutableProcessValidatorSet(Map.of());
+    }
+
+    public ValidatorSet createActivitiExecutableProcessValidatorSet(Map<String, Object> validationConfiguration) {
         ValidatorSet validatorSet = new ValidatorSet(ValidatorSetNames.ACTIVITI_EXECUTABLE_PROCESS);
 
         validatorSet.addValidator(new AssociationValidator());
@@ -65,7 +70,7 @@ public class ValidatorSetFactory {
         validatorSet.addValidator(new ServiceTaskValidator());
         validatorSet.addValidator(new ScriptTaskValidator());
         validatorSet.addValidator(new SendTaskValidator());
-        validatorSet.addValidator(new ExclusiveGatewayValidator());
+        validatorSet.addValidator(new ExclusiveGatewayValidator(validationConfiguration));
         validatorSet.addValidator(new EventGatewayValidator());
         validatorSet.addValidator(new SubprocessValidator());
         validatorSet.addValidator(new EventSubprocessValidator());
