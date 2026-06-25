@@ -37,10 +37,17 @@ public class ExclusiveGatewayValidator extends ProcessLevelValidator {
 
     private final Boolean errorOnMissingConditionValidationConfig;
 
+    public ExclusiveGatewayValidator() {
+        this(Map.of());
+    }
+
     public ExclusiveGatewayValidator(Map<String, Object> validationConfiguration) {
-        errorOnMissingConditionValidationConfig = (Boolean) validationConfiguration.get(
-            ERROR_ON_MISSING_CONDITION_VALIDATION_CONFIG
-        );
+        Object value = validationConfiguration.getOrDefault(ERROR_ON_MISSING_CONDITION_VALIDATION_CONFIG, false);
+        switch (value) {
+            case Boolean b -> errorOnMissingConditionValidationConfig = b;
+            case String s -> errorOnMissingConditionValidationConfig = Boolean.parseBoolean(s);
+            default -> errorOnMissingConditionValidationConfig = null;
+        }
     }
 
     @Override

@@ -198,4 +198,86 @@ class ExclusiveGatewayValidatorTest {
 
         assertThat(errors).isEmpty();
     }
+
+    @Test
+    void should_addWarning_when_constructedWithNoArgConstructor() {
+        var validator = new ExclusiveGatewayValidator();
+        var gateway = new ExclusiveGateway();
+        gateway.setOutgoingFlows(
+            List.of(sequenceFlowWithCondition("flow1", "${condition}"), sequenceFlowWithoutCondition("flow2"))
+        );
+
+        var errors = validate(validator, gateway);
+
+        assertThat(errors)
+            .hasSize(1)
+            .first()
+            .satisfies(e -> {
+                assertThat(e.getProblem()).isEqualTo(Problems.EXCLUSIVE_GATEWAY_SEQ_FLOW_WITHOUT_CONDITIONS);
+                assertThat(e.isWarning()).isTrue();
+            });
+    }
+
+    @Test
+    void should_addError_when_errorOnMissingConditionConfiguredAsStringTrue() {
+        var validator = validatorWith(
+            Map.of(ExclusiveGatewayValidator.ERROR_ON_MISSING_CONDITION_VALIDATION_CONFIG, "true")
+        );
+        var gateway = new ExclusiveGateway();
+        gateway.setOutgoingFlows(
+            List.of(sequenceFlowWithCondition("flow1", "${condition}"), sequenceFlowWithoutCondition("flow2"))
+        );
+
+        var errors = validate(validator, gateway);
+
+        assertThat(errors)
+            .hasSize(1)
+            .first()
+            .satisfies(e -> {
+                assertThat(e.getProblem()).isEqualTo(Problems.EXCLUSIVE_GATEWAY_SEQ_FLOW_WITHOUT_CONDITIONS);
+                assertThat(e.isWarning()).isFalse();
+            });
+    }
+
+    @Test
+    void should_addWarning_when_errorOnMissingConditionConfiguredAsStringFalse() {
+        var validator = validatorWith(
+            Map.of(ExclusiveGatewayValidator.ERROR_ON_MISSING_CONDITION_VALIDATION_CONFIG, "false")
+        );
+        var gateway = new ExclusiveGateway();
+        gateway.setOutgoingFlows(
+            List.of(sequenceFlowWithCondition("flow1", "${condition}"), sequenceFlowWithoutCondition("flow2"))
+        );
+
+        var errors = validate(validator, gateway);
+
+        assertThat(errors)
+            .hasSize(1)
+            .first()
+            .satisfies(e -> {
+                assertThat(e.getProblem()).isEqualTo(Problems.EXCLUSIVE_GATEWAY_SEQ_FLOW_WITHOUT_CONDITIONS);
+                assertThat(e.isWarning()).isTrue();
+            });
+    }
+
+    @Test
+    void should_addWarning_when_errorOnMissingConditionConfiguredWithUnrecognizedType() {
+        var config = new java.util.HashMap<String, Object>();
+        config.put(ExclusiveGatewayValidator.ERROR_ON_MISSING_CONDITION_VALIDATION_CONFIG, 42);
+        var validator = new ExclusiveGatewayValidator(config);
+        var gateway = new ExclusiveGateway();
+        gateway.setOutgoingFlows(
+            List.of(sequenceFlowWithCondition("flow1", "${condition}"), sequenceFlowWithoutCondition("flow2"))
+        );
+
+        var errors = validate(validator, gateway);
+
+        assertThat(errors)
+            .hasSize(1)
+            .first()
+            .satisfies(e -> {
+                assertThat(e.getProblem()).isEqualTo(Problems.EXCLUSIVE_GATEWAY_SEQ_FLOW_WITHOUT_CONDITIONS);
+                assertThat(e.isWarning()).isTrue();
+            });
+    }
 }
