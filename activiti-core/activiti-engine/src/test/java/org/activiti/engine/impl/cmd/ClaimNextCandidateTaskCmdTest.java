@@ -116,6 +116,14 @@ class ClaimNextCandidateTaskCmdTest {
         assertThat(params.get("userGroups")).isEqualTo(List.of("activitiTeam"));
         assertThat(params.get("claimToken")).isNotNull();
 
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<Map<String, Object>> selectParamsCaptor = ArgumentCaptor.forClass(Map.class);
+        verify(dbSqlSession).selectOne(eq("selectTaskIdByClaimToken"), selectParamsCaptor.capture());
+
+        Map<String, Object> selectParams = selectParamsCaptor.getValue();
+        assertThat(selectParams.get("userId")).isEqualTo("john");
+        assertThat(selectParams.get("claimToken")).isNotNull();
+
         verify(taskEntityManager).executeTaskAssigneeChangePostProcessing(taskEntity);
         verify(historyManager).recordTaskClaim(taskEntity);
     }

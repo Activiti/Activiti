@@ -271,6 +271,33 @@
     where T.PROC_INST_ID_ = #{parameter}
   </select>
 
+  <sql id="candidateTaskIdentityLinkCheck">
+    exists (
+      select 1
+      from ${prefix}ACT_RU_IDENTITYLINK L
+      where L.TASK_ID_ = T.ID_
+      and L.TYPE_ = 'candidate'
+      and (
+        L.USER_ID_ = #{userId}
+        <if test="userGroups != null and userGroups.size() &gt; 0">
+          or L.GROUP_ID_ in
+          <foreach item="group" index="index" collection="userGroups" open="(" separator="," close=")">
+            #{group}
+          </foreach>
+        </if>
+      )
+    )
+  </sql>
+
+  <sql id="candidateTaskSelectionSql">
+    select T.ID_
+    from ${prefix}ACT_RU_TASK T
+    where T.ASSIGNEE_ is null
+    and T.SUSPENSION_STATE_ = 1
+    and <include refid="candidateTaskIdentityLinkCheck"/>
+    order by T.CREATE_TIME_ asc, T.ID_ asc
+  </sql>
+
   <update id="claimNextUnassignedCandidateTask" parameterType="java.util.Map">
     update ${prefix}ACT_RU_TASK
     set
@@ -279,26 +306,7 @@
       CLAIM_TIME_ = #{claimTime, jdbcType=TIMESTAMP},
       CLAIM_TOKEN_ = #{claimToken, jdbcType=VARCHAR}
     where ID_ = (
-      select T.ID_
-      from ${prefix}ACT_RU_TASK T
-      where T.ASSIGNEE_ is null
-      and T.SUSPENSION_STATE_ = 1
-      and exists (
-        select 1
-        from ${prefix}ACT_RU_IDENTITYLINK L
-        where L.TASK_ID_ = T.ID_
-        and L.TYPE_ = 'candidate'
-        and (
-          L.USER_ID_ = #{userId}
-          <if test="userGroups != null and userGroups.size() &gt; 0">
-            or L.GROUP_ID_ in
-            <foreach item="group" index="index" collection="userGroups" open="(" separator="," close=")">
-              #{group}
-            </foreach>
-          </if>
-        )
-      )
-      order by T.CREATE_TIME_ asc, T.ID_ asc
+      <include refid="candidateTaskSelectionSql"/>
       limit 1
     )
     and ASSIGNEE_ is null
@@ -307,26 +315,7 @@
   <update id="claimNextUnassignedCandidateTask" databaseId="mysql" parameterType="java.util.Map">
     update ${prefix}ACT_RU_TASK TARGET
     inner join (
-      select T.ID_
-      from ${prefix}ACT_RU_TASK T
-      where T.ASSIGNEE_ is null
-      and T.SUSPENSION_STATE_ = 1
-      and exists (
-        select 1
-        from ${prefix}ACT_RU_IDENTITYLINK L
-        where L.TASK_ID_ = T.ID_
-        and L.TYPE_ = 'candidate'
-        and (
-          L.USER_ID_ = #{userId}
-          <if test="userGroups != null and userGroups.size() &gt; 0">
-            or L.GROUP_ID_ in
-            <foreach item="group" index="index" collection="userGroups" open="(" separator="," close=")">
-              #{group}
-            </foreach>
-          </if>
-        )
-      )
-      order by T.CREATE_TIME_ asc, T.ID_ asc
+      <include refid="candidateTaskSelectionSql"/>
       limit 1
     ) SELECTED on TARGET.ID_ = SELECTED.ID_
     set
@@ -337,10 +326,60 @@
     where TARGET.ASSIGNEE_ is null
   </update>
 
+  <update id="claimNextUnassignedCandidateTask" databaseId="oracle" parameterType="java.util.Map">
+    update ${prefix}ACT_RU_TASK
+    set
+      REV_ = COALESCE(REV_, 0) + 1,
+      ASSIGNEE_ = #{userId, jdbcType=VARCHAR},
+      CLAIM_TIME_ = #{claimTime, jdbcType=TIMESTAMP},
+      CLAIM_TOKEN_ = #{claimToken, jdbcType=VARCHAR}
+    where ID_ = (
+      select T.ID_
+      from (
+        <include refid="candidateTaskSelectionSql"/>
+      ) T
+      where rownum &lt;= 1
+    )
+    and ASSIGNEE_ is null
+  </update>
+
+  <update id="claimNextUnassignedCandidateTask" databaseId="mssql" parameterType="java.util.Map">
+    update ${prefix}ACT_RU_TASK
+    set
+      REV_ = COALESCE(REV_, 0) + 1,
+      ASSIGNEE_ = #{userId, jdbcType=VARCHAR},
+      CLAIM_TIME_ = #{claimTime, jdbcType=TIMESTAMP},
+      CLAIM_TOKEN_ = #{claimToken, jdbcType=VARCHAR}
+    where ID_ = (
+      select top 1 T.ID_
+      from ${prefix}ACT_RU_TASK T
+      where T.ASSIGNEE_ is null
+      and T.SUSPENSION_STATE_ = 1
+      and <include refid="candidateTaskIdentityLinkCheck"/>
+      order by T.CREATE_TIME_ asc, T.ID_ asc
+    )
+    and ASSIGNEE_ is null
+  </update>
+
+  <update id="claimNextUnassignedCandidateTask" databaseId="db2" parameterType="java.util.Map">
+    update ${prefix}ACT_RU_TASK
+    set
+      REV_ = COALESCE(REV_, 0) + 1,
+      ASSIGNEE_ = #{userId, jdbcType=VARCHAR},
+      CLAIM_TIME_ = #{claimTime, jdbcType=TIMESTAMP},
+      CLAIM_TOKEN_ = #{claimToken, jdbcType=VARCHAR}
+    where ID_ = (
+      <include refid="candidateTaskSelectionSql"/>
+      fetch first 1 rows only
+    )
+    and ASSIGNEE_ is null
+  </update>
+
   <select id="selectTaskIdByClaimToken" parameterType="java.util.Map" resultType="string">
     select ID_
     from ${prefix}ACT_RU_TASK
     where CLAIM_TOKEN_ = #{claimToken, jdbcType=VARCHAR}
+    and ASSIGNEE_ = #{userId, jdbcType=VARCHAR}
   </select>
 
   <select id="selectTaskByQueryCriteria" parameterType="org.activiti.engine.impl.TaskQueryImpl" resultMap="taskResultMap">

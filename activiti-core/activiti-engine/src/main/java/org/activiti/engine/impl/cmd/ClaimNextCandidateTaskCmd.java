@@ -71,9 +71,10 @@ public class ClaimNextCandidateTaskCmd implements Command<String>, Serializable 
         return updatedRows > 0;
     }
 
-    private static TaskEntity executeClaimTaskPostProcessing(CommandContext commandContext, String claimToken) {
+    private TaskEntity executeClaimTaskPostProcessing(CommandContext commandContext, String claimToken) {
         HashMap<String, Object> selectTaskIdParams = new HashMap<>();
         selectTaskIdParams.put("claimToken", claimToken);
+        selectTaskIdParams.put("userId", userId);
 
         String taskId = (String) commandContext
             .getDbSqlSession()
