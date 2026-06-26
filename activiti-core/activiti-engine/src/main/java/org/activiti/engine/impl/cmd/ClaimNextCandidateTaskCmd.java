@@ -21,14 +21,16 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
 /**
  * Finds and claims the next candidate task for a user.
  */
-public class ClaimNextCandidateTaskCmd implements Command<Boolean>, Serializable {
+public class ClaimNextCandidateTaskCmd implements Command<String>, Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -42,18 +44,45 @@ public class ClaimNextCandidateTaskCmd implements Command<Boolean>, Serializable
     }
 
     @Override
-    public Boolean execute(CommandContext commandContext) {
+    public String execute(CommandContext commandContext) {
         if (userId == null || userId.isEmpty()) {
             throw new ActivitiIllegalArgumentException("User id is null or empty");
         }
 
-        Date claimTime = commandContext.getProcessEngineConfiguration().getClock().getCurrentTime();
-        HashMap<String, Object> params = new HashMap<>();
-        params.put("userId", userId);
-        params.put("userGroups", userGroups);
-        params.put("claimTime", claimTime);
+        String claimToken = UUID.randomUUID().toString();
 
-        int updatedRows = commandContext.getDbSqlSession().update("claimNextUnassignedCandidateTask", params);
+        boolean taskClaimed = claimNextTask(commandContext, claimToken);
+        if (!taskClaimed) return null;
+
+        TaskEntity task = executeClaimTaskPostProcessing(commandContext, claimToken);
+        return task.getId();
+    }
+
+    private boolean claimNextTask(CommandContext commandContext, String claimToken) {
+        Date claimTime = commandContext.getProcessEngineConfiguration().getClock().getCurrentTime();
+
+        HashMap<String, Object> claimTaskParams = new HashMap<>();
+        claimTaskParams.put("userId", userId);
+        claimTaskParams.put("userGroups", userGroups);
+        claimTaskParams.put("claimTime", claimTime);
+        claimTaskParams.put("claimToken", claimToken);
+
+        int updatedRows = commandContext.getDbSqlSession().update("claimNextUnassignedCandidateTask", claimTaskParams);
         return updatedRows > 0;
+    }
+
+    private static TaskEntity executeClaimTaskPostProcessing(CommandContext commandContext, String claimToken) {
+        HashMap<String, Object> selectTaskIdParams = new HashMap<>();
+        selectTaskIdParams.put("claimToken", claimToken);
+
+        String taskId = (String) commandContext
+            .getDbSqlSession()
+            .selectOne("selectTaskIdByClaimToken", selectTaskIdParams);
+
+        TaskEntity task = commandContext.getTaskEntityManager().findById(taskId);
+        commandContext.getTaskEntityManager().executeTaskAssigneeChangePostProcessing(task);
+        commandContext.getHistoryManager().recordTaskClaim(task);
+
+        return task;
     }
 }

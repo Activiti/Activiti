@@ -30,7 +30,10 @@ import java.util.Map;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.db.DbSqlSession;
+import org.activiti.engine.impl.history.HistoryManager;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.activiti.engine.impl.persistence.entity.TaskEntityManager;
 import org.activiti.engine.runtime.Clock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -54,15 +57,24 @@ class ClaimNextCandidateTaskCmdTest {
     @Mock
     private DbSqlSession dbSqlSession;
 
-    private Date currentTime;
+    @Mock
+    private TaskEntityManager taskEntityManager;
+
+    @Mock
+    private HistoryManager historyManager;
+
+    @Mock
+    private TaskEntity taskEntity;
 
     @BeforeEach
     void setUp() {
-        currentTime = new Date();
+        Date currentTime = new Date();
         lenient().when(commandContext.getProcessEngineConfiguration()).thenReturn(processEngineConfiguration);
         lenient().when(processEngineConfiguration.getClock()).thenReturn(clock);
         lenient().when(clock.getCurrentTime()).thenReturn(currentTime);
         lenient().when(commandContext.getDbSqlSession()).thenReturn(dbSqlSession);
+        lenient().when(commandContext.getTaskEntityManager()).thenReturn(taskEntityManager);
+        lenient().when(commandContext.getHistoryManager()).thenReturn(historyManager);
     }
 
     @Test
@@ -87,6 +99,10 @@ class ClaimNextCandidateTaskCmdTest {
     void should_returnTrue_whenCandidateTaskIsClaimed() {
         ClaimNextCandidateTaskCmd cmd = new ClaimNextCandidateTaskCmd("john", List.of("activitiTeam"));
         when(dbSqlSession.update(eq("claimNextUnassignedCandidateTask"), anyMap())).thenReturn(1);
+        when(dbSqlSession.selectOne(eq("selectTaskIdByClaimToken"), anyMap())).thenReturn("task-1");
+        when(taskEntityManager.findById("task-1")).thenReturn(taskEntity);
+        when(taskEntity.isSuspended()).thenReturn(false);
+        when(taskEntity.getAssignee()).thenReturn(null);
 
         boolean claimed = cmd.execute(commandContext);
 
@@ -99,7 +115,10 @@ class ClaimNextCandidateTaskCmdTest {
         Map<String, Object> params = paramsCaptor.getValue();
         assertThat(params.get("userId")).isEqualTo("john");
         assertThat(params.get("userGroups")).isEqualTo(List.of("activitiTeam"));
-        assertThat(params.get("claimTime")).isEqualTo(currentTime);
+        assertThat(params.get("claimToken")).isNotNull();
+
+        verify(taskEntityManager).changeTaskAssignee(taskEntity, "john");
+        verify(historyManager).recordTaskClaim(taskEntity);
     }
 
     @Test

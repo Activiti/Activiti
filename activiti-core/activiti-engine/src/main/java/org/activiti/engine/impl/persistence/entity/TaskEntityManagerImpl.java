@@ -120,17 +120,26 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
             (taskEntity.getAssignee() == null && assignee != null)
         ) {
             taskEntity.setAssignee(assignee);
-            if (fireEvents) {
-                fireAssignmentEvents(taskEntity);
-            } else {
-                recordTaskAssignment(taskEntity);
-            }
+            executeTaskAssigneeChangePostProcessing(taskEntity, fireEvents);
+        }
+    }
 
-            if (taskEntity.getId() != null) {
-                getHistoryManager().recordTaskAssigneeChange(taskEntity.getId(), taskEntity.getAssignee());
-                addAssigneeIdentityLinks(taskEntity);
-                update(taskEntity, fireEvents);
-            }
+    @Override
+    public void executeTaskAssigneeChangePostProcessing(TaskEntity taskEntity) {
+        executeTaskAssigneeChangePostProcessing(taskEntity, true);
+    }
+
+    private void executeTaskAssigneeChangePostProcessing(TaskEntity taskEntity, boolean fireEvents) {
+        if (fireEvents) {
+            fireAssignmentEvents(taskEntity);
+        } else {
+            recordTaskAssignment(taskEntity);
+        }
+
+        if (taskEntity.getId() != null) {
+            getHistoryManager().recordTaskAssigneeChange(taskEntity.getId(), taskEntity.getAssignee());
+            addAssigneeIdentityLinks(taskEntity);
+            update(taskEntity, fireEvents);
         }
     }
 

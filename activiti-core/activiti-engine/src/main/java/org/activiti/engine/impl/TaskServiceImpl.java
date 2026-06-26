@@ -206,7 +206,7 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
     }
 
     @Override
-    public boolean claimNextCandidateTask(String userId, List<String> userGroups) {
+    public String claimNextCandidateTask(String userId, List<String> userGroups) {
         return commandExecutor.execute(new ClaimNextCandidateTaskCmd(userId, userGroups));
     }
 

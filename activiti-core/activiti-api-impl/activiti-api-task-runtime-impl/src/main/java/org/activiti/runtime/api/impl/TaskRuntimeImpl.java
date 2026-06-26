@@ -327,18 +327,9 @@ public class TaskRuntimeImpl implements TaskRuntime {
         }
 
         List<String> userGroups = securityManager.getAuthenticatedUserGroups();
-        boolean taskClaimed = taskService.claimNextCandidateTask(userId, userGroups);
+        String taskId = taskService.claimNextCandidateTask(userId, userGroups);
 
-        if (!taskClaimed) {
-            return null;
-        }
-
-        List<org.activiti.engine.task.Task> assignedTasks = nextAssignedTasksQuery.listPage(0, 1);
-        if (!assignedTasks.isEmpty()) {
-            return taskConverter.fromWithCandidates(assignedTasks.getFirst());
-        }
-
-        return null;
+        return taskId == null ? null : task(taskId);
     }
 
     @Override

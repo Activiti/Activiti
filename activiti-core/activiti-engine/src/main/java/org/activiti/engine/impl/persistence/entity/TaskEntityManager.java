@@ -30,6 +30,8 @@ public interface TaskEntityManager extends EntityManager<TaskEntity> {
 
     void changeTaskAssigneeNoEvents(TaskEntity taskEntity, String assignee);
 
+    void executeTaskAssigneeChangePostProcessing(TaskEntity taskEntity);
+
     void changeTaskOwner(TaskEntity taskEntity, String owner);
 
     List<TaskEntity> findTasksByExecutionId(String executionId);

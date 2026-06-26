@@ -204,9 +204,9 @@ public interface TaskService {
      *          user that should claim the task, cannot be null or empty.
      * @param userGroups
      *          groups of the user used for candidate-group matching. May be null.
-     * @return true when a candidate task was claimed, false otherwise.
+     * @return the taskId of the claimed task, otherwise null.
      */
-    boolean claimNextCandidateTask(String userId, List<String> userGroups);
+    String claimNextCandidateTask(String userId, List<String> userGroups);
 
     /**
      * Called when the task is successfully executed.
