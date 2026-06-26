@@ -96,17 +96,16 @@ class ClaimNextCandidateTaskCmdTest {
     }
 
     @Test
-    void should_returnTrue_whenCandidateTaskIsClaimed() {
+    void should_returnTaskId_whenCandidateTaskIsClaimed() {
         ClaimNextCandidateTaskCmd cmd = new ClaimNextCandidateTaskCmd("john", List.of("activitiTeam"));
         when(dbSqlSession.update(eq("claimNextUnassignedCandidateTask"), anyMap())).thenReturn(1);
         when(dbSqlSession.selectOne(eq("selectTaskIdByClaimToken"), anyMap())).thenReturn("task-1");
         when(taskEntityManager.findById("task-1")).thenReturn(taskEntity);
-        when(taskEntity.isSuspended()).thenReturn(false);
-        when(taskEntity.getAssignee()).thenReturn(null);
+        when(taskEntity.getId()).thenReturn("task-1");
 
-        boolean claimed = cmd.execute(commandContext);
+        String claimedTaskId = cmd.execute(commandContext);
 
-        assertThat(claimed).isTrue();
+        assertThat(claimedTaskId).isEqualTo("task-1");
 
         @SuppressWarnings("unchecked")
         ArgumentCaptor<Map<String, Object>> paramsCaptor = ArgumentCaptor.forClass(Map.class);
@@ -117,18 +116,18 @@ class ClaimNextCandidateTaskCmdTest {
         assertThat(params.get("userGroups")).isEqualTo(List.of("activitiTeam"));
         assertThat(params.get("claimToken")).isNotNull();
 
-        verify(taskEntityManager).changeTaskAssignee(taskEntity, "john");
+        verify(taskEntityManager).executeTaskAssigneeChangePostProcessing(taskEntity);
         verify(historyManager).recordTaskClaim(taskEntity);
     }
 
     @Test
-    void should_returnFalse_whenNoCandidateTaskIsClaimed() {
+    void should_returnNull_whenNoCandidateTaskIsClaimed() {
         ClaimNextCandidateTaskCmd cmd = new ClaimNextCandidateTaskCmd("john", List.of("activitiTeam"));
         when(dbSqlSession.update(eq("claimNextUnassignedCandidateTask"), anyMap())).thenReturn(0);
 
-        boolean claimed = cmd.execute(commandContext);
+        String claimedTaskId = cmd.execute(commandContext);
 
-        assertThat(claimed).isFalse();
+        assertThat(claimedTaskId).isNull();
     }
 
     @Test

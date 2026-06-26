@@ -400,18 +400,19 @@ public class TaskRuntimeImplTest {
 
         TaskQuery assignedTaskQuery = mock();
         Task claimedTask = mock();
-        org.activiti.engine.task.Task claimedEngineTask = mock();
+        org.activiti.engine.task.Task internalTask = mock();
 
         when(taskService.createTaskQuery()).thenReturn(assignedTaskQuery);
 
         when(assignedTaskQuery.taskAssignee(AUTHENTICATED_USER)).thenReturn(assignedTaskQuery);
         when(assignedTaskQuery.orderByTaskCreateTime()).thenReturn(assignedTaskQuery);
         when(assignedTaskQuery.asc()).thenReturn(assignedTaskQuery);
-        when(assignedTaskQuery.listPage(0, 1)).thenReturn(Collections.emptyList(), List.of(claimedEngineTask));
+        when(assignedTaskQuery.listPage(0, 1)).thenReturn(Collections.emptyList());
         when(taskService.claimNextCandidateTask(AUTHENTICATED_USER, Collections.singletonList("group"))).thenReturn(
-            true
+            "task-1"
         );
-        when(taskConverter.fromWithCandidates(claimedEngineTask)).thenReturn(claimedTask);
+        when(taskRuntimeHelper.getInternalTaskWithChecks("task-1")).thenReturn(internalTask);
+        when(taskConverter.fromWithCandidates(internalTask)).thenReturn(claimedTask);
 
         //when
         Task result = taskRuntime.nextTask(null);
@@ -436,7 +437,7 @@ public class TaskRuntimeImplTest {
         when(assignedTaskQuery.asc()).thenReturn(assignedTaskQuery);
         when(assignedTaskQuery.listPage(0, 1)).thenReturn(Collections.emptyList());
         when(taskService.claimNextCandidateTask(AUTHENTICATED_USER, Collections.singletonList("group"))).thenReturn(
-            false
+            null
         );
 
         //when
@@ -448,7 +449,7 @@ public class TaskRuntimeImplTest {
     }
 
     @Test
-    void nextTask_should_returnNull_whenClaimSucceedsButClaimedTaskCannotBeLoaded() {
+    void nextTask_should_returnNull_whenClaimReturnsTaskIdButTaskLookupReturnsNull() {
         //given
         when(securityManager.getAuthenticatedUserId()).thenReturn(AUTHENTICATED_USER);
         when(securityManager.getAuthenticatedUserGroups()).thenReturn(Collections.singletonList("group"));
@@ -460,9 +461,9 @@ public class TaskRuntimeImplTest {
         when(assignedTaskQuery.taskAssignee(AUTHENTICATED_USER)).thenReturn(assignedTaskQuery);
         when(assignedTaskQuery.orderByTaskCreateTime()).thenReturn(assignedTaskQuery);
         when(assignedTaskQuery.asc()).thenReturn(assignedTaskQuery);
-        when(assignedTaskQuery.listPage(0, 1)).thenReturn(Collections.emptyList(), Collections.emptyList());
+        when(assignedTaskQuery.listPage(0, 1)).thenReturn(Collections.emptyList());
         when(taskService.claimNextCandidateTask(AUTHENTICATED_USER, Collections.singletonList("group"))).thenReturn(
-            true
+            "task-1"
         );
 
         //when

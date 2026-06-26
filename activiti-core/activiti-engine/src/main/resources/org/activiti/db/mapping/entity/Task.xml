@@ -276,7 +276,7 @@
     set
       REV_ = COALESCE(REV_, 0) + 1,
       ASSIGNEE_ = #{userId, jdbcType=VARCHAR},
-      CLAIM_TIME_ = #{claimTime, jdbcType=TIMESTAMP}
+      CLAIM_TIME_ = #{claimTime, jdbcType=TIMESTAMP},
       CLAIM_TOKEN_ = #{claimToken, jdbcType=VARCHAR}
     where ID_ = (
       select T.ID_
@@ -332,7 +332,7 @@
     set
       TARGET.REV_ = COALESCE(TARGET.REV_, 0) + 1,
       TARGET.ASSIGNEE_ = #{userId, jdbcType=VARCHAR},
-      TARGET.CLAIM_TIME_ = #{claimTime, jdbcType=TIMESTAMP}
+      TARGET.CLAIM_TIME_ = #{claimTime, jdbcType=TIMESTAMP},
       TARGET.CLAIM_TOKEN_ = #{claimToken, jdbcType=VARCHAR}
     where TARGET.ASSIGNEE_ is null
   </update>
