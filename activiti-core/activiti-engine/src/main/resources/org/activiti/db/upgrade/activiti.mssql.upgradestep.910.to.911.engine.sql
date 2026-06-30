@@ -1,5 +1,5 @@
 alter table ACT_RU_TASK
-    add CLAIM_TOKEN_ varchar(64);
+    add CLAIM_TOKEN_ nvarchar(64);
 
 create index ACT_IDX_TASK_CLAIM_TOKEN on ACT_RU_TASK(CLAIM_TOKEN_);
 

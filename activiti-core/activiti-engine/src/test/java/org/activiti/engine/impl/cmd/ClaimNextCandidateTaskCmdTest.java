@@ -28,6 +28,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.history.HistoryManager;
@@ -150,5 +151,28 @@ class ClaimNextCandidateTaskCmdTest {
         verify(dbSqlSession).update(eq("claimNextUnassignedCandidateTask"), paramsCaptor.capture());
 
         assertThat(paramsCaptor.getValue().get("userGroups")).isEqualTo(Collections.emptyList());
+    }
+
+    @Test
+    void should_throwException_whenTaskIdFromQueryIsNull() {
+        ClaimNextCandidateTaskCmd cmd = new ClaimNextCandidateTaskCmd("john", List.of("activitiTeam"));
+        when(dbSqlSession.update(eq("claimNextUnassignedCandidateTask"), anyMap())).thenReturn(1);
+        when(dbSqlSession.selectOne(eq("selectTaskIdByClaimToken"), anyMap())).thenReturn(null);
+
+        assertThatThrownBy(() -> cmd.execute(commandContext))
+            .isInstanceOf(ActivitiObjectNotFoundException.class)
+            .hasMessageContaining("Could not reload claimed task id with claim token");
+    }
+
+    @Test
+    void should_throwException_whenTaskEntityIsNull() {
+        ClaimNextCandidateTaskCmd cmd = new ClaimNextCandidateTaskCmd("john", List.of("activitiTeam"));
+        when(dbSqlSession.update(eq("claimNextUnassignedCandidateTask"), anyMap())).thenReturn(1);
+        when(dbSqlSession.selectOne(eq("selectTaskIdByClaimToken"), anyMap())).thenReturn("task-1");
+        when(taskEntityManager.findById("task-1")).thenReturn(null);
+
+        assertThatThrownBy(() -> cmd.execute(commandContext))
+            .isInstanceOf(ActivitiObjectNotFoundException.class)
+            .hasMessage("Cannot find claimed task with id 'task-1'");
     }
 }

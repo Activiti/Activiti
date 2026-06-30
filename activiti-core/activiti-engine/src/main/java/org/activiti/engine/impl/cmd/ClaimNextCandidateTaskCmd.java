@@ -23,9 +23,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.activiti.engine.task.Task;
 
 /**
  * Finds and claims the next candidate task for a user.
@@ -80,7 +82,18 @@ public class ClaimNextCandidateTaskCmd implements Command<String>, Serializable 
             .getDbSqlSession()
             .selectOne("selectTaskIdByClaimToken", selectTaskIdParams);
 
+        if (taskId == null) {
+            throw new ActivitiObjectNotFoundException(
+                "Could not reload claimed task id with claim token '" + claimToken + "'",
+                Task.class
+            );
+        }
+
         TaskEntity task = commandContext.getTaskEntityManager().findById(taskId);
+        if (task == null) {
+            throw new ActivitiObjectNotFoundException("Cannot find claimed task with id '" + taskId + "'", Task.class);
+        }
+
         commandContext.getTaskEntityManager().executeTaskAssigneeChangePostProcessing(task);
         commandContext.getHistoryManager().recordTaskClaim(task);
 
