@@ -113,8 +113,7 @@ class ClaimNextCandidateTaskCmdTest {
         verify(dbSqlSession).update(eq("claimNextUnassignedCandidateTask"), paramsCaptor.capture());
 
         Map<String, Object> params = paramsCaptor.getValue();
-        assertThat(params.get("userId")).isEqualTo("john");
-        assertThat(params.get("userGroups")).isEqualTo(List.of("activitiTeam"));
+        assertThat(params).containsEntry("userId", "john").containsEntry("userGroups", List.of("activitiTeam"));
         assertThat(params.get("claimToken")).isNotNull();
 
         @SuppressWarnings("unchecked")
@@ -122,7 +121,7 @@ class ClaimNextCandidateTaskCmdTest {
         verify(dbSqlSession).selectOne(eq("selectTaskIdByClaimToken"), selectParamsCaptor.capture());
 
         Map<String, Object> selectParams = selectParamsCaptor.getValue();
-        assertThat(selectParams.get("userId")).isEqualTo("john");
+        assertThat(selectParams).containsEntry("userId", "john");
         assertThat(selectParams.get("claimToken")).isNotNull();
 
         verify(taskEntityManager).executeTaskAssigneeChangePostProcessing(taskEntity);
@@ -150,7 +149,7 @@ class ClaimNextCandidateTaskCmdTest {
         ArgumentCaptor<Map<String, Object>> paramsCaptor = ArgumentCaptor.forClass(Map.class);
         verify(dbSqlSession).update(eq("claimNextUnassignedCandidateTask"), paramsCaptor.capture());
 
-        assertThat(paramsCaptor.getValue().get("userGroups")).isEqualTo(Collections.emptyList());
+        assertThat(paramsCaptor.getValue()).containsEntry("userGroups", Collections.emptyList());
     }
 
     @Test
