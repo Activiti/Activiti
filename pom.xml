@@ -261,6 +261,14 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+      <!-- AAE-47587 Jackson 3.x BOM -->
+      <dependency>
+        <groupId>tools.jackson</groupId>
+        <artifactId>jackson-bom</artifactId>
+        <version>3.1.4</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
       <!-- AAE-44603 temporary security fix (CVE-2025-7962). -->
       <dependency>
         <groupId>com.sun.mail</groupId>
