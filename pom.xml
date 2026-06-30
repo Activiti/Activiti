@@ -205,6 +205,7 @@
     <license-maven-plugin.version>5.0.0</license-maven-plugin.version>
     <third-party-license-maven-plugin.version>2.7.1</third-party-license-maven-plugin.version>
     <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
+    <checkstyle.version>13.7.0</checkstyle.version>
     <maven-clean-plugin.version>3.5.0</maven-clean-plugin.version>
     <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
     <maven-deploy-plugin.version>3.1.4</maven-deploy-plugin.version>
@@ -404,7 +405,7 @@ limitations under the License.
             <dependency>
               <groupId>com.puppycrawl.tools</groupId>
               <artifactId>checkstyle</artifactId>
-              <version>13.7.0</version>
+              <version>${checkstyle.version}</version>
             </dependency>
           </dependencies>
           <executions>
