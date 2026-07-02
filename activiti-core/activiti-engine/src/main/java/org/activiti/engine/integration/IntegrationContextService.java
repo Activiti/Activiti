@@ -23,4 +23,6 @@ public interface IntegrationContextService {
     IntegrationContextEntity findById(String id);
 
     void deleteIntegrationContext(IntegrationContextEntity integrationContextEntity);
+
+    IntegrationContextQuery createIntegrationContextQuery();
 }

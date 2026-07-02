@@ -15,6 +15,7 @@
  */
 package org.activiti.engine.integration;
 
+import org.activiti.engine.impl.IntegrationContextQueryImpl;
 import org.activiti.engine.impl.cmd.integration.DeleteIntegrationContextCmd;
 import org.activiti.engine.impl.cmd.integration.RetrieveIntegrationContextsCmd;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
@@ -36,5 +37,10 @@ public class IntegrationContextServiceImpl implements IntegrationContextService 
     @Override
     public void deleteIntegrationContext(IntegrationContextEntity integrationContextEntity) {
         commandExecutor.execute(new DeleteIntegrationContextCmd(integrationContextEntity));
+    }
+
+    @Override
+    public IntegrationContextQuery createIntegrationContextQuery() {
+        return new IntegrationContextQueryImpl(commandExecutor);
     }
 }
