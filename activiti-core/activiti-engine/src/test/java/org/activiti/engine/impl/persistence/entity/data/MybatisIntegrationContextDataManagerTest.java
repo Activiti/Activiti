@@ -64,8 +64,9 @@ class MybatisIntegrationContextDataManagerTest {
         var query = mock(IntegrationContextQueryImpl.class);
         var page = mock(Page.class);
         var entity = mock(IntegrationContextEntity.class);
-        given(dbSqlSession.<IntegrationContextEntity>selectList("selectIntegrationContextByQueryCriteria", query, page))
-            .willReturn(List.of(entity));
+        given(
+            dbSqlSession.<IntegrationContextEntity>selectList("selectIntegrationContextByQueryCriteria", query, page)
+        ).willReturn(List.of(entity));
 
         var result = manager.findByQueryCriteria(query, page);
 
@@ -76,8 +77,7 @@ class MybatisIntegrationContextDataManagerTest {
     void should_selectCountByQueryCriteria_when_findCountByQueryCriteriaIsCalled() {
         doReturn(dbSqlSession).when(manager).getDbSqlSession();
         var query = mock(IntegrationContextQueryImpl.class);
-        given(dbSqlSession.selectOne("selectIntegrationContextCountByQueryCriteria", query))
-            .willReturn(5L);
+        given(dbSqlSession.selectOne("selectIntegrationContextCountByQueryCriteria", query)).willReturn(5L);
 
         var result = manager.findCountByQueryCriteria(query);
 
