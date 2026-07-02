@@ -16,36 +16,72 @@
 package org.activiti.engine.impl.persistence.entity.data;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
+import java.util.List;
+import org.activiti.engine.impl.IntegrationContextQueryImpl;
+import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.persistence.entity.data.integration.MybatisIntegrationContextDataManager;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntityImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class MybatisIntegrationContextDataManagerTest {
+class MybatisIntegrationContextDataManagerTest {
 
-    @InjectMocks
-    private MybatisIntegrationContextDataManager manager;
+    @Spy
+    private MybatisIntegrationContextDataManager manager = new MybatisIntegrationContextDataManager(null);
+
+    @Mock
+    private DbSqlSession dbSqlSession;
 
     @Test
-    public void createShouldReturnANewInstanceOfIntegrationContextEntityImpl() {
-        //when
+    void createShouldReturnANewInstanceOfIntegrationContextEntityImpl() {
         IntegrationContextEntity entity = manager.create();
 
-        //then
         assertThat(entity).isInstanceOf(IntegrationContextEntityImpl.class);
     }
 
     @Test
-    public void getManagedEntityClassShouldReturnIntegrationContextEntityImpl() {
-        //when
+    void getManagedEntityClassShouldReturnIntegrationContextEntityImpl() {
         Class<? extends IntegrationContextEntity> managedEntityClass = manager.getManagedEntityClass();
 
-        //then
         assertThat(managedEntityClass).isEqualTo(IntegrationContextEntityImpl.class);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void should_selectListByQueryCriteria_when_findByQueryCriteriaIsCalled() {
+        doReturn(dbSqlSession).when(manager).getDbSqlSession();
+        var query = mock(IntegrationContextQueryImpl.class);
+        var page = mock(Page.class);
+        var entity = mock(IntegrationContextEntity.class);
+        given(dbSqlSession.<IntegrationContextEntity>selectList("selectIntegrationContextByQueryCriteria", query, page))
+            .willReturn(List.of(entity));
+
+        var result = manager.findByQueryCriteria(query, page);
+
+        assertThat(result).containsExactly(entity);
+    }
+
+    @Test
+    void should_selectCountByQueryCriteria_when_findCountByQueryCriteriaIsCalled() {
+        doReturn(dbSqlSession).when(manager).getDbSqlSession();
+        var query = mock(IntegrationContextQueryImpl.class);
+        given(dbSqlSession.selectOne("selectIntegrationContextCountByQueryCriteria", query))
+            .willReturn(5L);
+
+        var result = manager.findCountByQueryCriteria(query);
+
+        assertThat(result).isEqualTo(5L);
+        verify(dbSqlSession).selectOne("selectIntegrationContextCountByQueryCriteria", query);
     }
 }
