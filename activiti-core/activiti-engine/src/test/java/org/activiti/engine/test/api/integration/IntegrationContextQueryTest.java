@@ -120,6 +120,16 @@ public class IntegrationContextQueryTest extends PluggableActivitiTestCase {
             .containsExactly(contextIdLatest, contextIdMiddle, contextIdEarliest);
     }
 
+    public void testListPageReturnsRequestedPage() {
+        List<IntegrationContextEntity> firstPage = createQuery().orderByCreatedDate().asc().listPage(0, 2);
+        List<IntegrationContextEntity> secondPage = createQuery().orderByCreatedDate().asc().listPage(2, 2);
+
+        assertThat(firstPage)
+            .extracting(IntegrationContextEntity::getId)
+            .containsExactly(contextIdEarliest, contextIdMiddle);
+        assertThat(secondPage).extracting(IntegrationContextEntity::getId).containsExactly(contextIdLatest);
+    }
+
     private IntegrationContextQuery createQuery() {
         return processEngineConfiguration.getIntegrationContextService().createIntegrationContextQuery();
     }

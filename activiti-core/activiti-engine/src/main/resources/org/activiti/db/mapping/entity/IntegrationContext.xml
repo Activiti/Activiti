@@ -81,9 +81,12 @@
   <select id="selectIntegrationContextByQueryCriteria"
           parameterType="org.activiti.engine.impl.IntegrationContextQueryImpl"
           resultMap="integrationContextResultMap">
-    select RES.* from ${prefix}ACT_RU_INTEGRATION RES
+    ${limitBefore}
+    select RES.* ${limitBetween}
+    from ${prefix}ACT_RU_INTEGRATION RES
     <include refid="integrationContextQueryCriteria"/>
     ${orderBy}
+    ${limitAfter}
   </select>
 
   <select id="selectIntegrationContextCountByQueryCriteria"
