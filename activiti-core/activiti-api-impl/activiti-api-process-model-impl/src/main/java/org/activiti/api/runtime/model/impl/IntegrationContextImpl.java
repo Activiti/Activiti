@@ -51,8 +51,12 @@ public class IntegrationContextImpl implements IntegrationContext {
 
     public IntegrationContextImpl(IntegrationContext other) {
         this.id = other.getId();
-        this.inBoundVariables.putAll(other.getInBoundVariables());
-        this.outBoundVariables.putAll(other.getOutBoundVariables());
+        if (other.getInBoundVariables() != null) {
+            this.inBoundVariables.putAll(other.getInBoundVariables());
+        }
+        if (other.getOutBoundVariables() != null) {
+            this.outBoundVariables.putAll(other.getOutBoundVariables());
+        }
         this.processInstanceId = other.getProcessInstanceId();
         this.parentProcessInstanceId = other.getParentProcessInstanceId();
         this.rootProcessInstanceId = other.getRootProcessInstanceId();
