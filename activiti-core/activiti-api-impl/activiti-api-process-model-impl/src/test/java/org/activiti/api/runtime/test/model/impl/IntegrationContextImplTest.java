@@ -323,8 +323,8 @@ class IntegrationContextImplTest {
         IntegrationContextImpl copy = new IntegrationContextImpl(original);
 
         // then - no NPE and variables are empty maps
-        assertThat(copy.getInBoundVariables()).isNotNull().isEmpty();
-        assertThat(copy.getOutBoundVariables()).isNotNull().isEmpty();
+        assertThat(copy.getInBoundVariables()).isEmpty();
+        assertThat(copy.getOutBoundVariables()).isEmpty();
         assertThat(copy.getProcessInstanceId()).isEqualTo("proc123");
     }
 
@@ -344,7 +344,7 @@ class IntegrationContextImplTest {
 
         // then
         assertThat(copy.getInBoundVariables()).containsEntry("inKey", "inValue");
-        assertThat(copy.getOutBoundVariables()).isNotNull().isEmpty();
+        assertThat(copy.getOutBoundVariables()).isEmpty();
     }
 
     @Test
