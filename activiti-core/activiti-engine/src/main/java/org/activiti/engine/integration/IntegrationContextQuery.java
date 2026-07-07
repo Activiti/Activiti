@@ -13,16 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.persistence.entity.data.integration;
+package org.activiti.engine.integration;
 
-import java.util.List;
-import org.activiti.engine.impl.IntegrationContextQueryImpl;
-import org.activiti.engine.impl.Page;
-import org.activiti.engine.impl.persistence.entity.data.DataManager;
+import java.util.Date;
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
+import org.activiti.engine.query.Query;
 
-public interface IntegrationContextDataManager extends DataManager<IntegrationContextEntity> {
-    List<IntegrationContextEntity> findByQueryCriteria(IntegrationContextQueryImpl query, Page page);
+@Internal
+public interface IntegrationContextQuery extends Query<IntegrationContextQuery, IntegrationContextEntity> {
+    IntegrationContextQuery createdBefore(Date date);
 
-    long findCountByQueryCriteria(IntegrationContextQueryImpl query);
+    IntegrationContextQuery createdAfter(Date date);
+
+    IntegrationContextQuery orderByCreatedDate();
 }

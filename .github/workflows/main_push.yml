@@ -134,9 +134,12 @@ jobs:
           auto-merge: "true"
           labels: ${{ env.DEVELOPMENT_BRANCH }}
           base-branch-name: ${{ env.DEVELOPMENT_BRANCH }}
-          git-username: ${{ secrets.BOT_GITHUB_USERNAME }}
+          git-username: ${{ vars.HXPS_GIT_USERNAME }}
           git-token: ${{ secrets.BOT_GITHUB_TOKEN }}
-          git-author-name: ${{ secrets.BOT_GITHUB_USERNAME }}
+          git-author-name: ${{ vars.HXPS_GIT_USERNAME }}
+          git-author-email: ${{ vars.HXPS_GIT_EMAIL }}
+          gpg-private-key: ${{ secrets.HXPS_GIT_COMMIT_SIGNING_PRIVATE_KEY }}
+          gpg-private-key-fingerprint: ${{ secrets.HXPS_GIT_COMMIT_SIGNING_FINGERPRINT }}
 
   notify:
     runs-on: ubuntu-latest
