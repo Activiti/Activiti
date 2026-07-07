@@ -15,9 +15,6 @@
  */
 package org.activiti.editor.language.json.converter;
 
-import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.node.ArrayNode;
-import tools.jackson.databind.node.ObjectNode;
 import java.util.List;
 import java.util.Map;
 import org.activiti.bpmn.model.BaseElement;
@@ -27,6 +24,10 @@ import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.Transaction;
 import org.activiti.bpmn.model.ValuedDataObject;
 import org.activiti.editor.language.json.model.ModelInfo;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.ObjectNode;
 
 /**
 
@@ -34,6 +35,10 @@ import org.activiti.editor.language.json.model.ModelInfo;
 public class SubProcessJsonConverter
     extends BaseBpmnJsonConverter
     implements FormAwareConverter, FormKeyAwareConverter, DecisionTableAwareConverter, DecisionTableKeyAwareConverter {
+
+    public SubProcessJsonConverter(JsonMapper jsonMapper) {
+        super(jsonMapper);
+    }
 
     protected Map<String, String> formMap;
     protected Map<String, ModelInfo> formKeyMap;

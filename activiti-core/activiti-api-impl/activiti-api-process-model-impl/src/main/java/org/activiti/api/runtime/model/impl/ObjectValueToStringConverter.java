@@ -17,9 +17,9 @@ package org.activiti.api.runtime.model.impl;
 
 import static org.activiti.api.runtime.model.impl.ProcessVariablesMapTypeRegistry.OBJECT_TYPE_KEY;
 
-import tools.jackson.databind.json.JsonMapper;
 import java.util.Map;
 import org.springframework.core.convert.converter.Converter;
+import tools.jackson.databind.json.JsonMapper;
 
 @ProcessVariableTypeConverter
 public class ObjectValueToStringConverter implements Converter<ObjectValue, String> {

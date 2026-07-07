@@ -15,10 +15,10 @@
  */
 package org.activiti.api.runtime.model.impl;
 
-import tools.jackson.databind.JavaType;
-import tools.jackson.databind.json.JsonMapper;
 import java.util.Map;
 import org.springframework.core.convert.converter.Converter;
+import tools.jackson.databind.JavaType;
+import tools.jackson.databind.json.JsonMapper;
 
 @ProcessVariableTypeConverter
 public class StringToMapConverter implements Converter<String, Map<String, Object>> {
@@ -31,9 +31,7 @@ public class StringToMapConverter implements Converter<String, Map<String, Objec
 
     @Override
     public Map<String, Object> convert(String source) {
-        JavaType javaType = jsonMapper
-            .getTypeFactory()
-            .constructParametricType(Map.class, String.class, Object.class);
+        JavaType javaType = jsonMapper.getTypeFactory().constructParametricType(Map.class, String.class, Object.class);
 
         try {
             return jsonMapper.readValue(source, javaType);

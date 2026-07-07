@@ -15,9 +15,9 @@
  */
 package org.activiti.api.runtime.model.impl;
 
-import tools.jackson.databind.json.JsonMapper;
 import java.util.List;
 import org.springframework.core.convert.converter.Converter;
+import tools.jackson.databind.json.JsonMapper;
 
 @ProcessVariableTypeConverter
 public class ListToStringConverter implements Converter<List<Object>, String> {

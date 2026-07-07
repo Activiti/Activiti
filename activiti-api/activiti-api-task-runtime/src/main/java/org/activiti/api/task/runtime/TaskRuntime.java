@@ -74,6 +74,19 @@ public interface TaskRuntime {
     Task create(CreateTaskPayload createTaskPayload);
 
     /**
+     * Gets the next available task for the authenticated user using the given identification strategy.
+     *
+     * @param taskIdentificationStrategy strategy to use; {@code null} uses the default strategy
+     * @return the next task for the authenticated user, or {@code null} if no suitable task is available
+     * @throws IllegalStateException if there is no authenticated user
+     * @throws IllegalArgumentException if the strategy is not supported
+     * @throws UnsupportedOperationException if this TaskRuntime implementation does not support this operation
+     */
+    default Task nextTask(TaskIdentificationStrategy taskIdentificationStrategy) {
+        throw new UnsupportedOperationException("nextTask is not supported by this TaskRuntime implementation");
+    }
+
+    /**
      * Claim a task with the currently authenticated user
      *  - If there is no authenticated user throw an IllegalStateException
      *  - If the currently authenticated user is not a candidate throw an IllegalStateException

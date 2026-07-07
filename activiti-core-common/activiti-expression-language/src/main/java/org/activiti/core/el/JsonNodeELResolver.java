@@ -15,9 +15,6 @@
  */
 package org.activiti.core.el;
 
-import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.json.JsonMapper;
-import tools.jackson.databind.node.ObjectNode;
 import jakarta.el.CompositeELResolver;
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
@@ -25,6 +22,9 @@ import jakarta.el.ELResolver;
 import jakarta.el.PropertyNotWritableException;
 import java.math.BigDecimal;
 import java.util.List;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.ObjectNode;
 
 /**
  * Defines property resolution behavior on JsonNodes.
@@ -34,8 +34,8 @@ import java.util.List;
  */
 public class JsonNodeELResolver extends ELResolver {
 
+    private static final JsonMapper DEFAULT_OBJECT_MAPPER = JsonMapper.builder().build();
     private final boolean readOnly;
-    private final JsonMapper defaultObjectMapper = new JsonMapper();
 
     /**
      * Creates a new read/write BeanELResolver.
@@ -180,7 +180,7 @@ public class JsonNodeELResolver extends ELResolver {
      * properties. Subclasses may override this method to provide a specific one
      */
     protected JsonMapper getObjectMapper() {
-        return defaultObjectMapper;
+        return DEFAULT_OBJECT_MAPPER;
     }
 
     /**

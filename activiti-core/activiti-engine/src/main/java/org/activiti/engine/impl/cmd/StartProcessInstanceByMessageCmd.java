@@ -63,7 +63,7 @@ public class StartProcessInstanceByMessageCmd implements Command<ProcessInstance
         this.tenantId = processInstanceBuilder.getTenantId();
         this.linkedProcessInstanceId = processInstanceBuilder.getLinkedProcessInstanceId();
         this.linkedProcessInstanceType = processInstanceBuilder.getLinkedProcessInstanceType();
-  }
+    }
 
     public ProcessInstance execute(CommandContext commandContext) {
         if (messageName == null) {
@@ -108,8 +108,7 @@ public class StartProcessInstanceByMessageCmd implements Command<ProcessInstance
             .getProcessEngineConfiguration()
             .getProcessInstanceHelper();
 
-        ProcessInstanceCreationOptions options = ProcessInstanceCreationOptions
-            .builder(processDefinition)
+        ProcessInstanceCreationOptions options = ProcessInstanceCreationOptions.builder(processDefinition)
             .businessKey(businessKey)
             .variables(processVariables)
             .transientVariables(transientVariables)

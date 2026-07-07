@@ -39,7 +39,7 @@ public class TaskListenerInvocation extends DelegateInvocation {
 
     protected void invoke() {
         TaskComparatorImpl taskComparator = new TaskComparatorImpl();
-        taskComparator.setOriginalTask((TaskInfo)delegateTask);
+        taskComparator.setOriginalTask((TaskInfo) delegateTask);
 
         executionListenerInstance.notify(delegateTask);
 

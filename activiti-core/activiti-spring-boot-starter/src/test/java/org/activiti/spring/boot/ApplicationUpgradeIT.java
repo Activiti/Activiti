@@ -174,12 +174,13 @@ class ApplicationUpgradeIT {
         GetProcessDefinitionsPayload getProcessDefinitionsPayload = new GetProcessDefinitionsPayload();
         getProcessDefinitionsPayload.setProcessDefinitionKeys(Set.of(SINGLE_TASK_PROCESS_DEFINITION_KEY));
 
-        ProcessDefinition firstProcessDefinition = processAdminRuntime.processDefinitions(
-                Pageable.of(0, 100),
-                getProcessDefinitionsPayload
-            ).getContent()
+        ProcessDefinition firstProcessDefinition = processAdminRuntime
+            .processDefinitions(Pageable.of(0, 100), getProcessDefinitionsPayload)
+            .getContent()
             .stream()
-            .filter(processDefinition -> processDefinition.getAppVersion().equals(String.valueOf(firstDeployment.getVersion())))
+            .filter(processDefinition ->
+                processDefinition.getAppVersion().equals(String.valueOf(firstDeployment.getVersion()))
+            )
             .findFirst()
             .orElseThrow();
 
@@ -491,7 +492,7 @@ class ApplicationUpgradeIT {
             .filteredOn(
                 processDefinition ->
                     processDefinition.getKey().equals(SINGLE_TASK_PROCESS_DEFINITION_KEY) ||
-                        processDefinition.getKey().equals(MULTI_INSTANCE_PROCESS_DEFINITION_KEY)
+                    processDefinition.getKey().equals(MULTI_INSTANCE_PROCESS_DEFINITION_KEY)
             )
             .extracting(ProcessDefinition::getKey, ProcessDefinition::getVersion, ProcessDefinition::getAppVersion)
             .containsExactlyInAnyOrder(
@@ -539,7 +540,7 @@ class ApplicationUpgradeIT {
             .filteredOn(
                 processDefinition ->
                     processDefinition.getKey().equals(SINGLE_TASK_PROCESS_DEFINITION_KEY) ||
-                        processDefinition.getKey().equals(MULTI_INSTANCE_PROCESS_DEFINITION_KEY)
+                    processDefinition.getKey().equals(MULTI_INSTANCE_PROCESS_DEFINITION_KEY)
             )
             .extracting(ProcessDefinition::getKey, ProcessDefinition::getVersion, ProcessDefinition::getAppVersion)
             .containsExactlyInAnyOrder(

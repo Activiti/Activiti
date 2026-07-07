@@ -19,16 +19,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
+import java.util.List;
+import org.activiti.engine.impl.IntegrationContextQueryImpl;
+import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.integration.IntegrationContextDataManager;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
-public class IntegrationContextManagerImplTest {
+@ExtendWith(MockitoExtension.class)
+class IntegrationContextManagerImplTest {
 
     @InjectMocks
     private IntegrationContextManagerImpl manager;
@@ -37,7 +40,7 @@ public class IntegrationContextManagerImplTest {
     private IntegrationContextDataManager dataManager;
 
     @Test
-    public void getDataManagerShouldReturnIntegrationContextDataManager() {
+    void getDataManagerShouldReturnIntegrationContextDataManager() {
         //when
         DataManager<IntegrationContextEntity> retrievedDataManager = manager.getDataManager();
 
@@ -46,7 +49,7 @@ public class IntegrationContextManagerImplTest {
     }
 
     @Test
-    public void findByIdShouldReturnResultFromDataManager() {
+    void findByIdShouldReturnResultFromDataManager() {
         //given
         IntegrationContextEntity entity = mock(IntegrationContextEntity.class);
         given(dataManager.findById("id")).willReturn(entity);
@@ -56,5 +59,27 @@ public class IntegrationContextManagerImplTest {
 
         //then
         assertThat(retrievedResult).isEqualTo(entity);
+    }
+
+    @Test
+    void should_delegateToDataManager_when_findByQueryCriteriaIsCalled() {
+        var query = mock(IntegrationContextQueryImpl.class);
+        var page = mock(Page.class);
+        var entity = mock(IntegrationContextEntity.class);
+        given(dataManager.findByQueryCriteria(query, page)).willReturn(List.of(entity));
+
+        var result = manager.findByQueryCriteria(query, page);
+
+        assertThat(result).containsExactly(entity);
+    }
+
+    @Test
+    void should_delegateToDataManager_when_findCountByQueryCriteriaIsCalled() {
+        var query = mock(IntegrationContextQueryImpl.class);
+        given(dataManager.findCountByQueryCriteria(query)).willReturn(5L);
+
+        var result = manager.findCountByQueryCriteria(query);
+
+        assertThat(result).isEqualTo(5L);
     }
 }

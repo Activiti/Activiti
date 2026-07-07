@@ -32,6 +32,7 @@ public class ActivitiEventImpl implements ActivitiEvent {
     protected String processDefinitionId;
     private String reason;
     private String actor;
+    protected String commandId;
 
     /**
      * Creates a new event implementation, not part of an execution context.
@@ -109,5 +110,14 @@ public class ActivitiEventImpl implements ActivitiEvent {
 
     public void setActor(String actor) {
         this.actor = actor;
+    }
+
+    @Override
+    public String getCommandId() {
+        return commandId;
+    }
+
+    public void setCommandId(String commandId) {
+        this.commandId = commandId;
     }
 }

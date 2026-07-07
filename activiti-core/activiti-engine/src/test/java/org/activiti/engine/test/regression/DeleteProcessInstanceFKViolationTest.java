@@ -42,14 +42,13 @@ class DeleteProcessInstanceFKViolationTest {
     @BeforeEach
     void setUp() {
         String processEngineName = "activiti-fk-test-" + UUID.randomUUID();
-        processEngine =
-            ProcessEngineConfiguration.createStandaloneProcessEngineConfiguration()
-                .setProcessEngineName(processEngineName)
-                .setJdbcUrl("jdbc:h2:mem:" + processEngineName + ";DB_CLOSE_DELAY=1000")
-                .setJdbcUsername("sa")
-                .setJdbcPassword("")
-                .setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_CREATE_DROP)
-                .buildProcessEngine();
+        processEngine = ProcessEngineConfiguration.createStandaloneProcessEngineConfiguration()
+            .setProcessEngineName(processEngineName)
+            .setJdbcUrl("jdbc:h2:mem:" + processEngineName + ";DB_CLOSE_DELAY=1000")
+            .setJdbcUsername("sa")
+            .setJdbcPassword("")
+            .setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_CREATE_DROP)
+            .buildProcessEngine();
 
         processEngineConfiguration = (ProcessEngineConfigurationImpl) processEngine.getProcessEngineConfiguration();
         repositoryService = processEngine.getRepositoryService();
@@ -82,9 +81,7 @@ class DeleteProcessInstanceFKViolationTest {
     void should_deleteProcessInstance_whenDuplicateNamedVariablesExist() throws Exception {
         repositoryService
             .createDeployment()
-            .addClasspathResource(
-                "org/activiti/engine/test/regression/deleteProcessFKTest-simpleUserTask.bpmn20.xml"
-            )
+            .addClasspathResource("org/activiti/engine/test/regression/deleteProcessFKTest-simpleUserTask.bpmn20.xml")
             .deploy();
 
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("simpleUserTaskProcess");
@@ -102,8 +99,9 @@ class DeleteProcessInstanceFKViolationTest {
 
         runtimeService.deleteProcessInstance(processInstance.getId(), "test");
 
-        assertThat(runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count())
-            .isZero();
+        assertThat(
+            runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count()
+        ).isZero();
 
         try (Connection conn = getConnection()) {
             assertThat(countVariablesByProcessInstance(conn, executionId))
@@ -120,12 +118,8 @@ class DeleteProcessInstanceFKViolationTest {
         return processEngineConfiguration.getDataSource().getConnection();
     }
 
-    private void insertVariable(
-        Connection conn,
-        String name,
-        String executionId,
-        String textValue
-    ) throws SQLException {
+    private void insertVariable(Connection conn, String name, String executionId, String textValue)
+        throws SQLException {
         try (
             PreparedStatement ps = conn.prepareStatement(
                 "INSERT INTO ACT_RU_VARIABLE (ID_, REV_, TYPE_, NAME_, EXECUTION_ID_, PROC_INST_ID_, TEXT_) " +
@@ -141,13 +135,8 @@ class DeleteProcessInstanceFKViolationTest {
         }
     }
 
-    private void insertVariable(
-        Connection conn,
-        String name,
-        String executionId,
-        String type,
-        String byteArrayId
-    ) throws SQLException {
+    private void insertVariable(Connection conn, String name, String executionId, String type, String byteArrayId)
+        throws SQLException {
         try (
             PreparedStatement ps = conn.prepareStatement(
                 "INSERT INTO ACT_RU_VARIABLE (ID_, REV_, TYPE_, NAME_, EXECUTION_ID_, PROC_INST_ID_, BYTEARRAY_ID_) " +
@@ -193,9 +182,7 @@ class DeleteProcessInstanceFKViolationTest {
 
     private int countVariablesByProcessInstance(Connection conn, String processInstanceId) throws SQLException {
         try (
-            PreparedStatement ps = conn.prepareStatement(
-                "SELECT COUNT(*) FROM ACT_RU_VARIABLE WHERE PROC_INST_ID_ = ?"
-            )
+            PreparedStatement ps = conn.prepareStatement("SELECT COUNT(*) FROM ACT_RU_VARIABLE WHERE PROC_INST_ID_ = ?")
         ) {
             ps.setString(1, processInstanceId);
             return executeCount(ps);
@@ -203,11 +190,7 @@ class DeleteProcessInstanceFKViolationTest {
     }
 
     private int countByteArraysByName(Connection conn, String name) throws SQLException {
-        try (
-            PreparedStatement ps = conn.prepareStatement(
-                "SELECT COUNT(*) FROM ACT_GE_BYTEARRAY WHERE NAME_ = ?"
-            )
-        ) {
+        try (PreparedStatement ps = conn.prepareStatement("SELECT COUNT(*) FROM ACT_GE_BYTEARRAY WHERE NAME_ = ?")) {
             ps.setString(1, name);
             return executeCount(ps);
         }

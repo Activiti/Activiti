@@ -15,16 +15,17 @@
  */
 package org.activiti.validation.validator;
 
-import tools.jackson.core.type.TypeReference;
-import tools.jackson.databind.json.JsonMapper;
-import tools.jackson.core.JacksonException;
 import java.io.InputStream;
 import java.util.Map;
 import org.activiti.validation.ValidationError;
 import org.apache.commons.text.StringSubstitutor;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.json.JsonMapper;
 
 public class ValidationErrorDecorator {
 
+    private static final JsonMapper JSON_MAPPER = JsonMapper.builder().build();
     public static final String PARAM_PREFIX = "{{";
     public static final String PARAM_SUFFIX = "}}";
 
@@ -36,10 +37,9 @@ public class ValidationErrorDecorator {
 
     public void init() {
         try {
-            JsonMapper jsonMapper = new JsonMapper();
             TypeReference<Map<String, ErrorMessageDefinition>> typeReference = new TypeReference<>() {};
             InputStream inputStream = getClass().getResourceAsStream("/process-validation-messages.json");
-            this.errorMessages = jsonMapper.readValue(inputStream, typeReference);
+            this.errorMessages = JSON_MAPPER.readValue(inputStream, typeReference);
         } catch (JacksonException e) {
             throw new RuntimeException("Failed to load error messages", e);
         }

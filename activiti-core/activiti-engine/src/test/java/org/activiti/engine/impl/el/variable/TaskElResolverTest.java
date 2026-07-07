@@ -21,7 +21,7 @@ import static org.mockito.Mockito.mock;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntityImpl;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TaskElResolverTest {
 

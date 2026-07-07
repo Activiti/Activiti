@@ -29,7 +29,6 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntityManager;
 import org.activiti.engine.runtime.Clock;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -54,12 +53,10 @@ class ClaimTaskCmdTest {
         currentTime = new Date();
 
         when(task.getId()).thenReturn(TASK_ID);
-        when(commandContext.getProcessEngineConfiguration())
-            .thenReturn(processEngineConfiguration);
+        when(commandContext.getProcessEngineConfiguration()).thenReturn(processEngineConfiguration);
         when(processEngineConfiguration.getClock()).thenReturn(clock);
         when(clock.getCurrentTime()).thenReturn(currentTime);
-        when(commandContext.getTaskEntityManager())
-            .thenReturn(taskEntityManager);
+        when(commandContext.getTaskEntityManager()).thenReturn(taskEntityManager);
         when(commandContext.getHistoryManager()).thenReturn(historyManager);
         when(task.getAssignee()).thenReturn(null);
     }
@@ -93,12 +90,9 @@ class ClaimTaskCmdTest {
         when(task.getAssignee()).thenReturn(existingAssignee);
         ClaimTaskCmd cmd = new ClaimTaskCmd(TASK_ID, NEW_USER_ID);
 
-        assertThrows(
-            ActivitiTaskAlreadyClaimedException.class,
-            () -> {
-                cmd.execute(commandContext, task);
-            }
-        );
+        assertThrows(ActivitiTaskAlreadyClaimedException.class, () -> {
+            cmd.execute(commandContext, task);
+        });
     }
 
     @Test

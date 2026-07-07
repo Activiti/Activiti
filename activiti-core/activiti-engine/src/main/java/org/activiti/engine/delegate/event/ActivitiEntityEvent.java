@@ -23,7 +23,6 @@ import static org.activiti.engine.impl.persistence.entity.ExecutionEntityManager
 
  */
 public interface ActivitiEntityEvent extends ActivitiEvent {
-
     /**
      * @return the entity that is targeted by this event.
      */

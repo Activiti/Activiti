@@ -15,7 +15,6 @@
  */
 package org.activiti.engine.impl.event.logger;
 
-import tools.jackson.databind.json.JsonMapper;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,6 +46,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.runtime.Clock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.databind.json.JsonMapper;
 
 public class EventLogger implements ActivitiEventListener {
 

@@ -20,13 +20,13 @@ import static org.activiti.api.runtime.model.impl.ProcessVariablesMapTypeRegistr
 import static org.activiti.api.runtime.model.impl.ProcessVariablesMapTypeRegistry.getContainerType;
 import static org.activiti.api.runtime.model.impl.ProcessVariablesMapTypeRegistry.isScalarType;
 
-import tools.jackson.core.JsonGenerator;
-import tools.jackson.databind.ser.std.StdSerializer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 import org.springframework.core.convert.ConversionService;
+import tools.jackson.core.JsonGenerator;
 import tools.jackson.databind.SerializationContext;
+import tools.jackson.databind.ser.std.StdSerializer;
 
 public class ProcessVariablesMapSerializer extends StdSerializer<ProcessVariablesMap<String, Object>> {
 
@@ -43,7 +43,7 @@ public class ProcessVariablesMapSerializer extends StdSerializer<ProcessVariable
         ProcessVariablesMap<String, Object> processVariablesMap,
         JsonGenerator gen,
         SerializationContext serializers
-    )  {
+    ) {
         HashMap<String, ProcessVariableValue> map = new HashMap<>();
         for (Map.Entry<String, Object> entry : processVariablesMap.entrySet()) {
             String name = entry.getKey();

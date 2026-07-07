@@ -17,12 +17,12 @@ package org.activiti.spring.process.variable.types;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import tools.jackson.databind.json.JsonMapper;
 import java.util.ArrayList;
 import java.util.List;
 import org.activiti.engine.ActivitiException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import tools.jackson.databind.json.JsonMapper;
 
 class JsonObjectVariableTypeTest {
 

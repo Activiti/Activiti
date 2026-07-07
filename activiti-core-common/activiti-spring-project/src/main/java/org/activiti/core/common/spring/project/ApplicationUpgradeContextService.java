@@ -15,7 +15,6 @@
  */
 package org.activiti.core.common.spring.project;
 
-import tools.jackson.databind.json.JsonMapper;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,6 +22,7 @@ import java.util.Optional;
 import org.activiti.core.common.project.model.ProjectManifest;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
+import tools.jackson.databind.json.JsonMapper;
 
 public class ApplicationUpgradeContextService {
 

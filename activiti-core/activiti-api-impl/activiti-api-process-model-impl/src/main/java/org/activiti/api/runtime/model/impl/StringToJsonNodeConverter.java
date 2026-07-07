@@ -15,9 +15,9 @@
  */
 package org.activiti.api.runtime.model.impl;
 
+import org.springframework.core.convert.converter.Converter;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
-import org.springframework.core.convert.converter.Converter;
 
 @ProcessVariableTypeConverter
 public class StringToJsonNodeConverter implements Converter<String, JsonNode> {

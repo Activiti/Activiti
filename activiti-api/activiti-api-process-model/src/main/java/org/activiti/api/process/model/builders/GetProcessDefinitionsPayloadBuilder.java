@@ -57,10 +57,6 @@ public class GetProcessDefinitionsPayloadBuilder {
     }
 
     public GetProcessDefinitionsPayload build() {
-        return new GetProcessDefinitionsPayload(
-            processDefinitionIds,
-            processDefinitionKeys,
-            latestVersionOnly
-        );
+        return new GetProcessDefinitionsPayload(processDefinitionIds, processDefinitionKeys, latestVersionOnly);
     }
 }

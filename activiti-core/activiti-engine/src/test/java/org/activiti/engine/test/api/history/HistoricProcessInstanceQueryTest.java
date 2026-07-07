@@ -17,7 +17,6 @@ package org.activiti.engine.test.api.history;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import tools.jackson.databind.node.ObjectNode;
 import java.util.List;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
@@ -25,6 +24,7 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
+import tools.jackson.databind.node.ObjectNode;
 
 public class HistoricProcessInstanceQueryTest extends PluggableActivitiTestCase {
 

@@ -18,7 +18,6 @@ package org.activiti.runtime.api.impl;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
-import tools.jackson.databind.json.JsonMapper;
 import jakarta.el.ELResolver;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,6 +32,7 @@ import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
 import org.activiti.spring.process.model.Extension;
 import org.activiti.spring.process.model.VariableDefinition;
+import tools.jackson.databind.json.JsonMapper;
 
 public class ExpressionResolverHelper {
 

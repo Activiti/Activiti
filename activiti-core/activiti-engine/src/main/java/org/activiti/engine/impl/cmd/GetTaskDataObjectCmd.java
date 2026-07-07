@@ -15,8 +15,6 @@
  */
 package org.activiti.engine.impl.cmd;
 
-import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.node.ObjectNode;
 import java.io.Serializable;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.SubProcess;
@@ -34,6 +32,8 @@ import org.activiti.engine.impl.persistence.entity.VariableInstance;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.runtime.DataObject;
 import org.activiti.engine.task.Task;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.ObjectNode;
 
 public class GetTaskDataObjectCmd implements Command<DataObject>, Serializable {
 

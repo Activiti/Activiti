@@ -15,10 +15,6 @@
  */
 package org.activiti.api.runtime.conf.impl;
 
-import tools.jackson.core.Version;
-import tools.jackson.databind.jsontype.NamedType;
-import tools.jackson.databind.module.SimpleAbstractTypeResolver;
-import tools.jackson.databind.module.SimpleModule;
 import org.activiti.api.model.shared.EmptyResult;
 import org.activiti.api.model.shared.Payload;
 import org.activiti.api.model.shared.Result;
@@ -27,7 +23,11 @@ import org.activiti.api.runtime.model.impl.VariableInstanceImpl;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
+import tools.jackson.core.Version;
 import tools.jackson.databind.JacksonModule;
+import tools.jackson.databind.jsontype.NamedType;
+import tools.jackson.databind.module.SimpleAbstractTypeResolver;
+import tools.jackson.databind.module.SimpleModule;
 
 @AutoConfiguration
 @PropertySource("classpath:conf/rest-jackson-configuration.properties") //load default jackson configuration

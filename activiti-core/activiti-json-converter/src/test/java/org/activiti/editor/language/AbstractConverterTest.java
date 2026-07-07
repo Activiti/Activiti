@@ -17,9 +17,6 @@ package org.activiti.editor.language;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.json.JsonMapper;
-import tools.jackson.databind.node.ObjectNode;
 import java.io.InputStream;
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.converter.util.InputStreamProvider;
@@ -28,14 +25,18 @@ import org.activiti.bpmn.model.Event;
 import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.editor.language.json.converter.BpmnJsonConverter;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.ObjectNode;
 
 public abstract class AbstractConverterTest {
+
+    private static final JsonMapper JSON_MAPPER = JsonMapper.builder().build();
 
     protected BpmnModel readJsonFile() throws Exception {
         InputStream jsonStream = this.getClass().getClassLoader().getResourceAsStream(getResource());
         JsonNode modelNode = new JsonMapper().readTree(jsonStream);
-        BpmnModel bpmnModel = new BpmnJsonConverter().convertToBpmnModel(modelNode);
-        return bpmnModel;
+        return new BpmnJsonConverter(JSON_MAPPER).convertToBpmnModel(modelNode);
     }
 
     protected BpmnModel readXmlFile() throws Exception {
@@ -53,8 +54,8 @@ public abstract class AbstractConverterTest {
     }
 
     protected BpmnModel convertToJsonAndBack(BpmnModel bpmnModel) {
-        ObjectNode modelNode = new BpmnJsonConverter().convertToJson(bpmnModel);
-        bpmnModel = new BpmnJsonConverter().convertToBpmnModel(modelNode);
+        ObjectNode modelNode = new BpmnJsonConverter(JSON_MAPPER).convertToJson(bpmnModel);
+        bpmnModel = new BpmnJsonConverter(JSON_MAPPER).convertToBpmnModel(modelNode);
         return bpmnModel;
     }
 

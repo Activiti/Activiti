@@ -15,7 +15,6 @@
  */
 package org.activiti.engine.impl.event.logger.handler;
 
-import tools.jackson.databind.json.JsonMapper;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -125,9 +124,8 @@ public abstract class VariableEventHandler extends AbstractDatabaseEventLoggerEv
             (variableEvent.getVariableValue() != null && (variableEvent.getVariableValue() instanceof Object))
         ) {
             // Last try: serialize it to json
-            JsonMapper jsonMapper = new JsonMapper();
             try {
-                String value = jsonMapper.writeValueAsString(variableEvent.getVariableValue());
+                String value = super.jsonMapper.writeValueAsString(variableEvent.getVariableValue());
                 putInMapIfNotNull(data, Fields.VALUE_JSON, value);
                 putInMapIfNotNull(data, Fields.VARIABLE_TYPE, TYPE_JSON);
                 putInMapIfNotNull(data, Fields.VALUE, value);

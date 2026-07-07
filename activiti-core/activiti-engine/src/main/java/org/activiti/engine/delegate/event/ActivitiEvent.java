@@ -41,4 +41,16 @@ public interface ActivitiEvent {
      * @return the id of the process definition this event is associated with. Returns null, if the event was not dispatched from within an active execution.
      */
     String getProcessDefinitionId();
+
+    /**
+     * Returns a stable identifier that groups all events produced within the same engine command (i.e. a single
+     * {@code CommandContext} / transaction). All events fired during a single API call such as
+     * {@code runtimeService.startProcessInstanceByKey(...)} share the same {@code commandId}.
+     * Events fired outside a command context (e.g. during engine startup) return {@code null}.
+     *
+     * @return the command-scoped group id, or {@code null} if not available.
+     */
+    default String getCommandId() {
+        return null;
+    }
 }

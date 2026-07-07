@@ -15,8 +15,6 @@
  */
 package org.activiti.engine.impl;
 
-import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.node.ObjectNode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -33,6 +31,8 @@ import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity;
 import org.activiti.engine.impl.variable.VariableTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.ObjectNode;
 
 public class HistoricTaskInstanceQueryImpl
     extends AbstractVariableQueryImpl<HistoricTaskInstanceQuery, HistoricTaskInstance>

@@ -15,7 +15,6 @@
  */
 package org.activiti.engine.impl.cmd;
 
-import tools.jackson.databind.node.ObjectNode;
 import java.io.Serializable;
 import java.util.Optional;
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -24,6 +23,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionInfoCacheObject;
 import org.activiti.engine.repository.ProcessDefinition;
+import tools.jackson.databind.node.ObjectNode;
 
 /**
 

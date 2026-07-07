@@ -15,9 +15,6 @@
  */
 package org.activiti.spring.process;
 
-import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.MapperFeature;
-import tools.jackson.databind.json.JsonMapper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
@@ -27,6 +24,9 @@ import org.activiti.spring.process.model.ProcessExtensionModel;
 import org.activiti.spring.process.model.VariableDefinition;
 import org.activiti.spring.process.variable.types.VariableType;
 import org.activiti.spring.resources.ResourceReader;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.MapperFeature;
+import tools.jackson.databind.json.JsonMapper;
 
 public class ProcessExtensionResourceReader implements ResourceReader<ProcessExtensionModel> {
 
@@ -45,9 +45,7 @@ public class ProcessExtensionResourceReader implements ResourceReader<ProcessExt
 
     @Override
     public ProcessExtensionModel read(InputStream inputStream) throws IOException {
-        JsonMapper mapper = jsonMapper.rebuild()
-            .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
-            .build();
+        JsonMapper mapper = jsonMapper.rebuild().enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS).build();
         ProcessExtensionModel mappedModel = mapper.readValue(inputStream, ProcessExtensionModel.class);
 
         return convertJsonVariables(mappedModel);

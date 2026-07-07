@@ -18,7 +18,6 @@ package org.activiti.engine.impl.bpmn.behavior;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyMap;
 
-import tools.jackson.databind.node.ObjectNode;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -49,6 +48,7 @@ import org.activiti.engine.impl.persistence.entity.TaskEntityManager;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.databind.node.ObjectNode;
 
 public class UserTaskActivityBehavior extends TaskActivityBehavior {
 

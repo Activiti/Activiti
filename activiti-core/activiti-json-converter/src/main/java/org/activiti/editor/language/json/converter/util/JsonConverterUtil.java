@@ -15,8 +15,6 @@
  */
 package org.activiti.editor.language.json.converter.util;
 
-import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.node.ArrayNode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -26,6 +24,8 @@ import java.util.Set;
 import org.activiti.editor.constants.EditorJsonConstants;
 import org.activiti.editor.constants.StencilConstants;
 import org.activiti.editor.language.json.converter.BpmnJsonConverterUtil;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.ArrayNode;
 
 public class JsonConverterUtil implements EditorJsonConstants, StencilConstants {
 

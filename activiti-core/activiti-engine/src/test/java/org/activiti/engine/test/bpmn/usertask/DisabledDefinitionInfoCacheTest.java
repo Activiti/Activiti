@@ -17,7 +17,6 @@ package org.activiti.engine.test.bpmn.usertask;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import tools.jackson.databind.node.ObjectNode;
 import java.util.HashMap;
 import java.util.Map;
 import org.activiti.engine.ProcessEngine;
@@ -27,6 +26,7 @@ import org.activiti.engine.impl.test.AbstractActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
+import tools.jackson.databind.node.ObjectNode;
 
 /**
 

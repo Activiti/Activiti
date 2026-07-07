@@ -84,9 +84,9 @@ public class DemoApplication implements CommandLineRunner {
     @Bean
     public IntegrationFlow fileReadingFlow() {
         return IntegrationFlow.from(
-            Files.inboundAdapter(new File(INPUT_DIR))
-                .filter(new SimplePatternFileListFilter(FILE_PATTERN)),
-            e -> e.poller(Pollers.fixedDelay(1000)))
+            Files.inboundAdapter(new File(INPUT_DIR)).filter(new SimplePatternFileListFilter(FILE_PATTERN)),
+            e -> e.poller(Pollers.fixedDelay(1000))
+        )
             .channel("fileChannel")
             .get();
     }

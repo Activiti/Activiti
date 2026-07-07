@@ -17,7 +17,6 @@ package org.activiti.examples.bpmn.scripttask;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import tools.jackson.databind.node.ObjectNode;
 import groovy.lang.MissingPropertyException;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,6 +25,7 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
+import tools.jackson.databind.node.ObjectNode;
 
 /**
  */
