@@ -109,11 +109,10 @@ jobs:
         uses: ./.github/actions/echo-longest-run
 
       - name: Configure git user
-        run: |
-          git config --global user.name $GITHUB_USERNAME
-          git config --global user.email $GITHUB_USERNAME@users.noreply.github.com
-        env:
-          GITHUB_USERNAME: ${{ secrets.BOT_GITHUB_USERNAME }}
+        uses: Alfresco/alfresco-build-tools/.github/actions/configure-git-author@10cea6c0b390c4f8af21d9dc1670d581bd10319f # v18.13.0
+        with:
+          username: ${{ secrets.BOT_GITHUB_USERNAME }}
+          email: ${{ secrets.BOT_GITHUB_USERNAME }}@users.noreply.github.com
 
       - name: Create release tag
         run: |
