@@ -205,8 +205,14 @@ public interface TaskService {
      * @param userGroups
      *          groups of the user used for candidate-group matching. May be null.
      * @return the taskId of the claimed task, otherwise null.
+     * @throws UnsupportedOperationException
+     *           when the implementation does not support this operation.
      */
-    String claimNextCandidateTask(String userId, List<String> userGroups);
+    default String claimNextCandidateTask(String userId, List<String> userGroups) {
+        throw new UnsupportedOperationException(
+            "claimNextCandidateTask is not implemented by this TaskService implementation"
+        );
+    }
 
     /**
      * Called when the task is successfully executed.
