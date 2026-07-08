@@ -30,7 +30,7 @@ public class SetVariablesTaskActivityBehavior extends AbstractBpmnActivityBehavi
 
     private static final long serialVersionUID = 1L;
 
-    private final VariablesCalculator variablesCalculator;
+    protected transient VariablesCalculator variablesCalculator;
 
     public SetVariablesTaskActivityBehavior(VariablesCalculator variablesCalculator) {
         this.variablesCalculator = variablesCalculator;
