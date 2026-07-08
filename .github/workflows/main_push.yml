@@ -36,6 +36,8 @@ jobs:
           skip_checkout: true
       - name: Ensure SHA pinned actions
         uses: hyland/github-actions-ensure-sha-pinned-actions@7957efb76aba0eec7580a9c0392d3e5bec381359 # v2.0.1
+      - name: Ensure all actions are covered by Dependabot
+        uses: Alfresco/alfresco-build-tools/.github/actions/dependabot-missing-actions-check@10cea6c0b390c4f8af21d9dc1670d581bd10319f # v18.13.0
 
   create-tag:
     runs-on: ubuntu-latest
@@ -76,6 +78,7 @@ jobs:
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           ref: ${{ needs.create-tag.outputs.version }}
+          persist-credentials: false
 
       - uses: ./.github/actions/setup-java-maven
 
@@ -99,6 +102,7 @@ jobs:
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           ref: ${{ needs.create-tag.outputs.version }}
+          persist-credentials: false
 
       - uses: ./.github/actions/setup-java-maven
 
