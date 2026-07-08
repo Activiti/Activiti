@@ -25,6 +25,7 @@ jobs:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - name: dependabot check
         id: dependabot
+        if: ${{ github.event_name == 'push' }}
         uses: Alfresco/alfresco-build-tools/.github/actions/github-pr-check-metadata@10cea6c0b390c4f8af21d9dc1670d581bd10319f # v18.13.0
         with:
           gh-token: ${{ secrets.BOT_GITHUB_TOKEN }}
@@ -90,7 +91,7 @@ jobs:
     needs:
       - create-tag
       - build
-    if: ${{ success() }}
+    if: ${{ github.event_name == 'push' && success() }}
     permissions:
       actions: write
       contents: read
@@ -128,7 +129,6 @@ jobs:
         uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@10cea6c0b390c4f8af21d9dc1670d581bd10319f # v18.13.0
 
       - name: Configure propagation git author
-        if: ${{ env.BRANCH_NAME == 'develop' }}
         uses: Alfresco/alfresco-build-tools/.github/actions/configure-git-author@10cea6c0b390c4f8af21d9dc1670d581bd10319f # v18.13.0
         with:
           username: ${{ vars.HXPS_GIT_USERNAME }}
@@ -137,7 +137,6 @@ jobs:
 
       - name: Propagate
         uses: Alfresco/alfresco-build-tools/.github/actions/jx-updatebot-pr@10cea6c0b390c4f8af21d9dc1670d581bd10319f # v18.13.0
-        if: ${{ env.BRANCH_NAME == 'develop' }}
         env:
           DEVELOPMENT_BRANCH: ${{ github.ref_name }}
         with:
@@ -159,7 +158,7 @@ jobs:
       - build
       - publish
       - propagate
-    if: always() && failure()
+    if: always() && failure() && github.event_name == 'push'
     permissions:
       contents: read
     steps:
