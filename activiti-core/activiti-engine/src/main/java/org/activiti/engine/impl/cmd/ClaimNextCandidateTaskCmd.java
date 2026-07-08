@@ -94,7 +94,7 @@ public class ClaimNextCandidateTaskCmd implements Command<String>, Serializable 
             throw new ActivitiObjectNotFoundException("Cannot find claimed task with id '" + taskId + "'", Task.class);
         }
 
-        commandContext.getTaskEntityManager().executeTaskAssigneeChangePostProcessing(task);
+        commandContext.getTaskEntityManager().executeTaskAssigneeChangePostProcessingWithoutTaskUpdate(task);
         commandContext.getHistoryManager().recordTaskClaim(task);
 
         return task;

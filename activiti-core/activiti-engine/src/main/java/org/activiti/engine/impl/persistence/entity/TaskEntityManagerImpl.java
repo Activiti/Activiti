@@ -120,16 +120,20 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
             (taskEntity.getAssignee() == null && assignee != null)
         ) {
             taskEntity.setAssignee(assignee);
-            executeTaskAssigneeChangePostProcessing(taskEntity, fireEvents);
+            executeTaskAssigneeChangePostProcessing(taskEntity, fireEvents, true);
         }
     }
 
     @Override
-    public void executeTaskAssigneeChangePostProcessing(TaskEntity taskEntity) {
-        executeTaskAssigneeChangePostProcessing(taskEntity, true);
+    public void executeTaskAssigneeChangePostProcessingWithoutTaskUpdate(TaskEntity taskEntity) {
+        executeTaskAssigneeChangePostProcessing(taskEntity, true, false);
     }
 
-    private void executeTaskAssigneeChangePostProcessing(TaskEntity taskEntity, boolean fireEvents) {
+    private void executeTaskAssigneeChangePostProcessing(
+        TaskEntity taskEntity,
+        boolean fireEvents,
+        boolean persistTaskUpdate
+    ) {
         if (fireEvents) {
             fireAssignmentEvents(taskEntity);
         } else {
@@ -139,7 +143,9 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
         if (taskEntity.getId() != null) {
             getHistoryManager().recordTaskAssigneeChange(taskEntity.getId(), taskEntity.getAssignee());
             addAssigneeIdentityLinks(taskEntity);
-            update(taskEntity, fireEvents);
+            if (persistTaskUpdate) {
+                update(taskEntity, fireEvents);
+            }
         }
     }
 

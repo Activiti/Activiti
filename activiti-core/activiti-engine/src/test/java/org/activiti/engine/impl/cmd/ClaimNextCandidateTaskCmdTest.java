@@ -124,7 +124,7 @@ class ClaimNextCandidateTaskCmdTest {
         assertThat(selectParams).containsEntry("userId", "john");
         assertThat(selectParams.get("claimToken")).isNotNull();
 
-        verify(taskEntityManager).executeTaskAssigneeChangePostProcessing(taskEntity);
+        verify(taskEntityManager).executeTaskAssigneeChangePostProcessingWithoutTaskUpdate(taskEntity);
         verify(historyManager).recordTaskClaim(taskEntity);
     }
 

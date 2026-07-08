@@ -312,11 +312,57 @@
     and ASSIGNEE_ is null
   </update>
 
+  <update id="claimNextUnassignedCandidateTask" databaseId="postgres" parameterType="java.util.Map">
+    update ${prefix}ACT_RU_TASK
+    set
+      REV_ = COALESCE(REV_, 0) + 1,
+      ASSIGNEE_ = #{userId, jdbcType=VARCHAR},
+      CLAIM_TIME_ = #{claimTime, jdbcType=TIMESTAMP},
+      CLAIM_TOKEN_ = #{claimToken, jdbcType=VARCHAR}
+    where ID_ = (
+      select T.ID_
+      from ${prefix}ACT_RU_TASK T
+      where T.ASSIGNEE_ is null
+      and T.SUSPENSION_STATE_ = 1
+      and <include refid="candidateTaskIdentityLinkCheck"/>
+      order by T.CREATE_TIME_ asc, T.ID_ asc
+      limit 1
+      FOR UPDATE SKIP LOCKED
+    )
+    and ASSIGNEE_ is null
+  </update>
+
   <update id="claimNextUnassignedCandidateTask" databaseId="mysql" parameterType="java.util.Map">
     update ${prefix}ACT_RU_TASK TARGET
     inner join (
-      <include refid="candidateTaskSelectionSql"/>
+      select T.ID_
+      from ${prefix}ACT_RU_TASK T
+      where T.ASSIGNEE_ is null
+      and T.SUSPENSION_STATE_ = 1
+      and <include refid="candidateTaskIdentityLinkCheck"/>
+      order by T.CREATE_TIME_ asc, T.ID_ asc
       limit 1
+      FOR UPDATE SKIP LOCKED
+    ) SELECTED on TARGET.ID_ = SELECTED.ID_
+    set
+      TARGET.REV_ = COALESCE(TARGET.REV_, 0) + 1,
+      TARGET.ASSIGNEE_ = #{userId, jdbcType=VARCHAR},
+      TARGET.CLAIM_TIME_ = #{claimTime, jdbcType=TIMESTAMP},
+      TARGET.CLAIM_TOKEN_ = #{claimToken, jdbcType=VARCHAR}
+    where TARGET.ASSIGNEE_ is null
+  </update>
+
+  <update id="claimNextUnassignedCandidateTask" databaseId="mariadb" parameterType="java.util.Map">
+    update ${prefix}ACT_RU_TASK TARGET
+    inner join (
+      select T.ID_
+      from ${prefix}ACT_RU_TASK T
+      where T.ASSIGNEE_ is null
+      and T.SUSPENSION_STATE_ = 1
+      and <include refid="candidateTaskIdentityLinkCheck"/>
+      order by T.CREATE_TIME_ asc, T.ID_ asc
+      limit 1
+      FOR UPDATE SKIP LOCKED
     ) SELECTED on TARGET.ID_ = SELECTED.ID_
     set
       TARGET.REV_ = COALESCE(TARGET.REV_, 0) + 1,
@@ -339,6 +385,7 @@
         <include refid="candidateTaskSelectionSql"/>
       ) T
       where rownum &lt;= 1
+      FOR UPDATE SKIP LOCKED
     )
     and ASSIGNEE_ is null
   </update>
@@ -352,7 +399,7 @@
       CLAIM_TOKEN_ = #{claimToken, jdbcType=VARCHAR}
     where ID_ = (
       select top 1 T.ID_
-      from ${prefix}ACT_RU_TASK T
+      from ${prefix}ACT_RU_TASK T with (UPDLOCK, READPAST, ROWLOCK)
       where T.ASSIGNEE_ is null
       and T.SUSPENSION_STATE_ = 1
       and <include refid="candidateTaskIdentityLinkCheck"/>
@@ -371,6 +418,7 @@
     where ID_ = (
       <include refid="candidateTaskSelectionSql"/>
       fetch first 1 rows only
+      FOR UPDATE WITH RS SKIP LOCKED DATA
     )
     and ASSIGNEE_ is null
   </update>
