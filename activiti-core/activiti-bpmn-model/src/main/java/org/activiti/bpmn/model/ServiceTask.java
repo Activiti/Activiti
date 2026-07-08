@@ -23,6 +23,14 @@ public class ServiceTask extends TaskWithFieldExtensions {
     public static final String DMN_TASK = "dmn";
     public static final String MAIL_TASK = "mail";
 
+    /**
+     * Reserved {@code implementation} value for the built-in "set variables" service task.
+     * A {@code <serviceTask implementation="setVariablesTask"/>} resolves its input mappings and
+     * writes them back as process variables (via the output mappings) synchronously, without
+     * invoking an external connector.
+     */
+    public static final String SET_VARIABLES_TASK_IMPLEMENTATION = "setVariablesTask";
+
     protected String implementation;
     protected String implementationType;
     protected String resultVariableName;
