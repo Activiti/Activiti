@@ -49,15 +49,17 @@ public class IntegrationContextImpl implements IntegrationContext {
         this.id = UUID.randomUUID().toString();
     }
 
-    public IntegrationContextImpl(IntegrationContext other) {
+    private IntegrationContextImpl(IntegrationContext other, boolean withVariables) {
         this.id = other.getId();
-        Map<String, Object> otherInBoundVariables = other.getInBoundVariables();
-        if (otherInBoundVariables != null) {
-            this.inBoundVariables.putAll(otherInBoundVariables);
-        }
-        Map<String, Object> otherOutBoundVariables = other.getOutBoundVariables();
-        if (otherOutBoundVariables != null) {
-            this.outBoundVariables.putAll(otherOutBoundVariables);
+        if (withVariables) {
+            Map<String, Object> otherInBoundVariables = other.getInBoundVariables();
+            if (otherInBoundVariables != null) {
+                this.inBoundVariables.putAll(otherInBoundVariables);
+            }
+            Map<String, Object> otherOutBoundVariables = other.getOutBoundVariables();
+            if (otherOutBoundVariables != null) {
+                this.outBoundVariables.putAll(otherOutBoundVariables);
+            }
         }
         this.processInstanceId = other.getProcessInstanceId();
         this.parentProcessInstanceId = other.getParentProcessInstanceId();
@@ -73,6 +75,16 @@ public class IntegrationContextImpl implements IntegrationContext {
         this.appVersion = other.getAppVersion();
         this.connectorType = other.getConnectorType();
         this.ephemeralVariables = other.hasEphemeralVariables();
+    }
+
+    public static IntegrationContextImpl copyWithoutInBoundVariables(IntegrationContext integrationContext) {
+        IntegrationContextImpl copy = new IntegrationContextImpl(integrationContext, true);
+        copy.clearInBoundVariables();
+        return copy;
+    }
+
+    public IntegrationContextImpl(IntegrationContext other) {
+        this(other, true);
     }
 
     @Override

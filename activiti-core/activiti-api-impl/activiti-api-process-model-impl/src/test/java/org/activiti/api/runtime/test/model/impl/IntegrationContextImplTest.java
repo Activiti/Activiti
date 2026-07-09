@@ -372,4 +372,27 @@ class IntegrationContextImplTest {
 
         assertThat(integrationContext.getOutBoundVariables()).isEmpty();
     }
+
+    @Test
+    void should_clearOnlyInBoundVariables_and_notModifyOriginal_when_copyWithoutInBoundVariablesIsCalled() {
+        // given
+        IntegrationContextImpl original = new IntegrationContextImpl();
+        original.setProcessInstanceId("proc123");
+        original.addInBoundVariable("inKey", "inValue");
+        original.addOutBoundVariable("outKey", "outValue");
+
+        // when
+        IntegrationContextImpl copy = IntegrationContextImpl.copyWithoutInBoundVariables(original);
+
+        // then - copy has no inbound variables but retains outbound and metadata
+        assertThat(copy).isNotSameAs(original);
+        assertThat(copy.getId()).isEqualTo(original.getId());
+        assertThat(copy.getProcessInstanceId()).isEqualTo("proc123");
+        assertThat(copy.getInBoundVariables()).isEmpty();
+        assertThat(copy.getOutBoundVariables()).containsEntry("outKey", "outValue");
+
+        // original remains unchanged
+        assertThat(original.getInBoundVariables()).containsEntry("inKey", "inValue");
+        assertThat(original.getOutBoundVariables()).containsEntry("outKey", "outValue");
+    }
 }
