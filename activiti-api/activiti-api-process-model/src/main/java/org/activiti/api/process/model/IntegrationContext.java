@@ -44,6 +44,8 @@ public interface IntegrationContext {
     String getClientName();
     String getClientType();
 
+    ExternalizedDataConfig getExternalizedDataConfig();
+
     Map<String, Object> getInBoundVariables();
 
     Map<String, Object> getOutBoundVariables();

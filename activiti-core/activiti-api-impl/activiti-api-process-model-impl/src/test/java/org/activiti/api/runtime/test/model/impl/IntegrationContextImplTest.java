@@ -33,6 +33,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 import org.activiti.api.process.model.IntegrationContext;
+import org.activiti.api.runtime.model.impl.ExternalizedDataConfigImpl;
 import org.activiti.api.runtime.model.impl.IntegrationContextImpl;
 import org.activiti.api.runtime.model.impl.ProcessVariablesMap;
 import org.junit.jupiter.api.Test;
@@ -277,6 +278,9 @@ class IntegrationContextImplTest {
         original.setAppVersion("1.0.0");
         original.setConnectorType("connectorType");
         original.setEphemeralVariables(true);
+        original.setExternalizedDataConfig(
+            new ExternalizedDataConfigImpl("temp-storage", "https://temp-storage/blobs")
+        );
         original.addInBoundVariable("inKey", "inValue");
         original.addOutBoundVariable("outKey", "outValue");
 
@@ -301,6 +305,36 @@ class IntegrationContextImplTest {
         assertThat(copy.getOutBoundVariables()).isEqualTo(original.getOutBoundVariables());
         assertThat(copy.getInBoundVariables()).isNotSameAs(original.getInBoundVariables());
         assertThat(copy.getOutBoundVariables()).isNotSameAs(original.getOutBoundVariables());
+        assertThat(copy.getExternalizedDataConfig()).isEqualTo(original.getExternalizedDataConfig());
+        assertThat(copy.getExternalizedDataConfig()).isNotSameAs(original.getExternalizedDataConfig());
+    }
+
+    @Test
+    void should_setAndGetExternalizedDataConfig() {
+        IntegrationContextImpl integrationContext = new IntegrationContextImpl();
+        assertThat(integrationContext.getExternalizedDataConfig()).isNull();
+
+        integrationContext.setExternalizedDataConfig(
+            new ExternalizedDataConfigImpl("temp-storage", "https://temp-storage/blobs")
+        );
+
+        assertThat(integrationContext.getExternalizedDataConfig().getProviderType()).isEqualTo("temp-storage");
+        assertThat(integrationContext.getExternalizedDataConfig().getUrl()).isEqualTo("https://temp-storage/blobs");
+    }
+
+    @Test
+    void should_serializeAndDeserializeExternalizedDataConfig() throws IOException {
+        // given
+        IntegrationContextImpl source = new IntegrationContextImpl();
+        source.setExternalizedDataConfig(new ExternalizedDataConfigImpl("temp-storage", "https://temp-storage/blobs"));
+
+        // when
+        IntegrationContext target = exchangeIntegrationContext(source);
+
+        // then
+        assertThat(target.getExternalizedDataConfig()).isNotNull();
+        assertThat(target.getExternalizedDataConfig().getProviderType()).isEqualTo("temp-storage");
+        assertThat(target.getExternalizedDataConfig().getUrl()).isEqualTo("https://temp-storage/blobs");
     }
 
     @Test
