@@ -31,8 +31,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
 /**
- * Verifies the built-in {@code setVariablesTask} service task: a
- * {@code <serviceTask implementation="setVariablesTask"/>} resolves its input mappings and writes
+ * Verifies the built-in "set variables" service task: a
+ * {@code <serviceTask implementation="set-variables.EXECUTE"/>} resolves its input mappings and writes
  * each resolved value to the process variable named by the mapping key (an already declared process
  * variable), synchronously - no connector and no messaging round-trip.
  *

@@ -24,12 +24,13 @@ public class ServiceTask extends TaskWithFieldExtensions {
     public static final String MAIL_TASK = "mail";
 
     /**
-     * Reserved {@code implementation} value for the built-in "set variables" service task.
-     * A {@code <serviceTask implementation="setVariablesTask"/>} resolves its input mappings and
-     * writes them back as process variables (via the output mappings) synchronously, without
-     * invoking an external connector.
+     * Reserved {@code implementation} value for the built-in "set variables" service task
+     * ({@code <serviceTask implementation="set-variables.EXECUTE"/>}). It resolves the task's input
+     * mappings and writes each resolved value to the process variable named by the mapping key (an
+     * already declared process variable) synchronously, without invoking an external connector.
+     * The value matches the contract emitted by the modeling palette.
      */
-    public static final String SET_VARIABLES_TASK_IMPLEMENTATION = "setVariablesTask";
+    public static final String SET_VARIABLES_TASK_IMPLEMENTATION = "set-variables.EXECUTE";
 
     protected String implementation;
     protected String implementationType;

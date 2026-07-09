@@ -10,7 +10,7 @@
 
         <sequenceFlow id="flow1" sourceRef="start" targetRef="setVarsTask"/>
 
-        <serviceTask id="setVarsTask" implementation="setVariablesTask"/>
+        <serviceTask id="setVarsTask" implementation="set-variables.EXECUTE"/>
 
         <sequenceFlow id="flow2" sourceRef="setVarsTask" targetRef="userTask"/>
 

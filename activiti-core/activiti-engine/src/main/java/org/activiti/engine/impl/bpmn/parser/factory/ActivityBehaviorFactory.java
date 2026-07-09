@@ -135,7 +135,7 @@ public interface ActivityBehaviorFactory {
     public abstract ActivityBehavior createDefaultServiceTaskBehavior(ServiceTask serviceTask);
 
     /**
-     * Behavior of the built-in {@code setVariablesTask} service task. The default implementation
+     * Behavior of the built-in "set variables" service task. The default implementation
      * falls back to {@link #createDefaultServiceTaskBehavior(ServiceTask)}; mapping-aware factories
      * override this to resolve the input mappings and set them as process variables synchronously.
      */

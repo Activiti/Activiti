@@ -19,8 +19,8 @@ import java.util.Map;
 import org.activiti.engine.delegate.DelegateExecution;
 
 /**
- * Behavior of the built-in {@code setVariablesTask} service task
- * ({@code <serviceTask implementation="setVariablesTask"/>}).
+ * Behavior of the built-in "set variables" service task
+ * ({@code <serviceTask implementation="set-variables.EXECUTE"/>}).
  *
  * <p>It resolves the task's input mappings and writes each resolved value to the process variable
  * named by the mapping key (an already declared process variable), then leaves the task. It runs
