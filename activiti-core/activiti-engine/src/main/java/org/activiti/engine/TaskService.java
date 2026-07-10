@@ -205,6 +205,8 @@ public interface TaskService {
      * @param userGroups
      *          groups of the user used for candidate-group matching. May be null.
      * @return the taskId of the claimed task, otherwise null.
+     * @throws ActivitiException
+     *           when the operation is not supported for the configured database (for example Oracle).
      * @throws UnsupportedOperationException
      *           when the implementation does not support this operation.
      */

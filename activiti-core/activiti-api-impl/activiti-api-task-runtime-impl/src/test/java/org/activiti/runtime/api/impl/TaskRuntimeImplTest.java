@@ -28,6 +28,7 @@ import static org.mockito.Mockito.when;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
+import org.activiti.api.runtime.shared.NotFoundException;
 import org.activiti.api.runtime.shared.query.Order;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.runtime.shared.security.SecurityManager;
@@ -449,7 +450,7 @@ public class TaskRuntimeImplTest {
     }
 
     @Test
-    void nextTask_should_returnNull_whenClaimReturnsTaskIdButTaskLookupReturnsNull() {
+    void nextTask_should_propagateNotFoundException_whenClaimReturnsTaskIdButTaskLookupFails() {
         //given
         when(securityManager.getAuthenticatedUserId()).thenReturn(AUTHENTICATED_USER);
         when(securityManager.getAuthenticatedUserGroups()).thenReturn(Collections.singletonList("group"));
@@ -465,12 +466,15 @@ public class TaskRuntimeImplTest {
         when(taskService.claimNextCandidateTask(AUTHENTICATED_USER, Collections.singletonList("group"))).thenReturn(
             "task-1"
         );
+        when(taskRuntimeHelper.getInternalTaskWithChecks("task-1")).thenThrow(new NotFoundException("not found"));
 
         //when
-        Task result = taskRuntime.nextTask(TaskIdentificationStrategy.CLAIM_BEFORE_OPEN_OLDEST_FIRST);
+        Throwable thrown = catchThrowable(() ->
+            taskRuntime.nextTask(TaskIdentificationStrategy.CLAIM_BEFORE_OPEN_OLDEST_FIRST)
+        );
 
         //then
-        assertThat(result).isNull();
+        assertThat(thrown).isInstanceOf(NotFoundException.class).hasMessage("not found");
         verify(taskService).claimNextCandidateTask(AUTHENTICATED_USER, Collections.singletonList("group"));
     }
 
