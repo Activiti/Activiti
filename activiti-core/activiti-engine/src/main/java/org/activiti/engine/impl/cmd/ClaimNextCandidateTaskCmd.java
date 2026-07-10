@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
@@ -47,6 +48,8 @@ public class ClaimNextCandidateTaskCmd implements Command<String>, Serializable 
 
     @Override
     public String execute(CommandContext commandContext) {
+        failForOracleDb(commandContext);
+
         if (userId == null || userId.isEmpty()) {
             throw new ActivitiIllegalArgumentException("User id is null or empty");
         }
@@ -58,6 +61,23 @@ public class ClaimNextCandidateTaskCmd implements Command<String>, Serializable 
 
         TaskEntity task = executeClaimTaskPostProcessing(commandContext, claimToken);
         return task.getId();
+    }
+
+    /*
+     * Oracle is intentionally not supported for this command.
+     *
+     * This claim flow relies on selecting one candidate row and applying pessimistic locking
+     * (`FOR UPDATE SKIP LOCKED`) directly inside the single-statement claim SQL used by this command.
+     * Oracle does not allow that locking clause in the scalar subquery shape used by
+     * `UPDATE ... WHERE ID_ = (subquery)`, and combining it with inline-view/row limiting variants
+     * also leads to Oracle SQL restrictions (for example ORA-00907/ORA-02014 class failures).
+     */
+    private void failForOracleDb(CommandContext commandContext) {
+        String dbType = commandContext.getProcessEngineConfiguration().getDatabaseType();
+
+        if ("oracle".equals(dbType)) {
+            throw new ActivitiException("claimNextUnassignedCandidateTask is not supported for Oracle databases");
+        }
     }
 
     private boolean claimNextTask(CommandContext commandContext, String claimToken) {

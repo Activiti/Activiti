@@ -372,24 +372,6 @@
     where TARGET.ASSIGNEE_ is null
   </update>
 
-  <update id="claimNextUnassignedCandidateTask" databaseId="oracle" parameterType="java.util.Map">
-    update ${prefix}ACT_RU_TASK
-    set
-      REV_ = COALESCE(REV_, 0) + 1,
-      ASSIGNEE_ = #{userId, jdbcType=VARCHAR},
-      CLAIM_TIME_ = #{claimTime, jdbcType=TIMESTAMP},
-      CLAIM_TOKEN_ = #{claimToken, jdbcType=VARCHAR}
-    where ID_ = (
-      select T.ID_
-      from (
-        <include refid="candidateTaskSelectionSql"/>
-      ) T
-      where rownum &lt;= 1
-      FOR UPDATE SKIP LOCKED
-    )
-    and ASSIGNEE_ is null
-  </update>
-
   <update id="claimNextUnassignedCandidateTask" databaseId="mssql" parameterType="java.util.Map">
     update ${prefix}ACT_RU_TASK
     set
@@ -418,7 +400,7 @@
     where ID_ = (
       <include refid="candidateTaskSelectionSql"/>
       fetch first 1 rows only
-      FOR UPDATE WITH RS SKIP LOCKED DATA
+      with rs use and keep update locks
     )
     and ASSIGNEE_ is null
   </update>
