@@ -26,6 +26,8 @@ updates:
     directories:
     - "/"
     - "/.github/actions/echo-longest-run"
+    - "/.github/actions/setup-java-maven"
+    - "/.github/actions/maven-build-and-analyze"
     schedule:
       interval: "weekly"
     cooldown:
