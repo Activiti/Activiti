@@ -42,7 +42,7 @@ import org.springframework.test.context.TestPropertySource;
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @TestPropertySource(locations = { "classpath:application.properties" })
-public class SetVariablesTaskTest {
+class SetVariablesTaskTest {
 
     private static final String SET_VARIABLES_TASK_PROCESS = "setVariablesTaskProcess";
 
@@ -53,39 +53,39 @@ public class SetVariablesTaskTest {
     private ProcessCleanUpUtil processCleanUpUtil;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         processCleanUpUtil.cleanUpWithAdmin();
     }
 
     @Test
-    public void should_setVariable_fromAnotherProcessVariable() {
+    void should_setVariable_fromAnotherProcessVariable() {
         assertThat(runAndGetVariables().get("copiedName")).isEqualTo("John");
     }
 
     @Test
-    public void should_setVariable_fromLiteralValue() {
+    void should_setVariable_fromLiteralValue() {
         assertThat(runAndGetVariables().get("literalGreeting")).isEqualTo("hello");
     }
 
     @Test
-    public void should_setVariable_fromExpression_interpolatingProcessVariables() {
+    void should_setVariable_fromExpression_interpolatingProcessVariables() {
         assertThat(runAndGetVariables().get("fullName")).isEqualTo("John Doe");
     }
 
     @Test
-    public void should_setVariable_fromExpression_withSurroundingText() {
+    void should_setVariable_fromExpression_withSurroundingText() {
         assertThat(runAndGetVariables().get("greetingMsg")).isEqualTo("Hello John!");
     }
 
     @Test
-    public void should_setVariable_fromArithmeticExpression() {
+    void should_setVariable_fromArithmeticExpression() {
         // Note: input mappings are set as-is without coercion to the declared variable type,
         // so EL integer arithmetic yields a Long.
         assertThat(runAndGetVariables().get("doubledAge")).isEqualTo(42L);
     }
 
     @Test
-    public void should_setAllDeclaredTargetVariablesAndKeepSources() {
+    void should_setAllDeclaredTargetVariablesAndKeepSources() {
         List<VariableInstance> variables = processBaseRuntime.getProcessVariablesByProcessId(
             processBaseRuntime.startProcessWithProcessDefinitionKey(SET_VARIABLES_TASK_PROCESS).getId()
         );
