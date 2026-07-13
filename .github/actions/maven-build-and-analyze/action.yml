@@ -1,0 +1,53 @@
+name: Maven build and analyze
+description: >-
+  Builds and tests the project with Maven, aggregates JaCoCo coverage and runs
+  the SonarCloud analysis. Java must be set up before calling this action.
+
+inputs:
+  nexus-username:
+    description: Nexus username for Maven.
+    required: true
+  nexus-password:
+    description: Nexus password for Maven.
+    required: true
+  sonar-token:
+    description: SonarCloud token. When empty, the analysis is skipped.
+    required: false
+    default: ""
+
+runs:
+  using: composite
+  steps:
+    - name: Build and Test with Maven
+      shell: bash
+      run: mvn install ${{ env.MAVEN_CLI_OPTS }}
+      env:
+        MAVEN_CLI_OPTS: --show-version --no-transfer-progress --settings settings.xml
+        MAVEN_USERNAME: ${{ inputs.nexus-username }}
+        MAVEN_PASSWORD: ${{ inputs.nexus-password }}
+
+    - name: Merge JaCoCo execution files
+      shell: bash
+      run: mvn jacoco:merge@merge -N
+
+    - name: Generate aggregate coverage report
+      shell: bash
+      run: mvn jacoco:report -Djacoco.dataFile=${{ github.workspace }}/target/jacoco.exec
+
+    - name: Set SONAR_SCANNER_OPTS
+      shell: bash
+      run: |
+        echo "SONAR_SCANNER_OPTS=sonar:sonar -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=activiti -Dsonar.projectKey=Activiti_Activiti -Dsonar.coverage.jacoco.xmlReportPaths=**/target/site/jacoco*/jacoco.xml" >> $GITHUB_ENV
+
+    - name: Run SonarCloud analysis
+      if: ${{ inputs.sonar-token != '' }}
+      shell: bash
+      run: mvn ${{ env.SONAR_SCANNER_OPTS }} ${{ env.MAVEN_CLI_OPTS }}
+      env:
+        MAVEN_CLI_OPTS: --show-version --no-transfer-progress --settings settings.xml
+        MAVEN_USERNAME: ${{ inputs.nexus-username }}
+        MAVEN_PASSWORD: ${{ inputs.nexus-password }}
+        SONAR_TOKEN: ${{ inputs.sonar-token }}
+
+    - name: Echo Longest Test Run
+      uses: ./.github/actions/echo-longest-run
