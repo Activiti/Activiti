@@ -1131,7 +1131,7 @@
         </trim>
       </foreach>
       <foreach item="var" index="varIndex" collection="queryVariableValues">
-        or a_${varIndex}.ID_ is not null
+        and a_${varIndex}.ID_ is not null
       </foreach>
     </where>
   </sql>
