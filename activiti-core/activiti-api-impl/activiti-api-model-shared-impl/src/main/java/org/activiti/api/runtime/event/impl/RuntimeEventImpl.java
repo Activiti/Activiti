@@ -15,8 +15,10 @@
  */
 package org.activiti.api.runtime.event.impl;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import org.activiti.api.model.shared.event.LinkedAttachment;
 import org.activiti.api.model.shared.event.RuntimeEvent;
 
 public abstract class RuntimeEventImpl<ENTITY_TYPE, EVENT_TYPE extends Enum<?>>
@@ -30,6 +32,7 @@ public abstract class RuntimeEventImpl<ENTITY_TYPE, EVENT_TYPE extends Enum<?>>
     private Integer processDefinitionVersion;
     private String businessKey;
     private String parentProcessInstanceId;
+    private List<LinkedAttachment> linkedAttachment = List.of();
 
     private ENTITY_TYPE entity;
 
@@ -98,6 +101,15 @@ public abstract class RuntimeEventImpl<ENTITY_TYPE, EVENT_TYPE extends Enum<?>>
         this.parentProcessInstanceId = parentProcessInstanceId;
     }
 
+    @Override
+    public List<LinkedAttachment> getLinkedAttachment() {
+        return linkedAttachment;
+    }
+
+    public void setLinkedAttachment(List<LinkedAttachment> linkedAttachment) {
+        this.linkedAttachment = linkedAttachment == null ? List.of() : linkedAttachment;
+    }
+
     public void setProcessDefinitionId(String processDefinitionId) {
         this.processDefinitionId = processDefinitionId;
     }
@@ -142,6 +154,8 @@ public abstract class RuntimeEventImpl<ENTITY_TYPE, EVENT_TYPE extends Enum<?>>
             .append(businessKey)
             .append(", parentProcessInstanceId=")
             .append(parentProcessInstanceId)
+            .append(", linkedAttachment=")
+            .append(linkedAttachment)
             .append(", entity=")
             .append(entity)
             .append("]");
@@ -154,6 +168,7 @@ public abstract class RuntimeEventImpl<ENTITY_TYPE, EVENT_TYPE extends Enum<?>>
             businessKey,
             entity,
             id,
+            linkedAttachment,
             parentProcessInstanceId,
             processDefinitionId,
             processDefinitionKey,
@@ -180,6 +195,7 @@ public abstract class RuntimeEventImpl<ENTITY_TYPE, EVENT_TYPE extends Enum<?>>
             Objects.equals(businessKey, other.businessKey) &&
             Objects.equals(entity, other.entity) &&
             Objects.equals(id, other.id) &&
+            Objects.equals(linkedAttachment, other.linkedAttachment) &&
             Objects.equals(parentProcessInstanceId, other.parentProcessInstanceId) &&
             Objects.equals(processDefinitionId, other.processDefinitionId) &&
             Objects.equals(processDefinitionKey, other.processDefinitionKey) &&

@@ -16,30 +16,10 @@
 package org.activiti.api.model.shared.event;
 
 import java.io.Serializable;
-import java.util.List;
 
-public interface RuntimeEvent<ENTITY_TYPE, EVENT_TYPE extends Enum<?>> extends Serializable {
-    String getId();
+public interface LinkedAttachment extends Serializable {
+    /** I.e. "hyland-temp-storage". */
+    String getType();
 
-    ENTITY_TYPE getEntity();
-
-    Long getTimestamp();
-
-    EVENT_TYPE getEventType();
-
-    String getProcessInstanceId();
-
-    String getParentProcessInstanceId();
-
-    String getProcessDefinitionId();
-
-    String getProcessDefinitionKey();
-
-    Integer getProcessDefinitionVersion();
-
-    String getBusinessKey();
-
-    default List<LinkedAttachment> getLinkedAttachment() {
-        return List.of();
-    }
+    String getLink();
 }
