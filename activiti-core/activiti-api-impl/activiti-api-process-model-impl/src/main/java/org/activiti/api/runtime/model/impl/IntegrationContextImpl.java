@@ -23,7 +23,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.activiti.api.process.model.ExternalizedDataConfig;
 import org.activiti.api.process.model.IntegrationContext;
 
 public class IntegrationContextImpl implements IntegrationContext {
@@ -45,7 +44,6 @@ public class IntegrationContextImpl implements IntegrationContext {
     private String appVersion;
     private String connectorType;
     private Boolean ephemeralVariables;
-    private ExternalizedDataConfig externalizedDataConfig;
 
     public IntegrationContextImpl() {
         this.id = UUID.randomUUID().toString();
@@ -75,10 +73,6 @@ public class IntegrationContextImpl implements IntegrationContext {
         this.appVersion = other.getAppVersion();
         this.connectorType = other.getConnectorType();
         this.ephemeralVariables = other.hasEphemeralVariables();
-        ExternalizedDataConfig otherExternalizedDataConfig = other.getExternalizedDataConfig();
-        if (otherExternalizedDataConfig != null) {
-            this.externalizedDataConfig = new ExternalizedDataConfigImpl(otherExternalizedDataConfig);
-        }
     }
 
     @Override
@@ -240,15 +234,6 @@ public class IntegrationContextImpl implements IntegrationContext {
     }
 
     @Override
-    public ExternalizedDataConfig getExternalizedDataConfig() {
-        return externalizedDataConfig;
-    }
-
-    public void setExternalizedDataConfig(ExternalizedDataConfig externalizedDataConfig) {
-        this.externalizedDataConfig = externalizedDataConfig;
-    }
-
-    @Override
     public int hashCode() {
         return Objects.hash(
             appVersion,
@@ -267,8 +252,7 @@ public class IntegrationContextImpl implements IntegrationContext {
             processDefinitionVersion,
             processInstanceId,
             rootProcessInstanceId,
-            ephemeralVariables,
-            externalizedDataConfig
+            ephemeralVariables
         );
     }
 
@@ -301,8 +285,7 @@ public class IntegrationContextImpl implements IntegrationContext {
             Objects.equals(processDefinitionVersion, other.processDefinitionVersion) &&
             Objects.equals(processInstanceId, other.processInstanceId) &&
             Objects.equals(rootProcessInstanceId, other.rootProcessInstanceId) &&
-            Objects.equals(ephemeralVariables, other.ephemeralVariables) &&
-            Objects.equals(externalizedDataConfig, other.externalizedDataConfig)
+            Objects.equals(ephemeralVariables, other.ephemeralVariables)
         );
     }
 
@@ -344,8 +327,6 @@ public class IntegrationContextImpl implements IntegrationContext {
             .append(connectorType)
             .append(", ephemeralVariables=")
             .append(ephemeralVariables)
-            .append(", externalizedDataConfig=")
-            .append(externalizedDataConfig)
             .append("]");
         return builder.toString();
     }
