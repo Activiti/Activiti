@@ -48,6 +48,7 @@ import org.activiti.api.task.model.payloads.UpdateTaskVariablePayload;
 import org.activiti.api.task.runtime.TaskIdentificationStrategy;
 import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.api.task.runtime.conf.TaskRuntimeConfiguration;
+import org.activiti.engine.ActivitiTaskAlreadyClaimedException;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
@@ -327,9 +328,23 @@ public class TaskRuntimeImpl implements TaskRuntime {
         }
 
         List<String> userGroups = securityManager.getAuthenticatedUserGroups();
-        String taskId = taskService.claimNextCandidateTask(userId, userGroups);
+        TaskQuery nextCandidateTaskQuery = taskService
+            .createTaskQuery()
+            .taskCandidateUser(userId, userGroups)
+            .orderByTaskCreateTime()
+            .asc();
 
-        return taskId == null ? null : task(taskId);
+        List<org.activiti.engine.task.Task> nextCandidateTasks = nextCandidateTaskQuery.listPage(0, 3);
+        for (org.activiti.engine.task.Task nextCandidateTask : nextCandidateTasks) {
+            try {
+                taskService.claim(nextCandidateTask.getId(), userId);
+                return task(nextCandidateTask.getId());
+            } catch (ActivitiTaskAlreadyClaimedException _) {
+                // Try the next candidate task when the current one was claimed concurrently.
+            }
+        }
+
+        return null;
     }
 
     @Override
