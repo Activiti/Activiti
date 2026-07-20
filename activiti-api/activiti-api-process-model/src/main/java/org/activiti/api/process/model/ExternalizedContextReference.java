@@ -16,7 +16,14 @@
 package org.activiti.api.process.model;
 
 public interface ExternalizedContextReference {
+    /**
+     * The name of provider used to externalize context.
+     * It's receiver responsibility to provide support for expected provider.
+     */
     String getProviderType();
 
+    /**
+     * Provider specific URL used to get data.
+     */
     String getUrl();
 }
