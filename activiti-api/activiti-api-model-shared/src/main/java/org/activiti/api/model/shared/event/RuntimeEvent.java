@@ -16,7 +16,6 @@
 package org.activiti.api.model.shared.event;
 
 import java.io.Serializable;
-import java.util.List;
 
 public interface RuntimeEvent<ENTITY_TYPE, EVENT_TYPE extends Enum<?>> extends Serializable {
     String getId();
@@ -38,8 +37,4 @@ public interface RuntimeEvent<ENTITY_TYPE, EVENT_TYPE extends Enum<?>> extends S
     Integer getProcessDefinitionVersion();
 
     String getBusinessKey();
-
-    default List<LinkedAttachment> getLinkedAttachment() {
-        return List.of();
-    }
 }
