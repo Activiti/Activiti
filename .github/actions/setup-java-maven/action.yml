@@ -22,7 +22,7 @@ runs:
           ${{ runner.os }}-maven-
 
     - name: Setup Java JDK ${{ inputs.java-version }}
-      uses: actions/setup-java@0f481fcb613427c0f801b606911222b5b6f3083a # 5.5.0
+      uses: actions/setup-java@03ad4de0992f5dab5e18fcb136590ce7c4a0ac95 # 5.6.0
       with:
         java-version: ${{ inputs.java-version }}
         distribution: ${{ inputs.java-distribution }}
