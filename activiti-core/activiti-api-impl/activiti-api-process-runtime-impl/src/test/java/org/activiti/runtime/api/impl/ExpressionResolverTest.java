@@ -381,6 +381,55 @@ public class ExpressionResolverTest {
         assertThat(result).containsEntry("players", expectedResult);
     }
 
+    @Test
+    public void resolveExpressionsMap_should_resolveWholeExpression_when_expressionIsAMapLiteralWithInnerBraces() {
+        //given a single JUEL map-literal expression that contains '}' characters internally
+        String mapLiteral =
+            "${{\n" +
+            "\"priority\": amount > 10000 ? \"HIGH_VALUE\" : \"STANDARD\",\n" +
+            "\"score\": amount * 2,\n" +
+            "\"name\": formName += \" \"+= processID +=\" \"+= agreementId\n" +
+            "}}";
+        Map<String, Object> resolvedMap = map(
+            "priority",
+            "HIGH_VALUE",
+            "score",
+            400000,
+            "name",
+            "formName process_123 1000"
+        );
+        // the WHOLE string must reach JUEL untouched (no truncation at the first inner '}')
+        Expression expression = buildExpression(mapLiteral);
+        given(expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor)).willReturn(resolvedMap);
+
+        //when
+        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
+            expressionEvaluator,
+            singletonMap("payload", mapLiteral)
+        );
+
+        //then the object is returned as-is, not stringified
+        assertThat(result).containsEntry("payload", resolvedMap);
+    }
+
+    @Test
+    public void resolveExpressionsMap_should_treatExpressionAsObjectPlaceholder_when_multilineMapLiteral() {
+        //given
+        String mapLiteral = "${{\"a\": 1, \"b\": 2}}";
+        Map<String, Object> resolvedMap = map("a", 1, "b", 2);
+        Expression expression = buildExpression(mapLiteral);
+        given(expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor)).willReturn(resolvedMap);
+
+        //when
+        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
+            expressionEvaluator,
+            singletonMap("payload", mapLiteral)
+        );
+
+        //then
+        assertThat(result).containsEntry("payload", resolvedMap);
+    }
+
     private Expression buildExpression(String expressionContent) {
         Expression expression = mock(Expression.class);
         given(expressionManager.createExpression(expressionContent)).willReturn(expression);
