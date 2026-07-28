@@ -25,19 +25,19 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: dependabot check
         id: dependabot
-        uses: Alfresco/alfresco-build-tools/.github/actions/github-pr-check-metadata@1d671f8f10336861c89c67be57c6648d98876103 # v18.19.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/github-pr-check-metadata@e87345fb177248fc5bdc7838107f098438818df1 # v18.21.0
         with:
           gh-token: ${{ secrets.BOT_GITHUB_TOKEN }}
           actor: "dependabot[bot]"
           label: github_actions
       - name: pre-commit
-        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@1d671f8f10336861c89c67be57c6648d98876103 # v18.19.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@e87345fb177248fc5bdc7838107f098438818df1 # v18.21.0
         with:
           skip_checkout: true
       - name: Ensure SHA pinned actions
         uses: hyland/github-actions-ensure-sha-pinned-actions@7957efb76aba0eec7580a9c0392d3e5bec381359 # v2.0.1
       - name: Ensure all actions are covered by Dependabot
-        uses: Alfresco/alfresco-build-tools/.github/actions/dependabot-missing-actions-check@1d671f8f10336861c89c67be57c6648d98876103 # v18.19.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/dependabot-missing-actions-check@e87345fb177248fc5bdc7838107f098438818df1 # v18.21.0
 
   create-tag:
     runs-on: ubuntu-latest
@@ -54,7 +54,7 @@ jobs:
         with:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/maven-tag@1d671f8f10336861c89c67be57c6648d98876103 # v18.19.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/maven-tag@e87345fb177248fc5bdc7838107f098438818df1 # v18.21.0
         id: tag
         with:
           java-version: "25"
@@ -129,18 +129,18 @@ jobs:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
       - name: Get branch name
-        uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@1d671f8f10336861c89c67be57c6648d98876103 # v18.19.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@e87345fb177248fc5bdc7838107f098438818df1 # v18.21.0
 
       - name: Configure propagation git author
         if: ${{ env.BRANCH_NAME == 'develop' }}
-        uses: Alfresco/alfresco-build-tools/.github/actions/configure-git-author@1d671f8f10336861c89c67be57c6648d98876103 # v18.19.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/configure-git-author@e87345fb177248fc5bdc7838107f098438818df1 # v18.21.0
         with:
           username: ${{ vars.HXPS_GIT_USERNAME }}
           email: ${{ vars.HXPS_GIT_EMAIL }}
           global: "true"
 
       - name: Propagate
-        uses: Alfresco/alfresco-build-tools/.github/actions/jx-updatebot-pr@1d671f8f10336861c89c67be57c6648d98876103 # v18.19.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/jx-updatebot-pr@e87345fb177248fc5bdc7838107f098438818df1 # v18.21.0
         if: ${{ env.BRANCH_NAME == 'develop' }}
         env:
           DEVELOPMENT_BRANCH: ${{ github.ref_name }}
@@ -168,6 +168,6 @@ jobs:
       contents: read
     steps:
       - name: Teams Notification
-        uses: Alfresco/alfresco-build-tools/.github/actions/send-teams-notification@1d671f8f10336861c89c67be57c6648d98876103 # v18.19.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/send-teams-notification@e87345fb177248fc5bdc7838107f098438818df1 # v18.21.0
         with:
           webhook-url: ${{ secrets.TEAMS_NOTIFICATION_WORKFLOW_WEBHOOK }}
