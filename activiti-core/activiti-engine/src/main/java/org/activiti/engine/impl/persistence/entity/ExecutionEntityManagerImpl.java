@@ -400,7 +400,7 @@ public class ExecutionEntityManagerImpl
 
         if (
             Context.getProcessEngineConfiguration() != null &&
-                Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()
+            Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()
         ) {
             Context.getProcessEngineConfiguration()
                 .getEventDispatcher()
@@ -603,12 +603,17 @@ public class ExecutionEntityManagerImpl
 
         String actor = SERVICE_USER;
         if (getEventDispatcher().isEnabled() && !cancel) {
-            var identityLinks = identityLinkEntityManager.findIdentityLinksByProcessInstanceId(processInstanceEntity.getProcessInstanceId());
+            var identityLinks = identityLinkEntityManager.findIdentityLinksByProcessInstanceId(
+                processInstanceEntity.getProcessInstanceId()
+            );
 
-            actor = identityLinks.stream().filter(identityLink -> ACTOR.equalsIgnoreCase(identityLink.getType()))
+            actor = identityLinks
+                .stream()
+                .filter(identityLink -> ACTOR.equalsIgnoreCase(identityLink.getType()))
                 .map(IdentityLink::getDetails)
                 .map(String::new)
-                .findFirst().orElse(SERVICE_USER);
+                .findFirst()
+                .orElse(SERVICE_USER);
         }
 
         // Call activities
@@ -636,7 +641,11 @@ public class ExecutionEntityManagerImpl
         if (getEventDispatcher().isEnabled()) {
             if (!cancel) {
                 getEventDispatcher().dispatchEvent(
-                    ActivitiEventBuilder.createEntityEventWithActor(ActivitiEventType.PROCESS_COMPLETED, processInstanceEntity, actor)
+                    ActivitiEventBuilder.createEntityEventWithActor(
+                        ActivitiEventType.PROCESS_COMPLETED,
+                        processInstanceEntity,
+                        actor
+                    )
                 );
             } else {
                 getEventDispatcher().dispatchEvent(
@@ -747,9 +756,9 @@ public class ExecutionEntityManagerImpl
 
         if (
             executionEntity.getId().equals(executionEntity.getProcessInstanceId()) &&
-                (!enableExecutionRelationshipCounts ||
-                    (enableExecutionRelationshipCounts &&
-                        ((CountingExecutionEntity) executionEntity).getIdentityLinkCount() > 0))
+            (!enableExecutionRelationshipCounts ||
+                (enableExecutionRelationshipCounts &&
+                    ((CountingExecutionEntity) executionEntity).getIdentityLinkCount() > 0))
         ) {
             IdentityLinkEntityManager identityLinkEntityManager = getIdentityLinkEntityManager();
             Collection<IdentityLinkEntity> identityLinks =
@@ -765,7 +774,7 @@ public class ExecutionEntityManagerImpl
 
         if (
             !enableExecutionRelationshipCounts ||
-                (enableExecutionRelationshipCounts && ((CountingExecutionEntity) executionEntity).getTimerJobCount() > 0)
+            (enableExecutionRelationshipCounts && ((CountingExecutionEntity) executionEntity).getTimerJobCount() > 0)
         ) {
             TimerJobEntityManager timerJobEntityManager = getTimerJobEntityManager();
             Collection<TimerJobEntity> timerJobsForExecution = timerJobEntityManager.findJobsByExecutionId(
@@ -783,7 +792,7 @@ public class ExecutionEntityManagerImpl
 
         if (
             !enableExecutionRelationshipCounts ||
-                (enableExecutionRelationshipCounts && ((CountingExecutionEntity) executionEntity).getJobCount() > 0)
+            (enableExecutionRelationshipCounts && ((CountingExecutionEntity) executionEntity).getJobCount() > 0)
         ) {
             JobEntityManager jobEntityManager = getJobEntityManager();
             Collection<JobEntity> jobsForExecution = jobEntityManager.findJobsByExecutionId(executionEntity.getId());
@@ -799,8 +808,8 @@ public class ExecutionEntityManagerImpl
 
         if (
             !enableExecutionRelationshipCounts ||
-                (enableExecutionRelationshipCounts &&
-                    ((CountingExecutionEntity) executionEntity).getSuspendedJobCount() > 0)
+            (enableExecutionRelationshipCounts &&
+                ((CountingExecutionEntity) executionEntity).getSuspendedJobCount() > 0)
         ) {
             SuspendedJobEntityManager suspendedJobEntityManager = getSuspendedJobEntityManager();
             Collection<SuspendedJobEntity> suspendedJobsForExecution = suspendedJobEntityManager.findJobsByExecutionId(
@@ -818,8 +827,8 @@ public class ExecutionEntityManagerImpl
 
         if (
             !enableExecutionRelationshipCounts ||
-                (enableExecutionRelationshipCounts &&
-                    ((CountingExecutionEntity) executionEntity).getDeadLetterJobCount() > 0)
+            (enableExecutionRelationshipCounts &&
+                ((CountingExecutionEntity) executionEntity).getDeadLetterJobCount() > 0)
         ) {
             DeadLetterJobEntityManager deadLetterJobEntityManager = getDeadLetterJobEntityManager();
             Collection<DeadLetterJobEntity> deadLetterJobsForExecution =
@@ -837,8 +846,8 @@ public class ExecutionEntityManagerImpl
         // Delete event subscriptions
         if (
             !enableExecutionRelationshipCounts ||
-                (enableExecutionRelationshipCounts &&
-                    ((CountingExecutionEntity) executionEntity).getEventSubscriptionCount() > 0)
+            (enableExecutionRelationshipCounts &&
+                ((CountingExecutionEntity) executionEntity).getEventSubscriptionCount() > 0)
         ) {
             EventSubscriptionEntityManager eventSubscriptionEntityManager = getEventSubscriptionEntityManager();
             List<EventSubscriptionEntity> eventSubscriptions =
@@ -847,13 +856,10 @@ public class ExecutionEntityManagerImpl
                 eventSubscriptionEntityManager.delete(eventSubscription);
             }
         }
-
     }
 
     private void deleteVariables(ExecutionEntity executionEntity, boolean enableExecutionRelationshipCounts) {
-        if (
-            !enableExecutionRelationshipCounts || ((CountingExecutionEntity) executionEntity).getVariableCount() > 0
-        ) {
+        if (!enableExecutionRelationshipCounts || ((CountingExecutionEntity) executionEntity).getVariableCount() > 0) {
             List<VariableInstanceEntity> executionVariables =
                 getVariableInstanceEntityManager().findVariableInstancesByExecutionId(executionEntity.getId());
             for (VariableInstanceEntity variableInstanceEntity : executionVariables) {
@@ -861,14 +867,11 @@ public class ExecutionEntityManagerImpl
                 variableInstanceEntityManager.delete(variableInstanceEntity);
                 if (
                     variableInstanceEntity.getByteArrayRef() != null &&
-                        variableInstanceEntity.getByteArrayRef().getId() != null
+                    variableInstanceEntity.getByteArrayRef().getId() != null
                 ) {
-                    getByteArrayEntityManager().deleteByteArrayById(
-                        variableInstanceEntity.getByteArrayRef().getId()
-                    );
+                    getByteArrayEntityManager().deleteByteArrayById(variableInstanceEntity.getByteArrayRef().getId());
                 }
             }
-
         }
     }
 
@@ -877,7 +880,7 @@ public class ExecutionEntityManagerImpl
 
         if (
             !enableExecutionRelationshipCounts ||
-                (enableExecutionRelationshipCounts && ((CountingExecutionEntity) executionEntity).getTaskCount() > 0)
+            (enableExecutionRelationshipCounts && ((CountingExecutionEntity) executionEntity).getTaskCount() > 0)
         ) {
             TaskEntityManager taskEntityManager = getTaskEntityManager();
             Collection<TaskEntity> tasksForExecution = taskEntityManager.findTasksByExecutionId(
@@ -894,7 +897,7 @@ public class ExecutionEntityManagerImpl
 
         if (
             !enableExecutionRelationshipCounts ||
-                (enableExecutionRelationshipCounts && ((CountingExecutionEntity) executionEntity).getTaskCount() > 0)
+            (enableExecutionRelationshipCounts && ((CountingExecutionEntity) executionEntity).getTaskCount() > 0)
         ) {
             TaskEntityManager taskEntityManager = getTaskEntityManager();
             Collection<TaskEntity> tasksForExecution = taskEntityManager.findTasksByExecutionId(
@@ -922,9 +925,9 @@ public class ExecutionEntityManagerImpl
 
         if (
             isActive &&
-                executionEntity.getCurrentFlowElement() != null &&
-                !(executionEntity.getCurrentFlowElement() instanceof UserTask) &&
-                !(executionEntity.getCurrentFlowElement() instanceof SequenceFlow)
+            executionEntity.getCurrentFlowElement() != null &&
+            !(executionEntity.getCurrentFlowElement() instanceof UserTask) &&
+            !(executionEntity.getCurrentFlowElement() instanceof SequenceFlow)
         ) {
             getEventDispatcher().dispatchEvent(
                 ActivitiEventBuilder.createActivityCancelledEvent(executionEntity, deleteReason)

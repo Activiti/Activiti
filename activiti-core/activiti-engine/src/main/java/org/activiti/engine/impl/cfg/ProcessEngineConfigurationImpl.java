@@ -17,7 +17,6 @@ package org.activiti.engine.impl.cfg;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.el.ELResolver;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -335,6 +334,7 @@ import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
 import org.apache.ibatis.type.JdbcType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.databind.json.JsonMapper;
 
 public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfiguration {
 
@@ -830,8 +830,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
     public int DEFAULT_MAX_NR_OF_STATEMENTS_BULK_INSERT_SQL_SERVER = 70; // currently Execution has most params (28). 2000 / 28 = 71.
 
-    protected ObjectMapper objectMapper = new ObjectMapper();
-
     /**
      * Flag that can be set to configure or nota relational database is used.
      * This is useful for custom implementations that do not use relational databases at all.
@@ -854,6 +852,16 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     protected PerformanceSettings performanceSettings = new PerformanceSettings();
 
     protected ProcessDefinitionHelper processDefinitionHelper;
+
+    protected JsonMapper jsonMapper;
+
+    protected ProcessEngineConfigurationImpl() {
+        this(JsonMapper.builder().build());
+    }
+
+    protected ProcessEngineConfigurationImpl(JsonMapper jsonMapper) {
+        this.jsonMapper = jsonMapper;
+    }
 
     // buildProcessEngine
     // ///////////////////////////////////////////////////////
@@ -2034,15 +2042,20 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
             variableTypes.addType(new UUIDType());
             variableTypes.addType(new BigDecimalType());
 
-            objectMapper.configOverride(BigDecimal.class).setFormat(JsonFormat.Value.forShape(JsonFormat.Shape.STRING));
-            JsonTypeConverter jsonTypeConverter = new JsonTypeConverter(objectMapper, javaClassFieldForJackson);
+            jsonMapper = jsonMapper
+                .rebuild()
+                .withConfigOverride(BigDecimal.class, o ->
+                    o.setFormat(JsonFormat.Value.forShape(JsonFormat.Shape.STRING))
+                )
+                .build();
+            JsonTypeConverter jsonTypeConverter = new JsonTypeConverter(jsonMapper, javaClassFieldForJackson);
             variableTypes.addType(
-                new JsonType(getMaxLengthString(), objectMapper, serializePOJOsInVariablesToJson, jsonTypeConverter)
+                new JsonType(getMaxLengthString(), jsonMapper, serializePOJOsInVariablesToJson, jsonTypeConverter)
             );
             variableTypes.addType(
                 new LongJsonType(
                     getMaxLengthString() + 1,
-                    objectMapper,
+                    jsonMapper,
                     serializePOJOsInVariablesToJson,
                     jsonTypeConverter
                 )
@@ -2228,7 +2241,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         if (enableDatabaseEventLogging) {
             // Database event logging uses the default logging mechanism and adds
             // a specific event listener to the list of event listeners
-            getEventDispatcher().addEventListener(new EventLogger(clock, objectMapper));
+            getEventDispatcher().addEventListener(new EventLogger(clock, jsonMapper));
         }
     }
 
@@ -3711,12 +3724,12 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         return this;
     }
 
-    public ObjectMapper getObjectMapper() {
-        return objectMapper;
+    public JsonMapper getObjectMapper() {
+        return jsonMapper;
     }
 
-    public ProcessEngineConfigurationImpl setObjectMapper(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
+    public ProcessEngineConfigurationImpl setObjectMapper(JsonMapper jsonMapper) {
+        this.jsonMapper = jsonMapper;
         return this;
     }
 

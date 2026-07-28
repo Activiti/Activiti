@@ -83,7 +83,7 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
         this.transientVariables = processInstanceBuilder.getTransientVariables();
         this.linkedProcessInstanceId = processInstanceBuilder.getLinkedProcessInstanceId();
         this.linkedProcessInstanceType = processInstanceBuilder.getLinkedProcessInstanceType();
-  }
+    }
 
     public ProcessInstance execute(CommandContext commandContext) {
         DeploymentManager deploymentCache = commandContext.getProcessEngineConfiguration().getDeploymentManager();
@@ -96,8 +96,7 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
 
         processInstanceHelper = commandContext.getProcessEngineConfiguration().getProcessInstanceHelper();
 
-        ProcessInstanceCreationOptions options = ProcessInstanceCreationOptions
-            .builder(processDefinition)
+        ProcessInstanceCreationOptions options = ProcessInstanceCreationOptions.builder(processDefinition)
             .businessKey(businessKey)
             .processInstanceName(processInstanceName)
             .variables(variables)
@@ -109,9 +108,7 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
         return createAndStartProcessInstance(options);
     }
 
-    protected ProcessInstance createAndStartProcessInstance(
-        ProcessInstanceCreationOptions options
-    ) {
+    protected ProcessInstance createAndStartProcessInstance(ProcessInstanceCreationOptions options) {
         return processInstanceHelper.createAndStartProcessInstance(options);
     }
 

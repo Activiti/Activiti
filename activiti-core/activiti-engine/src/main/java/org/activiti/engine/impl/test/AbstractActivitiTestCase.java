@@ -39,6 +39,7 @@ import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.ProcessEngineImpl;
+import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.history.HistoryLevel;
@@ -110,6 +111,11 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
             exception = e;
             throw e;
         } finally {
+            AsyncExecutor asyncExecutor = processEngineConfiguration.getAsyncExecutor();
+            if (asyncExecutor != null && asyncExecutor.isActive()) {
+                asyncExecutor.shutdown();
+            }
+
             if (deploymentIdFromDeploymentAnnotation != null) {
                 TestHelper.annotationDeploymentTearDown(
                     processEngine,
@@ -342,7 +348,10 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
     }
 
     public void assertProcessNotEnded(final String processInstanceId) {
-        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
+        ProcessInstance processInstance = runtimeService
+            .createProcessInstanceQuery()
+            .processInstanceId(processInstanceId)
+            .singleResult();
         assertThat(processInstance).isNotNull();
     }
 

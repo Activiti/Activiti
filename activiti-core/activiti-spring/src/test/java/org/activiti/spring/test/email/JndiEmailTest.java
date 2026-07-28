@@ -18,11 +18,11 @@ package org.activiti.spring.test.email;
 import static java.util.Collections.emptyMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.List;
-import java.util.Properties;
 import jakarta.mail.NoSuchProviderException;
 import jakarta.mail.Provider;
 import jakarta.mail.Session;
+import java.util.List;
+import java.util.Properties;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import org.activiti.engine.runtime.ProcessInstance;

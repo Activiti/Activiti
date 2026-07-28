@@ -161,8 +161,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
     }
 
     private ProcessDefinitionQuery createProcessDefinitionQueryIncludingNoUserStartableProcesses() {
-        return repositoryService
-            .createProcessDefinitionQuery();
+        return repositoryService.createProcessDefinitionQuery();
     }
 
     private Optional<org.activiti.engine.repository.ProcessDefinition> findLatestProcessDefinition(
@@ -240,8 +239,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
         ProcessDefinitionQuery processDefinitionQuery;
 
-
-        if (include.contains(NO_USER_STARTABLE_PROCESSES)){
+        if (include.contains(NO_USER_STARTABLE_PROCESSES)) {
             processDefinitionQuery = createProcessDefinitionQueryIncludingNoUserStartableProcesses()
                 .latestVersion()
                 .deploymentIds(latestDeploymentIds());
@@ -250,7 +248,6 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
                 .latestVersion()
                 .deploymentIds(latestDeploymentIds());
         }
-
 
         if (getProcessDefinitionsPayload.hasDefinitionKeys()) {
             processDefinitionQuery.processDefinitionKeys(getProcessDefinitionsPayload.getProcessDefinitionKeys());

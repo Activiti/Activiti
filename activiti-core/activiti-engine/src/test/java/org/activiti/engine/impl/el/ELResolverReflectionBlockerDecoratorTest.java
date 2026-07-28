@@ -23,7 +23,7 @@ import java.util.Map;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.delegate.invocation.DefaultDelegateInterceptor;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ELResolverReflectionBlockerDecoratorTest {
 

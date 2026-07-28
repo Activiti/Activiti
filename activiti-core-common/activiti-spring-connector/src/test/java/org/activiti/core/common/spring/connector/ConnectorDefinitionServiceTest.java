@@ -20,7 +20,6 @@ import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.core.common.model.connector.ConnectorDefinition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,6 +27,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.support.ResourcePatternResolver;
+import tools.jackson.databind.json.JsonMapper;
 
 @ExtendWith(MockitoExtension.class)
 public class ConnectorDefinitionServiceTest {
@@ -35,14 +35,14 @@ public class ConnectorDefinitionServiceTest {
     private ConnectorDefinitionService connectorDefinitionService;
 
     @Mock
-    private ObjectMapper objectMapper;
+    private JsonMapper jsonMapper;
 
     @Mock
     private ResourcePatternResolver resourceLoader;
 
     @BeforeEach
     public void setUp() {
-        connectorDefinitionService = new ConnectorDefinitionService("/connectors", objectMapper, resourceLoader);
+        connectorDefinitionService = new ConnectorDefinitionService("/connectors", jsonMapper, resourceLoader);
     }
 
     @Test

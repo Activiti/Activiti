@@ -15,10 +15,11 @@
  */
 package org.activiti.engine.impl;
 
-import org.activiti.engine.repository.ProcessDefinition;
 import java.util.Map;
+import org.activiti.engine.repository.ProcessDefinition;
 
 public class ProcessInstanceCreationOptions {
+
     private final ProcessDefinition processDefinition;
     private final String businessKey;
     private final String processInstanceName;
@@ -42,6 +43,7 @@ public class ProcessInstanceCreationOptions {
     }
 
     public static class Builder {
+
         private final ProcessDefinition processDefinition;
         private String businessKey;
         private String processInstanceName;
@@ -89,11 +91,31 @@ public class ProcessInstanceCreationOptions {
         }
     }
 
-    public ProcessDefinition getProcessDefinition() { return processDefinition; }
-    public String getBusinessKey() { return businessKey; }
-    public String getProcessInstanceName() { return processInstanceName; }
-    public Map<String, Object> getVariables() { return variables; }
-    public Map<String, Object> getTransientVariables() { return transientVariables; }
-    public String getLinkedProcessInstanceId() { return linkedProcessInstanceId; }
-    public String getLinkedProcessInstanceType() { return linkedProcessInstanceType; }
+    public ProcessDefinition getProcessDefinition() {
+        return processDefinition;
+    }
+
+    public String getBusinessKey() {
+        return businessKey;
+    }
+
+    public String getProcessInstanceName() {
+        return processInstanceName;
+    }
+
+    public Map<String, Object> getVariables() {
+        return variables;
+    }
+
+    public Map<String, Object> getTransientVariables() {
+        return transientVariables;
+    }
+
+    public String getLinkedProcessInstanceId() {
+        return linkedProcessInstanceId;
+    }
+
+    public String getLinkedProcessInstanceType() {
+        return linkedProcessInstanceType;
+    }
 }

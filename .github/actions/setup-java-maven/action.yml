@@ -1,0 +1,28 @@
+name: Setup Java and Maven cache
+description: Restores the Maven ~/.m2 cache and sets up the JDK.
+
+inputs:
+  java-version:
+    description: The Java version to set up.
+    required: false
+    default: "25"
+  java-distribution:
+    description: The Java distribution to set up.
+    required: false
+    default: "corretto"
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
+
+    - name: Setup Java JDK ${{ inputs.java-version }}
+      uses: actions/setup-java@03ad4de0992f5dab5e18fcb136590ce7c4a0ac95 # 5.6.0
+      with:
+        java-version: ${{ inputs.java-version }}
+        distribution: ${{ inputs.java-distribution }}

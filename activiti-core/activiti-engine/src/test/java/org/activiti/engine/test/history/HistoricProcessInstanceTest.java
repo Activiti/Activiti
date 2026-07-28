@@ -40,10 +40,10 @@ import org.activiti.engine.test.Deployment;
 
 public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
 
-    @Deployment(resources = {"org/activiti/engine/test/history/oneTaskProcess.bpmn20.xml"})
+    @Deployment(resources = { "org/activiti/engine/test/history/oneTaskProcess.bpmn20.xml" })
     public void testHistoricProcessInstanceMaxResults() {
         // GIVEN: 5 running process instances
-        for (int i=0; i<5; i++) {
+        for (int i = 0; i < 5; i++) {
             runtimeService.startProcessInstanceByKey("oneTaskProcess", "myBusinessKey");
         }
 

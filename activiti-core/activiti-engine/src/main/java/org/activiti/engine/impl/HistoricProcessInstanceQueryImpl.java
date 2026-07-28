@@ -15,8 +15,6 @@
  */
 package org.activiti.engine.impl;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -31,6 +29,8 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity;
 import org.activiti.engine.repository.ProcessDefinition;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.ObjectNode;
 
 /**
 
@@ -632,12 +632,12 @@ public class HistoricProcessInstanceQueryImpl
             if (languageNode != null) {
                 JsonNode languageNameNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_NAME);
                 if (languageNameNode != null && !languageNameNode.isNull()) {
-                    processInstanceEntity.setLocalizedName(languageNameNode.asText());
+                    processInstanceEntity.setLocalizedName(languageNameNode.asString());
                 }
 
                 JsonNode languageDescriptionNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_DESCRIPTION);
                 if (languageDescriptionNode != null && !languageDescriptionNode.isNull()) {
-                    processInstanceEntity.setLocalizedDescription(languageDescriptionNode.asText());
+                    processInstanceEntity.setLocalizedDescription(languageDescriptionNode.asString());
                 }
             }
         }

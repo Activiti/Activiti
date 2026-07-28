@@ -15,6 +15,10 @@
  */
 package org.activiti.runtime.api.event.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
+
+import java.util.Optional;
 import org.activiti.api.process.runtime.events.ProcessStartedEvent;
 import org.activiti.api.runtime.model.impl.ProcessInstanceImpl;
 import org.activiti.engine.delegate.event.ActivitiProcessStartedEvent;
@@ -25,10 +29,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ToAPIProcessStartedEventConverterTest {
@@ -51,7 +51,6 @@ class ToAPIProcessStartedEventConverterTest {
 
     @Test
     void shouldConvertToProcessStartedEventWhenInternalEventIsValid() {
-
         ProcessInstanceImpl processInstance = new ProcessInstanceImpl();
         processInstance.setId("processInstanceId");
 
@@ -75,5 +74,4 @@ class ToAPIProcessStartedEventConverterTest {
         assertThat(event.getLinkedProcessInstanceId()).isEqualTo("linkedProcInstId");
         assertThat(event.getLinkedProcessInstanceType()).isEqualTo("linkedProcInstType");
     }
-
 }

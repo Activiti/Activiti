@@ -15,7 +15,6 @@
  */
 package org.activiti.runtime.api.conf;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import org.activiti.core.el.CustomFunctionProvider;
 import org.activiti.engine.impl.bpmn.behavior.VariablesCalculator;
@@ -33,6 +32,7 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import tools.jackson.databind.json.JsonMapper;
 
 @AutoConfiguration
 public class ConnectorsAutoConfiguration {
@@ -47,8 +47,8 @@ public class ConnectorsAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ExpressionResolver expressionResolver(ExpressionManager expressionManager, ObjectMapper objectMapper) {
-        return new ExpressionResolver(expressionManager, objectMapper, new DefaultDelegateInterceptor());
+    public ExpressionResolver expressionResolver(ExpressionManager expressionManager, JsonMapper jsonMapper) {
+        return new ExpressionResolver(expressionManager, jsonMapper, new DefaultDelegateInterceptor());
     }
 
     @Bean
@@ -75,12 +75,14 @@ public class ConnectorsAutoConfiguration {
     public ExtensionsVariablesMappingProvider variablesMappingProvider(
         ProcessExtensionService processExtensionService,
         ExpressionResolver expressionResolver,
-        VariableParsingService variableParsingService
+        VariableParsingService variableParsingService,
+        JsonMapper mapper
     ) {
         return new ExtensionsVariablesMappingProvider(
             processExtensionService,
             expressionResolver,
-            variableParsingService
+            variableParsingService,
+            mapper
         );
     }
 

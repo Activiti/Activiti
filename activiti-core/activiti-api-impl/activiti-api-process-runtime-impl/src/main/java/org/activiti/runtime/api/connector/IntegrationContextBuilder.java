@@ -110,5 +110,4 @@ public class IntegrationContextBuilder {
 
         return clientName;
     }
-
 }

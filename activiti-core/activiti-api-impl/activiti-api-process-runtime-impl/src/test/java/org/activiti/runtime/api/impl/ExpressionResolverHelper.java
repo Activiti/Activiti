@@ -18,7 +18,6 @@ package org.activiti.runtime.api.impl;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.el.ELResolver;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,10 +32,11 @@ import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
 import org.activiti.spring.process.model.Extension;
 import org.activiti.spring.process.model.VariableDefinition;
+import tools.jackson.databind.json.JsonMapper;
 
 public class ExpressionResolverHelper {
 
-    private static ObjectMapper objectMapper = new ObjectMapper();
+    private static JsonMapper jsonMapper = new JsonMapper();
 
     private static void initializeExpressionResolver(
         List<CustomFunctionProvider> customFunctionProviders,
@@ -67,7 +67,7 @@ public class ExpressionResolverHelper {
         setExecutionVariables(execution, variables);
         ExpressionManager expressionManager = new ExpressionManager();
         expressionManager.setCustomFunctionProviders(customFunctionProviders);
-        return new ExpressionResolver(expressionManager, objectMapper, new DefaultDelegateInterceptor());
+        return new ExpressionResolver(expressionManager, jsonMapper, new DefaultDelegateInterceptor());
     }
 
     public static void setExecutionVariables(DelegateExecution execution, Map<String, Object> variables) {

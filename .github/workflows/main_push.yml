@@ -1,10 +1,5 @@
 name: Push - Validate, Build and Release
 
-permissions:
-  actions: write
-  checks: write
-  contents: write
-
 on:
   push:
     branches:
@@ -20,130 +15,159 @@ concurrency:
 jobs:
   pre-checks:
     runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      checks: write
+      contents: read
     outputs:
       skip: ${{ steps.dependabot.outputs.result }}
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: dependabot check
         id: dependabot
-        uses: Alfresco/alfresco-build-tools/.github/actions/github-pr-check-metadata@661ab6a0d23f6a269da039831907cffad37cc061 # v15.12.1
+        uses: Alfresco/alfresco-build-tools/.github/actions/github-pr-check-metadata@e87345fb177248fc5bdc7838107f098438818df1 # v18.21.0
         with:
           gh-token: ${{ secrets.BOT_GITHUB_TOKEN }}
           actor: "dependabot[bot]"
           label: github_actions
       - name: pre-commit
-        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@661ab6a0d23f6a269da039831907cffad37cc061 # v15.12.1
+        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@e87345fb177248fc5bdc7838107f098438818df1 # v18.21.0
         with:
           skip_checkout: true
       - name: Ensure SHA pinned actions
-        uses: hyland/github-actions-ensure-sha-pinned-actions@1afac08cba4e5ea12263a46f49683570690ae3af # v1.2.0
+        uses: hyland/github-actions-ensure-sha-pinned-actions@7957efb76aba0eec7580a9c0392d3e5bec381359 # v2.0.1
+      - name: Ensure all actions are covered by Dependabot
+        uses: Alfresco/alfresco-build-tools/.github/actions/dependabot-missing-actions-check@e87345fb177248fc5bdc7838107f098438818df1 # v18.21.0
 
-  build:
+  create-tag:
     runs-on: ubuntu-latest
     needs: pre-checks
     if: ${{ needs.pre-checks.outputs.skip != 'true' }}
+    permissions:
+      actions: write
+      contents: write
+    outputs:
+      version: ${{ steps.tag.outputs.version }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
-      - uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
+      - uses: Alfresco/alfresco-build-tools/.github/actions/maven-tag@e87345fb177248fc5bdc7838107f098438818df1 # v18.21.0
+        id: tag
         with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          java-version: "25"
+          maven-version: "3.9.9"
+          maven-username: ${{ secrets.NEXUS_USERNAME }}
+          maven-password: ${{ secrets.NEXUS_PASSWORD }}
+          git-username: ${{ secrets.BOT_GITHUB_USERNAME }}
+          m2-cache-exclusion-pattern: org/activiti
 
-      - name: Setup Java JDK 25
-        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # 5.2.0
+  build:
+    runs-on: ubuntu-latest
+    needs:
+      - pre-checks
+      - create-tag
+    if: ${{ needs.pre-checks.outputs.skip != 'true' }}
+    permissions:
+      actions: write
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          java-version: 25
-          distribution: "corretto"
+          ref: ${{ needs.create-tag.outputs.version }}
+          persist-credentials: false
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/update-pom-to-next-pre-release@661ab6a0d23f6a269da039831907cffad37cc061 # v15.12.1
-        id: update-pom-to-next-version
+      - uses: ./.github/actions/setup-java-maven
 
-      - name: Update VERSION file
-        run: |
-          echo ${{steps.update-pom-to-next-version.outputs.next-prerelease}} > VERSION
+      - uses: ./.github/actions/maven-build-and-analyze
+        with:
+          nexus-username: ${{ secrets.NEXUS_USERNAME }}
+          nexus-password: ${{ secrets.NEXUS_PASSWORD }}
+          sonar-token: ${{ secrets.SONAR_TOKEN }}
 
-      - name: Set VERSION env variable
-        run: |
-          VERSION=$(cat VERSION)
-          echo set VERSION=$VERSION
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
+  publish:
+    runs-on: ubuntu-latest
+    needs:
+      - create-tag
+      - build
+    if: ${{ success() }}
+    permissions:
+      actions: write
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.create-tag.outputs.version }}
+          persist-credentials: false
 
-      - name: Build and Test with Maven (and maybe Deploy)
+      - uses: ./.github/actions/setup-java-maven
+
+      - name: Deploy with Maven
         shell: bash
-        run: mvn deploy ${{ env.MAVEN_CLI_OPTS}}
+        run: mvn deploy -DskipTests ${{ env.MAVEN_CLI_OPTS}}
         env:
           MAVEN_CLI_OPTS: --show-version --no-transfer-progress --settings settings.xml
           MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
 
-      - name: Merge JaCoCo execution files
-        shell: bash
-        run: mvn jacoco:merge@merge -N
-
-      - name: Generate aggregate coverage report
-        shell: bash
-        run: mvn jacoco:report -Djacoco.dataFile=${{ github.workspace }}/target/jacoco.exec
-
-      - name: Set SONAR_SCANNER_OPTS
-        shell: bash
-        run: |
-          echo "SONAR_SCANNER_OPTS=sonar:sonar -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=activiti -Dsonar.projectKey=Activiti_Activiti -Dsonar.coverage.jacoco.xmlReportPaths=**/target/site/jacoco*/jacoco.xml" >> $GITHUB_ENV
-
-      - name: Run SonarCloud analysis
-        if: ${{ env.SONAR_TOKEN != '' }}
-        shell: bash
-        run: mvn ${{ env.SONAR_SCANNER_OPTS }} ${{ env.MAVEN_CLI_OPTS}}
-        env:
-          MAVEN_CLI_OPTS: --show-version --no-transfer-progress --settings settings.xml
-          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-      - name: Echo Longest Test Run
-        uses: ./.github/actions/echo-longest-run
-
-      - name: Configure git user
-        run: |
-          git config --global user.name $GITHUB_USERNAME
-          git config --global user.email $GITHUB_USERNAME@users.noreply.github.com
-        env:
-          GITHUB_USERNAME: ${{ secrets.BOT_GITHUB_USERNAME }}
-
-      - name: Create release tag
-        run: |
-          git commit -am "Release $VERSION" --allow-empty
-          git tag -fa $VERSION -m "Release version $VERSION"
-          git push -f -q origin $VERSION
+  propagate:
+    runs-on: ubuntu-latest
+    needs:
+      - create-tag
+      - publish
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.create-tag.outputs.version }}
+          token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
       - name: Get branch name
-        uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@661ab6a0d23f6a269da039831907cffad37cc061 # v15.12.1
+        uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@e87345fb177248fc5bdc7838107f098438818df1 # v18.21.0
+
+      - name: Configure propagation git author
+        if: ${{ env.BRANCH_NAME == 'develop' }}
+        uses: Alfresco/alfresco-build-tools/.github/actions/configure-git-author@e87345fb177248fc5bdc7838107f098438818df1 # v18.21.0
+        with:
+          username: ${{ vars.HXPS_GIT_USERNAME }}
+          email: ${{ vars.HXPS_GIT_EMAIL }}
+          global: "true"
 
       - name: Propagate
-        uses: Alfresco/alfresco-build-tools/.github/actions/jx-updatebot-pr@661ab6a0d23f6a269da039831907cffad37cc061 # v15.12.1
+        uses: Alfresco/alfresco-build-tools/.github/actions/jx-updatebot-pr@e87345fb177248fc5bdc7838107f098438818df1 # v18.21.0
         if: ${{ env.BRANCH_NAME == 'develop' }}
         env:
           DEVELOPMENT_BRANCH: ${{ github.ref_name }}
         with:
-          version: ${{ env.VERSION }}
+          version: ${{ needs.create-tag.outputs.version }}
           auto-merge: "true"
           labels: ${{ env.DEVELOPMENT_BRANCH }}
           base-branch-name: ${{ env.DEVELOPMENT_BRANCH }}
-          git-username: ${{ secrets.BOT_GITHUB_USERNAME }}
+          git-username: ${{ vars.HXPS_GIT_USERNAME }}
           git-token: ${{ secrets.BOT_GITHUB_TOKEN }}
-          git-author-name: ${{ secrets.BOT_GITHUB_USERNAME }}
+          git-author-name: ${{ vars.HXPS_GIT_USERNAME }}
+          git-author-email: ${{ vars.HXPS_GIT_EMAIL }}
+          gpg-private-key: ${{ secrets.HXPS_GIT_COMMIT_SIGNING_PRIVATE_KEY }}
+          gpg-private-key-fingerprint: ${{ secrets.HXPS_GIT_COMMIT_SIGNING_FINGERPRINT }}
 
   notify:
     runs-on: ubuntu-latest
-    needs: build
+    needs:
+      - create-tag
+      - build
+      - publish
+      - propagate
     if: always() && failure()
+    permissions:
+      contents: read
     steps:
       - name: Teams Notification
-        uses: Alfresco/alfresco-build-tools/.github/actions/send-teams-notification@661ab6a0d23f6a269da039831907cffad37cc061 # v15.12.1
+        uses: Alfresco/alfresco-build-tools/.github/actions/send-teams-notification@e87345fb177248fc5bdc7838107f098438818df1 # v18.21.0
         with:
           webhook-url: ${{ secrets.TEAMS_NOTIFICATION_WORKFLOW_WEBHOOK }}

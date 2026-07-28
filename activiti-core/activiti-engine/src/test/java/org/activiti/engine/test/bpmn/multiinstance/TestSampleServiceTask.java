@@ -27,12 +27,14 @@ public class TestSampleServiceTask extends AbstractBpmnActivityBehavior {
 
     @Override
     public void execute(DelegateExecution execution) {
-        IO.println("###: execution: " +
+        IO.println(
+            "###: execution: " +
             execution.getId() +
             "; " +
             execution.getVariable("value") +
             "; " +
-            getMultiInstanceActivityBehavior());
+            getMultiInstanceActivityBehavior()
+        );
         leave(execution);
     }
 }

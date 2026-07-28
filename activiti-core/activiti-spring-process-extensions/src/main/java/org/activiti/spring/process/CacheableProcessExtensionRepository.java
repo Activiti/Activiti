@@ -19,9 +19,9 @@ import static org.activiti.spring.process.CacheableProcessExtensionRepository.PR
 
 import java.util.Optional;
 import org.activiti.spring.process.model.Extension;
+import org.jspecify.annotations.NonNull;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.lang.NonNull;
 
 @CacheConfig(cacheNames = { PROCESS_EXTENSIONS_CACHE_NAME })
 public class CacheableProcessExtensionRepository implements ProcessExtensionRepository {

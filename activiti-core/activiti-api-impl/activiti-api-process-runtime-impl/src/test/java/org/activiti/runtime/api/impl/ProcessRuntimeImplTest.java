@@ -380,6 +380,5 @@ public class ProcessRuntimeImplTest {
         verify(processDefinitionQuery, never()).startableByUser(any());
         verify(processDefinitionQuery, never()).startableByGroups(any());
         verify(processDefinitionQuery).listPage(0, 2);
-
     }
 }

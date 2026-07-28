@@ -121,7 +121,9 @@ public class ProcessDefinitionCacheTest extends AbstractTestCase {
         assertThat(processInstance).isNull();
 
         // Extra check to see if a new process instance can be started as well
-        processInstance = processEngine.getRuntimeService().startProcessInstanceById(processDefinitions.getFirst().getId());
+        processInstance = processEngine
+            .getRuntimeService()
+            .startProcessInstanceById(processDefinitions.getFirst().getId());
         assertThat(processInstance).isNotNull();
 
         // close the process engine

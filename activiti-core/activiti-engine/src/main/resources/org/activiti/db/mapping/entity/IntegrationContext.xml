@@ -67,4 +67,34 @@
     select * from ${prefix}ACT_RU_INTEGRATION where ID_ = #{id, jdbcType=VARCHAR}
   </select>
 
+  <sql id="integrationContextQueryCriteria">
+    <where>
+      <if test="createdBefore != null">
+        and RES.CREATED_DATE_ &lt; #{createdBefore}
+      </if>
+      <if test="createdAfter != null">
+        and RES.CREATED_DATE_ &gt; #{createdAfter}
+      </if>
+    </where>
+  </sql>
+
+  <select id="selectIntegrationContextByQueryCriteria"
+          parameterType="org.activiti.engine.impl.IntegrationContextQueryImpl"
+          resultMap="integrationContextResultMap">
+    ${limitBefore}
+    select RES.* ${limitBetween}
+    from ${prefix}ACT_RU_INTEGRATION RES
+    <include refid="integrationContextQueryCriteria"/>
+    ${orderBy}
+    ${limitAfter}
+  </select>
+
+  <select id="selectIntegrationContextCountByQueryCriteria"
+          parameterType="org.activiti.engine.impl.IntegrationContextQueryImpl"
+          resultType="long">
+    select count(RES.ID_)
+    from ${prefix}ACT_RU_INTEGRATION RES
+    <include refid="integrationContextQueryCriteria"/>
+  </select>
+
 </mapper>

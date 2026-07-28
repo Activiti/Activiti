@@ -19,7 +19,7 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 import org.activiti.api.runtime.shared.security.PrincipalRolesProvider;
-import org.springframework.lang.NonNull;
+import org.jspecify.annotations.NonNull;
 
 public class AuthenticationPrincipalRolesProvider implements PrincipalRolesProvider {
 

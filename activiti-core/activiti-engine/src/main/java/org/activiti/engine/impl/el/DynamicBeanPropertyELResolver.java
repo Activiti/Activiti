@@ -18,8 +18,6 @@ package org.activiti.engine.impl.el;
 import jakarta.el.ELContext;
 import jakarta.el.ELException;
 import jakarta.el.ELResolver;
-import java.beans.FeatureDescriptor;
-import java.util.Iterator;
 import org.activiti.engine.impl.util.ReflectUtil;
 
 /**
@@ -60,11 +58,6 @@ public class DynamicBeanPropertyELResolver extends ELResolver {
         } else {
             return null;
         }
-    }
-
-    @Override
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
-        return null;
     }
 
     @Override

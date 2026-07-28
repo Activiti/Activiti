@@ -23,13 +23,13 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextManager;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class RetrieveIntegrationContextCmdTest {
 
     @Mock
@@ -41,7 +41,7 @@ public class RetrieveIntegrationContextCmdTest {
     @Mock
     private IntegrationContextManager integrationContextManager;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         given(commandContext.getProcessEngineConfiguration()).willReturn(processEngineConfiguration);
         given(processEngineConfiguration.getIntegrationContextManager()).willReturn(integrationContextManager);

@@ -20,9 +20,13 @@ import org.activiti.api.task.runtime.events.TaskCandidateGroupRemovedEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.runtime.api.model.impl.APITaskCandidateGroupConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ToTaskCandidateGroupRemovedConverter
     implements EventConverter<TaskCandidateGroupRemovedEvent, ActivitiEntityEvent> {
+
+    private static final Logger logger = LoggerFactory.getLogger(ToTaskCandidateGroupRemovedConverter.class);
 
     private APITaskCandidateGroupConverter converter;
     private TaskCandidateEventConverterHelper taskCandidateEventConverterHelper =
@@ -34,11 +38,22 @@ public class ToTaskCandidateGroupRemovedConverter
 
     @Override
     public Optional<TaskCandidateGroupRemovedEvent> from(ActivitiEntityEvent internalEvent) {
-        TaskCandidateGroupRemovedEvent event = null;
+        TaskCandidateGroupRemovedImpl event = null;
         if (internalEvent.getEntity() instanceof IdentityLink) {
             IdentityLink identityLink = (IdentityLink) internalEvent.getEntity();
             if (taskCandidateEventConverterHelper.isTaskCandidateGroupLink(identityLink)) {
                 event = new TaskCandidateGroupRemovedImpl(converter.from(identityLink));
+                event.setProcessInstanceId(internalEvent.getProcessInstanceId());
+                event.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
+                logger.debug(
+                    "TaskCandidateGroupRemoved converted: taskId={}, groupId={}, link.pid={}, link.pdefId={}, event.pid={}, event.pdefId={}",
+                    identityLink.getTaskId(),
+                    identityLink.getGroupId(),
+                    identityLink.getProcessInstanceId(),
+                    identityLink.getProcessDefinitionId(),
+                    event.getProcessInstanceId(),
+                    event.getProcessDefinitionId()
+                );
             }
         }
         return Optional.ofNullable(event);

@@ -87,9 +87,9 @@ public class StartTimerEventRepeatWithEndTest extends PluggableActivitiTestCase 
         dueDateCalendar.set(2025, Calendar.DECEMBER, 11, 0, 0, 0);
 
         // check the due date is inside the 2 seconds range
-        assertThat(Math.abs(dueDateCalendar.getTime().getTime() - jobs.getFirst().getDuedate().getTime()) < 2000).isEqualTo(
-            true
-        );
+        assertThat(
+            Math.abs(dueDateCalendar.getTime().getTime() - jobs.getFirst().getDuedate().getTime()) < 2000
+        ).isEqualTo(true);
 
         // No process instances
         List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().list();
@@ -123,9 +123,9 @@ public class StartTimerEventRepeatWithEndTest extends PluggableActivitiTestCase 
         dueDateCalendar = Calendar.getInstance();
         dueDateCalendar.set(2025, Calendar.DECEMBER, 12, 0, 0, 0);
 
-        assertThat(Math.abs(dueDateCalendar.getTime().getTime() - jobs.getFirst().getDuedate().getTime()) < 2000).isEqualTo(
-            true
-        );
+        assertThat(
+            Math.abs(dueDateCalendar.getTime().getTime() - jobs.getFirst().getDuedate().getTime()) < 2000
+        ).isEqualTo(true);
 
         // ADVANCE THE CLOCK SO THE END DATE WILL BE REACHED
         // 12 dec (last execution)

@@ -22,7 +22,7 @@ import static org.mockito.Mockito.mock;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityImpl;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ProcessInitiatorELResolverTest {
 

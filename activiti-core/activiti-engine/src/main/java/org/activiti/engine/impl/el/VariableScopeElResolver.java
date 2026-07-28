@@ -17,9 +17,7 @@ package org.activiti.engine.impl.el;
 
 import jakarta.el.ELContext;
 import jakarta.el.ELResolver;
-import java.beans.FeatureDescriptor;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.context.Context;
@@ -107,11 +105,6 @@ public class VariableScopeElResolver extends ELResolver {
     @Override
     public Class<?> getCommonPropertyType(ELContext arg0, Object arg1) {
         return Object.class;
-    }
-
-    @Override
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext arg0, Object arg1) {
-        return null;
     }
 
     @Override

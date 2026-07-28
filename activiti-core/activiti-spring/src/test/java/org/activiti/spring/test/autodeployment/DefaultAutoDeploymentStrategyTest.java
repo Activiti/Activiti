@@ -27,15 +27,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.ZipInputStream;
 import org.activiti.spring.autodeployment.DefaultAutoDeploymentStrategy;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.core.io.Resource;
 
 public class DefaultAutoDeploymentStrategyTest extends AbstractAutoDeploymentStrategyTest {
 
     private DefaultAutoDeploymentStrategy deploymentStrategy;
 
-    @Before
+    @BeforeEach
     public void before() throws Exception {
         super.before();
         deploymentStrategy = new DefaultAutoDeploymentStrategy(applicationUpgradeContextServiceMock);

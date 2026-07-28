@@ -15,7 +15,6 @@
  */
 package org.activiti.spring.process.conf;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,6 +42,7 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.PropertySource;
+import tools.jackson.databind.json.JsonMapper;
 
 @AutoConfiguration
 @EnableCaching
@@ -58,10 +58,10 @@ public class ProcessExtensionsAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public ProcessExtensionResourceReader processExtensionResourceReader(
-        ObjectMapper objectMapper,
+        JsonMapper jsonMapper,
         Map<String, VariableType> variableTypeMap
     ) {
-        return new ProcessExtensionResourceReader(objectMapper, variableTypeMap);
+        return new ProcessExtensionResourceReader(jsonMapper, variableTypeMap);
     }
 
     @Bean
@@ -97,7 +97,7 @@ public class ProcessExtensionsAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean(name = "variableTypeMap")
     public Map<String, VariableType> variableTypeMap(
-        ObjectMapper objectMapper,
+        JsonMapper jsonMapper,
         DateFormatterProvider dateFormatterProvider
     ) {
         Map<String, VariableType> variableTypeMap = new HashMap<>();
@@ -105,13 +105,13 @@ public class ProcessExtensionsAutoConfiguration {
         variableTypeMap.put("string", new JavaObjectVariableType(String.class));
         variableTypeMap.put("integer", new JavaObjectVariableType(Integer.class));
         variableTypeMap.put("bigdecimal", new BigDecimalVariableType());
-        variableTypeMap.put("json", new JsonObjectVariableType(objectMapper));
-        variableTypeMap.put("file", new JsonObjectVariableType(objectMapper));
-        variableTypeMap.put("folder", new JsonObjectVariableType(objectMapper));
-        variableTypeMap.put("content", new JsonObjectVariableType(objectMapper));
+        variableTypeMap.put("json", new JsonObjectVariableType(jsonMapper));
+        variableTypeMap.put("file", new JsonObjectVariableType(jsonMapper));
+        variableTypeMap.put("folder", new JsonObjectVariableType(jsonMapper));
+        variableTypeMap.put("content", new JsonObjectVariableType(jsonMapper));
         variableTypeMap.put("date", new DateVariableType(Date.class, dateFormatterProvider));
         variableTypeMap.put("datetime", new DateVariableType(Date.class, dateFormatterProvider));
-        variableTypeMap.put("array", new JsonObjectVariableType(objectMapper));
+        variableTypeMap.put("array", new JsonObjectVariableType(jsonMapper));
         return variableTypeMap;
     }
 

@@ -52,7 +52,8 @@ public class ErrorPropagation {
         try {
             Map<String, List<Event>> eventMap = findCatchingEventsForProcess(
                 execution.getProcessDefinitionId(),
-                new Error(errorRef));
+                new Error(errorRef)
+            );
 
             if (!eventMap.isEmpty()) {
                 isCatchExecutedForProcess = executeCatch(eventMap, execution, new Error(errorRef));
@@ -76,7 +77,8 @@ public class ErrorPropagation {
     protected static boolean executeCatch(
         Map<String, List<Event>> eventMap,
         DelegateExecution delegateExecution,
-        Error error) {
+        Error error
+    ) {
         Event matchingEvent = null;
         ExecutionEntity currentExecution = (ExecutionEntity) delegateExecution;
         ExecutionEntity parentExecution = null;
@@ -104,7 +106,11 @@ public class ErrorPropagation {
 
                 for (String refId : eventMap.keySet()) {
                     List<Event> events = eventMap.get(refId);
-                    if (matchingEvent == null && CollectionUtil.isNotEmpty(events) && events.getFirst() instanceof StartEvent) {
+                    if (
+                        matchingEvent == null &&
+                        CollectionUtil.isNotEmpty(events) &&
+                        events.getFirst() instanceof StartEvent
+                    ) {
                         if (currentContainer.getFlowElement(refId) != null) {
                             matchingEvent = events.getFirst();
                         }
@@ -160,7 +166,10 @@ public class ErrorPropagation {
         toDeleteProcessInstanceIds.add(execution.getProcessInstanceId());
 
         while (!parentExecution.isRootExecution()) {
-            Map<String, List<Event>> eventMap = findCatchingEventsForProcess(parentExecution.getProcessDefinitionId(), error);
+            Map<String, List<Event>> eventMap = findCatchingEventsForProcess(
+                parentExecution.getProcessDefinitionId(),
+                error
+            );
             if (!eventMap.isEmpty()) {
                 for (String processInstanceId : toDeleteProcessInstanceIds) {
                     deleteProcessInstanceEntity(errorRef, execution, executionEntityManager, processInstanceId);
@@ -221,7 +230,8 @@ public class ErrorPropagation {
         Event event,
         ExecutionEntity parentExecution,
         ExecutionEntity currentExecution,
-        Error error) {
+        Error error
+    ) {
         if (
             Context.getProcessEngineConfiguration() != null &&
             Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()
@@ -273,14 +283,14 @@ public class ErrorPropagation {
         }
     }
 
-    protected static Map<String, List<Event>> findCatchingEventsForProcess(
-        String processDefinitionId,
-        Error error) {
+    protected static Map<String, List<Event>> findCatchingEventsForProcess(String processDefinitionId, Error error) {
         Map<String, List<Event>> eventMap = new LinkedHashMap<>();
         Process process = ProcessDefinitionUtil.getProcess(processDefinitionId);
         BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(processDefinitionId);
 
-        String compareErrorCode = error.getErrorCode() != null ? error.getErrorCode() : retrieveErrorCode(bpmnModel, error.getId());
+        String compareErrorCode = error.getErrorCode() != null
+            ? error.getErrorCode()
+            : retrieveErrorCode(bpmnModel, error.getId());
 
         eventMap.putAll(findCatchingEventSubprocesses(process, bpmnModel, compareErrorCode));
 
@@ -301,17 +311,19 @@ public class ErrorPropagation {
         for (EventSubProcess eventSubProcess : subProcesses) {
             for (FlowElement flowElement : eventSubProcess.getFlowElements()) {
                 if (flowElement instanceof StartEvent startEvent) {
-                    startEvent.getErrorEventDefinition().ifPresent(errorEventDef -> {
-                        String eventErrorCode = retrieveErrorCode(bpmnModel, errorEventDef.getErrorRef());
+                    startEvent
+                        .getErrorEventDefinition()
+                        .ifPresent(errorEventDef -> {
+                            String eventErrorCode = retrieveErrorCode(bpmnModel, errorEventDef.getErrorRef());
 
-                        if (isErrorCodeMatching(eventErrorCode, compareErrorCode)) {
-                            if (eventErrorCode == null) {
-                                eventSubprocessesWithoutErrorCode.add(eventSubProcess);
-                            } else {
-                                addEventSubprocessToMap(eventMap, eventSubProcess, startEvent);
+                            if (isErrorCodeMatching(eventErrorCode, compareErrorCode)) {
+                                if (eventErrorCode == null) {
+                                    eventSubprocessesWithoutErrorCode.add(eventSubProcess);
+                                } else {
+                                    addEventSubprocessToMap(eventMap, eventSubProcess, startEvent);
+                                }
                             }
-                        }
-                    });
+                        });
                 }
             }
         }
@@ -319,9 +331,11 @@ public class ErrorPropagation {
         for (EventSubProcess eventSubProcess : eventSubprocessesWithoutErrorCode) {
             for (FlowElement flowElement : eventSubProcess.getFlowElements()) {
                 if (flowElement instanceof StartEvent startEvent) {
-                    startEvent.getErrorEventDefinition().ifPresent(errorEventDef -> {
-                        addEventSubprocessToMap(eventMap, eventSubProcess, startEvent);
-                    });
+                    startEvent
+                        .getErrorEventDefinition()
+                        .ifPresent(errorEventDef -> {
+                            addEventSubprocessToMap(eventMap, eventSubProcess, startEvent);
+                        });
                 }
             }
         }
@@ -348,17 +362,19 @@ public class ErrorPropagation {
 
         for (BoundaryEvent boundaryEvent : boundaryEvents) {
             if (boundaryEvent.getAttachedToRefId() != null) {
-                boundaryEvent.getErrorEventDefinition().ifPresent(errorEventDef -> {
-                    String eventErrorCode = retrieveErrorCode(bpmnModel, errorEventDef.getErrorRef());
+                boundaryEvent
+                    .getErrorEventDefinition()
+                    .ifPresent(errorEventDef -> {
+                        String eventErrorCode = retrieveErrorCode(bpmnModel, errorEventDef.getErrorRef());
 
-                    if (isErrorCodeMatching(eventErrorCode, compareErrorCode)) {
-                        if (eventErrorCode == null) {
-                            boundaryEventsWithoutErrorCode.add(boundaryEvent);
-                        } else {
-                            addBoundaryEventToMap(eventMap, boundaryEvent);
+                        if (isErrorCodeMatching(eventErrorCode, compareErrorCode)) {
+                            if (eventErrorCode == null) {
+                                boundaryEventsWithoutErrorCode.add(boundaryEvent);
+                            } else {
+                                addBoundaryEventToMap(eventMap, boundaryEvent);
+                            }
                         }
-                    }
-                });
+                    });
             }
         }
 

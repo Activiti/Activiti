@@ -15,6 +15,7 @@
  */
 package org.activiti.api.runtime.model.impl;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -22,7 +23,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.activiti.api.process.model.IntegrationContext;
 
 public class IntegrationContextImpl implements IntegrationContext {
@@ -51,8 +51,14 @@ public class IntegrationContextImpl implements IntegrationContext {
 
     public IntegrationContextImpl(IntegrationContext other) {
         this.id = other.getId();
-        this.inBoundVariables.putAll(other.getInBoundVariables());
-        this.outBoundVariables.putAll(other.getOutBoundVariables());
+        Map<String, Object> otherInBoundVariables = other.getInBoundVariables();
+        if (otherInBoundVariables != null) {
+            this.inBoundVariables.putAll(otherInBoundVariables);
+        }
+        Map<String, Object> otherOutBoundVariables = other.getOutBoundVariables();
+        if (otherOutBoundVariables != null) {
+            this.outBoundVariables.putAll(otherOutBoundVariables);
+        }
         this.processInstanceId = other.getProcessInstanceId();
         this.parentProcessInstanceId = other.getParentProcessInstanceId();
         this.rootProcessInstanceId = other.getRootProcessInstanceId();
@@ -286,7 +292,8 @@ public class IntegrationContextImpl implements IntegrationContext {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("IntegrationContextImpl [id=")
+        builder
+            .append("IntegrationContextImpl [id=")
             .append(id)
             .append(", inboundVariablesKeys=")
             .append(inBoundVariables != null ? printKeys(inBoundVariables.keySet()) : null)
