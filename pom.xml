@@ -202,7 +202,7 @@
     <exec-maven-plugin.version>3.6.3</exec-maven-plugin.version>
     <extra-enforcer-rules.version>1.12.0</extra-enforcer-rules.version>
     <jacoco-maven-plugin.version>0.8.15</jacoco-maven-plugin.version>
-    <license-maven-plugin.version>5.0.0</license-maven-plugin.version>
+    <license-maven-plugin.version>5.1.1</license-maven-plugin.version>
     <third-party-license-maven-plugin.version>2.7.1</third-party-license-maven-plugin.version>
     <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
     <checkstyle.version>13.8.0</checkstyle.version>
@@ -213,7 +213,7 @@
     <maven-failsafe-plugin.version>3.5.6</maven-failsafe-plugin.version>
     <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
     <maven-install-plugin.version>3.1.4</maven-install-plugin.version>
-    <maven-jar-plugin.version>3.5.0</maven-jar-plugin.version>
+    <maven-jar-plugin.version>3.5.1</maven-jar-plugin.version>
     <maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
     <maven-jxr-plugin.version>3.6.0</maven-jxr-plugin.version>
     <maven-pmd-plugin.version>3.28.0</maven-pmd-plugin.version>
