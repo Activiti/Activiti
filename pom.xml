@@ -247,14 +247,7 @@
         <type>xml</type>
         <classifier>suppression</classifier>
       </dependency>
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-dependencies</artifactId>
-        <version>${spring-boot.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <!-- AAE-47589 Jackson BOM override -->
+      <!-- AAE-49313 / AAE-47589: Jackson BOM overrides have to precede spring-boot-dependencies. -->
       <dependency>
         <groupId>com.fasterxml.jackson</groupId>
         <artifactId>jackson-bom</artifactId>
@@ -262,11 +255,18 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <!-- AAE-47587 Jackson 3.x BOM -->
+      <!-- AAE-49313 / AAE-47587: Jackson 3.x BOM override, see note above on import order. -->
       <dependency>
         <groupId>tools.jackson</groupId>
         <artifactId>jackson-bom</artifactId>
         <version>3.2.1</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${spring-boot.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
