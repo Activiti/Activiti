@@ -29,7 +29,7 @@
     <simple-jndi.version>0.25.0</simple-jndi.version>
 
     <system.stubs.jupiter.version>2.1.8</system.stubs.jupiter.version>
-    <zjsonpatch.version>0.6.2</zjsonpatch.version>
+    <zjsonpatch.version>0.6.3</zjsonpatch.version>
   </properties>
   <dependencyManagement>
     <dependencies>
