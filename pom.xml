@@ -751,11 +751,33 @@ limitations under the License.
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>properties</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>properties</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${maven-surefire-plugin.version}</version>
         <configuration>
           <!-- use syntax for Jacoco late property evaluation -->
-          <argLine>@{argLine} -Xmx1024m -XX:MaxMetaspaceSize=256m</argLine>
+          <argLine>@{argLine} -Xmx1024m -XX:MaxMetaspaceSize=256m -javaagent:"${org.mockito:mockito-core:jar}"</argLine>
           <redirectTestOutputToFile>true</redirectTestOutputToFile>
           <failIfNoTests>false</failIfNoTests>
           <trimStackTrace>false</trimStackTrace>
@@ -897,6 +919,9 @@ limitations under the License.
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-failsafe-plugin</artifactId>
+            <configuration>
+              <argLine>@{argLine} -Xmx1024m -XX:MaxMetaspaceSize=256m -javaagent:"${org.mockito:mockito-core:jar}"</argLine>
+            </configuration>
             <executions>
               <execution>
                 <id>integration-test</id>
