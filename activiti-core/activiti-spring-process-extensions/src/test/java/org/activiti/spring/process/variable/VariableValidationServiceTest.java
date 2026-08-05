@@ -28,7 +28,6 @@ import org.activiti.spring.process.model.VariableDefinition;
 import org.activiti.spring.process.variable.types.BigDecimalVariableType;
 import org.activiti.spring.process.variable.types.DateVariableType;
 import org.activiti.spring.process.variable.types.JavaObjectVariableType;
-import org.activiti.spring.process.variable.types.JsonObjectVariableType;
 import org.activiti.spring.process.variable.types.VariableType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +36,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import tools.jackson.databind.json.JsonMapper;
 
 @SpringBootTest
-public class VariableValidationServiceTest {
+class VariableValidationServiceTest {
 
     @Autowired
     private Map<String, VariableType> variableTypeMap;
@@ -105,7 +104,6 @@ public class VariableValidationServiceTest {
 
     @Test
     void should_returnEmptyErrors_when_unknownTypeHasNullValueAndJsonFallbackIsUnavailable() {
-        JsonMapper jsonMapper = new JsonMapper();
         DateFormatterProvider dateFormatterProvider = new DateFormatterProvider("yyyy-MM-dd[['T']HH:mm:ss[.SSS'Z']]");
         Map<String, VariableType> mapWithoutJson = Map.of(
             "boolean",
@@ -138,7 +136,7 @@ public class VariableValidationServiceTest {
     private static class ThrowingVariableType extends VariableType {
 
         @Override
-        public void validate(Object var, List<ActivitiException> errors) {
+        public void validate(Object value, List<ActivitiException> errors) {
             throw new RuntimeException("validate should not be called for null");
         }
     }
