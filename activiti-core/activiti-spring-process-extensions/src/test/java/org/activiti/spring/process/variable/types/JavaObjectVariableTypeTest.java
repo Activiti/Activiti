@@ -82,4 +82,13 @@ class JavaObjectVariableTypeTest {
                 )
         );
     }
+
+    @Test
+    public void should_returnEmptyErrorList_when_validatingNullValue() {
+        new JavaObjectVariableType(Boolean.class).validate(null, exceptionList);
+        new JavaObjectVariableType(Integer.class).validate(null, exceptionList);
+        new JavaObjectVariableType(String.class).validate(null, exceptionList);
+
+        assertTrue(exceptionList.isEmpty());
+    }
 }

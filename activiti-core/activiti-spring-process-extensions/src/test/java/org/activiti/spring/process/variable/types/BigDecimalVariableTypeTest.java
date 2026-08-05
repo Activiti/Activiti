@@ -61,4 +61,21 @@ public class BigDecimalVariableTypeTest {
 
         assertThat(parsedValue1.add(parsedValue2)).isEqualTo(new BigDecimal("0.3"));
     }
+
+    @Test
+    public void should_returnEmptyExceptionList_when_validatingNullValue() {
+        BigDecimalVariableType bigDecimalVariableType = new BigDecimalVariableType();
+        List<ActivitiException> exceptionList = new ArrayList<>();
+
+        bigDecimalVariableType.validate(null, exceptionList);
+
+        assertThat(exceptionList).isEmpty();
+    }
+
+    @Test
+    public void should_returnNull_when_parsingNullValue() {
+        BigDecimalVariableType bigDecimalVariableType = new BigDecimalVariableType();
+
+        assertThat(bigDecimalVariableType.parseFromValue(null)).isNull();
+    }
 }

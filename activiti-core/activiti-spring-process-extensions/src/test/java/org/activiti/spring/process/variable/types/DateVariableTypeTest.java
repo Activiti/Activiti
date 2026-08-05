@@ -62,4 +62,11 @@ class DateVariableTypeTest {
 
         assertTrue(result.equals(expression));
     }
+
+    @Test
+    public void should_returnEmptyErrorList_when_validatingNullValue() {
+        dateVariableType.validate(null, exceptionList);
+
+        assertTrue(exceptionList.isEmpty());
+    }
 }
