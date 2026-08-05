@@ -13,6 +13,10 @@
   <artifactId>activiti-bpmn-model</artifactId>
   <name>Activiti :: BPMN Model</name>
 
+  <properties>
+    <mockito.agent.arg/>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.commons</groupId>
