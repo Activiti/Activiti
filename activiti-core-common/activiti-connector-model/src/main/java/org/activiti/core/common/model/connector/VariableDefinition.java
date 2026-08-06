@@ -35,6 +35,8 @@ public class VariableDefinition {
 
     private boolean ephemeral;
 
+    private String category;
+
     public String getId() {
         return id;
     }
@@ -105,5 +107,13 @@ public class VariableDefinition {
 
     public boolean isEphemeral() {
         return ephemeral;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }

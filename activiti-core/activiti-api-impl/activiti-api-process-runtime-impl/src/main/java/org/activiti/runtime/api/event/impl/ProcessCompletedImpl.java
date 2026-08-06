@@ -15,13 +15,12 @@
  */
 package org.activiti.runtime.api.event.impl;
 
+import static org.activiti.engine.impl.persistence.entity.ExecutionEntityManagerImpl.SERVICE_USER;
+
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.events.ProcessRuntimeEvent;
 import org.activiti.api.process.runtime.events.ProcessCompletedEvent;
 import org.activiti.api.runtime.event.impl.RuntimeEventImpl;
-
-import static org.activiti.engine.impl.persistence.entity.ExecutionEntityManagerImpl.SERVICE_USER;
-
 
 public class ProcessCompletedImpl
     extends RuntimeEventImpl<ProcessInstance, ProcessRuntimeEvent.ProcessEvents>

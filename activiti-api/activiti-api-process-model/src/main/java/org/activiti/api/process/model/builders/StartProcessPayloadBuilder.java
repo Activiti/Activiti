@@ -73,7 +73,13 @@ public class StartProcessPayloadBuilder {
     }
 
     public StartProcessPayload build() {
-        StartProcessPayload startProcessPayload = new StartProcessPayload(processDefinitionId, processDefinitionKey, name, businessKey, variables);
+        StartProcessPayload startProcessPayload = new StartProcessPayload(
+            processDefinitionId,
+            processDefinitionKey,
+            name,
+            businessKey,
+            variables
+        );
         startProcessPayload.setLinkedProcessInstanceId(linkedProcessInstanceId);
         startProcessPayload.setLinkedProcessInstanceType(linkedProcessInstanceType);
         return startProcessPayload;

@@ -266,7 +266,12 @@ public class TenancyTest extends PluggableActivitiTestCase {
         // Check the query results:
         // note: 3 executions per process instance due to parallelism!
         assertThat(
-            runtimeService.createExecutionQuery().processDefinitionId(processDefinitionId).list().getFirst().getTenantId()
+            runtimeService
+                .createExecutionQuery()
+                .processDefinitionId(processDefinitionId)
+                .list()
+                .getFirst()
+                .getTenantId()
         ).isEqualTo(TEST_TENANT_ID);
         assertThat(
             runtimeService
@@ -329,10 +334,20 @@ public class TenancyTest extends PluggableActivitiTestCase {
 
         // Check the query results
         assertThat(
-            taskService.createTaskQuery().processDefinitionId(processDefinitionIdWithTenant).list().getFirst().getTenantId()
+            taskService
+                .createTaskQuery()
+                .processDefinitionId(processDefinitionIdWithTenant)
+                .list()
+                .getFirst()
+                .getTenantId()
         ).isEqualTo(TEST_TENANT_ID);
         assertThat(
-            taskService.createTaskQuery().processDefinitionId(processDefinitionIdNoTenant).list().getFirst().getTenantId()
+            taskService
+                .createTaskQuery()
+                .processDefinitionId(processDefinitionIdNoTenant)
+                .list()
+                .getFirst()
+                .getTenantId()
         ).isEqualTo("");
 
         assertThat(taskService.createTaskQuery().list().size()).isEqualTo(14);

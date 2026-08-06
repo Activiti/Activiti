@@ -91,13 +91,8 @@ public class EventProcessingOrderIT {
 
         // Validate error events received
         assertThat(listener.getErrorReceivedEvents())
-            .extracting(
-                event -> event.getEntity().getElementId(),
-                event -> event.getEntity().getErrorCode()
-            )
-            .containsExactly(
-                Tuple.tuple("catchError1", "ERROR_CODE_1")
-            );
+            .extracting(event -> event.getEntity().getElementId(), event -> event.getEntity().getErrorCode())
+            .containsExactly(Tuple.tuple("catchError1", "ERROR_CODE_1"));
     }
 
     @Test
@@ -117,13 +112,8 @@ public class EventProcessingOrderIT {
 
         // Validate that only the catch-all error event was received
         assertThat(listener.getErrorReceivedEvents())
-            .extracting(
-                event -> event.getEntity().getElementId(),
-                event -> event.getEntity().getErrorCode()
-            )
-            .containsExactly(
-                Tuple.tuple("catchErrorAny", "UNHANDLED_ERROR")
-            );
+            .extracting(event -> event.getEntity().getElementId(), event -> event.getEntity().getErrorCode())
+            .containsExactly(Tuple.tuple("catchErrorAny", "UNHANDLED_ERROR"));
     }
 
     @Test
@@ -165,13 +155,8 @@ public class EventProcessingOrderIT {
 
         // Validate error events received
         assertThat(listener.getErrorReceivedEvents())
-            .extracting(
-                event -> event.getEntity().getElementId(),
-                event -> event.getEntity().getErrorCode()
-            )
-            .containsExactly(
-                Tuple.tuple("eventSubprocessError1Start", "ERROR_CODE_1")
-            );
+            .extracting(event -> event.getEntity().getElementId(), event -> event.getEntity().getErrorCode())
+            .containsExactly(Tuple.tuple("eventSubprocessError1Start", "ERROR_CODE_1"));
     }
 
     @Test
@@ -191,13 +176,8 @@ public class EventProcessingOrderIT {
 
         // Validate that only the catch-all error event was received
         assertThat(listener.getErrorReceivedEvents())
-            .extracting(
-                event -> event.getEntity().getElementId(),
-                event -> event.getEntity().getErrorCode()
-            )
-            .containsExactly(
-                Tuple.tuple("eventSubprocessCatchAllStart", "UNHANDLED_ERROR")
-            );
+            .extracting(event -> event.getEntity().getElementId(), event -> event.getEntity().getErrorCode())
+            .containsExactly(Tuple.tuple("eventSubprocessCatchAllStart", "UNHANDLED_ERROR"));
     }
 
     @Test

@@ -21,15 +21,15 @@ import static org.mockito.Mockito.verifyNoInteractions;
 
 import org.activiti.engine.RepositoryService;
 import org.activiti.spring.autodeployment.NoneAutoDeploymentStrategy;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.core.io.Resource;
 
 public class NoneAutoDeploymentStrategyTest {
 
     private NoneAutoDeploymentStrategy deploymentStrategy;
 
-    @Before
+    @BeforeEach
     public void before() {
         deploymentStrategy = new NoneAutoDeploymentStrategy(mock());
     }

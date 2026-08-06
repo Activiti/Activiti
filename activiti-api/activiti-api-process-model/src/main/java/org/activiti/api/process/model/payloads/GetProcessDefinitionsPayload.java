@@ -65,8 +65,6 @@ public class GetProcessDefinitionsPayload implements Payload {
         return id;
     }
 
-
-
     /**
      * @deprecated Use {@link #getProcessDefinitionIds()} instead
      */

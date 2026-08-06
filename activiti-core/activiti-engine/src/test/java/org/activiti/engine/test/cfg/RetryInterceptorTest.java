@@ -30,9 +30,9 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandInterceptor;
 import org.activiti.engine.impl.interceptor.RetryInterceptor;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  */
@@ -42,7 +42,7 @@ public class RetryInterceptorTest {
 
     protected RetryInterceptor retryInterceptor;
 
-    @Before
+    @BeforeEach
     public void setupProcessEngine() {
         ProcessEngineConfigurationImpl processEngineConfiguration =
             (ProcessEngineConfigurationImpl) new StandaloneInMemProcessEngineConfiguration();
@@ -54,7 +54,7 @@ public class RetryInterceptorTest {
         processEngine = processEngineConfiguration.buildProcessEngine();
     }
 
-    @After
+    @AfterEach
     public void shutdownProcessEngine() {
         processEngine.close();
         counter.set(0);

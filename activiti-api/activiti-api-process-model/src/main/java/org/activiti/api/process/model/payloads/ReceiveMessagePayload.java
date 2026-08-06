@@ -23,7 +23,7 @@ import org.activiti.api.model.shared.Payload;
 
 public class ReceiveMessagePayload implements Payload {
 
-    private final String id;
+    private String id;
     private String name;
     private String correlationKey;
     private Map<String, Object> variables = new LinkedHashMap<>();
@@ -46,16 +46,32 @@ public class ReceiveMessagePayload implements Payload {
         return id;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getCorrelationKey() {
         return correlationKey;
     }
 
+    public void setCorrelationKey(String correlationKey) {
+        this.correlationKey = correlationKey;
+    }
+
     public Map<String, Object> getVariables() {
         return variables;
+    }
+
+    public void setVariables(Map<String, Object> variables) {
+        this.variables = variables;
     }
 
     @Override

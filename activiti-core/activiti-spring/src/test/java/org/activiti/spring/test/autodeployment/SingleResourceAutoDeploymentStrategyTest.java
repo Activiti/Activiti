@@ -25,15 +25,15 @@ import static org.mockito.Mockito.verify;
 import java.io.InputStream;
 import java.util.zip.ZipInputStream;
 import org.activiti.spring.autodeployment.SingleResourceAutoDeploymentStrategy;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.core.io.Resource;
 
 public class SingleResourceAutoDeploymentStrategyTest extends AbstractAutoDeploymentStrategyTest {
 
     private SingleResourceAutoDeploymentStrategy deploymentStrategy;
 
-    @Before
+    @BeforeEach
     public void before() throws Exception {
         super.before();
         deploymentStrategy = new SingleResourceAutoDeploymentStrategy(applicationUpgradeContextServiceMock);

@@ -20,12 +20,6 @@ import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.Module;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.TextNode;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -50,12 +44,18 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.context.annotation.Bean;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.JacksonModule;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.JsonNodeFactory;
+import tools.jackson.databind.node.StringNode;
 
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
 class IntegrationContextImplTest {
 
     @Autowired
-    private ObjectMapper objectMapper;
+    private JsonMapper jsonMapper;
 
     private static Instant instant = Instant.now();
 
@@ -92,8 +92,8 @@ class IntegrationContextImplTest {
         Arguments.of(singleton("item"), singleton("item")),
         Arguments.of(singletonMap("key", "value"), singletonMap("key", "value")),
         Arguments.of(
-            JsonNodeFactory.instance.objectNode().set("key", TextNode.valueOf("value")),
-            JsonNodeFactory.instance.objectNode().set("key", TextNode.valueOf("value"))
+            JsonNodeFactory.instance.objectNode().set("key", StringNode.valueOf("value")),
+            JsonNodeFactory.instance.objectNode().set("key", StringNode.valueOf("value"))
         ),
         Arguments.of(
             new CustomPojo("field1", "field2"),
@@ -120,8 +120,8 @@ class IntegrationContextImplTest {
     static class Application {
 
         @Bean
-        public ObjectMapper objectMapper(Module customizeProcessModelObjectMapper) {
-            return new ObjectMapper().registerModule(customizeProcessModelObjectMapper);
+        public JsonMapper jsonMapper(JacksonModule customizeProcessModelObjectMapper) {
+            return JsonMapper.builder().addModule(customizeProcessModelObjectMapper).build();
         }
     }
 
@@ -163,7 +163,7 @@ class IntegrationContextImplTest {
     }
 
     @Test
-    public void testProcessVariablesMapDeserializerShouldFallbackToKeyValueMap() throws JsonProcessingException {
+    public void testProcessVariablesMapDeserializerShouldFallbackToKeyValueMap() throws JacksonException {
         // given
         Map<String, Object> map = new LinkedHashMap<>();
 
@@ -176,10 +176,10 @@ class IntegrationContextImplTest {
         map.put("list", Collections.singletonList("item"));
         map.put("pojo", new CustomPojo("field1", "field2"));
 
-        String json = objectMapper.writeValueAsString(map);
+        String json = jsonMapper.writeValueAsString(map);
 
         // when
-        ProcessVariablesMap<String, Object> result = objectMapper.readValue(
+        ProcessVariablesMap<String, Object> result = jsonMapper.readValue(
             json,
             new TypeReference<ProcessVariablesMap<String, Object>>() {}
         );
@@ -205,11 +205,11 @@ class IntegrationContextImplTest {
     }
 
     private IntegrationContext exchangeIntegrationContext(IntegrationContext source) throws IOException {
-        return objectMapper.readValue(objectMapper.writeValueAsString(source), IntegrationContext.class);
+        return jsonMapper.readValue(jsonMapper.writeValueAsString(source), IntegrationContext.class);
     }
 
     @Test
-    void assertThatIntegrationContextImplDoesNotAddVariableValuesIntoToStringMethod(){
+    void assertThatIntegrationContextImplDoesNotAddVariableValuesIntoToStringMethod() {
         //given
         IntegrationContextImpl integrationContext = new IntegrationContextImpl();
         integrationContext.addInBoundVariable("inbound_key1", "inbound_value");
@@ -224,17 +224,15 @@ class IntegrationContextImplTest {
         assertThat(toString).doesNotContain("inbound_value");
         assertThat(toString).doesNotContain("outbound_value");
         assertThat(
-            toString.contains("[inbound_key1, inbound_key2]") ||
-                toString.contains("[inbound_key2, inbound_key1]")
+            toString.contains("[inbound_key1, inbound_key2]") || toString.contains("[inbound_key2, inbound_key1]")
         ).isTrue();
         assertThat(
-            toString.contains("[outbound_key1, outbound_key2]") ||
-                toString.contains("[outbound_key2, outbound_key1]")
+            toString.contains("[outbound_key1, outbound_key2]") || toString.contains("[outbound_key2, outbound_key1]")
         ).isTrue();
     }
 
     @Test
-    void assertThatIntegrationContextImplDoesAddEmptyVariablePartIntoToStringMethod(){
+    void assertThatIntegrationContextImplDoesAddEmptyVariablePartIntoToStringMethod() {
         //given
         IntegrationContextImpl integrationContext = new IntegrationContextImpl();
 
@@ -303,6 +301,50 @@ class IntegrationContextImplTest {
         assertThat(copy.getOutBoundVariables()).isEqualTo(original.getOutBoundVariables());
         assertThat(copy.getInBoundVariables()).isNotSameAs(original.getInBoundVariables());
         assertThat(copy.getOutBoundVariables()).isNotSameAs(original.getOutBoundVariables());
+    }
+
+    @Test
+    void should_setEmptyVariables_when_copyConstructorReceivesNullVariables() {
+        // given an IntegrationContext that returns null for inbound and outbound variables
+        IntegrationContextImpl original = new IntegrationContextImpl() {
+            @Override
+            public Map<String, Object> getInBoundVariables() {
+                return null;
+            }
+
+            @Override
+            public Map<String, Object> getOutBoundVariables() {
+                return null;
+            }
+        };
+        original.setProcessInstanceId("proc123");
+
+        // when
+        IntegrationContextImpl copy = new IntegrationContextImpl(original);
+
+        // then - no NPE and variables are empty maps
+        assertThat(copy.getInBoundVariables()).isEmpty();
+        assertThat(copy.getOutBoundVariables()).isEmpty();
+        assertThat(copy.getProcessInstanceId()).isEqualTo("proc123");
+    }
+
+    @Test
+    void should_copyOnlyNonNullVariables_when_copyConstructorReceivesOneNullVariableMap() {
+        // given an IntegrationContext that returns null only for outbound variables
+        IntegrationContextImpl original = new IntegrationContextImpl() {
+            @Override
+            public Map<String, Object> getOutBoundVariables() {
+                return null;
+            }
+        };
+        original.addInBoundVariable("inKey", "inValue");
+
+        // when
+        IntegrationContextImpl copy = new IntegrationContextImpl(original);
+
+        // then
+        assertThat(copy.getInBoundVariables()).containsEntry("inKey", "inValue");
+        assertThat(copy.getOutBoundVariables()).isEmpty();
     }
 
     @Test

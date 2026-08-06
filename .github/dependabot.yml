@@ -7,6 +7,8 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    cooldown:
+      default-days: 3
     groups:
       maven-plugins:
         patterns:
@@ -24,8 +26,12 @@ updates:
     directories:
     - "/"
     - "/.github/actions/echo-longest-run"
+    - "/.github/actions/setup-java-maven"
+    - "/.github/actions/maven-build-and-analyze"
     schedule:
       interval: "weekly"
+    cooldown:
+      default-days: 3
     groups:
       github-actions:
         patterns:
@@ -33,3 +39,6 @@ updates:
         update-types:
           - "minor"
           - "patch"
+    ignore:
+      # Managed by gh aw add. Version-locked to the gh-aw compiler; do not bump.
+      - dependency-name: "github/gh-aw-actions"

@@ -24,7 +24,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.spring.process.model.Extension;
 import org.activiti.spring.process.model.ProcessExtensionModel;
 import org.activiti.spring.resources.DeploymentResourceLoader;
-import org.springframework.lang.NonNull;
+import org.jspecify.annotations.NonNull;
 
 public class ProcessExtensionRepositoryImpl implements ProcessExtensionRepository {
 

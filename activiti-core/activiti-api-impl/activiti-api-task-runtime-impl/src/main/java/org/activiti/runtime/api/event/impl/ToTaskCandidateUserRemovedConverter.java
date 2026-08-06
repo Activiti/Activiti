@@ -20,9 +20,13 @@ import org.activiti.api.task.runtime.events.TaskCandidateUserRemovedEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.runtime.api.model.impl.APITaskCandidateUserConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ToTaskCandidateUserRemovedConverter
     implements EventConverter<TaskCandidateUserRemovedEvent, ActivitiEntityEvent> {
+
+    private static final Logger logger = LoggerFactory.getLogger(ToTaskCandidateUserRemovedConverter.class);
 
     private APITaskCandidateUserConverter converter;
     private TaskCandidateEventConverterHelper taskCandidateEventConverterHelper =
@@ -34,11 +38,22 @@ public class ToTaskCandidateUserRemovedConverter
 
     @Override
     public Optional<TaskCandidateUserRemovedEvent> from(ActivitiEntityEvent internalEvent) {
-        TaskCandidateUserRemovedEvent event = null;
+        TaskCandidateUserRemovedImpl event = null;
         if (internalEvent.getEntity() instanceof IdentityLink) {
             IdentityLink entity = (IdentityLink) internalEvent.getEntity();
             if (taskCandidateEventConverterHelper.isTaskCandidateUserLink(entity)) {
                 event = new TaskCandidateUserRemovedImpl(converter.from(entity));
+                event.setProcessInstanceId(internalEvent.getProcessInstanceId());
+                event.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
+                logger.debug(
+                    "TaskCandidateUserRemoved converted: taskId={}, userId={}, link.pid={}, link.pdefId={}, event.pid={}, event.pdefId={}",
+                    entity.getTaskId(),
+                    entity.getUserId(),
+                    entity.getProcessInstanceId(),
+                    entity.getProcessDefinitionId(),
+                    event.getProcessInstanceId(),
+                    event.getProcessDefinitionId()
+                );
             }
         }
         return Optional.ofNullable(event);

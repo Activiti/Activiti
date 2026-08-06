@@ -15,11 +15,11 @@
  */
 package org.activiti.engine.impl.el;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.el.CompositeELResolver;
 import jakarta.el.ELResolver;
 import org.activiti.core.el.JsonNodeELResolver;
 import org.activiti.engine.impl.context.Context;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * Defines property resolution behavior on JsonNodes.
@@ -30,7 +30,7 @@ import org.activiti.engine.impl.context.Context;
 public class CustomMapperJsonNodeELResolver extends JsonNodeELResolver {
 
     @Override
-    protected ObjectMapper getObjectMapper() {
+    protected JsonMapper getObjectMapper() {
         return Context.getProcessEngineConfiguration().getObjectMapper();
     }
 }

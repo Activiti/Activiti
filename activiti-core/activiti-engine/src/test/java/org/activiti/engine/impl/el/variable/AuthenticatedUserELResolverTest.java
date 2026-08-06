@@ -20,8 +20,8 @@ import static org.mockito.Mockito.mock;
 
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.identity.Authentication;
-import org.junit.AfterClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Test;
 
 public class AuthenticatedUserELResolverTest {
 
@@ -29,7 +29,7 @@ public class AuthenticatedUserELResolverTest {
 
     private AuthenticatedUserELResolver resolver = new AuthenticatedUserELResolver();
 
-    @AfterClass
+    @AfterAll
     public static void tearDown() {
         Authentication.setAuthenticatedUserId(null);
     }

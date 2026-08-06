@@ -61,7 +61,10 @@ public class HistoricProcessInstanceAndVariablesQueryTest extends PluggableActiv
                     .getId()
             );
             if (i == 0) {
-                Task task = taskService.createTaskQuery().processInstanceId(processInstanceIds.getFirst()).singleResult();
+                Task task = taskService
+                    .createTaskQuery()
+                    .processInstanceId(processInstanceIds.getFirst())
+                    .singleResult();
                 taskService.complete(task.getId());
             }
         }

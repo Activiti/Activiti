@@ -15,8 +15,6 @@
  */
 package org.activiti.engine.impl.cmd;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.Serializable;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.SubProcess;
@@ -34,6 +32,8 @@ import org.activiti.engine.impl.persistence.entity.VariableInstance;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.runtime.DataObject;
 import org.activiti.engine.task.Task;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.ObjectNode;
 
 public class GetTaskDataObjectCmd implements Command<DataObject>, Serializable {
 
@@ -113,11 +113,11 @@ public class GetTaskDataObjectCmd implements Command<DataObject>, Serializable {
                 if (languageNode != null) {
                     JsonNode nameNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_NAME);
                     if (nameNode != null) {
-                        localizedName = nameNode.asText();
+                        localizedName = nameNode.asString();
                     }
                     JsonNode descriptionNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_DESCRIPTION);
                     if (descriptionNode != null) {
-                        localizedDescription = descriptionNode.asText();
+                        localizedDescription = descriptionNode.asString();
                     }
                 }
             }

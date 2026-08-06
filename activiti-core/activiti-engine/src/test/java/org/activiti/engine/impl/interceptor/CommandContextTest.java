@@ -25,13 +25,13 @@ import org.activiti.engine.impl.agenda.DefaultActivitiEngineAgenda;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.groups.Tuple;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 
 public class CommandContextTest {
 
-    @Before
+    @BeforeEach
     public void resetStatusToRunning() throws Exception {
         setStaticValue(ApplicationStatusHolder.class.getDeclaredField("running"), true);
     }

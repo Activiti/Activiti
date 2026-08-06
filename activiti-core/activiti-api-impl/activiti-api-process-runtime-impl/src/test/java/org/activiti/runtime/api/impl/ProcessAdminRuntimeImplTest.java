@@ -26,6 +26,7 @@ import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.util.Collections;
@@ -161,7 +162,9 @@ class ProcessAdminRuntimeImplTest {
     @Test
     void should_applyProcessDefinitionKeysFilter_whenSearchingWithKeys() {
         var processDefinitionQuery = mock(ProcessDefinitionQuery.class, Answers.RETURNS_SELF);
-        var payload = ProcessPayloadBuilder.processDefinitions().withProcessDefinitionKeys(Set.of("key1", "key2")).build();
+        var payload = ProcessPayloadBuilder.processDefinitions()
+            .withProcessDefinitionKeys(Set.of("key1", "key2"))
+            .build();
 
         given(repositoryService.createProcessDefinitionQuery()).willReturn(processDefinitionQuery);
         given(processDefinitionQuery.listPage(0, 10)).willReturn(Collections.emptyList());
@@ -193,7 +196,7 @@ class ProcessAdminRuntimeImplTest {
     }
 
     @Test
-    void should_returnProcessDefinition_whenFoundByIdWithLatestDeployment() {
+    void should_returnProcessDefinition_whenFoundByKeyWithLatestDeployment() {
         var processDefinitionQuery = mock(ProcessDefinitionQuery.class, Answers.RETURNS_SELF);
         var deploymentQuery = mock(org.activiti.engine.repository.DeploymentQuery.class, Answers.RETURNS_SELF);
         var internalProcessDef = mock(org.activiti.engine.repository.ProcessDefinition.class);
@@ -205,6 +208,21 @@ class ProcessAdminRuntimeImplTest {
         given(deployment.getId()).willReturn("deployId");
         given(repositoryService.createProcessDefinitionQuery()).willReturn(processDefinitionQuery);
         given(processDefinitionQuery.list()).willReturn(List.of(internalProcessDef));
+        given(processDefinitionConverter.from(internalProcessDef)).willReturn(apiProcessDef);
+
+        var result = processAdminRuntime.processDefinition("procDefKey");
+
+        assertThat(result).isEqualTo(apiProcessDef);
+    }
+
+    @Test
+    void should_returnProcessDefinition_whenFoundByIdForSpecificVersion() {
+        var processDefinitionQuery = mock(ProcessDefinitionQuery.class, Answers.RETURNS_SELF);
+        var internalProcessDef = mock(org.activiti.engine.repository.ProcessDefinition.class);
+        var apiProcessDef = new ProcessDefinitionImpl();
+
+        given(repositoryService.createProcessDefinitionQuery()).willReturn(processDefinitionQuery);
+        given(processDefinitionQuery.singleResult()).willReturn(internalProcessDef);
         given(processDefinitionConverter.from(internalProcessDef)).willReturn(apiProcessDef);
 
         var result = processAdminRuntime.processDefinition("procDefId");
@@ -222,8 +240,11 @@ class ProcessAdminRuntimeImplTest {
         given(repositoryService.createProcessDefinitionQuery()).willReturn(processDefinitionQuery);
         given(processDefinitionQuery.list()).willReturn(Collections.emptyList());
 
-        assertThatThrownBy(() -> processAdminRuntime.processDefinition("unknownId"))
-            .isInstanceOf(ActivitiObjectNotFoundException.class);
+        assertThatThrownBy(() -> processAdminRuntime.processDefinition("unknownId")).isInstanceOf(
+            ActivitiObjectNotFoundException.class
+        );
+        verify(processDefinitionQuery).singleResult();
+        verify(processDefinitionQuery).list();
     }
 
     @Test
@@ -235,6 +256,8 @@ class ProcessAdminRuntimeImplTest {
             "businessKey",
             Map.of("var1", "value1")
         );
+        startPayload.setLinkedProcessInstanceId("linkedProcessId");
+        startPayload.setLinkedProcessInstanceType("linkedProcessType");
 
         var processDefinitionImpl = new ProcessDefinitionImpl();
         processDefinitionImpl.setId("procDefId");
@@ -251,6 +274,8 @@ class ProcessAdminRuntimeImplTest {
         given(processInstanceBuilder.businessKey("businessKey")).willReturn(processInstanceBuilder);
         given(processInstanceBuilder.variables(Map.of("var1", "value1"))).willReturn(processInstanceBuilder);
         given(processInstanceBuilder.name("processName")).willReturn(processInstanceBuilder);
+        given(processInstanceBuilder.linkedProcessInstanceId("linkedProcessId")).willReturn(processInstanceBuilder);
+        given(processInstanceBuilder.linkedProcessInstanceType("linkedProcessType")).willReturn(processInstanceBuilder);
         given(processInstanceBuilder.start()).willReturn(internalProcessInstance);
         given(processInstanceConverter.from(internalProcessInstance)).willReturn(apiProcessInstance);
 
@@ -278,6 +303,8 @@ class ProcessAdminRuntimeImplTest {
         given(processInstanceBuilder.businessKey(null)).willReturn(processInstanceBuilder);
         given(processInstanceBuilder.variables(null)).willReturn(processInstanceBuilder);
         given(processInstanceBuilder.name(null)).willReturn(processInstanceBuilder);
+        given(processInstanceBuilder.linkedProcessInstanceId(null)).willReturn(processInstanceBuilder);
+        given(processInstanceBuilder.linkedProcessInstanceType(null)).willReturn(processInstanceBuilder);
         given(processInstanceBuilder.start()).willReturn(internalProcessInstance);
         given(processInstanceConverter.from(internalProcessInstance)).willReturn(apiProcessInstance);
 
@@ -446,8 +473,7 @@ class ProcessAdminRuntimeImplTest {
         given(processInstanceQuery.processInstanceId("unknownId")).willReturn(processInstanceQuery);
         given(processInstanceQuery.singleResult()).willReturn(null);
 
-        assertThatThrownBy(() -> processAdminRuntime.delete(deletePayload))
-            .isInstanceOf(NotFoundException.class);
+        assertThatThrownBy(() -> processAdminRuntime.delete(deletePayload)).isInstanceOf(NotFoundException.class);
     }
 
     @Test
@@ -646,8 +672,9 @@ class ProcessAdminRuntimeImplTest {
         var internalProcessInstance = mock(org.activiti.engine.runtime.ProcessInstance.class);
         var apiProcessInstance = new ProcessInstanceImpl();
 
-        given(runtimeService.startProcessInstanceByMessage("messageName", "businessKey", variables))
-            .willReturn(internalProcessInstance);
+        given(runtimeService.startProcessInstanceByMessage("messageName", "businessKey", variables)).willReturn(
+            internalProcessInstance
+        );
         given(processInstanceConverter.from(internalProcessInstance)).willReturn(apiProcessInstance);
 
         var result = processAdminRuntime.start(messagePayload);
@@ -739,10 +766,13 @@ class ProcessAdminRuntimeImplTest {
         var apiProcessInstance2 = new ProcessInstanceImpl();
 
         given(runtimeService.createProcessInstanceQuery()).willReturn(processInstanceQuery);
-        given(processInstanceQuery.listPage(0, 10)).willReturn(List.of(internalProcessInstance1, internalProcessInstance2));
+        given(processInstanceQuery.listPage(0, 10)).willReturn(
+            List.of(internalProcessInstance1, internalProcessInstance2)
+        );
         given(processInstanceQuery.count()).willReturn(2L);
-        given(processInstanceConverter.from(List.of(internalProcessInstance1, internalProcessInstance2)))
-            .willReturn(List.of(apiProcessInstance1, apiProcessInstance2));
+        given(processInstanceConverter.from(List.of(internalProcessInstance1, internalProcessInstance2))).willReturn(
+            List.of(apiProcessInstance1, apiProcessInstance2)
+        );
 
         var result = processAdminRuntime.processInstances(Pageable.of(0, 10));
 
@@ -775,6 +805,8 @@ class ProcessAdminRuntimeImplTest {
         given(processInstanceBuilder.businessKey("businessKey")).willReturn(processInstanceBuilder);
         given(processInstanceBuilder.variables(Map.of("var1", "value1"))).willReturn(processInstanceBuilder);
         given(processInstanceBuilder.name("processName")).willReturn(processInstanceBuilder);
+        given(processInstanceBuilder.linkedProcessInstanceId(null)).willReturn(processInstanceBuilder);
+        given(processInstanceBuilder.linkedProcessInstanceType(null)).willReturn(processInstanceBuilder);
         given(processInstanceBuilder.start()).willReturn(internalProcessInstance);
         given(processInstanceConverter.from(internalProcessInstance)).willReturn(apiProcessInstance);
 
@@ -794,8 +826,9 @@ class ProcessAdminRuntimeImplTest {
         given(repositoryService.createProcessDefinitionQuery()).willReturn(processDefinitionQuery);
         given(processDefinitionQuery.listPage(0, 10)).willReturn(List.of(internalProcessDef1, internalProcessDef2));
         given(processDefinitionQuery.count()).willReturn(2L);
-        given(processDefinitionConverter.from(List.of(internalProcessDef1, internalProcessDef2)))
-            .willReturn(List.of(apiProcessDef1, apiProcessDef2));
+        given(processDefinitionConverter.from(List.of(internalProcessDef1, internalProcessDef2))).willReturn(
+            List.of(apiProcessDef1, apiProcessDef2)
+        );
 
         var result = processAdminRuntime.processDefinitions(Pageable.of(0, 10));
 

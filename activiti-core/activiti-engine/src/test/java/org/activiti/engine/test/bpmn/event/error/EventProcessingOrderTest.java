@@ -50,7 +50,6 @@ public class EventProcessingOrderTest extends PluggableActivitiTestCase {
         assertThat(task.getName()).isEqualTo("Catch All Handler Task");
         assertThat(task.getTaskDefinitionKey()).isEqualTo("catchAllTask");
 
-
         // Completing the task will end the process instance
         taskService.complete(task.getId());
         assertProcessEnded(procId);

@@ -15,7 +15,6 @@
  */
 package org.activiti.engine.impl.bpmn.helper;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -49,6 +48,7 @@ import org.activiti.engine.impl.delegate.invocation.TaskListenerInvocation;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.apache.commons.lang3.StringUtils;
+import tools.jackson.databind.node.ObjectNode;
 
 /**
  * Helper class for bpmn constructs that allow class delegation.
@@ -272,7 +272,7 @@ public class ClassDelegate
                 ) {
                     String overrideClassName = taskElementProperties
                         .get(DynamicBpmnConstants.SERVICE_TASK_CLASS_NAME)
-                        .asText();
+                        .asString();
                     if (StringUtils.isNotEmpty(overrideClassName) && !overrideClassName.equals(className)) {
                         className = overrideClassName;
                         activityBehaviorInstance = null;

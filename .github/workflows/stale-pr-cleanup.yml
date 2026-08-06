@@ -1,0 +1,14 @@
+name: Stale PR Cleanup
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+permissions:
+  pull-requests: write
+  issues: write
+
+jobs:
+  stale-pr-cleanup:
+    uses: Alfresco/alfresco-build-tools/.github/workflows/stale-pr-cleanup.yml@ac0009fd55b474dbf50864caa4f9da36a41e5ffe # v18.21.2
