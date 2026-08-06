@@ -34,7 +34,7 @@ safe-outputs:
     allowed: [security:low, security:medium, security:high]
   submit-pull-request-review:
 
-source: Alfresco/alfresco-build-tools/.github/workflows/supply-chain-review.md@7479d99410acb8b63f78a5b17abb3b8ebec3a66d
+source: Alfresco/alfresco-build-tools/.github/workflows/supply-chain-review.md@7bc0fc6f4f11df6c065b57d4a6aa90d7ea362b2f
 ---
 
 # Supply Chain Review
@@ -46,7 +46,11 @@ You are the primary and only analysis engine. There is no secondary check. Be th
 
 ## Step 1 — Identify Dependency Changes
 
-Read the pull request diff and find all modified dependency files (`package.json`, `package-lock.json`, `pom.xml`, `yarn.lock`, `build.gradle`, etc.). For each changed dependency extract:
+Read the **full** pull request diff — every commit in the PR, not just the latest one — and find all modified dependency files (`package.json`, `package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`/`pnpm-lock.yml`, `pnpm-workspace.yaml`/`pnpm-workspace.yml`, `npm-shrinkwrap.json`, `pom.xml`, `build.gradle`, etc.).
+
+**CRITICAL**: always use the GitHub MCP Server `pull_requests` toolset (e.g. `get_diff` / `get_files`) to fetch the diff — this always reflects every commit in the PR, regardless of local git history, against the correct base branch. Do NOT rely on local git commands or assumptions about the PR's commit history.
+
+For each changed dependency extract:
 
 - Package name (including scope/groupId if applicable)
 - Ecosystem (`npm` or `maven`)
