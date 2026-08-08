@@ -57,9 +57,14 @@ public class S3VariableContentStore implements VariableContentStore {
             bytes = new byte[0];
         }
         String pid = processInstanceId != null ? processInstanceId : "no-proc-inst";
-        String safeName = variableName.replaceAll("[^a-zA-Z0-9_\-]", "_");
-        String key = (keyPrefix != null && !keyPrefix.isEmpty() ? keyPrefix + "/" : "")
-            + pid + "/" + safeName + "/" + UUID.randomUUID();
+        String safeName = variableName.replaceAll("[^a-zA-Z0-9_-]", "_");
+        String key =
+            (keyPrefix != null && !keyPrefix.isEmpty() ? keyPrefix + "/" : "") +
+            pid +
+            "/" +
+            safeName +
+            "/" +
+            UUID.randomUUID();
         try {
             s3Client.putObject(
                 PutObjectRequest.builder().bucket(bucketName).key(key).build(),

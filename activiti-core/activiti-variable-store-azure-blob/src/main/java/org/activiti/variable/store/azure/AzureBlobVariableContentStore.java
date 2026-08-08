@@ -51,9 +51,14 @@ public class AzureBlobVariableContentStore implements VariableContentStore {
             bytes = new byte[0];
         }
         String pid = processInstanceId != null ? processInstanceId : "no-proc-inst";
-        String safeName = variableName.replaceAll("[^a-zA-Z0-9_\-]", "_");
-        String blobName = (blobPrefix != null && !blobPrefix.isEmpty() ? blobPrefix + "/" : "")
-            + pid + "/" + safeName + "/" + UUID.randomUUID();
+        String safeName = variableName.replaceAll("[^a-zA-Z0-9_-]", "_");
+        String blobName =
+            (blobPrefix != null && !blobPrefix.isEmpty() ? blobPrefix + "/" : "") +
+            pid +
+            "/" +
+            safeName +
+            "/" +
+            UUID.randomUUID();
         try {
             BlobClient blobClient = containerClient.getBlobClient(blobName);
             blobClient.upload(new ByteArrayInputStream(bytes), bytes.length, true);

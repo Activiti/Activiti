@@ -49,7 +49,7 @@ public class FilesystemVariableContentStore implements VariableContentStore {
     @Override
     public String store(String variableName, String processInstanceId, byte[] bytes) {
         String pid = processInstanceId != null ? processInstanceId : "no-proc-inst";
-        String safeName = variableName.replaceAll("[^a-zA-Z0-9_\-]", "_");
+        String safeName = variableName.replaceAll("[^a-zA-Z0-9_-]", "_");
         String relativePath = pid + "/" + safeName + "/" + UUID.randomUUID() + ".bin";
         Path filePath = rootPath.resolve(relativePath);
         try {
