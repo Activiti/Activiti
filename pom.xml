@@ -800,6 +800,28 @@ limitations under the License.
               <goal>report-integration</goal>
             </goals>
           </execution>
+          <!-- Coverage check: enforce 90% instruction coverage -->
+          <execution>
+            <id>coverage-check</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <rule>
+                  <element>BUNDLE</element>
+                  <limits>
+                    <limit>
+                      <counter>INSTRUCTION</counter>
+                      <value>COVEREDRATIO</value>
+                      <minimum>0.90</minimum>
+                    </limit>
+                  </limits>
+                </rule>
+              </rules>
+            </configuration>
+          </execution>
           <!-- Merge execution reports configuration-->
           <execution>
             <id>merge</id>
