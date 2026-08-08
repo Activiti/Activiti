@@ -47,6 +47,8 @@ public class VariableInstanceEntityImpl
     protected String textValue;
     protected String textValue2;
     protected ByteArrayRef byteArrayRef;
+    protected String contentStoreName;
+    protected String contentId;
 
     protected Object cachedValue;
     protected boolean forcedUpdate;
@@ -70,6 +72,12 @@ public class VariableInstanceEntityImpl
         }
         if (byteArrayRef != null && byteArrayRef.getId() != null) {
             persistentState.put("byteArrayValueId", byteArrayRef.getId());
+        }
+        if (contentStoreName != null) {
+            persistentState.put("contentStoreName", contentStoreName);
+        }
+        if (contentId != null) {
+            persistentState.put("contentId", contentId);
         }
         if (forcedUpdate) {
             persistentState.put("forcedUpdate", Boolean.TRUE);
@@ -222,6 +230,22 @@ public class VariableInstanceEntityImpl
         this.cachedValue = cachedValue;
     }
 
+    public String getContentStoreName() {
+        return contentStoreName;
+    }
+
+    public void setContentStoreName(String contentStoreName) {
+        this.contentStoreName = contentStoreName;
+    }
+
+    public String getContentId() {
+        return contentId;
+    }
+
+    public void setContentId(String contentId) {
+        this.contentId = contentId;
+    }
+
     // misc methods ///////////////////////////////////////////////////////////////
 
     @Override
@@ -245,6 +269,12 @@ public class VariableInstanceEntityImpl
         }
         if (byteArrayRef != null && byteArrayRef.getId() != null) {
             sb.append(", byteArrayValueId=").append(byteArrayRef.getId());
+        }
+        if (contentStoreName != null) {
+            sb.append(", contentStoreName=").append(contentStoreName);
+        }
+        if (contentId != null) {
+            sb.append(", contentId=").append(contentId);
         }
         sb.append("]");
         return sb.toString();

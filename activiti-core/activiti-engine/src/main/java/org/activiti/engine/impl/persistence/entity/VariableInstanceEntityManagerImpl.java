@@ -28,6 +28,7 @@ import org.activiti.engine.impl.persistence.CountingExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.VariableInstanceDataManager;
 import org.activiti.engine.impl.variable.VariableType;
+import org.activiti.engine.impl.variable.store.VariableContentStore;
 
 /**
 
@@ -127,6 +128,15 @@ public class VariableInstanceEntityManagerImpl
         if (byteArrayRef != null) {
             byteArrayRef.delete();
         }
+
+        String contentId = entity.getContentId();
+        if (contentId != null) {
+            VariableContentStore store = processEngineConfiguration.getVariableContentStore();
+            if (store != null) {
+                store.delete(contentId);
+            }
+        }
+
         entity.setDeleted(true);
 
         if (entity.getExecutionId() != null && isExecutionRelatedEntityCountEnabledGlobally()) {

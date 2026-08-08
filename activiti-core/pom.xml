@@ -210,6 +210,9 @@
     <module>activiti-image-generator</module>
     <module>activiti-json-converter</module>
     <module>activiti-engine</module>
+    <module>activiti-variable-store-filesystem</module>
+    <module>activiti-variable-store-s3</module>
+    <module>activiti-variable-store-azure-blob</module>
     <module>activiti-spring</module>
     <module>activiti-spring-resource-loader</module>
     <module>activiti-spring-boot-starter</module>

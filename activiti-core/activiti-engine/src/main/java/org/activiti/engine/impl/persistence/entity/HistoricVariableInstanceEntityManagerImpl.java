@@ -25,6 +25,7 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.HistoricVariableInstanceDataManager;
+import org.activiti.engine.impl.variable.store.VariableContentStore;
 
 /**
 
@@ -82,7 +83,9 @@ public class HistoricVariableInstanceEntityManagerImpl
         historicVariableInstance.setLongValue(variableInstance.getLongValue());
 
         historicVariableInstance.setVariableType(variableInstance.getType());
-        if (variableInstance.getByteArrayRef() != null) {
+        if (variableInstance.getContentId() != null) {
+            variableInstance.getType().setValue(variableInstance.getValue(), historicVariableInstance);
+        } else if (variableInstance.getByteArrayRef() != null) {
             historicVariableInstance.setBytes(variableInstance.getBytes());
         }
 
@@ -95,6 +98,14 @@ public class HistoricVariableInstanceEntityManagerImpl
 
         if (entity.getByteArrayRef() != null) {
             entity.getByteArrayRef().delete();
+        }
+
+        String contentId = entity.getContentId();
+        if (contentId != null) {
+            VariableContentStore store = processEngineConfiguration.getVariableContentStore();
+            if (store != null) {
+                store.delete(contentId);
+            }
         }
     }
 

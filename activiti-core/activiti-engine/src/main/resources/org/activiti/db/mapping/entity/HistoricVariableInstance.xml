@@ -21,7 +21,7 @@
   <!-- HISTORIC PROCESS VARIABLE INSERT -->
 
   <insert id="insertHistoricVariableInstance" parameterType="org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntityImpl">
-    insert into ${prefix}ACT_HI_VARINST (ID_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_, NAME_, REV_, VAR_TYPE_, BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT_, TEXT2_, CREATE_TIME_, LAST_UPDATED_TIME_)
+    insert into ${prefix}ACT_HI_VARINST (ID_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_, NAME_, REV_, VAR_TYPE_, BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT_, TEXT2_, CONTENT_STORE_NAME_, CONTENT_ID_, CREATE_TIME_, LAST_UPDATED_TIME_)
     values (
       #{id, jdbcType=VARCHAR},
       #{processInstanceId, jdbcType=VARCHAR},
@@ -35,13 +35,15 @@
       #{longValue, jdbcType=BIGINT},
       #{textValue, jdbcType=VARCHAR},
       #{textValue2, jdbcType=VARCHAR},
+      #{contentStoreName, jdbcType=VARCHAR},
+      #{contentId, jdbcType=VARCHAR},
       #{createTime, jdbcType=TIMESTAMP},
       #{lastUpdatedTime, jdbcType=TIMESTAMP}
     )
   </insert>
 
   <insert id="bulkInsertHistoricVariableInstance" parameterType="java.util.List">
-    insert into ${prefix}ACT_HI_VARINST (ID_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_, NAME_, REV_, VAR_TYPE_, BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT_, TEXT2_, CREATE_TIME_, LAST_UPDATED_TIME_)
+    insert into ${prefix}ACT_HI_VARINST (ID_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_, NAME_, REV_, VAR_TYPE_, BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT_, TEXT2_, CONTENT_STORE_NAME_, CONTENT_ID_, CREATE_TIME_, LAST_UPDATED_TIME_)
     values
       <foreach collection="list" item="historicVariable" index="index" separator=",">
         (#{historicVariable.id, jdbcType=VARCHAR},
@@ -56,6 +58,8 @@
          #{historicVariable.longValue, jdbcType=BIGINT},
          #{historicVariable.textValue, jdbcType=VARCHAR},
          #{historicVariable.textValue2, jdbcType=VARCHAR},
+         #{historicVariable.contentStoreName, jdbcType=VARCHAR},
+         #{historicVariable.contentId, jdbcType=VARCHAR},
          #{historicVariable.createTime, jdbcType=TIMESTAMP},
          #{historicVariable.lastUpdatedTime, jdbcType=TIMESTAMP})
        </foreach>
@@ -65,7 +69,7 @@
     INSERT ALL
       <foreach collection="list" item="historicVariable" index="index">
       INTO ${prefix}ACT_HI_VARINST (ID_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_, NAME_, REV_,
-      VAR_TYPE_, BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT_, TEXT2_, CREATE_TIME_, LAST_UPDATED_TIME_) VALUES
+      VAR_TYPE_, BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT_, TEXT2_, CONTENT_STORE_NAME_, CONTENT_ID_, CREATE_TIME_, LAST_UPDATED_TIME_) VALUES
           (#{historicVariable.id, jdbcType=VARCHAR},
            #{historicVariable.processInstanceId, jdbcType=VARCHAR},
            #{historicVariable.executionId, jdbcType=VARCHAR},
@@ -78,6 +82,8 @@
            #{historicVariable.longValue, jdbcType=BIGINT},
            #{historicVariable.textValue, jdbcType=VARCHAR},
            #{historicVariable.textValue2, jdbcType=VARCHAR},
+           #{historicVariable.contentStoreName, jdbcType=VARCHAR},
+           #{historicVariable.contentId, jdbcType=VARCHAR},
            #{historicVariable.createTime, jdbcType=TIMESTAMP},
            #{historicVariable.lastUpdatedTime, jdbcType=TIMESTAMP})
        </foreach>
@@ -94,6 +100,8 @@
       LONG_ = #{longValue, jdbcType=BIGINT},
       TEXT_ = #{textValue, jdbcType=VARCHAR},
       TEXT2_ = #{textValue2, jdbcType=VARCHAR},
+      CONTENT_STORE_NAME_ = #{contentStoreName, jdbcType=VARCHAR},
+      CONTENT_ID_ = #{contentId, jdbcType=VARCHAR},
       VAR_TYPE_ = #{variableType, jdbcType=VARCHAR},
       LAST_UPDATED_TIME_ = #{lastUpdatedTime, jdbcType=TIMESTAMP}
     where ID_ = #{id, jdbcType=VARCHAR}
@@ -126,6 +134,8 @@
     <result property="doubleValue" column="DOUBLE_" jdbcType="DOUBLE" />
     <result property="textValue" column="TEXT_" jdbcType="VARCHAR" />
     <result property="textValue2" column="TEXT2_" jdbcType="VARCHAR" />
+    <result property="contentStoreName" column="CONTENT_STORE_NAME_" jdbcType="VARCHAR" />
+    <result property="contentId" column="CONTENT_ID_" jdbcType="VARCHAR" />
     <result property="longValue" column="LONG_" jdbcType="BIGINT" />
     <result property="createTime" column="CREATE_TIME_" jdbcType="TIMESTAMP" />
     <result property="lastUpdatedTime" column="LAST_UPDATED_TIME_" jdbcType="TIMESTAMP" />

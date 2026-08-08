@@ -27,6 +27,7 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -294,6 +295,7 @@ import org.activiti.engine.impl.variable.CustomObjectType;
 import org.activiti.engine.impl.variable.DateType;
 import org.activiti.engine.impl.variable.DefaultVariableTypes;
 import org.activiti.engine.impl.variable.DoubleType;
+import org.activiti.engine.impl.variable.ExternalStoreVariableType;
 import org.activiti.engine.impl.variable.EntityManagerSession;
 import org.activiti.engine.impl.variable.EntityManagerSessionFactory;
 import org.activiti.engine.impl.variable.IntegerType;
@@ -315,6 +317,8 @@ import org.activiti.engine.impl.variable.StringType;
 import org.activiti.engine.impl.variable.UUIDType;
 import org.activiti.engine.impl.variable.VariableType;
 import org.activiti.engine.impl.variable.VariableTypes;
+import org.activiti.engine.impl.variable.store.ByteArrayVariableContentStore;
+import org.activiti.engine.impl.variable.store.VariableContentStore;
 import org.activiti.engine.integration.IntegrationContextService;
 import org.activiti.engine.integration.IntegrationContextServiceImpl;
 import org.activiti.engine.parse.BpmnParseHandler;
@@ -812,6 +816,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
      *  Mainly used for the Oracle NVARCHAR2 limit of 2000 characters
      */
     protected int maxLengthStringVariableType = -1;
+
+    protected VariableContentStore variableContentStore;
 
     /**
      * If set to true, enables bulk insert (grouping sql inserts together).
@@ -2028,7 +2034,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
             }
             variableTypes.addType(new NullType());
             variableTypes.addType(new StringType(getMaxLengthString()));
-            variableTypes.addType(new LongStringType(getMaxLengthString() + 1));
             variableTypes.addType(new BooleanType());
             variableTypes.addType(new ShortType());
             variableTypes.addType(new IntegerType());
@@ -2052,14 +2057,31 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
             variableTypes.addType(
                 new JsonType(getMaxLengthString(), jsonMapper, serializePOJOsInVariablesToJson, jsonTypeConverter)
             );
-            variableTypes.addType(
-                new LongJsonType(
-                    getMaxLengthString() + 1,
-                    jsonMapper,
-                    serializePOJOsInVariablesToJson,
-                    jsonTypeConverter
-                )
+
+            VariableType longStringType = new LongStringType(getMaxLengthString() + 1);
+            VariableType longJsonType = new LongJsonType(
+                getMaxLengthString() + 1,
+                jsonMapper,
+                serializePOJOsInVariablesToJson,
+                jsonTypeConverter
             );
+
+            if (variableContentStore != null && !(variableContentStore instanceof ByteArrayVariableContentStore)) {
+                variableTypes.addType(
+                    new ExternalStoreVariableType(
+                        variableContentStore,
+                        Arrays.asList(
+                            longStringType,
+                            longJsonType,
+                            new ByteArrayType(),
+                            new SerializableType(serializableVariableTypeTrackDeserializedObjects)
+                        )
+                    )
+                );
+            }
+
+            variableTypes.addType(longStringType);
+            variableTypes.addType(longJsonType);
 
             //java serialization only supported OOTB if not defaulting to json
             //if java serliazation needed together with json defaulting then add to customPostVariableTypes
@@ -3096,6 +3118,15 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
     public ProcessEngineConfigurationImpl setMaxLengthStringVariableType(int maxLengthStringVariableType) {
         this.maxLengthStringVariableType = maxLengthStringVariableType;
+        return this;
+    }
+
+    public VariableContentStore getVariableContentStore() {
+        return variableContentStore;
+    }
+
+    public ProcessEngineConfigurationImpl setVariableContentStore(VariableContentStore variableContentStore) {
+        this.variableContentStore = variableContentStore;
         return this;
     }
 

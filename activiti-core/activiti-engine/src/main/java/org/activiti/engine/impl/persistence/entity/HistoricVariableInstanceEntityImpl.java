@@ -47,6 +47,8 @@ public class HistoricVariableInstanceEntityImpl
     protected String textValue;
     protected String textValue2;
     protected ByteArrayRef byteArrayRef;
+    protected String contentStoreName;
+    protected String contentId;
 
     protected Object cachedValue;
 
@@ -62,6 +64,12 @@ public class HistoricVariableInstanceEntityImpl
 
         if (byteArrayRef != null) {
             persistentState.put("byteArrayRef", byteArrayRef.getId());
+        }
+        if (contentStoreName != null) {
+            persistentState.put("contentStoreName", contentStoreName);
+        }
+        if (contentId != null) {
+            persistentState.put("contentId", contentId);
         }
 
         persistentState.put("createTime", createTime);
@@ -157,6 +165,22 @@ public class HistoricVariableInstanceEntityImpl
         this.cachedValue = cachedValue;
     }
 
+    public String getContentStoreName() {
+        return contentStoreName;
+    }
+
+    public void setContentStoreName(String contentStoreName) {
+        this.contentStoreName = contentStoreName;
+    }
+
+    public String getContentId() {
+        return contentId;
+    }
+
+    public void setContentId(String contentId) {
+        this.contentId = contentId;
+    }
+
     public void setVariableType(VariableType variableType) {
         this.variableType = variableType;
     }
@@ -233,6 +257,12 @@ public class HistoricVariableInstanceEntityImpl
         }
         if (byteArrayRef != null && byteArrayRef.getId() != null) {
             sb.append(", byteArrayValueId=").append(byteArrayRef.getId());
+        }
+        if (contentStoreName != null) {
+            sb.append(", contentStoreName=").append(contentStoreName);
+        }
+        if (contentId != null) {
+            sb.append(", contentId=").append(contentId);
         }
         sb.append("]");
         return sb.toString();

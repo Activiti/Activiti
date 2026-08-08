@@ -16,6 +16,7 @@
 package org.activiti.engine.impl.variable;
 
 import org.activiti.engine.api.internal.Internal;
+import org.activiti.engine.impl.variable.store.ContentStoreAware;
 
 /**
  * Common interface for regular and historic variable entities.
@@ -23,7 +24,7 @@ import org.activiti.engine.api.internal.Internal;
 
  */
 @Internal
-public interface ValueFields {
+public interface ValueFields extends ContentStoreAware {
     /**
      * @return the name of the variable
      */

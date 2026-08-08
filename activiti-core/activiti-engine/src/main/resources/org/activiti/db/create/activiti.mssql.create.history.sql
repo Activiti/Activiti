@@ -73,6 +73,8 @@ create table ACT_HI_VARINST (
     LONG_ numeric(19,0),
     TEXT_ nvarchar(4000),
     TEXT2_ nvarchar(4000),
+    CONTENT_STORE_NAME_ nvarchar(64),
+    CONTENT_ID_ nvarchar(512),
     CREATE_TIME_ datetime,
     LAST_UPDATED_TIME_ datetime,
     primary key (ID_)
@@ -94,6 +96,8 @@ create table ACT_HI_DETAIL (
     LONG_ numeric(19,0),
     TEXT_ nvarchar(4000),
     TEXT2_ nvarchar(4000),
+    CONTENT_STORE_NAME_ nvarchar(64),
+    CONTENT_ID_ nvarchar(512),
     primary key (ID_)
 );
 

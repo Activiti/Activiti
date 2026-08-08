@@ -75,6 +75,8 @@ create table ACT_HI_VARINST (
     LONG_ bigint,
     TEXT_ varchar(4000),
     TEXT2_ varchar(4000),
+    CONTENT_STORE_NAME_ varchar(64),
+    CONTENT_ID_ varchar(512),
     CREATE_TIME_ timestamp,
     LAST_UPDATED_TIME_ timestamp,
     primary key (ID_)
@@ -96,6 +98,8 @@ create table ACT_HI_DETAIL (
     LONG_ bigint,
     TEXT_ varchar(4000),
     TEXT2_ varchar(4000),
+    CONTENT_STORE_NAME_ varchar(64),
+    CONTENT_ID_ varchar(512),
     primary key (ID_)
 );
 

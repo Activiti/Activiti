@@ -6,10 +6,10 @@ create table ACT_GE_PROPERTY (
 );
 
 insert into ACT_GE_PROPERTY
-values ('schema.version', '9.1.0', 1);
+values ('schema.version', '9.1.1', 1);
 
 insert into ACT_GE_PROPERTY
-values ('schema.history', 'create(9.1.0)', 1);
+values ('schema.history', 'create(9.1.1)', 1);
 
 insert into ACT_GE_PROPERTY
 values ('next.dbid', '1', 1);
@@ -240,6 +240,8 @@ create table ACT_RU_VARIABLE (
     LONG_ bigint,
     TEXT_ varchar(4000),
     TEXT2_ varchar(4000),
+    CONTENT_STORE_NAME_ varchar(64),
+    CONTENT_ID_ varchar(512),
     primary key (ID_)
 );
 

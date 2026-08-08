@@ -11,7 +11,7 @@
     parameterType="org.activiti.engine.impl.persistence.entity.VariableInstanceEntityImpl">
     insert into ${prefix}ACT_RU_VARIABLE (ID_, REV_,
     TYPE_, NAME_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_, BYTEARRAY_ID_,
-    DOUBLE_, LONG_ , TEXT_, TEXT2_)
+    DOUBLE_, LONG_ , TEXT_, TEXT2_, CONTENT_STORE_NAME_, CONTENT_ID_)
     values (
     #{id, jdbcType=VARCHAR},
     1,
@@ -24,7 +24,9 @@
     #{doubleValue, jdbcType=DOUBLE},
     #{longValue, jdbcType=BIGINT},
     #{textValue, jdbcType=VARCHAR},
-    #{textValue2, jdbcType=VARCHAR}
+    #{textValue2, jdbcType=VARCHAR},
+    #{contentStoreName, jdbcType=VARCHAR},
+    #{contentId, jdbcType=VARCHAR}
     )
   </insert>
 
@@ -32,7 +34,7 @@
     parameterType="java.util.List">
     INSERT INTO ${prefix}ACT_RU_VARIABLE (ID_, REV_,
           TYPE_, NAME_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_, BYTEARRAY_ID_,
-          DOUBLE_, LONG_ , TEXT_, TEXT2_) VALUES
+          DOUBLE_, LONG_ , TEXT_, TEXT2_, CONTENT_STORE_NAME_, CONTENT_ID_) VALUES
       <foreach collection="list" item="variable" index="index" separator=",">
          (#{variable.id, jdbcType=VARCHAR},
           1,
@@ -45,7 +47,9 @@
           #{variable.doubleValue, jdbcType=DOUBLE},
           #{variable.longValue, jdbcType=BIGINT},
           #{variable.textValue, jdbcType=VARCHAR},
-          #{variable.textValue2, jdbcType=VARCHAR})
+          #{variable.textValue2, jdbcType=VARCHAR},
+          #{variable.contentStoreName, jdbcType=VARCHAR},
+          #{variable.contentId, jdbcType=VARCHAR})
       </foreach>
   </insert>
 
@@ -54,7 +58,7 @@
       <foreach collection="list" item="variable" index="index">
           INTO ${prefix}ACT_RU_VARIABLE (ID_, REV_,
           TYPE_, NAME_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_, BYTEARRAY_ID_,
-          DOUBLE_, LONG_ , TEXT_, TEXT2_) VALUES
+          DOUBLE_, LONG_ , TEXT_, TEXT2_, CONTENT_STORE_NAME_, CONTENT_ID_) VALUES
          (#{variable.id, jdbcType=VARCHAR},
           1,
           #{variable.typeName, jdbcType=VARCHAR },
@@ -66,7 +70,9 @@
           #{variable.doubleValue, jdbcType=DOUBLE},
           #{variable.longValue, jdbcType=BIGINT},
           #{variable.textValue, jdbcType=VARCHAR},
-          #{variable.textValue2, jdbcType=VARCHAR})
+          #{variable.textValue2, jdbcType=VARCHAR},
+          #{variable.contentStoreName, jdbcType=VARCHAR},
+          #{variable.contentId, jdbcType=VARCHAR})
       </foreach>
     SELECT * FROM dual
   </insert>
@@ -84,7 +90,9 @@
     DOUBLE_ = #{doubleValue, jdbcType=DOUBLE},
     LONG_ = #{longValue, jdbcType=BIGINT},
     TEXT_ = #{textValue, jdbcType=VARCHAR},
-    TEXT2_ = #{textValue2, jdbcType=VARCHAR}
+    TEXT2_ = #{textValue2, jdbcType=VARCHAR},
+    CONTENT_STORE_NAME_ = #{contentStoreName, jdbcType=VARCHAR},
+    CONTENT_ID_ = #{contentId, jdbcType=VARCHAR}
     where ID_ = #{id, jdbcType=VARCHAR}
     and REV_ = #{revision, jdbcType=INTEGER}
   </update>
@@ -121,6 +129,8 @@
     <result property="doubleValue" column="DOUBLE_" jdbcType="DOUBLE" />
     <result property="textValue" column="TEXT_" jdbcType="VARCHAR" />
     <result property="textValue2" column="TEXT2_" jdbcType="VARCHAR" />
+    <result property="contentStoreName" column="CONTENT_STORE_NAME_" jdbcType="VARCHAR" />
+    <result property="contentId" column="CONTENT_ID_" jdbcType="VARCHAR" />
     <result property="longValue" column="LONG_" jdbcType="BIGINT" />
   </resultMap>
 
