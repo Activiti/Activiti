@@ -183,6 +183,14 @@
     </foreach>
   </delete>
 
+   <sql id="taskColumns">
+     ${aliasPrefix}ID_, ${aliasPrefix}REV_, ${aliasPrefix}NAME_, ${aliasPrefix}BUSINESS_KEY_, ${aliasPrefix}PARENT_TASK_ID_,
+     ${aliasPrefix}DESCRIPTION_, ${aliasPrefix}PRIORITY_, ${aliasPrefix}CREATE_TIME_, ${aliasPrefix}OWNER_, ${aliasPrefix}ASSIGNEE_,
+     ${aliasPrefix}DELEGATION_, ${aliasPrefix}EXECUTION_ID_, ${aliasPrefix}PROC_INST_ID_, ${aliasPrefix}PROC_DEF_ID_,
+     ${aliasPrefix}TASK_DEF_KEY_, ${aliasPrefix}DUE_DATE_, ${aliasPrefix}CATEGORY_, ${aliasPrefix}SUSPENSION_STATE_,
+     ${aliasPrefix}TENANT_ID_, ${aliasPrefix}FORM_KEY_, ${aliasPrefix}CLAIM_TIME_, ${aliasPrefix}APP_VERSION_
+   </sql>
+
   <!-- TASK RESULTMAP -->
 
   <resultMap id="taskResultMap" type="org.activiti.engine.impl.persistence.entity.TaskEntityImpl">
@@ -252,24 +260,26 @@
   <!-- TASK SELECT -->
 
   <select id="selectTask" parameterType="string" resultMap="taskResultMap">
-    select * from ${prefix}ACT_RU_TASK where ID_ = #{id, jdbcType=VARCHAR}
+    select <include refid="taskColumns"><property name="aliasPrefix" value=""/></include>
+    from ${prefix}ACT_RU_TASK where ID_ = #{id, jdbcType=VARCHAR}
   </select>
 
   <select id="selectTasksByParentTaskId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="taskResultMap">
-    select * from ${prefix}ACT_RU_TASK where PARENT_TASK_ID_ = #{parameter}
+    select <include refid="taskColumns"><property name="aliasPrefix" value=""/></include>
+    from ${prefix}ACT_RU_TASK where PARENT_TASK_ID_ = #{parameter}
   </select>
 
   <select id="selectTasksByExecutionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="taskResultMap">
-    select distinct T.*
+    select distinct <include refid="taskColumns"><property name="aliasPrefix" value=""/></include>
     from ${prefix}ACT_RU_TASK T
     where T.EXECUTION_ID_ = #{parameter}
   </select>
 
-  <select id="selectTasksByProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="taskResultMap">
-    select T.*
-    from ${prefix}ACT_RU_TASK T
-    where T.PROC_INST_ID_ = #{parameter}
-  </select>
+   <select id="selectTasksByProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="taskResultMap">
+      select <include refid="taskColumns"><property name="aliasPrefix" value=""/></include>
+     from ${prefix}ACT_RU_TASK T
+     where T.PROC_INST_ID_ = #{parameter}
+   </select>
 
   <sql id="candidateTaskIdentityLinkCheck">
     exists (
@@ -501,12 +511,26 @@
     VAR.TEXT_ as VAR_TEXT_,
     VAR.TEXT2_ as VAR_TEXT2_,
     VAR.LONG_ as VAR_LONG_'"/>
+    <bind name="OUTER_VARIABLES_COLUMNS" value="',RES.VAR_ID_ as VAR_ID_,
+    RES.VAR_NAME_ as VAR_NAME_,
+    RES.VAR_TYPE_ as VAR_TYPE_,
+    RES.VAR_REV_ as VAR_REV_,
+    RES.VAR_PROC_INST_ID_ as VAR_PROC_INST_ID_,
+    RES.VAR_EXECUTION_ID_ as VAR_EXECUTION_ID_,
+    RES.VAR_TASK_ID_ as VAR_TASK_ID_,
+    RES.VAR_BYTEARRAY_ID_ as VAR_BYTEARRAY_ID_,
+    RES.VAR_DOUBLE_ as VAR_DOUBLE_,
+    RES.VAR_TEXT_ as VAR_TEXT_,
+    RES.VAR_TEXT2_ as VAR_TEXT2_,
+    RES.VAR_LONG_ as VAR_LONG_'"/>
     <choose>
       <when test="includeTaskLocalVariables || includeProcessVariables">
         <bind name="variablesColumns" value="VARIABLES_COLUMNS"/>
+        <bind name="outerVariablesColumns" value="OUTER_VARIABLES_COLUMNS"/>
       </when>
       <otherwise>
         <bind name="variablesColumns" value="''"/>
+        <bind name="outerVariablesColumns" value="''"/>
       </otherwise>
     </choose>
 
@@ -539,15 +563,15 @@
         <choose>
           <!-- if it's not a count and there's a distinct, we need to remove duplicated based on RES.ID_ -->
           <when test="distinctMode == 'distinct'">
-            select RES.* ${v3_limitBetween}
+            select <include refid="taskColumns"><property name="aliasPrefix" value="RES."/></include> ${outerVariablesColumns} ${v3_limitBetween}
             from (
-            select ${distinctMode} RES.ID_ as uniqueId, RES.* ${variablesColumns}
+            select ${distinctMode} RES.ID_ as uniqueId, <include refid="taskColumns"><property name="aliasPrefix" value="RES."/></include> ${variablesColumns}
           </when>
-          <!-- if it's not a count nor distinct, we don't need explicit RES.ID_ -->
-          <otherwise>
-            select RES.* ${v3_limitBetween}
-            from (
-            select RES.* ${variablesColumns}
+           <!-- if it's not a count nor distinct, we don't need explicit RES.ID_ -->
+           <otherwise>
+             select <include refid="taskColumns"><property name="aliasPrefix" value="RES."/></include> ${outerVariablesColumns} ${v3_limitBetween}
+             from (
+             select <include refid="taskColumns"><property name="aliasPrefix" value="RES."/></include> ${variablesColumns}
           </otherwise>
         </choose>
       </otherwise>
