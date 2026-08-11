@@ -12,6 +12,10 @@
   <artifactId>activiti-juel-jakarta</artifactId>
   <name>Activiti :: Expression Language Implementation for Jakarta EE</name>
 
+  <properties>
+    <mockito.agent.arg/>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>jakarta.el</groupId>
