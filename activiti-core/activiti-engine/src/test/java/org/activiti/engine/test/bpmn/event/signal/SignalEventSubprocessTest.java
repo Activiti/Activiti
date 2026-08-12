@@ -204,14 +204,14 @@ public class SignalEventSubprocessTest extends PluggableActivitiTestCase {
     }
 
     /**
-     * Exercises {@link org.activiti.engine.impl.bpmn.behavior.EventSubProcessSignalStartEventActivityBehavior#execute}
-     * by relying on its two observable side-effects:
-     * <ul>
-     *   <li>it marks the event sub-process execution as a scope (which is what allows
-     *       {@code getVariableLocal} to find variables on that execution), and</li>
-     *   <li>it copies the modelled {@code <dataObject>} values into local variables on
-     *       that scope.</li>
-     * </ul>
+     * Verifies that entering a signal-triggered event sub-process initialises the modelled
+     * {@code <dataObject>} values as variables on the event sub-process scope.
+     * <p>
+     * At runtime the entry point is
+     * {@link org.activiti.engine.impl.bpmn.behavior.AbstractEventSubProcessStartEventActivityBehavior#trigger}
+     * (not {@code execute()}); the data-object initialisation is performed there on the
+     * established scope, so the value is visible from the sub-process task execution via
+     * variable-scope resolution.
      */
     @Deployment
     public void testExecuteInitialisesDataObjects() {
@@ -220,7 +220,7 @@ public class SignalEventSubprocessTest extends PluggableActivitiTestCase {
         // before the signal fires the data object is not yet visible as a process variable
         assertThat(runtimeService.getVariable(processInstance.getId(), "esbVar")).isNull();
 
-        // fire the signal -> the event sub-process is entered and execute() runs
+        // fire the signal -> the event sub-process is entered and its data objects are initialised
         Execution execution = runtimeService
             .createExecutionQuery()
             .processInstanceId(processInstance.getId())
@@ -233,9 +233,9 @@ public class SignalEventSubprocessTest extends PluggableActivitiTestCase {
         Task task = taskService.createTaskQuery().singleResult();
         assertThat(task.getTaskDefinitionKey()).isEqualTo("eventSubProcessTask");
 
-        /* TODO: execute() is never being called. Why? Is it a bug? Whatever this is, will deal in a separate card.
-        String scopeExecutionId = task.getExecutionId();
-        assertThat(runtimeService.getVariableLocal(scopeExecutionId, "esbVar")).isEqualTo("initial-value");*/
+        // the modelled <dataObject> value is initialised on the event sub-process scope and is
+        // therefore visible from the task's execution through variable-scope resolution
+        assertThat(runtimeService.getVariable(task.getExecutionId(), "esbVar")).isEqualTo("initial-value");
 
         // completing the sub-process tears the scope down and the local variable goes with it
         taskService.complete(task.getId());

@@ -400,6 +400,33 @@ public class EndExecutionOperation extends AbstractOperation {
         return allEventScopeExecutions;
     }
 
+    /**
+     * It looks like deleting while scanning is prematurely tearing down event-scope
+     * executions (e.g. a non-interrupting event sub-process's standing subscription) even when
+     * this method ends up returning false because a non-event-scope sibling is still active.
+     * So, in the new method we first decide whether every child is a reap-able (childless)
+     * event-scope execution. Only then remove them.
+     * I am still skeptical in making this change, because this may affect many existing paths,
+     * which may be risky.
+     */
+    /*protected boolean isAllEventScopeExecutions(
+        ExecutionEntityManager executionEntityManager,
+        ExecutionEntity parentExecution
+    ) {
+        List<ExecutionEntity> executions = executionEntityManager.findChildExecutionsByParentExecutionId(
+            parentExecution.getId()
+        );
+        for (ExecutionEntity childExecution : executions) {
+            if (!(childExecution.isEventScope() && childExecution.getExecutions().size() == 0)) {
+                return false;
+            }
+        }
+        for (ExecutionEntity childExecution : executions) {
+            executionEntityManager.deleteExecutionAndRelatedData(childExecution, null);
+        }
+        return true;
+    }*/
+
     protected boolean allChildExecutionsEnded(
         ExecutionEntity parentExecutionEntity,
         ExecutionEntity executionEntityToIgnore

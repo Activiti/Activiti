@@ -15,14 +15,15 @@
  */
 package org.activiti.engine.impl.bpmn.behavior;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
-import java.util.Map;
 import org.activiti.bpmn.model.EventSubProcess;
 import org.activiti.bpmn.model.IntegerDataObject;
 import org.activiti.bpmn.model.Signal;
@@ -31,7 +32,6 @@ import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.StringDataObject;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 
 /**
  * Unit tests for {@link EventSubProcessSignalStartEventActivityBehavior#execute(DelegateExecution)}.
@@ -61,6 +61,7 @@ class EventSubProcessSignalStartEventActivityBehaviorTest {
 
         DelegateExecution execution = mock(DelegateExecution.class);
         when(execution.getCurrentFlowElement()).thenReturn(startEvent);
+        when(execution.hasVariable(anyString())).thenReturn(false);
 
         EventSubProcessSignalStartEventActivityBehavior behavior = newBehavior();
 
@@ -70,11 +71,33 @@ class EventSubProcessSignalStartEventActivityBehaviorTest {
         // then the scope flag is set on the execution
         verify(execution).setScope(true);
 
-        // and both data objects are pushed in one batch as local variables on that scope
-        @SuppressWarnings("unchecked")
-        ArgumentCaptor<Map<String, Object>> captor = ArgumentCaptor.forClass(Map.class);
-        verify(execution).setVariablesLocal(captor.capture());
-        assertThat(captor.getValue()).containsEntry("greeting", "hello").containsEntry("attempts", 3).hasSize(2);
+        // and each data object is seeded as a local variable on that scope
+        verify(execution).setVariableLocal("greeting", "hello");
+        verify(execution).setVariableLocal("attempts", 3);
+    }
+
+    @Test
+    void execute_doesNotClobberDataObjectsThatAlreadyExistInScope() {
+        // given a data object whose name collides with a variable already present in scope
+        StringDataObject stringDataObject = new StringDataObject();
+        stringDataObject.setName("greeting");
+        stringDataObject.setValue("hello");
+
+        EventSubProcess eventSubProcess = new EventSubProcess();
+        eventSubProcess.setDataObjects(List.of(stringDataObject));
+
+        StartEvent startEvent = newStartEventInside(eventSubProcess);
+
+        DelegateExecution execution = mock(DelegateExecution.class);
+        when(execution.getCurrentFlowElement()).thenReturn(startEvent);
+        when(execution.hasVariable("greeting")).thenReturn(true);
+
+        // when
+        newBehavior().execute(execution);
+
+        // then the scope flag is still set, but the pre-existing variable is left untouched
+        verify(execution).setScope(true);
+        verify(execution, never()).setVariableLocal(eq("greeting"), any());
     }
 
     @Test
@@ -92,15 +115,12 @@ class EventSubProcessSignalStartEventActivityBehaviorTest {
         // then the scope flag is still set ...
         verify(execution).setScope(true);
 
-        // ... and we still apply the (empty) variable map, mirroring the message-variant behavior
-        @SuppressWarnings("unchecked")
-        ArgumentCaptor<Map<String, Object>> captor = ArgumentCaptor.forClass(Map.class);
-        verify(execution).setVariablesLocal(captor.capture());
-        assertThat(captor.getValue()).isEmpty();
+        // ... and no variables are seeded
+        verify(execution, never()).setVariableLocal(anyString(), any());
     }
 
     @Test
-    void execute_doesNotPushNullVariableMapWhenDataObjectsCollectionIsNull() {
+    void execute_doesNotSeedVariablesWhenDataObjectsCollectionIsNull() {
         // given an event sub-process whose data-objects collection is explicitly null
         EventSubProcess eventSubProcess = new EventSubProcess();
         eventSubProcess.setDataObjects(null);
@@ -112,9 +132,9 @@ class EventSubProcessSignalStartEventActivityBehaviorTest {
         // when
         newBehavior().execute(execution);
 
-        // then we still mark the execution as a scope but we never invoke setVariablesLocal(null)
+        // then we still mark the execution as a scope but we never seed any variable
         verify(execution).setScope(true);
-        verify(execution, never()).setVariablesLocal(null);
+        verify(execution, never()).setVariableLocal(anyString(), any());
     }
 
     private static StartEvent newStartEventInside(EventSubProcess eventSubProcess) {

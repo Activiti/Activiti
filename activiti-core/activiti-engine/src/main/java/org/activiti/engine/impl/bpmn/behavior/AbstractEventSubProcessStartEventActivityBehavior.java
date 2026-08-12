@@ -55,15 +55,10 @@ public abstract class AbstractEventSubProcessStartEventActivityBehavior extends 
     @Override
     public void execute(DelegateExecution execution) {
         StartEvent startEvent = (StartEvent) execution.getCurrentFlowElement();
-        EventSubProcess eventSubProcess = (EventSubProcess) startEvent.getSubProcess();
 
         execution.setScope(true);
 
-        // initialize the template-defined data objects as variables
-        Map<String, Object> dataObjectVars = processDataObjects(eventSubProcess.getDataObjects());
-        if (dataObjectVars != null) {
-            execution.setVariablesLocal(dataObjectVars);
-        }
+        initializeDataObjects(execution, startEvent);
     }
 
     @Override
@@ -100,6 +95,8 @@ public abstract class AbstractEventSubProcessStartEventActivityBehavior extends 
         );
         executionEntity.setScope(true);
 
+        initializeDataObjects(executionEntity, startEvent);
+
         ExecutionEntity outgoingFlowExecution = executionEntityManager.createChildExecution(executionEntity);
         outgoingFlowExecution.setCurrentFlowElement(startEvent);
 
@@ -129,6 +126,18 @@ public abstract class AbstractEventSubProcessStartEventActivityBehavior extends 
         EventSubscriptionEntityManager eventSubscriptionEntityManager
     ) {
         // no-op by default
+    }
+
+    protected void initializeDataObjects(DelegateExecution scopeExecution, StartEvent startEvent) {
+        EventSubProcess eventSubProcess = (EventSubProcess) startEvent.getSubProcess();
+        Map<String, Object> dataObjectVars = processDataObjects(eventSubProcess.getDataObjects());
+        if (dataObjectVars != null) {
+            dataObjectVars.forEach((name, value) -> {
+                if (!scopeExecution.hasVariable(name)) {
+                    scopeExecution.setVariableLocal(name, value);
+                }
+            });
+        }
     }
 
     private void interruptSiblingExecutions(
