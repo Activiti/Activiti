@@ -33,12 +33,18 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.variable.VariableType;
 import org.activiti.engine.impl.variable.VariableTypes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  */
 public abstract class VariableScopeImpl extends AbstractEntity implements Serializable, VariableScope {
 
     private static final long serialVersionUID = 1L;
+
+    private static final Logger logger = LoggerFactory.getLogger(VariableScopeImpl.class);
+
+    private static final long LARGE_VARIABLE_THRESHOLD_BYTES = 5L * 1024 * 1024;
 
     // The cache used when fetching all variables
     protected Map<String, VariableInstanceEntity> variableInstances; // needs to be null, the logic depends on it for checking if vars were already fetched
@@ -837,6 +843,8 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
             variableInstance.setValue(value);
         }
 
+        logLargeVariableWarning(variableInstance);
+
         Context.getCommandContext()
             .getHistoryManager()
             .recordHistoricDetailVariableCreate(
@@ -863,6 +871,8 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
         initializeVariableInstanceBackPointer(variableInstance);
         Context.getCommandContext().getVariableInstanceEntityManager().insert(variableInstance);
 
+        logLargeVariableWarning(variableInstance);
+
         if (variableInstances != null) {
             variableInstances.put(variableName, variableInstance);
         }
@@ -880,6 +890,17 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
             );
 
         return variableInstance;
+    }
+
+    void logLargeVariableWarning(VariableInstanceEntity variableInstance) {
+        byte[] bytes = variableInstance.getBytes();
+        if (bytes != null && bytes.length > LARGE_VARIABLE_THRESHOLD_BYTES) {
+            logger.warn(
+                "Variable '{}' has a size of {} bytes, which exceeds the 5MB recommended limit.",
+                variableInstance.getName(),
+                bytes.length
+            );
+        }
     }
 
     /*
