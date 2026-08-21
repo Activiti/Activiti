@@ -17,6 +17,8 @@ package org.activiti.engine.impl.persistence.entity;
 
 import java.io.Serializable;
 import org.activiti.engine.impl.context.Context;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>
@@ -28,6 +30,8 @@ import org.activiti.engine.impl.context.Context;
 public class ByteArrayRef implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    private static final Logger logger = LoggerFactory.getLogger(ByteArrayRef.class);
 
     private String id;
     private String name;
@@ -68,10 +72,12 @@ public class ByteArrayRef implements Serializable {
                 entity.setBytes(bytes);
                 byteArrayEntityManager.insert(entity);
                 id = entity.getId();
+                logger.debug("Inserted ByteArrayEntity '{}' with id '{}' and size {} bytes into ACT_GE_BYTEARRAY.", name, id, bytes.length);
             }
         } else {
             ensureInitialized();
             entity.setBytes(bytes);
+            logger.debug("Updating ByteArrayEntity '{}' with id '{}' to size {} bytes in ACT_GE_BYTEARRAY.", name, id, (bytes != null ? bytes.length : 0));
         }
     }
 
