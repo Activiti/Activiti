@@ -892,7 +892,7 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
         return variableInstance;
     }
 
-    void logLargeVariableWarning(VariableInstanceEntity variableInstance) {
+    protected void logLargeVariableWarning(VariableInstanceEntity variableInstance) {
         byte[] bytes = variableInstance.getBytes();
         if (bytes != null && bytes.length > LARGE_VARIABLE_THRESHOLD_BYTES) {
             logger.warn(
