@@ -122,11 +122,8 @@ public abstract class AbstractNativeQuery<T extends NativeQuery<?, ?>, U> implem
       parameterMap.put("resultType", "LIST_PAGE");
       parameterMap.put("firstResult", firstResult);
       parameterMap.put("maxResults", maxResults);
-      if (StringUtils.isNotBlank(Objects.toString(parameterMap.get("orderBy")))) {
-        parameterMap.put("orderByColumns", "RES." + parameterMap.get("orderBy"));
-      } else {
-        parameterMap.put("orderByColumns", "RES.ID_ asc");
-      }
+      Object orderBy = parameterMap.getOrDefault("orderBy", "ID_ asc");
+      parameterMap.put("orderByColumns", "RES." + orderBy);
 
       int firstRow = firstResult + 1;
       parameterMap.put("firstRow", firstRow);

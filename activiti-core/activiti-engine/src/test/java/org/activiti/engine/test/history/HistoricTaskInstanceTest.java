@@ -495,6 +495,10 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
         assertThat(historyService.createHistoricTaskInstanceQuery().or().unfinished().endOr().count()).isEqualTo(1);
     }
 
+    public void testVRM() {
+        historyService.createHistoricTaskInstanceQuery().finished().or().taskCandidateUser("1").taskCandidateGroupIn(List.of("1","2","3")).endOr().list();
+    }
+
     @Deployment
     public void testHistoricTaskInstanceQueryProcessFinished() {
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("TwoTaskHistoricTaskQueryTest");
@@ -549,6 +553,24 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
         assertThat(historyService.createHistoricTaskInstanceQuery().orderByTaskPriority().desc().count()).isEqualTo(1);
         assertThat(historyService.createHistoricTaskInstanceQuery().orderByTaskAssignee().desc().count()).isEqualTo(1);
         assertThat(historyService.createHistoricTaskInstanceQuery().orderByTaskId().desc().count()).isEqualTo(1);
+    }
+
+    @Deployment
+    public void testHistoricIdentityLinksOnTaskWithoutAssignee() {
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("historicIdentityLinks");
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+        assertThat(task).isNotNull();
+
+        // Set additional identity-link not coming from process
+        taskService.addUserIdentityLink(task.getId(),
+            "gonzo",
+            "customUseridentityLink");
+        assertThat(taskService.getIdentityLinksForTask(task.getId()).size()).isEqualTo(3);
+
+        assertThat(historyService.createHistoricTaskInstanceQuery().taskCandidateUser("fozzie").list().size()).isEqualTo(1);
+        assertThat(historyService.createHistoricTaskInstanceQuery().taskCandidateGroupIn(List.of("sales")).list().size()).isEqualTo(1);
+        assertThat(historyService.createHistoricTaskInstanceQuery().or().taskCandidateUser("fozzie").list().size()).isEqualTo(1);
+        assertThat(historyService.createHistoricTaskInstanceQuery().or().taskCandidateGroupIn(List.of("sales")).list().size()).isEqualTo(1);
     }
 
     @Deployment
