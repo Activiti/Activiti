@@ -30,6 +30,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -2293,6 +2295,41 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
         assertThat(orQueriedTask).isNotNull();
         assertThat(orQueriedTask.getExecutionId()).isEqualTo(task.getExecutionId());
 
+    }
+
+    @Deployment(resources = {"org/activiti/engine/test/api/task/TaskQueryTest.testQuery.bpmn20.xml"})
+    public void testIncludeLocalVariablesWithInvolvedUser() throws Exception {
+        // GIVEN: there are 6 tasks which "kermit" is candidate.
+        // GIVEN: there are 2 tasks which "kermit" is assignee and those tasks have 1 variable each
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss.SSS");
+        processEngineConfiguration.getClock().setCurrentTime(sdf.parse("01/01/2001 01:01:01.000"));
+        for (int i = 0; i < 2; i++) {
+            Task task = taskService.newTask();
+            task.setName("testTask");
+            task.setDescription("testTask description");
+            task.setPriority(3);
+            task.setAssignee(KERMIT);
+            taskService.saveTask(task);
+            taskService.setVariableLocal(task.getId(),
+                "test",
+                "test");
+            taskIds.add(task.getId()); // adding task to list to be removed when the test is finished
+        }
+
+        // WHEN: query for tasks which "kermit" is involved
+        final List<Task> list = taskService.createTaskQuery().includeTaskLocalVariables().taskInvolvedUser(KERMIT).list();
+
+        // THEN: we should have 8 tasks (6 candidate + 2 assigned)
+        assertThat(list).hasSize(8);
+
+        // THEN: we shoould have 2 assigned tasks
+        List<Task> tasksThatAreAssignedToKermit = list.stream().filter(task -> KERMIT.equals(task.getAssignee())).collect(Collectors.toUnmodifiableList());
+        assertThat(tasksThatAreAssignedToKermit).hasSize(2);
+
+        // THEN: and those tasks should have local variables
+        for( Task task: tasksThatAreAssignedToKermit ) {
+            assertThat(task.getTaskLocalVariables().get("test")).isEqualTo("test");
+        }
     }
 
   /**
