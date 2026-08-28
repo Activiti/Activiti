@@ -72,12 +72,14 @@ public interface RuntimeService {
      * @throws NotFoundException
      *          when no process instance with the given id is found
      */
-    ProcessInstance startCreatedProcessInstance(
+    default ProcessInstance startCreatedProcessInstance(
         ProcessInstance createdProcessInstance,
         Map<String, Object> variables,
         String linkedProcessInstanceId,
         String linkedProcessInstanceType
-    );
+    ) {
+        return startCreatedProcessInstance(createdProcessInstance, variables);
+    }
 
     /**
      * Starts a new process instance in the latest version of the process definition with the given key.
