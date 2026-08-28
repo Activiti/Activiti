@@ -32,10 +32,24 @@ public class StartCreatedProcessInstanceCmd<T> implements Command<ProcessInstanc
     private static final long serialVersionUID = 1L;
     private ProcessInstance internalProcessInstance;
     private Map<String, Object> variables;
+    private String linkedProcessInstanceId;
+    private String linkedProcessInstanceType;
 
     public StartCreatedProcessInstanceCmd(ProcessInstance internalProcessInstance, Map<String, Object> variables) {
         this.internalProcessInstance = internalProcessInstance;
         this.variables = variables;
+    }
+
+    public StartCreatedProcessInstanceCmd(
+        ProcessInstance internalProcessInstance,
+        Map<String, Object> variables,
+        String linkedProcessInstanceId,
+        String linkedProcessInstanceType
+    ) {
+        this.internalProcessInstance = internalProcessInstance;
+        this.variables = variables;
+        this.linkedProcessInstanceId = linkedProcessInstanceId;
+        this.linkedProcessInstanceType = linkedProcessInstanceType;
     }
 
     @Override
@@ -57,9 +71,17 @@ public class StartCreatedProcessInstanceCmd<T> implements Command<ProcessInstanc
             variables,
             process.getInitialFlowElement(),
             Collections.emptyMap(),
-            null,
-            null
+            linkedProcessInstanceId,
+            linkedProcessInstanceType
         );
         return processExecution;
+    }
+
+    public String getLinkedProcessInstanceId() {
+        return linkedProcessInstanceId;
+    }
+
+    public String getLinkedProcessInstanceType() {
+        return linkedProcessInstanceType;
     }
 }

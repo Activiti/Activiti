@@ -262,4 +262,44 @@ public class ProcessRuntimeEventsIT {
                 )
             );
     }
+
+    @Test
+    public void startCreatedProcessEvent_should_haveNullLinkedProcessInstance_when_noLinkIsProvided() {
+        //given
+        ProcessInstance createdProcess = processRuntime.create(
+            ProcessPayloadBuilder.create().withProcessDefinitionKey(SINGLE_TASK_PROCESS).build()
+        );
+
+        //when
+        processRuntime.startCreatedProcess(createdProcess.getId(), ProcessPayloadBuilder.start().build());
+
+        //then
+        List<ProcessStartedEvent> processStartedEvents = localEventSource.getEvents(ProcessStartedEvent.class);
+        assertThat(processStartedEvents).hasSize(1);
+        assertThat(processStartedEvents.get(0).getLinkedProcessInstanceId()).isNull();
+        assertThat(processStartedEvents.get(0).getLinkedProcessInstanceType()).isNull();
+    }
+
+    @Test
+    public void startCreatedProcessEvent_should_includeLinkedProcessInstance_when_linkIsProvided() {
+        //given
+        ProcessInstance createdProcess = processRuntime.create(
+            ProcessPayloadBuilder.create().withProcessDefinitionKey(SINGLE_TASK_PROCESS).build()
+        );
+
+        //when
+        processRuntime.startCreatedProcess(
+            createdProcess.getId(),
+            ProcessPayloadBuilder.start()
+                .withLinkedProcessInstanceId("linkedProcessId")
+                .withLinkedProcessInstanceType("linkedProcessType")
+                .build()
+        );
+
+        //then
+        List<ProcessStartedEvent> processStartedEvents = localEventSource.getEvents(ProcessStartedEvent.class);
+        assertThat(processStartedEvents).hasSize(1);
+        assertThat(processStartedEvents.get(0).getLinkedProcessInstanceId()).isEqualTo("linkedProcessId");
+        assertThat(processStartedEvents.get(0).getLinkedProcessInstanceType()).isEqualTo("linkedProcessType");
+    }
 }
