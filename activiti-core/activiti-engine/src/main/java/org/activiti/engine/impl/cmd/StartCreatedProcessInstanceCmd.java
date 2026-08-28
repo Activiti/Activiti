@@ -36,8 +36,7 @@ public class StartCreatedProcessInstanceCmd<T> implements Command<ProcessInstanc
     private String linkedProcessInstanceType;
 
     public StartCreatedProcessInstanceCmd(ProcessInstance internalProcessInstance, Map<String, Object> variables) {
-        this.internalProcessInstance = internalProcessInstance;
-        this.variables = variables;
+        this(internalProcessInstance, variables, null, null);
     }
 
     public StartCreatedProcessInstanceCmd(
