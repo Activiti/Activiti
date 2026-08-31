@@ -228,15 +228,23 @@ public class TaskQueryEscapeClauseTest extends AbstractEscapeClauseTestCase {
             assertThat(task.getId()).isEqualTo(task2.getId());
 
             // orQuery
-            /*
-        task = taskService.createTaskQuery().or().taskAssigneeLike("%\\%%").processDefinitionId("undefined").singleResult();
-        assertThat(task).isNotNull();
-        assertThat(task.getId()).isEqualTo(task1.getId());
+            task = taskService
+                .createTaskQuery()
+                .or()
+                .taskAssigneeLike("%\\%%")
+                .processDefinitionId("undefined")
+                .singleResult();
+            assertThat(task).isNotNull();
+            assertThat(task.getId()).isEqualTo(task1.getId());
 
-        task = taskService.createTaskQuery().or().taskAssigneeLike("%\\_%").processDefinitionId("undefined").singleResult();
-        assertThat(task).isNotNull();
-        assertThat(task.getId()).isEqualTo(task2.getId());
-        */
+            task = taskService
+                .createTaskQuery()
+                .or()
+                .taskAssigneeLike("%\\_%")
+                .processDefinitionId("undefined")
+                .singleResult();
+            assertThat(task).isNotNull();
+            assertThat(task.getId()).isEqualTo(task2.getId());
         }
     }
 
