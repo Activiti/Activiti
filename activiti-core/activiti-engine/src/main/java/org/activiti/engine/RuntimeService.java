@@ -61,6 +61,32 @@ public interface RuntimeService {
     ProcessInstance startCreatedProcessInstance(ProcessInstance createdProcessInstance, Map<String, Object> variables);
 
     /**
+     * Starts a process instance previously created, optionally with a linked process.
+     *
+     * <p>Note: The default implementation delegates to
+     * {@link #startCreatedProcessInstance(ProcessInstance, Map)} and therefore ignores
+     * {@code linkedProcessInstanceId}/{@code linkedProcessInstanceType}. Implementations that support linking
+     * should override this method.
+     *
+     * @param createdProcessInstance The already created process instance.
+     * @param variables the process variables map
+     * @param linkedProcessInstanceId the id of the linked process instance, can be null
+     * @param linkedProcessInstanceType the type of the linked process instance, can be null
+     * @throws ActivitiObjectNotFoundException
+     *          when user does not have permission to start the process instance
+     * @throws NotFoundException
+     *          when no process instance with the given id is found
+     */
+    default ProcessInstance startCreatedProcessInstance(
+        ProcessInstance createdProcessInstance,
+        Map<String, Object> variables,
+        String linkedProcessInstanceId,
+        String linkedProcessInstanceType
+    ) {
+        return startCreatedProcessInstance(createdProcessInstance, variables);
+    }
+
+    /**
      * Starts a new process instance in the latest version of the process definition with the given key.
      *
      * @param processDefinitionKey

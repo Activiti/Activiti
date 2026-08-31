@@ -365,7 +365,12 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
             internalProcessInstance.getProcessDefinitionId()
         );
         return processInstanceConverter.from(
-            runtimeService.startCreatedProcessInstance(internalProcessInstance, startProcessPayload.getVariables())
+            runtimeService.startCreatedProcessInstance(
+                internalProcessInstance,
+                startProcessPayload.getVariables(),
+                startProcessPayload.getLinkedProcessInstanceId(),
+                startProcessPayload.getLinkedProcessInstanceType()
+            )
         );
     }
 
