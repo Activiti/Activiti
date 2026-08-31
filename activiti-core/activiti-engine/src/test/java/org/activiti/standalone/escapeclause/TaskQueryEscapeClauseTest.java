@@ -249,6 +249,22 @@ public class TaskQueryEscapeClauseTest extends AbstractEscapeClauseTestCase {
     }
 
     @Test
+    public void testQueryByAssigneeLikeInOrDoesNotReturnNonMatchingAssignee() {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+            List<Task> tasks = taskService
+                .createTaskQuery()
+                .taskAssignee("assignee_")
+                .or()
+                .taskAssigneeLike("%\\%%")
+                .processDefinitionId("undefined")
+                .endOr()
+                .list();
+
+            assertThat(tasks).isEmpty();
+        }
+    }
+
+    @Test
     public void testQueryByAssigneeLikeIgnoreCase() {
         if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // assigneeLikeIgnoreCase
