@@ -40,3 +40,8 @@ repos:
           - java
           - xml
         args: ["--config", ".semgrep.yaml", "--error", "--metrics=off"]
+  - repo: https://github.com/rhysd/actionlint
+    rev: 914e7df21a07ef503a81201c76d2b11c789d3fca # frozen: v1.7.12
+    hooks:
+      - id: actionlint
+        exclude: '\.lock\.yml$'
