@@ -16,40 +16,74 @@
 package org.activiti.engine.impl.jobexecutor;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.activiti.engine.ActivitiException;
 import org.junit.jupiter.api.Test;
 
 class TimerChangeProcessDefinitionSuspensionStateJobHandlerTest {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
     @Test
-    void createJobHandlerConfiguration_withTrue_shouldProduceValidJson() throws Exception {
-        String config = TimerChangeProcessDefinitionSuspensionStateJobHandler.createJobHandlerConfiguration(true);
-        JsonNode node = objectMapper.readTree(config);
-        assertThat(node.get("includeProcessInstances").asBoolean()).isTrue();
+    void createJobHandlerConfiguration_shouldProduceGoldenJson() {
+        assertThat(TimerChangeProcessDefinitionSuspensionStateJobHandler.createJobHandlerConfiguration(true)).isEqualTo(
+            "{\"includeProcessInstances\":true}"
+        );
+        assertThat(
+            TimerChangeProcessDefinitionSuspensionStateJobHandler.createJobHandlerConfiguration(false)
+        ).isEqualTo("{\"includeProcessInstances\":false}");
     }
 
     @Test
-    void createJobHandlerConfiguration_withFalse_shouldProduceValidJson() throws Exception {
-        String config = TimerChangeProcessDefinitionSuspensionStateJobHandler.createJobHandlerConfiguration(false);
-        JsonNode node = objectMapper.readTree(config);
-        assertThat(node.get("includeProcessInstances").asBoolean()).isFalse();
+    void getIncludeProcessInstances_shouldReadPersistedBooleanValues() {
+        assertThat(
+            TimerChangeProcessDefinitionSuspensionStateJobHandler.getIncludeProcessInstances(
+                "{\"includeProcessInstances\":true}"
+            )
+        ).isTrue();
+        assertThat(
+            TimerChangeProcessDefinitionSuspensionStateJobHandler.getIncludeProcessInstances(
+                "{\"includeProcessInstances\":false}"
+            )
+        ).isFalse();
     }
 
     @Test
-    void roundTrip_createAndParseThenGetIncludeProcessInstances_true() throws Exception {
-        String config = TimerChangeProcessDefinitionSuspensionStateJobHandler.createJobHandlerConfiguration(true);
-        JsonNode node = objectMapper.readTree(config);
-        assertThat(TimerChangeProcessDefinitionSuspensionStateJobHandler.getIncludeProcessInstances(node)).isTrue();
+    void getIncludeProcessInstances_shouldPreservePersistedStringBooleanCompatibility() {
+        assertThat(
+            TimerChangeProcessDefinitionSuspensionStateJobHandler.getIncludeProcessInstances(
+                "{\"includeProcessInstances\":\"TRUE\"}"
+            )
+        ).isTrue();
+        assertThat(
+            TimerChangeProcessDefinitionSuspensionStateJobHandler.getIncludeProcessInstances(
+                "{\"includeProcessInstances\":\"false\"}"
+            )
+        ).isFalse();
     }
 
     @Test
-    void roundTrip_createAndParseThenGetIncludeProcessInstances_false() throws Exception {
-        String config = TimerChangeProcessDefinitionSuspensionStateJobHandler.createJobHandlerConfiguration(false);
-        JsonNode node = objectMapper.readTree(config);
-        assertThat(TimerChangeProcessDefinitionSuspensionStateJobHandler.getIncludeProcessInstances(node)).isFalse();
+    void getIncludeProcessInstances_withMissingValue_shouldFailWithContext() {
+        assertInvalidConfiguration("{}");
+    }
+
+    @Test
+    void getIncludeProcessInstances_withWrongValueType_shouldFailWithContext() {
+        assertInvalidConfiguration("{\"includeProcessInstances\":1}");
+    }
+
+    @Test
+    void getIncludeProcessInstances_withMalformedOrNonObjectJson_shouldFailWithContext() {
+        assertInvalidConfiguration("not-json");
+        assertInvalidConfiguration("[]");
+        assertInvalidConfiguration("null");
+    }
+
+    private static void assertInvalidConfiguration(String configuration) {
+        assertThatThrownBy(() ->
+            TimerChangeProcessDefinitionSuspensionStateJobHandler.getIncludeProcessInstances(configuration)
+        )
+            .isInstanceOf(ActivitiException.class)
+            .hasMessageContaining("includeProcessInstances")
+            .hasMessageContaining(configuration);
     }
 }

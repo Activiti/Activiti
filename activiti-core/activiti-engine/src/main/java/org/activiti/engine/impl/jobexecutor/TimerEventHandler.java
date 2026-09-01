@@ -15,75 +15,33 @@
  */
 package org.activiti.engine.impl.jobexecutor;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 public class TimerEventHandler {
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
-
-    public static final String PROPERTYNAME_TIMER_ACTIVITY_ID = "activityId";
-    public static final String PROPERTYNAME_END_DATE_EXPRESSION = "timerEndDate";
-    public static final String PROPERTYNAME_CALENDAR_NAME_EXPRESSION = "calendarName";
+    public static final String PROPERTYNAME_TIMER_ACTIVITY_ID = TimerJobConfiguration.ACTIVITY_ID;
+    public static final String PROPERTYNAME_END_DATE_EXPRESSION = TimerJobConfiguration.TIMER_END_DATE;
+    public static final String PROPERTYNAME_CALENDAR_NAME_EXPRESSION = TimerJobConfiguration.CALENDAR_NAME;
 
     public static String createConfiguration(String id, String endDate, String calendarName) {
-        ObjectNode cfgJson = objectMapper.createObjectNode();
-        cfgJson.put(PROPERTYNAME_TIMER_ACTIVITY_ID, id);
-        if (endDate != null) {
-            cfgJson.put(PROPERTYNAME_END_DATE_EXPRESSION, endDate);
-        }
-        if (calendarName != null) {
-            cfgJson.put(PROPERTYNAME_CALENDAR_NAME_EXPRESSION, calendarName);
-        }
-        return cfgJson.toString();
+        return TimerJobConfiguration.createTimerEvent(id, endDate, calendarName);
     }
 
     public static String setActivityIdToConfiguration(String jobHandlerConfiguration, String activityId) {
-        try {
-            ObjectNode cfgJson = (ObjectNode) objectMapper.readTree(jobHandlerConfiguration);
-            cfgJson.put(PROPERTYNAME_TIMER_ACTIVITY_ID, activityId);
-            return cfgJson.toString();
-        } catch (JsonProcessingException | ClassCastException ex) {
-            return jobHandlerConfiguration;
-        }
+        return TimerJobConfiguration.setActivityId(jobHandlerConfiguration, activityId);
     }
 
     public static String getActivityIdFromConfiguration(String jobHandlerConfiguration) {
-        try {
-            return objectMapper.readTree(jobHandlerConfiguration).get(PROPERTYNAME_TIMER_ACTIVITY_ID).asText();
-        } catch (JsonProcessingException | NullPointerException ex) {
-            return jobHandlerConfiguration;
-        }
+        return TimerJobConfiguration.getActivityId(jobHandlerConfiguration);
     }
 
     public static String geCalendarNameFromConfiguration(String jobHandlerConfiguration) {
-        try {
-            return objectMapper.readTree(jobHandlerConfiguration).get(PROPERTYNAME_CALENDAR_NAME_EXPRESSION).asText();
-        } catch (JsonProcessingException | NullPointerException ex) {
-            return "";
-        }
+        return TimerJobConfiguration.getCalendarName(jobHandlerConfiguration);
     }
 
     public static String setEndDateToConfiguration(String jobHandlerConfiguration, String endDate) {
-        ObjectNode cfgJson;
-        try {
-            cfgJson = (ObjectNode) objectMapper.readTree(jobHandlerConfiguration);
-        } catch (JsonProcessingException | ClassCastException ex) {
-            cfgJson = objectMapper.createObjectNode();
-            cfgJson.put(PROPERTYNAME_TIMER_ACTIVITY_ID, jobHandlerConfiguration);
-        }
-        if (endDate != null) {
-            cfgJson.put(PROPERTYNAME_END_DATE_EXPRESSION, endDate);
-        }
-        return cfgJson.toString();
+        return TimerJobConfiguration.setEndDate(jobHandlerConfiguration, endDate);
     }
 
     public static String getEndDateFromConfiguration(String jobHandlerConfiguration) {
-        try {
-            return objectMapper.readTree(jobHandlerConfiguration).get(PROPERTYNAME_END_DATE_EXPRESSION).asText();
-        } catch (JsonProcessingException | NullPointerException ex) {
-            return null;
-        }
+        return TimerJobConfiguration.getEndDate(jobHandlerConfiguration);
     }
 }

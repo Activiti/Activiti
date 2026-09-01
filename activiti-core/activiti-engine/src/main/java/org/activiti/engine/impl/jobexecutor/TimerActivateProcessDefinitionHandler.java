@@ -15,9 +15,6 @@
  */
 package org.activiti.engine.impl.jobexecutor;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.cmd.ActivateProcessDefinitionCmd;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -32,21 +29,16 @@ public class TimerActivateProcessDefinitionHandler extends TimerChangeProcessDef
     }
 
     public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
-        try {
-            JsonNode cfgJson = objectMapper.readTree(configuration);
-            String processDefinitionId = job.getProcessDefinitionId();
-            boolean activateProcessInstances = getIncludeProcessInstances(cfgJson);
+        String processDefinitionId = job.getProcessDefinitionId();
+        boolean activateProcessInstances = getIncludeProcessInstances(configuration);
 
-            ActivateProcessDefinitionCmd activateProcessDefinitionCmd = new ActivateProcessDefinitionCmd(
-                processDefinitionId,
-                null,
-                activateProcessInstances,
-                null,
-                job.getTenantId()
-            );
-            activateProcessDefinitionCmd.execute(commandContext);
-        } catch (JsonProcessingException ex) {
-            throw new ActivitiException("Error parsing timer job handler configuration: " + configuration, ex);
-        }
+        ActivateProcessDefinitionCmd activateProcessDefinitionCmd = new ActivateProcessDefinitionCmd(
+            processDefinitionId,
+            null,
+            activateProcessInstances,
+            null,
+            job.getTenantId()
+        );
+        activateProcessDefinitionCmd.execute(commandContext);
     }
 }
