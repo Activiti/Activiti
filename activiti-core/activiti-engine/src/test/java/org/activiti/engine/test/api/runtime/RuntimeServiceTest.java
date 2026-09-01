@@ -39,6 +39,7 @@ import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.RuntimeServiceImpl;
+import org.activiti.engine.impl.cmd.StartCreatedProcessInstanceCmd;
 import org.activiti.engine.impl.cmd.StartProcessInstanceByMessageCmd;
 import org.activiti.engine.impl.cmd.StartProcessInstanceCmd;
 import org.activiti.engine.impl.history.HistoryLevel;
@@ -1224,6 +1225,51 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
             assertThat(processInstance).isNotNull();
             assertThat(processInstance.getProcessDefinitionId()).isEqualTo(processDefinition.getId());
             assertThat(processInstance.getBusinessKey()).isEqualTo("businessKey456");
+        } finally {
+            runtimeService.setCommandExecutor(originalExecutor);
+        }
+    }
+
+    @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
+    public void testStartCreatedProcessInstanceCmdWithLinkedProcess() {
+        RuntimeServiceImpl runtimeService = (RuntimeServiceImpl) this.runtimeService;
+
+        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+        ProcessInstanceBuilderImpl builder = new ProcessInstanceBuilderImpl(runtimeService);
+        builder.processDefinitionId(processDefinition.getId());
+        builder.businessKey("businessKey789");
+
+        // the process instance is only created here, not started: the linked process
+        // instance is declared later, on the startCreatedProcessInstance() call
+        ProcessInstance createdProcessInstance = runtimeService.createProcessInstance(builder);
+        assertThat(createdProcessInstance.getStartTime()).isNull();
+
+        // Spy on the command executor to capture the command
+        CommandExecutor originalExecutor = runtimeService.getCommandExecutor();
+        CommandExecutor commandExecutor = spy(processEngineConfiguration.getCommandExecutor());
+        runtimeService.setCommandExecutor(commandExecutor);
+
+        try {
+            ProcessInstance processInstance = runtimeService.startCreatedProcessInstance(
+                createdProcessInstance,
+                emptyMap(),
+                "linkedProcess123",
+                "myLinkType"
+            );
+
+            // Capture the StartCreatedProcessInstanceCmd
+            ArgumentCaptor<StartCreatedProcessInstanceCmd> commandCaptor = ArgumentCaptor.forClass(
+                StartCreatedProcessInstanceCmd.class
+            );
+            verify(commandExecutor).execute(commandCaptor.capture());
+
+            StartCreatedProcessInstanceCmd capturedCommand = commandCaptor.getValue();
+            assertThat(capturedCommand.getLinkedProcessInstanceId()).isEqualTo("linkedProcess123");
+            assertThat(capturedCommand.getLinkedProcessInstanceType()).isEqualTo("myLinkType");
+
+            assertThat(processInstance).isNotNull();
+            assertThat(processInstance.getProcessDefinitionId()).isEqualTo(processDefinition.getId());
+            assertThat(processInstance.getBusinessKey()).isEqualTo("businessKey789");
         } finally {
             runtimeService.setCommandExecutor(originalExecutor);
         }

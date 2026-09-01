@@ -23,14 +23,11 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.CountingExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.TaskDataManager;
 import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.task.Task;
-import org.activiti.engine.task.TaskInfo;
-import org.apache.commons.lang3.StringUtils;
 
 /**
 
@@ -120,15 +117,30 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
             (taskEntity.getAssignee() == null && assignee != null)
         ) {
             taskEntity.setAssignee(assignee);
-            if (fireEvents) {
-                fireAssignmentEvents(taskEntity);
-            } else {
-                recordTaskAssignment(taskEntity);
-            }
+            executeTaskAssigneeChangePostProcessing(taskEntity, fireEvents, true);
+        }
+    }
 
-            if (taskEntity.getId() != null) {
-                getHistoryManager().recordTaskAssigneeChange(taskEntity.getId(), taskEntity.getAssignee());
-                addAssigneeIdentityLinks(taskEntity);
+    @Override
+    public void executeTaskAssigneeChangePostProcessingWithoutTaskUpdate(TaskEntity taskEntity) {
+        executeTaskAssigneeChangePostProcessing(taskEntity, true, false);
+    }
+
+    private void executeTaskAssigneeChangePostProcessing(
+        TaskEntity taskEntity,
+        boolean fireEvents,
+        boolean persistTaskUpdate
+    ) {
+        if (fireEvents) {
+            fireAssignmentEvents(taskEntity);
+        } else {
+            recordTaskAssignment(taskEntity);
+        }
+
+        if (taskEntity.getId() != null) {
+            getHistoryManager().recordTaskAssigneeChange(taskEntity.getId(), taskEntity.getAssignee());
+            addAssigneeIdentityLinks(taskEntity);
+            if (persistTaskUpdate) {
                 update(taskEntity, fireEvents);
             }
         }

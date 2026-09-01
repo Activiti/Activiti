@@ -202,12 +202,13 @@
     <exec-maven-plugin.version>3.6.3</exec-maven-plugin.version>
     <extra-enforcer-rules.version>1.12.0</extra-enforcer-rules.version>
     <jacoco-maven-plugin.version>0.8.15</jacoco-maven-plugin.version>
-    <license-maven-plugin.version>5.1.1</license-maven-plugin.version>
+    <license-maven-plugin.version>5.1.2</license-maven-plugin.version>
     <third-party-license-maven-plugin.version>2.7.1</third-party-license-maven-plugin.version>
     <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
-    <checkstyle.version>13.9.0</checkstyle.version>
+    <checkstyle.version>14.0.0</checkstyle.version>
     <maven-clean-plugin.version>3.5.0</maven-clean-plugin.version>
     <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
+    <maven-dependency-plugin.version>3.11.0</maven-dependency-plugin.version>
     <maven-deploy-plugin.version>3.1.4</maven-deploy-plugin.version>
     <maven-enforcer-plugin.version>3.6.3</maven-enforcer-plugin.version>
     <maven-failsafe-plugin.version>3.5.6</maven-failsafe-plugin.version>
@@ -237,6 +238,7 @@
       ${project.build.directory}/generated-test-sources/assertions
     </generated-assertions-folder>
     <generated-assertions-package>org.activiti.test</generated-assertions-package>
+    <mockito.agent.arg>-javaagent:"${org.mockito:mockito-core:jar}"</mockito.agent.arg>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -751,11 +753,25 @@ limitations under the License.
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>${maven-dependency-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>resolve-dependency-properties</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>properties</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${maven-surefire-plugin.version}</version>
         <configuration>
           <!-- use syntax for Jacoco late property evaluation -->
-          <argLine>@{argLine} -Xmx1024m -XX:MaxMetaspaceSize=256m</argLine>
+          <argLine>@{argLine} -Xmx1024m -XX:MaxMetaspaceSize=256m ${mockito.agent.arg}</argLine>
           <redirectTestOutputToFile>true</redirectTestOutputToFile>
           <failIfNoTests>false</failIfNoTests>
           <trimStackTrace>false</trimStackTrace>
@@ -897,6 +913,9 @@ limitations under the License.
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-failsafe-plugin</artifactId>
+            <configuration>
+              <argLine>@{argLine} -Xmx1024m -XX:MaxMetaspaceSize=256m ${mockito.agent.arg}</argLine>
+            </configuration>
             <executions>
               <execution>
                 <id>integration-test</id>
