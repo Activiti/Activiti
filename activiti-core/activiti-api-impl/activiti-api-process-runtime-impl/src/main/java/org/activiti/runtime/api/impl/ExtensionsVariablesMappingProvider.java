@@ -219,12 +219,7 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
 
             return Optional.ofNullable(jsonMapper.treeToValue(patchedNode, Object.class));
         } catch (Exception e) {
-            LOGGER.error(
-                "Error patching variable. Changes to apply: {}, Process variable current value: {}",
-                changesToApply,
-                processVariableCurrentValue,
-                e
-            );
+            LOGGER.error("Error patching variable '{}'", outputVariableName, e);
             throw new ActivitiIllegalArgumentException(JSON_PATCH_MAPPING_ERROR, e);
         }
     }
