@@ -887,12 +887,7 @@ public class ExtensionsVariablesMappingProviderTest {
             .isThrownBy(() ->
                 variablesMappingProvider.calculateOutPutVariables(
                     buildMappingExecutionContext(execution),
-                    map(
-                        "task_input_variable_name_1",
-                        "variable_value_1",
-                        "task_input_variable_name_2",
-                        "${expression}"
-                    )
+                    map("task_input_variable_name_1", "variable_value_1", "task_input_variable_name_2", "${expression}")
                 )
             )
             .withMessageContaining("Expressions are not allowed as variable values in the output mapping")
@@ -911,12 +906,7 @@ public class ExtensionsVariablesMappingProviderTest {
             .isThrownBy(() ->
                 variablesMappingProvider.calculateOutPutVariables(
                     buildMappingExecutionContext(execution),
-                    map(
-                        "task_input_variable_name_1",
-                        "variable_value_1",
-                        "task_input_variable_name_2",
-                        "${expression}"
-                    )
+                    map("task_input_variable_name_1", "variable_value_1", "task_input_variable_name_2", "${expression}")
                 )
             )
             .withMessageContaining("Expressions are not allowed as variable values in the output mapping")
