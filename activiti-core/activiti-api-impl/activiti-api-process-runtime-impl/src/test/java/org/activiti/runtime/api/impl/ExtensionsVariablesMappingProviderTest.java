@@ -885,13 +885,16 @@ public class ExtensionsVariablesMappingProviderTest {
         );
 
         MappingExecutionContext mappingExecutionContext = buildMappingExecutionContext(execution);
+        Map<String, Object> availableVariables = map(
+            "task_input_variable_name_1",
+            "variable_value_1",
+            "task_input_variable_name_2",
+            "${expression}"
+        );
 
         assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
             .isThrownBy(() ->
-                variablesMappingProvider.calculateOutPutVariables(
-                    mappingExecutionContext,
-                    map("task_input_variable_name_1", "variable_value_1", "task_input_variable_name_2", "${expression}")
-                )
+                variablesMappingProvider.calculateOutPutVariables(mappingExecutionContext, availableVariables)
             )
             .withMessageContaining("Expressions are not allowed as variable values in the output mapping")
             .withMessageContaining("task_input_variable_name_2");
@@ -906,13 +909,16 @@ public class ExtensionsVariablesMappingProviderTest {
         );
 
         MappingExecutionContext mappingExecutionContext = buildMappingExecutionContext(execution);
+        Map<String, Object> availableVariables = map(
+            "task_input_variable_name_1",
+            "variable_value_1",
+            "task_input_variable_name_2",
+            "${expression}"
+        );
 
         assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
             .isThrownBy(() ->
-                variablesMappingProvider.calculateOutPutVariables(
-                    mappingExecutionContext,
-                    map("task_input_variable_name_1", "variable_value_1", "task_input_variable_name_2", "${expression}")
-                )
+                variablesMappingProvider.calculateOutPutVariables(mappingExecutionContext, availableVariables)
             )
             .withMessageContaining("Expressions are not allowed as variable values in the output mapping")
             .withMessageContaining("task_input_variable_name_2");
