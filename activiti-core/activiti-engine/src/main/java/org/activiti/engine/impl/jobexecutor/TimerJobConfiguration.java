@@ -122,7 +122,7 @@ final class TimerJobConfiguration {
         try {
             JsonNode configuration = JSON_MAPPER.readTree(jobHandlerConfiguration);
             return configuration != null && configuration.isObject() ? (ObjectNode) configuration : null;
-        } catch (JacksonException exception) {
+        } catch (JacksonException _) {
             return null;
         }
     }
