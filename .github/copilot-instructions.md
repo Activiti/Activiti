@@ -30,3 +30,26 @@ If you're removing a secret, ensure it's also removed from LastPass (or LastPass
 - Changes to workflow files that add/remove secret usage
 - Documentation changes that mention new or removed secrets
 - Comments in PRs mentioning secret additions/removals
+
+## PII in Logs Review
+
+When reviewing PRs, if you detect that log statements (`log.*`, `logger.*`, `LOGGER.*`, `System.out`/`System.err`, or equivalent) print raw process/task variable values, payload contents, or other user-supplied data that may contain PII, post the following comment:
+
+---
+
+**🕵️ Potential PII Logging Detected**
+
+This change appears to log a raw variable value or user-supplied payload, which may contain PII. Please verify and consider the following checklist:
+
+- [ ] Log identifiers (e.g., variable name, entity id) instead of raw values
+- [ ] If the value must be logged for debugging, confirm it cannot contain PII
+- [ ] Check whether the log level (e.g. `debug`/`trace` vs `error`/`warn`) is appropriate for the sensitivity of the data
+- [ ] Consider masking/redacting the value if it must be logged
+
+---
+
+**Detection criteria:** Look for any of the following in the PR:
+
+- New or modified log statements that pass process variables, task variables, or payload objects/maps directly as log arguments
+- Log statements formatted with variable values (e.g., `log.error("... {}", variableValue)`) rather than identifiers/names
+- Exception/error logging that includes full request/response bodies or variable maps
