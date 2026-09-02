@@ -376,10 +376,10 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
             return emptyMap();
         }
 
-        if (expressionResolver.containsExpression(availableVariables)) {
-            List<String> variableNamesWithExpressions = expressionResolver.findVariableNamesContainingExpressions(
-                availableVariables
-            );
+        List<String> variableNamesWithExpressions = expressionResolver.findVariableNamesContainingExpressions(
+            availableVariables
+        );
+        if (!variableNamesWithExpressions.isEmpty()) {
             throw new ActivitiIllegalArgumentException(
                 String.format(
                     "Expressions are not allowed as variable values in the output mapping for activity '%s'. " +
