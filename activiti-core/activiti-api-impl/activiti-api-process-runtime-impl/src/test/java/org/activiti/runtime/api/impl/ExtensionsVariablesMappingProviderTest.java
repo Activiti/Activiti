@@ -44,6 +44,7 @@ import org.activiti.core.el.ActivitiElContext;
 import org.activiti.core.el.CustomFunctionProvider;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.impl.bpmn.behavior.MappingExecutionContext;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityImpl;
 import org.activiti.engine.impl.variable.StringType;
 import org.activiti.spring.process.ProcessExtensionService;
@@ -883,10 +884,12 @@ public class ExtensionsVariablesMappingProviderTest {
             "Process_expressionMappingOutputValue"
         );
 
+        MappingExecutionContext mappingExecutionContext = buildMappingExecutionContext(execution);
+
         assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
             .isThrownBy(() ->
                 variablesMappingProvider.calculateOutPutVariables(
-                    buildMappingExecutionContext(execution),
+                    mappingExecutionContext,
                     map("task_input_variable_name_1", "variable_value_1", "task_input_variable_name_2", "${expression}")
                 )
             )
@@ -902,10 +905,12 @@ public class ExtensionsVariablesMappingProviderTest {
             "Process_expressionMappingOutputValue"
         );
 
+        MappingExecutionContext mappingExecutionContext = buildMappingExecutionContext(execution);
+
         assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
             .isThrownBy(() ->
                 variablesMappingProvider.calculateOutPutVariables(
-                    buildMappingExecutionContext(execution),
+                    mappingExecutionContext,
                     map("task_input_variable_name_1", "variable_value_1", "task_input_variable_name_2", "${expression}")
                 )
             )

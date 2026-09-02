@@ -466,7 +466,7 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
     ) {
         return !isProcessVariableNull(executionVariableValue)
             ? executionVariableValue
-            : propertyVariableDefinition.getValue();
+            : (propertyVariableDefinition != null ? propertyVariableDefinition.getValue() : null);
     }
 
     private boolean isProcessVariableNull(Object variable) {
