@@ -8,10 +8,9 @@ permissions:
   contents: read
   pull-requests: read
 
+model: gpt-5-mini
 engine:
   id: copilot
-  model: gpt-5-mini
-
 tools:
   github:
     toolsets: [context, pull_requests, repos]
@@ -30,11 +29,12 @@ safe-outputs:
     hide-older-comments: true
   add-labels:
     allowed: [security:low, security:medium, security:high]
+    issue-intent: false
   remove-labels:
     allowed: [security:low, security:medium, security:high]
   submit-pull-request-review:
 
-source: Alfresco/alfresco-build-tools/.github/workflows/supply-chain-review.md@7bc0fc6f4f11df6c065b57d4a6aa90d7ea362b2f
+source: Alfresco/alfresco-build-tools/.github/workflows/supply-chain-review.md@e35840d877477896b1f0aa05d05371cb3b31ce9f
 ---
 
 # Supply Chain Review
