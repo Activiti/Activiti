@@ -883,12 +883,20 @@ public class ExtensionsVariablesMappingProviderTest {
             "Process_expressionMappingOutputValue"
         );
 
-        assertThatExceptionOfType(ActivitiIllegalArgumentException.class).isThrownBy(() ->
-            variablesMappingProvider.calculateOutPutVariables(
-                buildMappingExecutionContext(execution),
-                map("task_input_variable_name_1", "variable_value_1", "task_input_variable_name_2", "${expression}")
+        assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+            .isThrownBy(() ->
+                variablesMappingProvider.calculateOutPutVariables(
+                    buildMappingExecutionContext(execution),
+                    map(
+                        "task_input_variable_name_1",
+                        "variable_value_1",
+                        "task_input_variable_name_2",
+                        "${expression}"
+                    )
+                )
             )
-        );
+            .withMessageContaining("Expressions are not allowed as variable values in the output mapping")
+            .withMessageContaining("task_input_variable_name_2");
     }
 
     @Test
@@ -899,12 +907,20 @@ public class ExtensionsVariablesMappingProviderTest {
             "Process_expressionMappingOutputValue"
         );
 
-        assertThatExceptionOfType(ActivitiIllegalArgumentException.class).isThrownBy(() ->
-            variablesMappingProvider.calculateOutPutVariables(
-                buildMappingExecutionContext(execution),
-                map("task_input_variable_name_1", "variable_value_1", "task_input_variable_name_2", "${expression}")
+        assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+            .isThrownBy(() ->
+                variablesMappingProvider.calculateOutPutVariables(
+                    buildMappingExecutionContext(execution),
+                    map(
+                        "task_input_variable_name_1",
+                        "variable_value_1",
+                        "task_input_variable_name_2",
+                        "${expression}"
+                    )
+                )
             )
-        );
+            .withMessageContaining("Expressions are not allowed as variable values in the output mapping")
+            .withMessageContaining("task_input_variable_name_2");
     }
 
     @Test
