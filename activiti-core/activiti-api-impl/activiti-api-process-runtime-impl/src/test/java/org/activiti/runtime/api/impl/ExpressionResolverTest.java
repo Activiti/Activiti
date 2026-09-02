@@ -167,6 +167,67 @@ public class ExpressionResolverTest {
     }
 
     @Test
+    public void findExpressionKeys_should_returnEmptyList_when_sourceIsNull() {
+        //given
+
+        //when
+        List<String> expressionKeys = expressionResolver.findExpressionKeys(null);
+
+        //then
+        assertThat(expressionKeys).isEmpty();
+    }
+
+    @Test
+    public void findExpressionKeys_should_returnValueKey_when_sourceIsAnExpressionString() {
+        //given
+
+        //when
+        List<String> expressionKeys = expressionResolver.findExpressionKeys("${this is an expression}");
+
+        //then
+        assertThat(expressionKeys).containsExactly("value");
+    }
+
+    @Test
+    public void findExpressionKeys_should_returnMapKeys_when_MapValuesContainExpressionPattern() {
+        //given
+        Map<String, String> source = new HashMap<>();
+        source.put("name", "${name}");
+        source.put("surname", "Doe");
+
+        //when
+        List<String> expressionKeys = expressionResolver.findExpressionKeys(source);
+
+        //then
+        assertThat(expressionKeys).containsExactly("name");
+    }
+
+    @Test
+    public void findExpressionKeys_should_returnListIndexKeys_when_ListValuesContainExpressionPattern() {
+        //given
+        List<String> source = asList("first", "${position}", "third");
+
+        //when
+        List<String> expressionKeys = expressionResolver.findExpressionKeys(source);
+
+        //then
+        assertThat(expressionKeys).containsExactly("[1]");
+    }
+
+    @Test
+    public void findExpressionKeys_should_returnNestedPath_when_NestedMapValueContainsExpressionPattern() {
+        //given
+        Map<String, Object> nested = singletonMap("city", "${city}");
+        Map<String, Object> source = singletonMap("address", nested);
+
+        //when
+        List<String> expressionKeys = expressionResolver.findExpressionKeys(source);
+
+        //then
+        assertThat(expressionKeys).containsExactly("address.city");
+    }
+
+    @Test
     public void resolveExpressionsMap_should_replaceExpressionByValue_when_stringIsAnExpression() {
         //given
         Expression expression = buildExpression("${name}");

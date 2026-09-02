@@ -135,18 +135,26 @@ public class ExpressionResolver {
     }
 
     public boolean containsExpression(final Object source) {
+        return !findExpressionKeys(source, "").isEmpty();
+    }
+
+    public List<String> findExpressionKeys(final Object source) {
+        return findExpressionKeys(source, "");
+    }
+
+    private List<String> findExpressionKeys(final Object source, final String path) {
         if (source == null) {
-            return false;
+            return List.of();
         } else if (source instanceof String) {
-            return containsExpressionString((String) source);
+            return containsExpressionString((String) source) ? List.of(path.isEmpty() ? "value" : path) : List.of();
         } else if (source instanceof ObjectNode) {
-            return containsExpressionMap(mapper.convertValue(source, MAP_STRING_OBJECT_TYPE));
+            return findExpressionKeysMap(mapper.convertValue(source, MAP_STRING_OBJECT_TYPE), path);
         } else if (source instanceof Map<?, ?>) {
-            return containsExpressionMap((Map<String, ?>) source);
+            return findExpressionKeysMap((Map<String, ?>) source, path);
         } else if (source instanceof List<?>) {
-            return containsExpressionList((List<?>) source);
+            return findExpressionKeysList((List<?>) source, path);
         } else {
-            return false;
+            return List.of();
         }
     }
 
@@ -154,21 +162,23 @@ public class ExpressionResolver {
         return EXPRESSION_PATTERN.matcher(sourceString).find();
     }
 
-    private boolean containsExpressionMap(final Map<String, ?> source) {
+    private List<String> findExpressionKeysMap(final Map<String, ?> source, final String path) {
+        final List<String> result = new LinkedList<>();
         for (Entry<String, ?> entry : source.entrySet()) {
-            if (containsExpression(entry.getValue())) {
-                return true;
-            }
+            final String entryPath = path.isEmpty() ? entry.getKey() : path + "." + entry.getKey();
+            result.addAll(findExpressionKeys(entry.getValue(), entryPath));
         }
-        return false;
+        return result;
     }
 
-    private boolean containsExpressionList(List<?> source) {
+    private List<String> findExpressionKeysList(final List<?> source, final String path) {
+        final List<String> result = new LinkedList<>();
+        int index = 0;
         for (Object item : source) {
-            if (containsExpression(item)) {
-                return true;
-            }
+            final String entryPath = path + "[" + index + "]";
+            result.addAll(findExpressionKeys(item, entryPath));
+            index++;
         }
-        return false;
+        return result;
     }
 }
