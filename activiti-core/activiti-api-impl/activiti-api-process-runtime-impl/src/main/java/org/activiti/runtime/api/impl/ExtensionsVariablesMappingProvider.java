@@ -44,8 +44,6 @@ import org.activiti.spring.process.model.ProcessVariablesMapping;
 import org.activiti.spring.process.model.VariableDefinition;
 import org.activiti.spring.process.variable.VariableParsingService;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.node.ArrayNode;
@@ -55,8 +53,6 @@ import tools.jackson.databind.node.ObjectNode;
 public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
 
     private final JsonMapper jsonMapper;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ExtensionsVariablesMappingProvider.class);
 
     private ProcessExtensionService processExtensionService;
 
@@ -219,7 +215,6 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
 
             return Optional.ofNullable(jsonMapper.treeToValue(patchedNode, Object.class));
         } catch (Exception e) {
-            LOGGER.error("Error patching variable '{}'", outputVariableName, e);
             throw new ActivitiIllegalArgumentException(JSON_PATCH_MAPPING_ERROR, e);
         }
     }
