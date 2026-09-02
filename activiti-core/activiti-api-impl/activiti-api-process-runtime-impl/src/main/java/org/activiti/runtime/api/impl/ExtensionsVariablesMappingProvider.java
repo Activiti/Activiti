@@ -377,8 +377,16 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
         }
 
         if (expressionResolver.containsExpression(availableVariables)) {
+            List<String> variableNamesWithExpressions = expressionResolver.findVariableNamesContainingExpressions(
+                availableVariables
+            );
             throw new ActivitiIllegalArgumentException(
-                "Expressions are not allowed as variable values in the output mapping"
+                String.format(
+                    "Expressions are not allowed as variable values in the output mapping for activity '%s'. " +
+                    "The following variables contain expressions: %s",
+                    mappingExecutionContext.getActivityId(),
+                    variableNamesWithExpressions
+                )
             );
         }
 
