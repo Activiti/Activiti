@@ -153,6 +153,12 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
         conf.setSerializePOJOsInVariablesToJson(activitiProperties.isSerializePOJOsInVariablesToJson());
         conf.setJavaClassFieldForJackson(activitiProperties.getJavaClassFieldForJackson());
 
+        if (activitiProperties.getSerializableVariableTypeAllowedClassPatterns() != null) {
+            conf.setSerializableVariableTypeAllowedClassPatterns(
+                activitiProperties.getSerializableVariableTypeAllowedClassPatterns()
+            );
+        }
+
         if (activitiProperties.getCustomMybatisMappers() != null) {
             conf.setCustomMybatisMappers(getCustomMybatisMapperClasses(activitiProperties.getCustomMybatisMappers()));
         }
