@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: f71fa2c1f9cf5cb705f73dffe4b21f7c61470ba9 # frozen: v4.4.0
     hooks:
       - id: check-json
       - id: check-yaml
@@ -15,7 +15,7 @@ repos:
       - id: trailing-whitespace
         exclude: ^\.github/workflows/.*\.(lock\.yml|md)$
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v3.1.0
+    rev: ffb6a759a979008c0e6dff86e39f4745a2d9eac4 # frozen: v3.1.0
     hooks:
       - id: prettier
         types_or:
@@ -26,17 +26,22 @@ repos:
           - prettier@3.6.2
           - prettier-plugin-java@2.7.4
   - repo: https://github.com/sirosen/check-jsonschema
-    rev: 0.33.0
+    rev: 12e63946db2c5cfcc9030fac21c3883ba88c6ed8 # frozen: 0.38.0
     hooks:
       - id: check-dependabot
       - id: check-github-actions
       - id: check-github-workflows
         exclude: ^\.github/workflows/.*\.lock\.yml$
   - repo: https://github.com/returntocorp/semgrep
-    rev: v1.31.2
+    rev: 951f47a5aa64646f3634671517902fe52d7c3d8f # frozen: v1.31.2
     hooks:
       - id: semgrep
         types_or:
           - java
           - xml
         args: ["--config", ".semgrep.yaml", "--error", "--metrics=off"]
+  - repo: https://github.com/rhysd/actionlint
+    rev: 914e7df21a07ef503a81201c76d2b11c789d3fca # frozen: v1.7.12
+    hooks:
+      - id: actionlint
+        exclude: '^\.github/workflows/.*\.lock\.yml$'
