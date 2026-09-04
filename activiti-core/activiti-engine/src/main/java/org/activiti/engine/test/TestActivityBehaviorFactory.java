@@ -66,6 +66,7 @@ import org.activiti.engine.impl.bpmn.behavior.ErrorEndEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.EventBasedGatewayActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.EventSubProcessErrorStartEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.EventSubProcessMessageStartEventActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.EventSubProcessSignalStartEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.ExclusiveGatewayActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.InclusiveGatewayActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.IntermediateCatchEventActivityBehavior;
@@ -313,6 +314,19 @@ public class TestActivityBehaviorFactory extends AbstractBehaviorFactory impleme
         return wrappedActivityBehaviorFactory.createEventSubProcessMessageStartEventActivityBehavior(
             startEvent,
             messageEventDefinition
+        );
+    }
+
+    @Override
+    public EventSubProcessSignalStartEventActivityBehavior createEventSubProcessSignalStartEventActivityBehavior(
+        StartEvent startEvent,
+        SignalEventDefinition signalEventDefinition,
+        Signal signal
+    ) {
+        return wrappedActivityBehaviorFactory.createEventSubProcessSignalStartEventActivityBehavior(
+            startEvent,
+            signalEventDefinition,
+            signal
         );
     }
 
