@@ -93,11 +93,35 @@ public class ExpressionResolver {
         if (StringUtils.isBlank(sourceString)) {
             return sourceString;
         }
-        if (sourceString.matches(EXPRESSION_PATTERN_STRING)) {
+        if (isSingleExpression(sourceString)) {
             return resolveObjectPlaceHolder(expressionEvaluator, sourceString);
         } else {
             return resolveInStringPlaceHolder(expressionEvaluator, sourceString);
         }
+    }
+
+    /**
+     * Returns {@code true} when the whole string is a single {@code ${...}} expression, i.e. the brace
+     * opened by the leading {@code ${} is closed only by the final character. Unlike matching against
+     * {@link #EXPRESSION_PATTERN_STRING}, this tolerates {@code }} characters inside the expression
+     * (e.g. JUEL map/list/set literals such as {@code ${{"k": v}}}), so such expressions are handed to
+     * JUEL untouched instead of being truncated at the first inner {@code }}.
+     */
+    private boolean isSingleExpression(final String source) {
+        final String trimmed = source.trim();
+        if (!trimmed.startsWith("${") || !trimmed.endsWith("}")) {
+            return false;
+        }
+        int depth = 0;
+        for (int i = 1; i < trimmed.length(); i++) {
+            final char c = trimmed.charAt(i);
+            if (c == '{') {
+                depth++;
+            } else if (c == '}' && --depth == 0) {
+                return i == trimmed.length() - 1;
+            }
+        }
+        return false;
     }
 
     private Object resolveObjectPlaceHolder(ExpressionEvaluator expressionEvaluator, String sourceString) {
