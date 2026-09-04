@@ -23,6 +23,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.activiti.api.process.model.ExternalizedContextReference;
 import org.activiti.api.process.model.IntegrationContext;
 
 public class IntegrationContextImpl implements IntegrationContext {
@@ -44,6 +45,7 @@ public class IntegrationContextImpl implements IntegrationContext {
     private String appVersion;
     private String connectorType;
     private Boolean ephemeralVariables;
+    private ExternalizedContextReference externalizedContextReference;
 
     public IntegrationContextImpl() {
         this.id = UUID.randomUUID().toString();
@@ -73,6 +75,7 @@ public class IntegrationContextImpl implements IntegrationContext {
         this.appVersion = other.getAppVersion();
         this.connectorType = other.getConnectorType();
         this.ephemeralVariables = other.hasEphemeralVariables();
+        this.externalizedContextReference = other.getExternalizedContextReference();
     }
 
     @Override
@@ -234,6 +237,15 @@ public class IntegrationContextImpl implements IntegrationContext {
     }
 
     @Override
+    public ExternalizedContextReference getExternalizedContextReference() {
+        return externalizedContextReference;
+    }
+
+    public void setExternalizedContextReference(ExternalizedContextReference externalizedContextReference) {
+        this.externalizedContextReference = externalizedContextReference;
+    }
+
+    @Override
     public int hashCode() {
         return Objects.hash(
             appVersion,
@@ -252,7 +264,8 @@ public class IntegrationContextImpl implements IntegrationContext {
             processDefinitionVersion,
             processInstanceId,
             rootProcessInstanceId,
-            ephemeralVariables
+            ephemeralVariables,
+            externalizedContextReference
         );
     }
 
@@ -285,7 +298,8 @@ public class IntegrationContextImpl implements IntegrationContext {
             Objects.equals(processDefinitionVersion, other.processDefinitionVersion) &&
             Objects.equals(processInstanceId, other.processInstanceId) &&
             Objects.equals(rootProcessInstanceId, other.rootProcessInstanceId) &&
-            Objects.equals(ephemeralVariables, other.ephemeralVariables)
+            Objects.equals(ephemeralVariables, other.ephemeralVariables) &&
+            Objects.equals(externalizedContextReference, other.externalizedContextReference)
         );
     }
 
@@ -327,6 +341,8 @@ public class IntegrationContextImpl implements IntegrationContext {
             .append(connectorType)
             .append(", ephemeralVariables=")
             .append(ephemeralVariables)
+            .append(", externalizedContextReference=")
+            .append(externalizedContextReference)
             .append("]");
         return builder.toString();
     }
