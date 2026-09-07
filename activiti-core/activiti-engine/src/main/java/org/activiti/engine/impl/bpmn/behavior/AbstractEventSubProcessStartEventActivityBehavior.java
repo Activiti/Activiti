@@ -15,10 +15,12 @@
  */
 package org.activiti.engine.impl.bpmn.behavior;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import org.activiti.bpmn.model.EventSubProcess;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.SubProcess;
@@ -39,14 +41,16 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
  * <ul>
  *   <li>{@link #execute(DelegateExecution)} marks the execution as a scope and initializes
  *       data objects declared on the event sub-process.</li>
- *   <li>{@link #trigger(DelegateExecution, String, Object)} handles interruption of sibling
- *       executions (for interrupting start events), removes the matching event subscription,
- *       lets subclasses perform any post-consumption bookkeeping, and finally leaves the
- *       outgoing flow from the start event.</li>
+ *   <li>{@link #trigger(DelegateExecution, String, Object)} interrupts sibling executions and
+ *       consumes the event subscription for interrupting start events, creates a dedicated
+ *       execution for this instance of the event sub-process, and finally leaves the outgoing
+ *       flow from the start event.</li>
  * </ul>
+ * A non-interrupting start event deliberately keeps its event-scope execution and subscription
+ * intact, so it remains armed for subsequent triggers without any re-subscription.
+ * <p>
  * Subclasses provide the event-type specific bits: how to resolve the event name and how
- * to identify the matching subscription. They may additionally override
- * {@link #onSubscriptionConsumed} to e.g. re-create a subscription for non-interrupting events.
+ * to identify the matching subscription.
  */
 public abstract class AbstractEventSubProcessStartEventActivityBehavior extends AbstractBpmnActivityBehavior {
 
@@ -63,44 +67,47 @@ public abstract class AbstractEventSubProcessStartEventActivityBehavior extends 
 
     @Override
     public void trigger(DelegateExecution execution, String triggerName, Object triggerData) {
-        CommandContext commandContext = Context.getCommandContext();
+        CommandContext commandContext = Objects.requireNonNull(
+            Context.getCommandContext(),
+            "No CommandContext active: an event sub-process start event can only be triggered from within a command"
+        );
         ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
         ExecutionEntity executionEntity = (ExecutionEntity) execution;
 
         StartEvent startEvent = (StartEvent) execution.getCurrentFlowElement();
         if (startEvent.isInterrupting()) {
             interruptSiblingExecutions(executionEntityManager, executionEntity, startEvent);
+            deleteMatchingSubscriptions(commandContext, executionEntity, resolveEventName(execution));
         }
 
-        String eventName = resolveEventName(execution);
-
-        EventSubscriptionEntityManager eventSubscriptionEntityManager =
-            commandContext.getEventSubscriptionEntityManager();
-        List<EventSubscriptionEntity> eventSubscriptions = executionEntity.getEventSubscriptions();
-        for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
-            if (matchesSubscription(eventSubscription, eventName)) {
-                eventSubscriptionEntityManager.delete(eventSubscription);
-                onSubscriptionConsumed(
-                    executionEntity,
-                    startEvent,
-                    eventName,
-                    executionEntityManager,
-                    eventSubscriptionEntityManager
-                );
-            }
-        }
-
-        executionEntity.setCurrentFlowElement(
+        ExecutionEntity subProcessExecution = executionEntityManager.createChildExecution(executionEntity.getParent());
+        subProcessExecution.setCurrentFlowElement(
             (SubProcess) executionEntity.getCurrentFlowElement().getParentContainer()
         );
-        executionEntity.setScope(true);
+        subProcessExecution.setEventScope(false);
+        subProcessExecution.setScope(true);
 
-        initializeDataObjects(executionEntity, startEvent);
+        initializeDataObjects(subProcessExecution, startEvent);
 
-        ExecutionEntity outgoingFlowExecution = executionEntityManager.createChildExecution(executionEntity);
+        ExecutionEntity outgoingFlowExecution = executionEntityManager.createChildExecution(subProcessExecution);
         outgoingFlowExecution.setCurrentFlowElement(startEvent);
 
         leave(outgoingFlowExecution);
+    }
+
+    private void deleteMatchingSubscriptions(
+        CommandContext commandContext,
+        ExecutionEntity executionEntity,
+        String eventName
+    ) {
+        EventSubscriptionEntityManager eventSubscriptionEntityManager =
+            commandContext.getEventSubscriptionEntityManager();
+        List<EventSubscriptionEntity> eventSubscriptions = new ArrayList<>(executionEntity.getEventSubscriptions());
+        for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
+            if (matchesSubscription(eventSubscription, eventName)) {
+                eventSubscriptionEntityManager.delete(eventSubscription);
+            }
+        }
     }
 
     /**
@@ -113,31 +120,16 @@ public abstract class AbstractEventSubProcessStartEventActivityBehavior extends 
      */
     protected abstract boolean matchesSubscription(EventSubscriptionEntity eventSubscription, String eventName);
 
-    /**
-     * Hook invoked after a matching subscription has been removed. Default implementation
-     * is a no-op; subclasses may override e.g. to re-arm a subscription on non-interrupting
-     * start events.
-     */
-    protected void onSubscriptionConsumed(
-        ExecutionEntity executionEntity,
-        StartEvent startEvent,
-        String eventName,
-        ExecutionEntityManager executionEntityManager,
-        EventSubscriptionEntityManager eventSubscriptionEntityManager
-    ) {
-        // no-op by default
-    }
-
     protected void initializeDataObjects(DelegateExecution scopeExecution, StartEvent startEvent) {
-        EventSubProcess eventSubProcess = (EventSubProcess) startEvent.getSubProcess();
-        Map<String, Object> dataObjectVars = processDataObjects(eventSubProcess.getDataObjects());
-        if (dataObjectVars != null) {
-            dataObjectVars.forEach((name, value) -> {
-                if (!scopeExecution.hasVariable(name)) {
-                    scopeExecution.setVariableLocal(name, value);
-                }
-            });
+        if (!(startEvent.getSubProcess() instanceof EventSubProcess eventSubProcess)) {
+            return;
         }
+        Map<String, Object> dataObjectVars = processDataObjects(eventSubProcess.getDataObjects());
+        dataObjectVars.forEach((name, value) -> {
+            if (!scopeExecution.hasVariable(name)) {
+                scopeExecution.setVariableLocal(name, value);
+            }
+        });
     }
 
     private void interruptSiblingExecutions(

@@ -17,6 +17,7 @@ package org.activiti.engine.test.bpmn.event.signal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Map;
 import org.activiti.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Execution;
@@ -105,7 +106,7 @@ public class SignalEventSubprocessTest extends PluggableActivitiTestCase {
         // non-interrupting => both the main task and the event sub-process task are active
         assertThat(taskService.createTaskQuery().count()).isEqualTo(2);
 
-        // The subscription must have been re-created so the event sub-process can be triggered again by future signals
+        // The subscription is still in place, so the event sub-process can be triggered again by future signals
         assertThat(
             runtimeService
                 .createExecutionQuery()
@@ -136,14 +137,7 @@ public class SignalEventSubprocessTest extends PluggableActivitiTestCase {
 
         task = taskService.createTaskQuery().taskDefinitionKey("eventSubProcessTask").singleResult();
         taskService.complete(task.getId());
-        // We deliberately don't assert on the execution count or on whether the renewed
-        // subscription is still present at this point: depending on entity-manager flush
-        // ordering, the engine may have torn down the transient SubProcess scope along
-        // with the sibling event-scope that holds the renewed subscription. The fact
-        // that the subscription IS renewed when the signal fires is already covered by
-        // the earlier assertion in this method, and that it can fire MULTIPLE times is
-        // covered by testNonInterruptingCanTriggerMultipleTimes.
-        //assertThat(executionCountFor(processInstance)).isEqualTo(3);
+        assertThat(executionCountFor(processInstance)).isEqualTo(3);
 
         task = taskService.createTaskQuery().taskDefinitionKey("task").singleResult();
         taskService.complete(task.getId());
@@ -152,8 +146,7 @@ public class SignalEventSubprocessTest extends PluggableActivitiTestCase {
 
     /**
      * Verifies that a non-interrupting signal-triggered event sub-process can fire more than
-     * once for the same process instance, i.e. that the subscription is re-created after each
-     * trigger.
+     * once for the same process instance, i.e. that the subscription survives each trigger.
      */
     @Deployment(
         resources = "org/activiti/engine/test/bpmn/event/signal/SignalEventSubprocessTest.testNonInterruptingUnderProcessDefinition.bpmn20.xml"
@@ -172,7 +165,7 @@ public class SignalEventSubprocessTest extends PluggableActivitiTestCase {
 
         assertThat(taskService.createTaskQuery().taskDefinitionKey("eventSubProcessTask").count()).isEqualTo(1);
 
-        // subscription has been re-created on the parent for a second trigger
+        // subscription is still on the parent, ready for a second trigger
         execution = runtimeService
             .createExecutionQuery()
             .processInstanceId(processInstance.getId())
@@ -240,6 +233,108 @@ public class SignalEventSubprocessTest extends PluggableActivitiTestCase {
         // completing the sub-process tears the scope down and the local variable goes with it
         taskService.complete(task.getId());
         assertProcessEnded(processInstance.getId());
+    }
+
+    /**
+     * The signal name of an event sub-process start event may be given as an
+     * {@code activiti:signalExpression} instead of a {@code signalRef}. The expression is
+     * evaluated when the subscription is created (i.e. at process instance start), against the
+     * variables of that instance, so two instances of the same definition can listen for
+     * different signal names.
+     */
+    @Deployment
+    public void testSignalExpressionUnderProcessDefinition() {
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
+            "process",
+            Map.of("signalName", "order-cancelled")
+        );
+
+        // the subscription is registered under the *resolved* name, not the expression text
+        Execution execution = runtimeService
+            .createExecutionQuery()
+            .processInstanceId(processInstance.getId())
+            .signalEventSubscriptionName("order-cancelled")
+            .singleResult();
+        assertThat(execution).isNotNull();
+
+        // and nothing is registered under the raw expression
+        assertThat(
+            runtimeService
+                .createExecutionQuery()
+                .processInstanceId(processInstance.getId())
+                .signalEventSubscriptionName("${signalName}")
+                .count()
+        ).isZero();
+
+        // triggering the resolved signal enters the event sub-process
+        runtimeService.signalEventReceived("order-cancelled", execution.getId());
+        assertThat(taskService.createTaskQuery().taskDefinitionKey("eventSubProcessTask").count()).isEqualTo(1);
+
+        // complete both branches so the instance ends cleanly
+        Task eventSubProcessTask = taskService
+            .createTaskQuery()
+            .taskDefinitionKey("eventSubProcessTask")
+            .singleResult();
+        taskService.complete(eventSubProcessTask.getId());
+        Task mainTask = taskService.createTaskQuery().taskDefinitionKey("task").singleResult();
+        taskService.complete(mainTask.getId());
+        assertProcessEnded(processInstance.getId());
+    }
+
+    /**
+     * Same definition, two instances, two different variable values: each instance must
+     * subscribe to its own signal name and must not be triggered by the other one's.
+     */
+    @Deployment(
+        resources = "org/activiti/engine/test/bpmn/event/signal/SignalEventSubprocessTest.testSignalExpressionUnderProcessDefinition.bpmn20.xml"
+    )
+    public void testSignalExpressionIsResolvedPerProcessInstance() {
+        ProcessInstance first = runtimeService.startProcessInstanceByKey("process", Map.of("signalName", "signal-one"));
+        ProcessInstance second = runtimeService.startProcessInstanceByKey(
+            "process",
+            Map.of("signalName", "signal-two")
+        );
+
+        Execution firstSubscription = runtimeService
+            .createExecutionQuery()
+            .processInstanceId(first.getId())
+            .signalEventSubscriptionName("signal-one")
+            .singleResult();
+        assertThat(firstSubscription).isNotNull();
+
+        // the second instance did not subscribe to the first instance's signal name
+        assertThat(
+            runtimeService
+                .createExecutionQuery()
+                .processInstanceId(second.getId())
+                .signalEventSubscriptionName("signal-one")
+                .count()
+        ).isZero();
+        assertThat(
+            runtimeService
+                .createExecutionQuery()
+                .processInstanceId(second.getId())
+                .signalEventSubscriptionName("signal-two")
+                .count()
+        ).isEqualTo(1);
+
+        // broadcasting "signal-one" must only reach the first instance
+        runtimeService.signalEventReceived("signal-one");
+
+        assertThat(
+            taskService
+                .createTaskQuery()
+                .processInstanceId(first.getId())
+                .taskDefinitionKey("eventSubProcessTask")
+                .count()
+        ).isEqualTo(1);
+        assertThat(
+            taskService
+                .createTaskQuery()
+                .processInstanceId(second.getId())
+                .taskDefinitionKey("eventSubProcessTask")
+                .count()
+        ).isZero();
     }
 
     private EventSubscriptionQueryImpl createEventSubscriptionQuery() {

@@ -42,7 +42,6 @@ public class EventSubProcessMessageStartEventActivityBehavior
 
     @Override
     protected String resolveEventName(DelegateExecution execution) {
-        // Should we use triggerName and triggerData, because message name expression can change?
         return messageExecutionContext.getMessageName(execution);
     }
 

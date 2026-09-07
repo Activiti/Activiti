@@ -17,13 +17,11 @@ package org.activiti.engine.impl.bpmn.behavior;
 
 import org.activiti.bpmn.model.Signal;
 import org.activiti.bpmn.model.SignalEventDefinition;
-import org.activiti.bpmn.model.StartEvent;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.impl.event.EventDefinitionExpressionUtil;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
-import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
+import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 
 /**
  * Implementation of the BPMN 2.0 event sub-process signal start event.
@@ -33,8 +31,8 @@ public class EventSubProcessSignalStartEventActivityBehavior extends AbstractEve
 
     private static final long serialVersionUID = 1L;
 
-    protected final SignalEventDefinition signalEventDefinition;
-    protected final Signal signal;
+    protected final transient SignalEventDefinition signalEventDefinition;
+    protected final transient Signal signal;
 
     public EventSubProcessSignalStartEventActivityBehavior(SignalEventDefinition signalEventDefinition, Signal signal) {
         this.signalEventDefinition = signalEventDefinition;
@@ -43,7 +41,11 @@ public class EventSubProcessSignalStartEventActivityBehavior extends AbstractEve
 
     @Override
     protected String resolveEventName(DelegateExecution execution) {
-        return (signal != null) ? signal.getName() : signalEventDefinition.getSignalRef();
+        return EventDefinitionExpressionUtil.determineSignalName(
+            signalEventDefinition,
+            ProcessDefinitionUtil.getBpmnModel(execution.getProcessDefinitionId()),
+            execution
+        );
     }
 
     @Override
@@ -52,27 +54,5 @@ public class EventSubProcessSignalStartEventActivityBehavior extends AbstractEve
             eventSubscription instanceof SignalEventSubscriptionEntity &&
             eventSubscription.getEventName().equals(eventName)
         );
-    }
-
-    @Override
-    protected void onSubscriptionConsumed(
-        ExecutionEntity executionEntity,
-        StartEvent startEvent,
-        String eventName,
-        ExecutionEntityManager executionEntityManager,
-        EventSubscriptionEntityManager eventSubscriptionEntityManager
-    ) {
-        // Interrupting: the event scope is gone after we leave; nothing more to do.
-        // Non-interrupting: keep listening for further signals by re-arming an equivalent
-        // subscription on the parent process instance after this one is consumed.
-        if (!startEvent.isInterrupting()) {
-            ExecutionEntity parent = executionEntity.getParent();
-            if (parent != null) {
-                ExecutionEntity newEventScope = executionEntityManager.createChildExecution(parent);
-                newEventScope.setCurrentFlowElement(startEvent);
-                newEventScope.setEventScope(true);
-                eventSubscriptionEntityManager.insertSignalEvent(eventName, signal, newEventScope);
-            }
-        }
     }
 }
