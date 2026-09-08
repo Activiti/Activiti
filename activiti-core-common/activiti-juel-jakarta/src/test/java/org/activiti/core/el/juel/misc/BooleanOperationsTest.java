@@ -15,10 +15,11 @@
  */
 package org.activiti.core.el.juel.misc;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
+import jakarta.el.ELException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -76,18 +77,16 @@ public class BooleanOperationsTest extends TestCase {
         assertTrue(BooleanOperations.lt(converter, "a", "b"));
         assertFalse(BooleanOperations.lt(converter, "a", "a"));
         assertFalse(BooleanOperations.lt(converter, "b", "a"));
-        try {
-            BooleanOperations.lt(converter, getClass(), Character.valueOf('a'));
-            fail();
-        } catch (Exception e) {}
-        try {
-            BooleanOperations.lt(converter, Character.valueOf('a'), getClass());
-            fail();
-        } catch (Exception e) {}
-        try {
-            BooleanOperations.lt(converter, getClass(), Long.valueOf(0));
-            fail();
-        } catch (Exception e) {}
+        Class<?> unsupportedType = getClass();
+        assertThatExceptionOfType(ClassCastException.class).isThrownBy(() ->
+            BooleanOperations.lt(converter, unsupportedType, 'a')
+        );
+        assertThatExceptionOfType(ClassCastException.class).isThrownBy(() ->
+            BooleanOperations.lt(converter, 'a', unsupportedType)
+        );
+        assertThatExceptionOfType(ELException.class).isThrownBy(() ->
+            BooleanOperations.lt(converter, unsupportedType, 0L)
+        );
     }
 
     /*
@@ -128,18 +127,16 @@ public class BooleanOperationsTest extends TestCase {
         assertFalse(BooleanOperations.gt(converter, "a", "b"));
         assertFalse(BooleanOperations.gt(converter, "a", "a"));
         assertTrue(BooleanOperations.gt(converter, "b", "a"));
-        try {
-            BooleanOperations.gt(converter, getClass(), Character.valueOf('a'));
-            fail();
-        } catch (Exception e) {}
-        try {
-            BooleanOperations.gt(converter, Character.valueOf('a'), getClass());
-            fail();
-        } catch (Exception e) {}
-        try {
-            BooleanOperations.gt(converter, getClass(), Long.valueOf(0));
-            fail();
-        } catch (Exception e) {}
+        Class<?> unsupportedType = getClass();
+        assertThatExceptionOfType(ClassCastException.class).isThrownBy(() ->
+            BooleanOperations.gt(converter, unsupportedType, 'a')
+        );
+        assertThatExceptionOfType(ClassCastException.class).isThrownBy(() ->
+            BooleanOperations.gt(converter, 'a', unsupportedType)
+        );
+        assertThatExceptionOfType(ELException.class).isThrownBy(() ->
+            BooleanOperations.gt(converter, unsupportedType, 0L)
+        );
     }
 
     /*
@@ -180,18 +177,16 @@ public class BooleanOperationsTest extends TestCase {
         assertFalse(BooleanOperations.ge(converter, "a", "b"));
         assertTrue(BooleanOperations.ge(converter, "a", "a"));
         assertTrue(BooleanOperations.ge(converter, "b", "a"));
-        try {
-            BooleanOperations.ge(converter, getClass(), Character.valueOf('a'));
-            fail();
-        } catch (Exception e) {}
-        try {
-            BooleanOperations.ge(converter, Character.valueOf('a'), getClass());
-            fail();
-        } catch (Exception e) {}
-        try {
-            BooleanOperations.ge(converter, getClass(), Long.valueOf(0));
-            fail();
-        } catch (Exception e) {}
+        Class<?> unsupportedType = getClass();
+        assertThatExceptionOfType(ClassCastException.class).isThrownBy(() ->
+            BooleanOperations.ge(converter, unsupportedType, 'a')
+        );
+        assertThatExceptionOfType(ClassCastException.class).isThrownBy(() ->
+            BooleanOperations.ge(converter, 'a', unsupportedType)
+        );
+        assertThatExceptionOfType(ELException.class).isThrownBy(() ->
+            BooleanOperations.ge(converter, unsupportedType, 0L)
+        );
     }
 
     /*
@@ -232,18 +227,16 @@ public class BooleanOperationsTest extends TestCase {
         assertTrue(BooleanOperations.le(converter, "a", "b"));
         assertTrue(BooleanOperations.le(converter, "a", "a"));
         assertFalse(BooleanOperations.le(converter, "b", "a"));
-        try {
-            BooleanOperations.le(converter, getClass(), Character.valueOf('a'));
-            fail();
-        } catch (Exception e) {}
-        try {
-            BooleanOperations.le(converter, Character.valueOf('a'), getClass());
-            fail();
-        } catch (Exception e) {}
-        try {
-            BooleanOperations.le(converter, getClass(), Long.valueOf(0));
-            fail();
-        } catch (Exception e) {}
+        Class<?> unsupportedType = getClass();
+        assertThatExceptionOfType(ClassCastException.class).isThrownBy(() ->
+            BooleanOperations.le(converter, unsupportedType, 'a')
+        );
+        assertThatExceptionOfType(ClassCastException.class).isThrownBy(() ->
+            BooleanOperations.le(converter, 'a', unsupportedType)
+        );
+        assertThatExceptionOfType(ELException.class).isThrownBy(() ->
+            BooleanOperations.le(converter, unsupportedType, 0L)
+        );
     }
 
     /*
@@ -287,19 +280,16 @@ public class BooleanOperationsTest extends TestCase {
         assertTrue(BooleanOperations.eq(converter, Foo.BAR, "BAR"));
         assertTrue(BooleanOperations.eq(converter, "BAR", Foo.BAR));
         assertFalse(BooleanOperations.eq(converter, Foo.BAR, "BAZ"));
-        try {
-            BooleanOperations.eq(converter, Foo.BAR, "FOO"); // coercion fails
-            fail();
-        } catch (Exception e) {}
+        assertThatExceptionOfType(ELException.class).isThrownBy(() -> BooleanOperations.eq(converter, Foo.BAR, "FOO")); // coercion fails
         assertFalse(BooleanOperations.eq(converter, "a", "b"));
         assertTrue(BooleanOperations.eq(converter, "a", "a"));
         assertFalse(BooleanOperations.eq(converter, "b", "a"));
-        assertFalse(BooleanOperations.eq(converter, getClass(), Character.valueOf('a')));
-        assertFalse(BooleanOperations.eq(converter, Character.valueOf('a'), getClass()));
-        try {
-            BooleanOperations.eq(converter, getClass(), Long.valueOf(0)); // coercion fails
-            fail();
-        } catch (Exception e) {}
+        Class<?> unsupportedType = getClass();
+        assertFalse(BooleanOperations.eq(converter, unsupportedType, Character.valueOf('a')));
+        assertFalse(BooleanOperations.eq(converter, Character.valueOf('a'), unsupportedType));
+        assertThatExceptionOfType(ELException.class).isThrownBy(() ->
+            BooleanOperations.eq(converter, unsupportedType, 0L)
+        ); // coercion fails
     }
 
     /*
@@ -343,19 +333,16 @@ public class BooleanOperationsTest extends TestCase {
         assertFalse(BooleanOperations.ne(converter, Foo.BAR, "BAR"));
         assertFalse(BooleanOperations.ne(converter, "BAR", Foo.BAR));
         assertTrue(BooleanOperations.ne(converter, Foo.BAR, "BAZ"));
-        try {
-            BooleanOperations.ne(converter, Foo.BAR, "FOO"); // coercion fails
-            fail();
-        } catch (Exception e) {}
+        assertThatExceptionOfType(ELException.class).isThrownBy(() -> BooleanOperations.ne(converter, Foo.BAR, "FOO")); // coercion fails
         assertTrue(BooleanOperations.ne(converter, "a", "b"));
         assertFalse(BooleanOperations.ne(converter, "a", "a"));
         assertTrue(BooleanOperations.ne(converter, "b", "a"));
-        assertTrue(BooleanOperations.ne(converter, getClass(), Character.valueOf('a')));
-        assertTrue(BooleanOperations.ne(converter, Character.valueOf('a'), getClass()));
-        try {
-            BooleanOperations.ne(converter, getClass(), Long.valueOf(0)); // coercion fails
-            fail();
-        } catch (Exception e) {}
+        Class<?> unsupportedType = getClass();
+        assertTrue(BooleanOperations.ne(converter, unsupportedType, Character.valueOf('a')));
+        assertTrue(BooleanOperations.ne(converter, Character.valueOf('a'), unsupportedType));
+        assertThatExceptionOfType(ELException.class).isThrownBy(() ->
+            BooleanOperations.ne(converter, unsupportedType, 0L)
+        ); // coercion fails
     }
 
     /*

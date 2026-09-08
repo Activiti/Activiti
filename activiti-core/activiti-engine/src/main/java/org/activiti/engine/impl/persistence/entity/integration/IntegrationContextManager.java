@@ -15,6 +15,13 @@
  */
 package org.activiti.engine.impl.persistence.entity.integration;
 
+import java.util.List;
+import org.activiti.engine.impl.IntegrationContextQueryImpl;
+import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.persistence.entity.EntityManager;
 
-public interface IntegrationContextManager extends EntityManager<IntegrationContextEntity> {}
+public interface IntegrationContextManager extends EntityManager<IntegrationContextEntity> {
+    List<IntegrationContextEntity> findByQueryCriteria(IntegrationContextQueryImpl query, Page page);
+
+    long findCountByQueryCriteria(IntegrationContextQueryImpl query);
+}

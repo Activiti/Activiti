@@ -17,15 +17,18 @@ package org.activiti.runtime.api.impl;
 
 import java.util.List;
 import org.activiti.bpmn.model.MapExceptionEntry;
+import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.behavior.CallActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.SetVariablesTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.VariablesCalculator;
 import org.activiti.engine.impl.bpmn.behavior.VariablesPropagator;
 import org.activiti.engine.impl.bpmn.parser.factory.ActivityBehaviorFactory;
 import org.activiti.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFactory;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.spring.process.ProcessVariablesInitiator;
 
 /**
@@ -53,6 +56,11 @@ public class MappingAwareActivityBehaviorFactory extends DefaultActivityBehavior
     @Override
     public UserTaskActivityBehavior createUserTaskActivityBehavior(UserTask userTask) {
         return new MappingAwareUserTaskBehavior(userTask, variablesCalculator, variablesPropagator);
+    }
+
+    @Override
+    public ActivityBehavior createSetVariablesTaskBehavior(ServiceTask serviceTask) {
+        return new SetVariablesTaskActivityBehavior(variablesCalculator);
     }
 
     @Override

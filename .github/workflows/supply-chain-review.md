@@ -8,10 +8,9 @@ permissions:
   contents: read
   pull-requests: read
 
+model: gpt-5-mini
 engine:
   id: copilot
-  model: gpt-5.4-nano
-
 tools:
   github:
     toolsets: [context, pull_requests, repos]
@@ -30,9 +29,12 @@ safe-outputs:
     hide-older-comments: true
   add-labels:
     allowed: [security:low, security:medium, security:high]
+    issue-intent: false
+  remove-labels:
+    allowed: [security:low, security:medium, security:high]
   submit-pull-request-review:
 
-source: Alfresco/alfresco-build-tools/.github/workflows/supply-chain-review.md@52467f0241079de71fe14591f97bdec7555ab545
+source: Alfresco/alfresco-build-tools/.github/workflows/supply-chain-review.md@e35840d877477896b1f0aa05d05371cb3b31ce9f
 ---
 
 # Supply Chain Review
@@ -44,7 +46,11 @@ You are the primary and only analysis engine. There is no secondary check. Be th
 
 ## Step 1 — Identify Dependency Changes
 
-Read the pull request diff and find all modified dependency files (`package.json`, `package-lock.json`, `pom.xml`, `yarn.lock`, `build.gradle`, etc.). For each changed dependency extract:
+Read the **full** pull request diff — every commit in the PR, not just the latest one — and find all modified dependency files (`package.json`, `package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`/`pnpm-lock.yml`, `pnpm-workspace.yaml`/`pnpm-workspace.yml`, `npm-shrinkwrap.json`, `pom.xml`, `build.gradle`, etc.).
+
+**CRITICAL**: always use the GitHub MCP Server `pull_requests` toolset (e.g. `get_diff` / `get_files`) to fetch the diff — this always reflects every commit in the PR, regardless of local git history, against the correct base branch. Do NOT rely on local git commands or assumptions about the PR's commit history.
+
+For each changed dependency extract:
 
 - Package name (including scope/groupId if applicable)
 - Ecosystem (`npm` or `maven`)
@@ -336,7 +342,8 @@ No suspicious patterns detected. Routine upgrade.
 
 ## Step 6 — Apply Label and Review Status
 
-- Apply a label to the PR based on the highest risk level found:
+- First, remove any `security:low`, `security:medium`, or `security:high` labels already present on the PR from a previous review — this PR may have been reviewed before (e.g., after a new commit), and stale risk labels must not remain alongside the new one.
+- Then apply a label to the PR based on the highest risk level found:
   - `security:low` for LOW risk
   - `security:medium` for MEDIUM risk
   - `security:high` for HIGH or CRITICAL risk

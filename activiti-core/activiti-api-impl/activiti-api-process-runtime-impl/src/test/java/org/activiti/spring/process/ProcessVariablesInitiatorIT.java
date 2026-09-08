@@ -17,6 +17,7 @@ package org.activiti.spring.process;
 
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonMap;
+import static org.activiti.engine.impl.util.CollectionUtil.map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.assertj.core.api.Assertions.entry;
@@ -226,6 +227,35 @@ public class ProcessVariablesInitiatorIT {
                 entry("process_variable_json_type_1", mappedJson),
                 entry("process_variable_json_type_2", mappedJson)
             );
+        }
+    }
+
+    @Test
+    public void calculateVariablesFromExtensionFileShouldAcceptNullValuesForBigdecimalAndJson() throws Exception {
+        try (
+            InputStream inputStream = Thread.currentThread()
+                .getContextClassLoader()
+                .getResourceAsStream("processes/default-vars-extensions.json")
+        ) {
+            ProcessExtensionModel extension = reader.read(inputStream);
+
+            ProcessDefinition processDefinition = mock(ProcessDefinition.class);
+            given(processExtensionService.getExtensionsFor(processDefinition)).willReturn(
+                extension.getExtensions("Process_DefaultVarsProcess")
+            );
+            given(processExtensionService.hasExtensionsFor(processDefinition)).willReturn(true);
+            given(processDefinition.getKey()).willReturn("Process_DefaultVarsProcess");
+
+            Map<String, Object> variables = processVariablesInitiator.calculateVariablesFromExtensionFile(
+                processDefinition,
+                map("name", "Peter", "height-meters", null, "jsonvar", null)
+            );
+
+            assertThat(variables)
+                .containsEntry("name", "Peter")
+                .containsEntry("height-meters", null)
+                .containsEntry("jsonvar", null)
+                .containsEntry("positionInTheQueue", 10);
         }
     }
 }

@@ -217,27 +217,47 @@ public class TaskQueryEscapeClauseTest extends AbstractEscapeClauseTestCase {
 
     @Test
     public void testQueryByAssigneeLike() {
-        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
-            // assigneeLike
-            Task task = taskService.createTaskQuery().taskAssigneeLike("%\\%%").singleResult();
-            assertThat(task).isNotNull();
-            assertThat(task.getId()).isEqualTo(task1.getId());
-
-            task = taskService.createTaskQuery().taskAssigneeLike("%\\_%").singleResult();
-            assertThat(task).isNotNull();
-            assertThat(task.getId()).isEqualTo(task2.getId());
-
-            // orQuery
-            /*
-        task = taskService.createTaskQuery().or().taskAssigneeLike("%\\%%").processDefinitionId("undefined").singleResult();
+        // assigneeLike
+        Task task = taskService.createTaskQuery().taskAssigneeLike("%\\%%").singleResult();
         assertThat(task).isNotNull();
         assertThat(task.getId()).isEqualTo(task1.getId());
 
-        task = taskService.createTaskQuery().or().taskAssigneeLike("%\\_%").processDefinitionId("undefined").singleResult();
+        task = taskService.createTaskQuery().taskAssigneeLike("%\\_%").singleResult();
         assertThat(task).isNotNull();
         assertThat(task.getId()).isEqualTo(task2.getId());
-        */
-        }
+
+        // orQuery
+        task = taskService
+            .createTaskQuery()
+            .or()
+            .taskAssigneeLike("%\\%%")
+            .processDefinitionId("undefined")
+            .singleResult();
+        assertThat(task).isNotNull();
+        assertThat(task.getId()).isEqualTo(task1.getId());
+
+        task = taskService
+            .createTaskQuery()
+            .or()
+            .taskAssigneeLike("%\\_%")
+            .processDefinitionId("undefined")
+            .singleResult();
+        assertThat(task).isNotNull();
+        assertThat(task.getId()).isEqualTo(task2.getId());
+    }
+
+    @Test
+    public void testQueryByAssigneeLikeInOrDoesNotReturnNonMatchingAssignee() {
+        List<Task> tasks = taskService
+            .createTaskQuery()
+            .taskAssignee("assignee_")
+            .or()
+            .taskAssigneeLike("%\\%%")
+            .processDefinitionId("undefined")
+            .endOr()
+            .list();
+
+        assertThat(tasks).isEmpty();
     }
 
     @Test

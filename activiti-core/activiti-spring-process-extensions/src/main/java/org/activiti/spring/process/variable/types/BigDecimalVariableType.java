@@ -29,6 +29,9 @@ public class BigDecimalVariableType extends VariableType {
 
     @Override
     public Object parseFromValue(Object value) throws ActivitiException {
+        if (value == null) {
+            return null;
+        }
         if (value instanceof BigDecimal) {
             return value;
         }
@@ -44,6 +47,9 @@ public class BigDecimalVariableType extends VariableType {
 
     @Override
     public void validate(Object var, List<ActivitiException> errors) {
+        if (var == null) {
+            return;
+        }
         if (!Number.class.isAssignableFrom(var.getClass())) {
             String message = String.format(VALIDATION_ERROR_FORMAT, var.getClass());
             errors.add(new ActivitiException(message));

@@ -41,4 +41,11 @@ class JsonObjectVariableTypeTest {
 
         assertTrue(exceptionList.isEmpty());
     }
+
+    @Test
+    public void should_returnEmptyErrorList_when_validatingNullValue() {
+        jsonObjectVariableType.validate(null, exceptionList);
+
+        assertTrue(exceptionList.isEmpty());
+    }
 }

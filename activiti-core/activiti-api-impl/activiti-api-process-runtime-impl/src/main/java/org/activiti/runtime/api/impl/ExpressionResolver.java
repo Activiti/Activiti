@@ -134,6 +134,19 @@ public class ExpressionResolver {
         return sb.toString();
     }
 
+    public List<String> findVariableNamesContainingExpressions(final Map<String, ?> source) {
+        final List<String> result = new LinkedList<>();
+        if (source == null) {
+            return result;
+        }
+        source.forEach((key, value) -> {
+            if (containsExpression(value)) {
+                result.add(key);
+            }
+        });
+        return result;
+    }
+
     public boolean containsExpression(final Object source) {
         if (source == null) {
             return false;

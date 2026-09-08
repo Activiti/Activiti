@@ -196,23 +196,25 @@
     <maven.compiler.target>${java.version}</maven.compiler.target>
 
     <!-- versions -->
-    <asm.version>9.9.1</asm.version>
+    <asm.version>9.10.1</asm.version>
     <build-helper-maven-plugin.version>3.6.1</build-helper-maven-plugin.version>
-    <dependency-check-maven.version>12.2.2</dependency-check-maven.version>
+    <dependency-check-maven.version>13.0.0</dependency-check-maven.version>
     <exec-maven-plugin.version>3.6.3</exec-maven-plugin.version>
     <extra-enforcer-rules.version>1.12.0</extra-enforcer-rules.version>
     <jacoco-maven-plugin.version>0.8.15</jacoco-maven-plugin.version>
-    <license-maven-plugin.version>5.0.0</license-maven-plugin.version>
+    <license-maven-plugin.version>5.1.2</license-maven-plugin.version>
     <third-party-license-maven-plugin.version>2.7.1</third-party-license-maven-plugin.version>
     <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
+    <checkstyle.version>14.0.0</checkstyle.version>
     <maven-clean-plugin.version>3.5.0</maven-clean-plugin.version>
     <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
+    <maven-dependency-plugin.version>3.11.0</maven-dependency-plugin.version>
     <maven-deploy-plugin.version>3.1.4</maven-deploy-plugin.version>
     <maven-enforcer-plugin.version>3.6.3</maven-enforcer-plugin.version>
     <maven-failsafe-plugin.version>3.5.6</maven-failsafe-plugin.version>
     <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
     <maven-install-plugin.version>3.1.4</maven-install-plugin.version>
-    <maven-jar-plugin.version>3.5.0</maven-jar-plugin.version>
+    <maven-jar-plugin.version>3.5.1</maven-jar-plugin.version>
     <maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
     <maven-jxr-plugin.version>3.6.0</maven-jxr-plugin.version>
     <maven-pmd-plugin.version>3.28.0</maven-pmd-plugin.version>
@@ -222,11 +224,13 @@
     <maven-site-plugin.version>3.22.0</maven-site-plugin.version>
     <maven-source-plugin.version>3.4.0</maven-source-plugin.version>
     <maven-surefire-plugin.version>3.5.6</maven-surefire-plugin.version>
-    <sonar-maven-plugin.version>5.6.0.6792</sonar-maven-plugin.version>
+    <sonar-maven-plugin.version>5.7.0.6970</sonar-maven-plugin.version>
     <spring-boot.version>4.0.7</spring-boot.version>
     <!-- AAE-46198 temporary Tomcat version override. Remove when upgrading to Spring Boot 4.1.x -->
-    <tomcat.version>11.0.22</tomcat.version>
+    <tomcat.version>11.0.24</tomcat.version>
     <jakarta.el-api.version>6.0.1</jakarta.el-api.version>
+    <!-- AAE-44603 temporary security fix (CVE-2025-7962). -->
+    <sun-jakarta-mail.version>2.0.2</sun-jakarta-mail.version>
     <versions-maven-plugin.version>2.21.0</versions-maven-plugin.version>
 
     <!-- configuration properties for tests -->
@@ -234,6 +238,7 @@
       ${project.build.directory}/generated-test-sources/assertions
     </generated-assertions-folder>
     <generated-assertions-package>org.activiti.test</generated-assertions-package>
+    <mockito.agent.arg>-javaagent:"${org.mockito:mockito-core:jar}"</mockito.agent.arg>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -244,12 +249,34 @@
         <type>xml</type>
         <classifier>suppression</classifier>
       </dependency>
+      <!-- AAE-49313 / AAE-47589: Jackson BOM overrides have to precede spring-boot-dependencies. -->
+      <dependency>
+        <groupId>com.fasterxml.jackson</groupId>
+        <artifactId>jackson-bom</artifactId>
+        <version>2.22.1</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <!-- AAE-49313 / AAE-47587: Jackson 3.x BOM override, see note above on import order. -->
+      <dependency>
+        <groupId>tools.jackson</groupId>
+        <artifactId>jackson-bom</artifactId>
+        <version>3.2.1</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
       <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
         <version>${spring-boot.version}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+      <!-- AAE-44603 temporary security fix (CVE-2025-7962). -->
+      <dependency>
+        <groupId>com.sun.mail</groupId>
+        <artifactId>jakarta.mail</artifactId>
+        <version>${sun-jakarta-mail.version}</version>
       </dependency>
       <!-- AAE-46198 temporary Tomcat version overrides. Remove when upgrading to Spring Boot 4.1.x -->
       <dependency>
@@ -400,6 +427,13 @@ limitations under the License.
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-checkstyle-plugin</artifactId>
           <version>${maven-checkstyle-plugin.version}</version>
+          <dependencies>
+            <dependency>
+              <groupId>com.puppycrawl.tools</groupId>
+              <artifactId>checkstyle</artifactId>
+              <version>${checkstyle.version}</version>
+            </dependency>
+          </dependencies>
           <executions>
             <execution>
               <id>validate</id>
@@ -719,11 +753,25 @@ limitations under the License.
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>${maven-dependency-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>resolve-dependency-properties</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>properties</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${maven-surefire-plugin.version}</version>
         <configuration>
           <!-- use syntax for Jacoco late property evaluation -->
-          <argLine>@{argLine} -Xmx1024m -XX:MaxMetaspaceSize=256m</argLine>
+          <argLine>@{argLine} -Xmx1024m -XX:MaxMetaspaceSize=256m ${mockito.agent.arg}</argLine>
           <redirectTestOutputToFile>true</redirectTestOutputToFile>
           <failIfNoTests>false</failIfNoTests>
           <trimStackTrace>false</trimStackTrace>
@@ -865,6 +913,9 @@ limitations under the License.
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-failsafe-plugin</artifactId>
+            <configuration>
+              <argLine>@{argLine} -Xmx1024m -XX:MaxMetaspaceSize=256m ${mockito.agent.arg}</argLine>
+            </configuration>
             <executions>
               <execution>
                 <id>integration-test</id>

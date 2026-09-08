@@ -15,6 +15,7 @@
  */
 package org.activiti.core.el.juel.misc;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -357,15 +358,12 @@ public class TypeConverterImplTest extends TestCase {
         assertSame(value, converter.coerceToType(value, Object.class));
         assertEquals(new Date(0), converter.coerceToType("0", Date.class));
         assertNull(converter.coerceToType("", Date.class));
-        try {
-            converter.coerceToType("foo", Date.class);
-            fail();
-        } catch (Exception e) {}
-        assertNull(converter.coerceToType("", getClass()));
-        try {
-            converter.coerceToType("bar", getClass());
-            fail();
-        } catch (Exception e) {}
+        assertThatExceptionOfType(ELException.class).isThrownBy(() -> converter.coerceToType("foo", Date.class));
+        Class<?> unsupportedTargetType = getClass();
+        assertNull(converter.coerceToType("", unsupportedTargetType));
+        assertThatExceptionOfType(ELException.class).isThrownBy(() ->
+            converter.coerceToType("bar", unsupportedTargetType)
+        );
         assertEquals(false, converter.coerceToType("false", boolean.class));
         assertEquals((byte) 0, converter.coerceToType("0", byte.class));
         assertEquals((short) 0, converter.coerceToType("0", short.class));

@@ -10,6 +10,9 @@
   </parent>
   <artifactId>activiti-json-converter</artifactId>
   <name>Activiti :: JSON Converter</name>
+  <properties>
+    <mockito.agent.arg/>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>org.activiti</groupId>

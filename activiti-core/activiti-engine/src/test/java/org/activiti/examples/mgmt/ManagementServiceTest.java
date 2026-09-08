@@ -47,15 +47,18 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
 
         TableMetaData tableMetaData = managementService.getTableMetaData(tablePrefix + "ACT_RU_TASK");
         assertThat(tableMetaData.getColumnTypes()).hasSize(tableMetaData.getColumnNames().size());
-        assertThat(tableMetaData.getColumnNames()).hasSize(22);
+        assertThat(tableMetaData.getColumnNames()).hasSize(23);
 
         int assigneeIndex = tableMetaData.getColumnNames().indexOf("ASSIGNEE_");
         int createTimeIndex = tableMetaData.getColumnNames().indexOf("CREATE_TIME_");
+        int claimTokenIndex = tableMetaData.getColumnNames().indexOf("CLAIM_TOKEN_");
 
         assertThat(assigneeIndex).isGreaterThanOrEqualTo(0);
         assertThat(createTimeIndex).isGreaterThanOrEqualTo(0);
+        assertThat(claimTokenIndex).isGreaterThanOrEqualTo(0);
 
         assertThat(tableMetaData.getColumnTypes().get(assigneeIndex)).isIn("CHARACTER VARYING");
+        assertThat(tableMetaData.getColumnTypes().get(claimTokenIndex)).isIn("CHARACTER VARYING");
         assertThat(tableMetaData.getColumnTypes().get(createTimeIndex)).isIn(
             "TIMESTAMP",
             "TIMESTAMP(6)",

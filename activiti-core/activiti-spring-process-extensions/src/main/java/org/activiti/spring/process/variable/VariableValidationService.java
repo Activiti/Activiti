@@ -42,6 +42,9 @@ public class VariableValidationService {
         List<ActivitiException> errors = new ArrayList<>();
 
         if (variableDefinition.getType() != null) {
+            if (var == null) {
+                return errors;
+            }
             VariableType type = variableTypeMap.get(variableDefinition.getType());
 
             //if type is not in the map then assume to be json

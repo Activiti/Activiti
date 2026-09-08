@@ -304,6 +304,50 @@ class IntegrationContextImplTest {
     }
 
     @Test
+    void should_setEmptyVariables_when_copyConstructorReceivesNullVariables() {
+        // given an IntegrationContext that returns null for inbound and outbound variables
+        IntegrationContextImpl original = new IntegrationContextImpl() {
+            @Override
+            public Map<String, Object> getInBoundVariables() {
+                return null;
+            }
+
+            @Override
+            public Map<String, Object> getOutBoundVariables() {
+                return null;
+            }
+        };
+        original.setProcessInstanceId("proc123");
+
+        // when
+        IntegrationContextImpl copy = new IntegrationContextImpl(original);
+
+        // then - no NPE and variables are empty maps
+        assertThat(copy.getInBoundVariables()).isEmpty();
+        assertThat(copy.getOutBoundVariables()).isEmpty();
+        assertThat(copy.getProcessInstanceId()).isEqualTo("proc123");
+    }
+
+    @Test
+    void should_copyOnlyNonNullVariables_when_copyConstructorReceivesOneNullVariableMap() {
+        // given an IntegrationContext that returns null only for outbound variables
+        IntegrationContextImpl original = new IntegrationContextImpl() {
+            @Override
+            public Map<String, Object> getOutBoundVariables() {
+                return null;
+            }
+        };
+        original.addInBoundVariable("inKey", "inValue");
+
+        // when
+        IntegrationContextImpl copy = new IntegrationContextImpl(original);
+
+        // then
+        assertThat(copy.getInBoundVariables()).containsEntry("inKey", "inValue");
+        assertThat(copy.getOutBoundVariables()).isEmpty();
+    }
+
+    @Test
     void should_cleanInboundVariables_when_clearInBoundVariablesIsCalled() {
         IntegrationContextImpl integrationContext = new IntegrationContextImpl();
         integrationContext.addInBoundVariable("key1", "value1");

@@ -42,6 +42,9 @@ public class JsonObjectVariableType extends VariableType {
 
     @Override
     public void validate(Object var, List<ActivitiException> errors) {
+        if (var == null) {
+            return;
+        }
         //we can consider var json so long as it can be stored as json
         //this doesn't guarantee a string body to be valid json as jackson will wrap a string to make it valid
         //also doesn't guarantee it will be persisted as json

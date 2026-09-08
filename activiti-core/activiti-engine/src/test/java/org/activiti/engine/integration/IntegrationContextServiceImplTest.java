@@ -21,6 +21,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import org.activiti.engine.impl.IntegrationContextQueryImpl;
 import org.activiti.engine.impl.cmd.integration.DeleteIntegrationContextCmd;
 import org.activiti.engine.impl.cmd.integration.RetrieveIntegrationContextsCmd;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
@@ -32,7 +33,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class IntegrationContextServiceImplTest {
+class IntegrationContextServiceImplTest {
 
     @InjectMocks
     private IntegrationContextServiceImpl integrationContextService;
@@ -41,7 +42,7 @@ public class IntegrationContextServiceImplTest {
     private CommandExecutor commandExecutor;
 
     @Test
-    public void findByIdShouldExecuteRetrieveIntegrationContextCmd() {
+    void findByIdShouldExecuteRetrieveIntegrationContextCmd() {
         //given
         IntegrationContextEntity entity = mock(IntegrationContextEntity.class);
         given(commandExecutor.execute(any(RetrieveIntegrationContextsCmd.class))).willReturn(entity);
@@ -54,7 +55,7 @@ public class IntegrationContextServiceImplTest {
     }
 
     @Test
-    public void deleteIntegrationContextShouldExecuteDeleteIntegrationContextCommand() {
+    void deleteIntegrationContextShouldExecuteDeleteIntegrationContextCommand() {
         //given
         IntegrationContextEntity entity = mock(IntegrationContextEntity.class);
 
@@ -63,5 +64,12 @@ public class IntegrationContextServiceImplTest {
 
         //then
         verify(commandExecutor).execute(any(DeleteIntegrationContextCmd.class));
+    }
+
+    @Test
+    void should_returnIntegrationContextQueryImpl_when_createIntegrationContextQueryIsCalled() {
+        var query = integrationContextService.createIntegrationContextQuery();
+
+        assertThat(query).isInstanceOf(IntegrationContextQueryImpl.class);
     }
 }

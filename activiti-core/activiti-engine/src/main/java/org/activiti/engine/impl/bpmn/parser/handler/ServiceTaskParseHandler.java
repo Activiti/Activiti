@@ -51,9 +51,15 @@ public class ServiceTaskParseHandler extends AbstractActivityBpmnParseHandler<Se
             StringUtils.isNotEmpty(serviceTask.getOperationRef())
         ) {
             createWebServiceActivityBehavior(bpmnParse, serviceTask);
+        } else if (ServiceTask.SET_VARIABLES_TASK_IMPLEMENTATION.equalsIgnoreCase(serviceTask.getImplementation())) {
+            createSetVariablesTaskActivityBehavior(bpmnParse, serviceTask);
         } else {
             createDefaultServiceTaskActivityBehavior(bpmnParse, serviceTask);
         }
+    }
+
+    protected void createSetVariablesTaskActivityBehavior(BpmnParse bpmnParse, ServiceTask serviceTask) {
+        serviceTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createSetVariablesTaskBehavior(serviceTask));
     }
 
     protected void createActivityBehaviorForServiceTaskType(BpmnParse bpmnParse, ServiceTask serviceTask) {

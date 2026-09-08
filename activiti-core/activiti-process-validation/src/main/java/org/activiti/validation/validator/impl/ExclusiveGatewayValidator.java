@@ -17,6 +17,7 @@ package org.activiti.validation.validator.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.ExclusiveGateway;
 import org.activiti.bpmn.model.Process;
@@ -30,6 +31,24 @@ import org.apache.commons.lang3.StringUtils;
 
  */
 public class ExclusiveGatewayValidator extends ProcessLevelValidator {
+
+    public static final String ERROR_ON_MISSING_CONDITION_VALIDATION_CONFIG =
+        "exclusiveGatewayValidator.errorOnMissingCondition";
+
+    private final Boolean errorOnMissingConditionValidationConfig;
+
+    public ExclusiveGatewayValidator() {
+        this(Map.of());
+    }
+
+    public ExclusiveGatewayValidator(Map<String, Object> validationConfiguration) {
+        Object value = validationConfiguration.getOrDefault(ERROR_ON_MISSING_CONDITION_VALIDATION_CONFIG, false);
+        switch (value) {
+            case Boolean b -> errorOnMissingConditionValidationConfig = b;
+            case String s -> errorOnMissingConditionValidationConfig = Boolean.parseBoolean(s);
+            default -> errorOnMissingConditionValidationConfig = null;
+        }
+    }
 
     @Override
     protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
@@ -79,7 +98,16 @@ public class ExclusiveGatewayValidator extends ProcessLevelValidator {
             }
 
             if (!flowsWithoutCondition.isEmpty()) {
-                addWarning(errors, Problems.EXCLUSIVE_GATEWAY_SEQ_FLOW_WITHOUT_CONDITIONS, process, exclusiveGateway);
+                if (Boolean.TRUE.equals(errorOnMissingConditionValidationConfig)) {
+                    addError(errors, Problems.EXCLUSIVE_GATEWAY_SEQ_FLOW_WITHOUT_CONDITIONS, process, exclusiveGateway);
+                } else {
+                    addWarning(
+                        errors,
+                        Problems.EXCLUSIVE_GATEWAY_SEQ_FLOW_WITHOUT_CONDITIONS,
+                        process,
+                        exclusiveGateway
+                    );
+                }
             }
         }
     }

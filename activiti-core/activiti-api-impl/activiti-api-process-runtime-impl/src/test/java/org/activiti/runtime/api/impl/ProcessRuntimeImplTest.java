@@ -306,7 +306,9 @@ public class ProcessRuntimeImplTest {
         internalProcess.setStartUserId("testuser");
         internalProcess.setAppVersion(1);
         doReturn(internalProcess).when(processQuery).singleResult();
-        when(runtimeService.startCreatedProcessInstance(internalProcess, new HashMap<>())).thenReturn(internalProcess);
+        when(runtimeService.startCreatedProcessInstance(internalProcess, new HashMap<>(), null, null)).thenReturn(
+            internalProcess
+        );
         ProcessInstanceImpl apiProcessInstance = new ProcessInstanceImpl();
         apiProcessInstance.setBusinessKey("business-result");
         apiProcessInstance.setId("999-999");
@@ -321,6 +323,48 @@ public class ProcessRuntimeImplTest {
         //then
         assertThat(createdProcessInstance.getId()).isEqualTo("999-999");
         assertThat(createdProcessInstance.getBusinessKey()).isEqualTo("business-result");
+    }
+
+    @Test
+    void should_startAnAlreadyCreatedProcessInstance_withLinkedProcessInstance_whenCalled() {
+        //given
+        String processInstanceId = "process-instance-id";
+        ProcessInstanceQuery processQuery = mock(ProcessInstanceQuery.class);
+        doReturn(processQuery).when(processQuery).processInstanceId(processInstanceId);
+        doReturn(processQuery).when(runtimeService).createProcessInstanceQuery();
+        ExecutionEntityImpl internalProcess = new ExecutionEntityImpl();
+        internalProcess.setStartUserId("testuser");
+        internalProcess.setAppVersion(1);
+        doReturn(internalProcess).when(processQuery).singleResult();
+        when(
+            runtimeService.startCreatedProcessInstance(
+                internalProcess,
+                new HashMap<>(),
+                "linkedProcessId",
+                "linkedProcessType"
+            )
+        ).thenReturn(internalProcess);
+        ProcessInstanceImpl apiProcessInstance = new ProcessInstanceImpl();
+        apiProcessInstance.setBusinessKey("business-result");
+        apiProcessInstance.setId("999-999");
+        given(processInstanceConverter.from(internalProcess)).willReturn(apiProcessInstance);
+        given(securityPoliciesManager.canWrite(any())).willReturn(true);
+        doReturn("testuser").when(securityManager).getAuthenticatedUserId();
+
+        //when
+        StartProcessPayload payload = new StartProcessPayload();
+        payload.setLinkedProcessInstanceId("linkedProcessId");
+        payload.setLinkedProcessInstanceType("linkedProcessType");
+        ProcessInstance createdProcessInstance = processRuntime.startCreatedProcess(processInstanceId, payload);
+
+        //then
+        assertThat(createdProcessInstance.getId()).isEqualTo("999-999");
+        verify(runtimeService).startCreatedProcessInstance(
+            internalProcess,
+            new HashMap<>(),
+            "linkedProcessId",
+            "linkedProcessType"
+        );
     }
 
     @Test

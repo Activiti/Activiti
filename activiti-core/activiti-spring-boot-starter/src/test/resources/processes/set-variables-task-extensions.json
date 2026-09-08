@@ -1,0 +1,79 @@
+{
+  "id": "setVariablesTaskModel",
+  "name": "setVariablesTask.bpmn",
+  "extensions": {
+    "setVariablesTaskProcess": {
+      "properties": {
+        "first-name-id": {
+          "id": "first-name-id",
+          "name": "firstName",
+          "type": "string",
+          "value": "John"
+        },
+        "last-name-id": {
+          "id": "last-name-id",
+          "name": "lastName",
+          "type": "string",
+          "value": "Doe"
+        },
+        "age-id": {
+          "id": "age-id",
+          "name": "age",
+          "type": "integer",
+          "value": 21
+        },
+        "copied-name-id": {
+          "id": "copied-name-id",
+          "name": "copiedName",
+          "type": "string"
+        },
+        "literal-greeting-id": {
+          "id": "literal-greeting-id",
+          "name": "literalGreeting",
+          "type": "string"
+        },
+        "full-name-id": {
+          "id": "full-name-id",
+          "name": "fullName",
+          "type": "string"
+        },
+        "greeting-msg-id": {
+          "id": "greeting-msg-id",
+          "name": "greetingMsg",
+          "type": "string"
+        },
+        "doubled-age-id": {
+          "id": "doubled-age-id",
+          "name": "doubledAge",
+          "type": "integer"
+        }
+      },
+      "mappings": {
+        "setVarsTask": {
+          "inputs": {
+            "copiedName": {
+              "type": "variable",
+              "value": "firstName"
+            },
+            "literalGreeting": {
+              "type": "value",
+              "value": "hello"
+            },
+            "fullName": {
+              "type": "value",
+              "value": "${firstName} ${lastName}"
+            },
+            "greetingMsg": {
+              "type": "value",
+              "value": "Hello ${firstName}!"
+            },
+            "doubledAge": {
+              "type": "value",
+              "value": "${age * 2}"
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -34,6 +34,7 @@ import org.activiti.spring.process.ProcessExtensionService;
 import org.activiti.spring.process.model.Extension;
 import org.activiti.spring.process.model.VariableDefinition;
 import org.activiti.spring.process.variable.VariableValidationService;
+import org.activiti.spring.process.variable.types.BigDecimalVariableType;
 import org.activiti.spring.process.variable.types.DateVariableType;
 import org.activiti.spring.process.variable.types.JavaObjectVariableType;
 import org.activiti.spring.process.variable.types.JsonObjectVariableType;
@@ -88,6 +89,14 @@ public class ProcessVariablesPayloadValidatorTest {
         variableDefinitionDatetime.setName("mydatetime");
         variableDefinitionDatetime.setType("datetime");
 
+        VariableDefinition variableDefinitionBigdecimal = new VariableDefinition();
+        variableDefinitionBigdecimal.setName("amount");
+        variableDefinitionBigdecimal.setType("bigdecimal");
+
+        VariableDefinition variableDefinitionJson = new VariableDefinition();
+        variableDefinitionJson.setName("metadata");
+        variableDefinitionJson.setType("json");
+
         variableValidationService = new VariableValidationService(
             mapOfClass(
                 VariableType.class,
@@ -97,6 +106,8 @@ public class ProcessVariablesPayloadValidatorTest {
                 new JavaObjectVariableType(String.class),
                 "integer",
                 new JavaObjectVariableType(Integer.class),
+                "bigdecimal",
+                new BigDecimalVariableType(),
                 "json",
                 new JsonObjectVariableType(jsonMapper),
                 "file",
@@ -128,7 +139,11 @@ public class ProcessVariablesPayloadValidatorTest {
                 "mydate",
                 variableDefinitionDate,
                 "mydatetime",
-                variableDefinitionDatetime
+                variableDefinitionDatetime,
+                "amount",
+                variableDefinitionBigdecimal,
+                "metadata",
+                variableDefinitionJson
             )
         );
         given(processExtensionService.getExtensionsForId(any())).willReturn(extension);
@@ -301,6 +316,35 @@ public class ProcessVariablesPayloadValidatorTest {
             processVariablesValidator.checkPayloadVariables(
                 ProcessPayloadBuilder.setVariables()
                     .withVariables(map("name", null, "age", null, "subscribe", null))
+                    .build(),
+                "10"
+            )
+        );
+    }
+
+    @Test
+    public void should_success_when_startProcessPayloadHasNullValuesForAllTypes() {
+        assertDoesNotThrow(() ->
+            processVariablesValidator.checkStartProcessPayloadVariables(
+                ProcessPayloadBuilder.start()
+                    .withVariables(
+                        map(
+                            "name",
+                            null,
+                            "age",
+                            null,
+                            "subscribe",
+                            null,
+                            "mydate",
+                            null,
+                            "mydatetime",
+                            null,
+                            "amount",
+                            null,
+                            "metadata",
+                            null
+                        )
+                    )
                     .build(),
                 "10"
             )

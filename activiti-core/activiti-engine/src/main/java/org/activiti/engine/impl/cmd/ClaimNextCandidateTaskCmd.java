@@ -1,0 +1,122 @@
+/*
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.activiti.engine.impl.cmd;
+
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.activiti.engine.task.Task;
+
+/**
+ * Finds and claims the next candidate task for a user.
+ */
+public class ClaimNextCandidateTaskCmd implements Command<String>, Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    private final String userId;
+    private final List<String> userGroups;
+
+    public ClaimNextCandidateTaskCmd(String userId, List<String> userGroups) {
+        this.userId = userId;
+        this.userGroups = userGroups == null ? Collections.emptyList() : userGroups;
+    }
+
+    @Override
+    public String execute(CommandContext commandContext) {
+        failForOracleDb(commandContext);
+
+        if (userId == null || userId.isEmpty()) {
+            throw new ActivitiIllegalArgumentException("User id is null or empty");
+        }
+
+        String claimToken = UUID.randomUUID().toString();
+
+        boolean taskClaimed = claimNextTask(commandContext, claimToken);
+        if (!taskClaimed) return null;
+
+        TaskEntity task = executeClaimTaskPostProcessing(commandContext, claimToken);
+        return task.getId();
+    }
+
+    /*
+     * Oracle is intentionally not supported for this command.
+     *
+     * This claim flow relies on selecting one candidate row and applying pessimistic locking
+     * (`FOR UPDATE SKIP LOCKED`) directly inside the single-statement claim SQL used by this command.
+     * Oracle does not allow that locking clause in the scalar subquery shape used by
+     * `UPDATE ... WHERE ID_ = (subquery)`, and combining it with inline-view/row limiting variants
+     * also leads to Oracle SQL restrictions (for example ORA-00907/ORA-02014 class failures).
+     */
+    private void failForOracleDb(CommandContext commandContext) {
+        String dbType = commandContext.getProcessEngineConfiguration().getDatabaseType();
+
+        if ("oracle".equals(dbType)) {
+            throw new ActivitiException("claimNextUnassignedCandidateTask is not supported for Oracle databases");
+        }
+    }
+
+    private boolean claimNextTask(CommandContext commandContext, String claimToken) {
+        Date claimTime = commandContext.getProcessEngineConfiguration().getClock().getCurrentTime();
+
+        HashMap<String, Object> claimTaskParams = new HashMap<>();
+        claimTaskParams.put("userId", userId);
+        claimTaskParams.put("userGroups", userGroups);
+        claimTaskParams.put("claimTime", claimTime);
+        claimTaskParams.put("claimToken", claimToken);
+
+        int updatedRows = commandContext.getDbSqlSession().update("claimNextUnassignedCandidateTask", claimTaskParams);
+        return updatedRows > 0;
+    }
+
+    private TaskEntity executeClaimTaskPostProcessing(CommandContext commandContext, String claimToken) {
+        HashMap<String, Object> selectTaskIdParams = new HashMap<>();
+        selectTaskIdParams.put("claimToken", claimToken);
+        selectTaskIdParams.put("userId", userId);
+
+        String taskId = (String) commandContext
+            .getDbSqlSession()
+            .selectOne("selectTaskIdByClaimToken", selectTaskIdParams);
+
+        if (taskId == null) {
+            throw new ActivitiObjectNotFoundException(
+                "Could not reload claimed task id with claim token '" + claimToken + "'",
+                Task.class
+            );
+        }
+
+        TaskEntity task = commandContext.getTaskEntityManager().findById(taskId);
+        if (task == null) {
+            throw new ActivitiObjectNotFoundException("Cannot find claimed task with id '" + taskId + "'", Task.class);
+        }
+
+        commandContext.getTaskEntityManager().executeTaskAssigneeChangePostProcessingWithoutTaskUpdate(task);
+        commandContext.getHistoryManager().recordTaskClaim(task);
+
+        return task;
+    }
+}

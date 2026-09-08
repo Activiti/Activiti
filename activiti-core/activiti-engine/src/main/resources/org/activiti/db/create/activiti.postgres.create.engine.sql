@@ -6,10 +6,10 @@ create table ACT_GE_PROPERTY (
 );
 
 insert into ACT_GE_PROPERTY
-values ('schema.version', '9.1.0', 1);
+values ('schema.version', '9.1.1', 1);
 
 insert into ACT_GE_PROPERTY
-values ('schema.history', 'create(9.1.0)', 1);
+values ('schema.history', 'create(9.1.1)', 1);
 
 insert into ACT_GE_PROPERTY
 values ('next.dbid', '1', 1);
@@ -210,6 +210,7 @@ create table ACT_RU_TASK (
     TENANT_ID_ varchar(255) default '',
     FORM_KEY_ varchar(255),
     CLAIM_TIME_ timestamp,
+    CLAIM_TOKEN_ varchar(64),
     APP_VERSION_ integer,
     primary key (ID_)
 );
@@ -294,6 +295,7 @@ create table ACT_RU_INTEGRATION (
 create index ACT_IDX_EXEC_BUSKEY on ACT_RU_EXECUTION(BUSINESS_KEY_);
 create index ACT_IDX_EXE_ROOT on ACT_RU_EXECUTION(ROOT_PROC_INST_ID_);
 create index ACT_IDX_TASK_CREATE on ACT_RU_TASK(CREATE_TIME_);
+create index ACT_IDX_TASK_CLAIM_TOKEN on ACT_RU_TASK(CLAIM_TOKEN_);
 create index ACT_IDX_IDENT_LNK_USER on ACT_RU_IDENTITYLINK(USER_ID_);
 create index ACT_IDX_IDENT_LNK_GROUP on ACT_RU_IDENTITYLINK(GROUP_ID_);
 -- this "INCLUDE" statement only works for Postgresql 11+
