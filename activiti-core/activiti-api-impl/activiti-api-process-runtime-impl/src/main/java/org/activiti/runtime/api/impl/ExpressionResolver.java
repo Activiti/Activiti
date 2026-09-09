@@ -23,12 +23,11 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.interceptor.DelegateInterceptor;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.node.ObjectNode;
@@ -36,7 +35,6 @@ import tools.jackson.databind.node.ObjectNode;
 public class ExpressionResolver {
 
     private static final TypeReference<Map<String, ?>> MAP_STRING_OBJECT_TYPE = new TypeReference<Map<String, ?>>() {};
-    private final Logger logger = LoggerFactory.getLogger(ExpressionResolver.class);
 
     private static final String EXPRESSION_PATTERN_STRING = "([\\$]\\{([^\\}]*)\\})";
     private static final Pattern EXPRESSION_PATTERN = Pattern.compile(EXPRESSION_PATTERN_STRING);
@@ -108,8 +106,7 @@ public class ExpressionResolver {
                 delegateInterceptor
             );
         } catch (final Exception e) {
-            logger.warn("Unable to resolve expression in variables", e);
-            return null;
+            throw new ActivitiIllegalArgumentException("Unable to resolve expression in variables", e);
         }
     }
 
@@ -126,8 +123,7 @@ public class ExpressionResolver {
                 final Object value = expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor);
                 matcher.appendReplacement(sb, Objects.toString(value));
             } catch (final Exception e) {
-                logger.warn("Unable to resolve expression in variables", e);
-                matcher.appendReplacement(sb, "");
+                throw new ActivitiIllegalArgumentException("Unable to resolve expression in variables", e);
             }
         }
         matcher.appendTail(sb);

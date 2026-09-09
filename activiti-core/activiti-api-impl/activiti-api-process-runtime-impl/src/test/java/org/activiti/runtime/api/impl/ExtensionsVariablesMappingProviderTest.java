@@ -925,18 +925,18 @@ public class ExtensionsVariablesMappingProviderTest {
     }
 
     @Test
-    public void should_returnResolveToNull_when_resolvingVariablesExpressionInTask() throws Exception {
+    public void should_throwActivitiIllegalArgumentException_when_resolvingVariablesExpressionInTask()
+        throws Exception {
         DelegateExecution execution = initExpressionResolverTest(
             "expression-in-mapping-output-value.json",
             "Process_expressionMappingOutputValue"
         );
 
-        Map<String, Object> outputVariables = variablesMappingProvider.calculateOutPutVariables(
-            buildMappingExecutionContext(execution),
-            null
-        );
-
-        assertThat(outputVariables).containsOnlyKeys("process_variable_4").containsValue(null);
+        assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+            .isThrownBy(() ->
+                variablesMappingProvider.calculateOutPutVariables(buildMappingExecutionContext(execution), null)
+            )
+            .withMessageContaining("Unable to resolve expression in variables");
     }
 
     @Test
