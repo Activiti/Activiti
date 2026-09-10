@@ -19,10 +19,6 @@ import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -37,7 +33,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.model.payloads.CreateProcessInstancePayload;
@@ -68,7 +63,6 @@ import org.activiti.runtime.api.model.impl.APIDeploymentConverter;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Answers;
@@ -301,7 +295,6 @@ public class ProcessRuntimeImplTest {
         verify(processInstanceBuilder).name(createPayload.getName());
     }
 
-    @Disabled("Mock RuntimeService doesn't support 4-parameter startCreatedProcessInstance method")
     @Test
     void should_startAnAlreadyCreatedProcessInstance_whenCalled() {
         //given
@@ -313,9 +306,9 @@ public class ProcessRuntimeImplTest {
         internalProcess.setStartUserId("testuser");
         internalProcess.setAppVersion(1);
         doReturn(internalProcess).when(processQuery).singleResult();
-        doReturn(internalProcess)
-            .when(runtimeService)
-            .startCreatedProcessInstance(any(), any());
+        when(runtimeService.startCreatedProcessInstance(internalProcess, new HashMap<>(), null, null)).thenReturn(
+            internalProcess
+        );
         ProcessInstanceImpl apiProcessInstance = new ProcessInstanceImpl();
         apiProcessInstance.setBusinessKey("business-result");
         apiProcessInstance.setId("999-999");
@@ -332,7 +325,6 @@ public class ProcessRuntimeImplTest {
         assertThat(createdProcessInstance.getBusinessKey()).isEqualTo("business-result");
     }
 
-    @Disabled("Mock RuntimeService doesn't support 4-parameter startCreatedProcessInstance method")
     @Test
     void should_startAnAlreadyCreatedProcessInstance_withLinkedProcessInstance_whenCalled() {
         //given
@@ -344,9 +336,14 @@ public class ProcessRuntimeImplTest {
         internalProcess.setStartUserId("testuser");
         internalProcess.setAppVersion(1);
         doReturn(internalProcess).when(processQuery).singleResult();
-        doReturn(internalProcess)
-            .when(runtimeService)
-            .startCreatedProcessInstance(any(), any());
+        when(
+            runtimeService.startCreatedProcessInstance(
+                internalProcess,
+                new HashMap<>(),
+                "linkedProcessId",
+                "linkedProcessType"
+            )
+        ).thenReturn(internalProcess);
         ProcessInstanceImpl apiProcessInstance = new ProcessInstanceImpl();
         apiProcessInstance.setBusinessKey("business-result");
         apiProcessInstance.setId("999-999");
@@ -362,7 +359,12 @@ public class ProcessRuntimeImplTest {
 
         //then
         assertThat(createdProcessInstance.getId()).isEqualTo("999-999");
-        verify(runtimeService).startCreatedProcessInstance(any(), any());
+        verify(runtimeService).startCreatedProcessInstance(
+            internalProcess,
+            new HashMap<>(),
+            "linkedProcessId",
+            "linkedProcessType"
+        );
     }
 
     @Test

@@ -24,7 +24,6 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.runtime.Job;
 import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -56,35 +55,16 @@ class SetVariablesTaskAsyncFailureTest {
         processCleanUpUtil.cleanUpWithAdmin();
     }
 
-    @Disabled("Investigating async job creation with invalid expressions - job not found in query")
     @Test
     void should_propagateExpressionErrors_fromAsyncSetVariablesTask() {
-        // Start a process with async set-variables task and invalid expression
         ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(
             SET_VARIABLES_TASK_INVALID_PROCESS
         );
 
-        // An async task should create a job that executes later
         Job job = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
-        
-        // With the ExpressionResolver changes to throw ActivitiIllegalArgumentException on invalid expressions,
-        // we need to verify that the error is properly handled as a job failure.
-        // The expression "${firstName + }" is invalid and should cause the job to fail.
-        if (job != null) {
-            // Try to execute the job - this should trigger the expression error
-            try {
-                managementService.executeJob(job.getId());
-            } catch (Exception e) {
-                // Exception is expected when expression is invalid
-            }
-            
-            // The key validation: after job execution attempt, active activities should still contain setVarsTask
-            // because the async job should fail and leave the task in an error state for retry/handling
-            java.util.List<String> activeActivities = runtimeService.getActiveActivityIds(processInstance.getId());
-            assertThat(activeActivities).as("Task should remain active after job execution failure").contains("setVarsTask");
-        } else {
-            // Job should exist for async tasks
-            assertThat(job).as("Async set-variables task should create a job for deferred execution").isNotNull();
-        }
+        assertThat(job).isNotNull();
+
+        assertThatExceptionOfType(Exception.class).isThrownBy(() -> managementService.executeJob(job.getId()));
+        assertThat(runtimeService.getActiveActivityIds(processInstance.getId())).contains("setVarsTask");
     }
 }

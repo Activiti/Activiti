@@ -15,6 +15,7 @@
  */
 package org.activiti.runtime.api.impl;
 
+import jakarta.el.ELException;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,6 +29,8 @@ import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.interceptor.DelegateInterceptor;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.node.ObjectNode;
@@ -35,10 +38,13 @@ import tools.jackson.databind.node.ObjectNode;
 public class ExpressionResolver {
 
     private static final TypeReference<Map<String, ?>> MAP_STRING_OBJECT_TYPE = new TypeReference<Map<String, ?>>() {};
+    private final Logger logger = LoggerFactory.getLogger(ExpressionResolver.class);
 
     private static final String EXPRESSION_PATTERN_STRING = "([\\$]\\{([^\\}]*)\\})";
     private static final Pattern EXPRESSION_PATTERN = Pattern.compile(EXPRESSION_PATTERN_STRING);
     private static final int EXPRESSION_KEY_INDEX = 1;
+    private static final String INVALID_EXPRESSION_MESSAGE = "Unable to parse expression in variables";
+    private static final String UNRESOLVED_EXPRESSION_MESSAGE = "Unable to resolve expression in variables";
 
     private JsonMapper mapper;
     private final DelegateInterceptor delegateInterceptor;
@@ -105,8 +111,11 @@ public class ExpressionResolver {
                 expressionManager,
                 delegateInterceptor
             );
+        } catch (final ELException elException) {
+            throw new ActivitiIllegalArgumentException(INVALID_EXPRESSION_MESSAGE, elException);
         } catch (final Exception e) {
-            throw new ActivitiIllegalArgumentException("Unable to resolve expression in variables", e);
+            logger.warn(UNRESOLVED_EXPRESSION_MESSAGE, e);
+            return null;
         }
     }
 
@@ -118,12 +127,15 @@ public class ExpressionResolver {
         final StringBuffer sb = new StringBuffer();
         while (matcher.find()) {
             final String expressionKey = matcher.group(EXPRESSION_KEY_INDEX);
-            final Expression expression = expressionManager.createExpression(expressionKey);
             try {
+                final Expression expression = expressionManager.createExpression(expressionKey);
                 final Object value = expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor);
                 matcher.appendReplacement(sb, Objects.toString(value));
+            } catch (final ELException elException) {
+                throw new ActivitiIllegalArgumentException(INVALID_EXPRESSION_MESSAGE, elException);
             } catch (final Exception e) {
-                throw new ActivitiIllegalArgumentException("Unable to resolve expression in variables", e);
+                logger.warn(UNRESOLVED_EXPRESSION_MESSAGE, e);
+                matcher.appendReplacement(sb, "");
             }
         }
         matcher.appendTail(sb);

@@ -19,11 +19,13 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonMap;
 import static org.activiti.engine.impl.util.CollectionUtil.map;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
+import jakarta.el.ELException;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.activiti.engine.ActivitiException;
@@ -269,32 +271,36 @@ public class ExpressionResolverTest {
 
     @Test
     public void resolveExpressionsMap_should_removeExpressionContent_when_notAbleToResolveExpressionInString() {
+        //given
         Expression expression = buildExpression("${nonResolvableExpression}");
         given(expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor)).willThrow(
             new ActivitiException("Invalid property")
         );
 
-        assertThatExceptionOfType(ActivitiIllegalArgumentException.class).isThrownBy(() ->
-            expressionResolver.resolveExpressionsMap(
-                expressionEvaluator,
-                singletonMap("result", "Welcome to ${nonResolvableExpression}!")
-            )
+        //when
+        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
+            expressionEvaluator,
+            singletonMap("result", "Welcome to ${nonResolvableExpression}!")
         );
+        //then
+        assertThat(result).containsEntry("result", "Welcome to !");
     }
 
     @Test
     public void resolveExpressionsMap_should_removeExpressionContent_when_notAbleToResolveIt() {
+        //given
         Expression expression = buildExpression("${nonResolvableExpression}");
         given(expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor)).willThrow(
             new ActivitiException("Invalid property")
         );
 
-        assertThatExceptionOfType(ActivitiIllegalArgumentException.class).isThrownBy(() ->
-            expressionResolver.resolveExpressionsMap(
-                expressionEvaluator,
-                singletonMap("result", "${nonResolvableExpression}")
-            )
+        //when
+        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
+            expressionEvaluator,
+            singletonMap("result", "${nonResolvableExpression}")
         );
+        //then
+        assertThat(result).containsEntry("result", null);
     }
 
     @Test
@@ -324,6 +330,7 @@ public class ExpressionResolverTest {
     @Test
     public void resolveExpressionsMap_should_removeExpressionContent_when_ObjecNodeContainsAnExpressionUnableToBeResolved()
         throws IOException {
+        //given
         Expression nameExpression = buildExpression("${name}");
         given(expressionEvaluator.evaluate(nameExpression, expressionManager, delegateInterceptor)).willThrow(
             new ActivitiException("Invalid property")
@@ -331,9 +338,13 @@ public class ExpressionResolverTest {
 
         JsonNode node = mapper.readTree("{\"name\":\"${name}\",\"age\": 30}");
 
-        assertThatExceptionOfType(ActivitiIllegalArgumentException.class).isThrownBy(() ->
-            expressionResolver.resolveExpressionsMap(expressionEvaluator, singletonMap("node", node))
+        //when
+        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
+            expressionEvaluator,
+            singletonMap("node", node)
         );
+        //then
+        assertThat(result).containsEntry("node", map("name", null, "age", 30));
     }
 
     @Test
@@ -355,17 +366,19 @@ public class ExpressionResolverTest {
 
     @Test
     public void resolveExpressionsMap_should_removeExpressionContent_when_ListContainsAnExpressionUnableToBeResolved() {
+        //given
         Expression placeExpression = buildExpression("${place}");
         given(expressionEvaluator.evaluate(placeExpression, expressionManager, delegateInterceptor)).willThrow(
             new ActivitiException("Invalid property")
         );
 
-        assertThatExceptionOfType(ActivitiIllegalArgumentException.class).isThrownBy(() ->
-            expressionResolver.resolveExpressionsMap(
-                expressionEvaluator,
-                singletonMap("places", asList("${place}", "Paris", "Berlin"))
-            )
+        //when
+        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
+            expressionEvaluator,
+            singletonMap("places", asList("${place}", "Paris", "Berlin"))
         );
+        //then
+        assertThat(result).containsEntry("places", asList(null, "Paris", "Berlin"));
     }
 
     @Test
@@ -391,6 +404,8 @@ public class ExpressionResolverTest {
 
     @Test
     public void resolveExpressionsMap_should_removeExpressionContent_when_MapContainsAnExpressionUnableToBeResolved() {
+        //given
+
         Expression playerExpression = buildExpression("${player}");
         given(expressionEvaluator.evaluate(playerExpression, expressionManager, delegateInterceptor)).willThrow(
             new ActivitiException("Invalid property")
@@ -398,9 +413,58 @@ public class ExpressionResolverTest {
 
         Map<String, Object> players = map("Red", "John", "Green", "Peter", "Blue", "Mary", "Yellow", "${player}");
 
-        assertThatExceptionOfType(ActivitiIllegalArgumentException.class).isThrownBy(() ->
-            expressionResolver.resolveExpressionsMap(expressionEvaluator, singletonMap("players", players))
+        //when
+        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
+            expressionEvaluator,
+            singletonMap("players", players)
         );
+
+        Map<String, Object> expectedResult = new HashMap<>(players);
+        expectedResult.put("Yellow", null);
+
+        //then
+        assertThat(result).containsEntry("players", expectedResult);
+    }
+
+    @Test
+    public void resolveExpressionsMap_should_throwActivitiIllegalArgumentException_when_expressionIsNotParsable() {
+        //given
+        given(expressionManager.createExpression("${invalid +}")).willThrow(
+            new ELException("Error parsing '${invalid +}'")
+        );
+
+        //when
+        Throwable thrown = catchThrowable(() ->
+            expressionResolver.resolveExpressionsMap(expressionEvaluator, singletonMap("result", "${invalid +}"))
+        );
+
+        //then
+        assertThat(thrown)
+            .isInstanceOf(ActivitiIllegalArgumentException.class)
+            .hasMessage("Unable to parse expression in variables")
+            .hasCauseInstanceOf(ELException.class);
+    }
+
+    @Test
+    public void resolveExpressionsMap_should_throwActivitiIllegalArgumentException_when_expressionInStringIsNotParsable() {
+        //given
+        given(expressionManager.createExpression("${invalid +}")).willThrow(
+            new ELException("Error parsing '${invalid +}'")
+        );
+
+        //when
+        Throwable thrown = catchThrowable(() ->
+            expressionResolver.resolveExpressionsMap(
+                expressionEvaluator,
+                singletonMap("result", "Welcome to ${invalid +}!")
+            )
+        );
+
+        //then
+        assertThat(thrown)
+            .isInstanceOf(ActivitiIllegalArgumentException.class)
+            .hasMessage("Unable to parse expression in variables")
+            .hasCauseInstanceOf(ELException.class);
     }
 
     private Expression buildExpression(String expressionContent) {
