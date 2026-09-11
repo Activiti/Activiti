@@ -19,11 +19,7 @@ import org.activiti.engine.impl.cmd.SuspendProcessDefinitionCmd;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
-import org.activiti.engine.impl.util.json.JSONObject;
 
-/**
-
- */
 public class TimerSuspendProcessDefinitionHandler extends TimerChangeProcessDefinitionSuspensionStateJobHandler {
 
     public static final String TYPE = "suspend-processdefinition";
@@ -33,9 +29,8 @@ public class TimerSuspendProcessDefinitionHandler extends TimerChangeProcessDefi
     }
 
     public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
-        JSONObject cfgJson = new JSONObject(configuration);
         String processDefinitionId = job.getProcessDefinitionId();
-        boolean suspendProcessInstances = getIncludeProcessInstances(cfgJson);
+        boolean suspendProcessInstances = getIncludeProcessInstances(configuration);
 
         SuspendProcessDefinitionCmd suspendProcessDefinitionCmd = new SuspendProcessDefinitionCmd(
             processDefinitionId,
