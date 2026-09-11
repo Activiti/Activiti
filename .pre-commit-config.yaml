@@ -23,8 +23,8 @@ repos:
           - markdown
         exclude: ^\.github/workflows/.*\.(lock\.yml|md)$
         additional_dependencies:
-          - prettier@3.6.2
-          - prettier-plugin-java@2.7.4
+          - prettier@3.9.6
+          - prettier-plugin-java@2.10.3
   - repo: https://github.com/sirosen/check-jsonschema
     rev: 12e63946db2c5cfcc9030fac21c3883ba88c6ed8 # frozen: 0.38.0
     hooks:
