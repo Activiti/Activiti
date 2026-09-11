@@ -59,6 +59,8 @@ public class ServiceTaskParseHandler extends AbstractActivityBpmnParseHandler<Se
     }
 
     protected void createSetVariablesTaskActivityBehavior(BpmnParse bpmnParse, ServiceTask serviceTask) {
+        serviceTask.setAsynchronous(true);
+        serviceTask.setExclusive(true);
         serviceTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createSetVariablesTaskBehavior(serviceTask));
     }
 
