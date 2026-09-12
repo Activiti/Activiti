@@ -19,14 +19,17 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonMap;
 import static org.activiti.engine.impl.util.CollectionUtil.map;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
+import jakarta.el.ELException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.interceptor.DelegateInterceptor;
@@ -421,6 +424,47 @@ public class ExpressionResolverTest {
 
         //then
         assertThat(result).containsEntry("players", expectedResult);
+    }
+
+    @Test
+    public void resolveExpressionsMap_should_throwActivitiIllegalArgumentException_when_expressionIsNotParsable() {
+        //given
+        given(expressionManager.createExpression("${invalid +}")).willThrow(
+            new ELException("Error parsing '${invalid +}'")
+        );
+
+        //when
+        Throwable thrown = catchThrowable(() ->
+            expressionResolver.resolveExpressionsMap(expressionEvaluator, singletonMap("result", "${invalid +}"))
+        );
+
+        //then
+        assertThat(thrown)
+            .isInstanceOf(ActivitiIllegalArgumentException.class)
+            .hasMessage("Unable to parse expression in variables")
+            .hasCauseInstanceOf(ELException.class);
+    }
+
+    @Test
+    public void resolveExpressionsMap_should_throwActivitiIllegalArgumentException_when_expressionInStringIsNotParsable() {
+        //given
+        given(expressionManager.createExpression("${invalid +}")).willThrow(
+            new ELException("Error parsing '${invalid +}'")
+        );
+
+        //when
+        Throwable thrown = catchThrowable(() ->
+            expressionResolver.resolveExpressionsMap(
+                expressionEvaluator,
+                singletonMap("result", "Welcome to ${invalid +}!")
+            )
+        );
+
+        //then
+        assertThat(thrown)
+            .isInstanceOf(ActivitiIllegalArgumentException.class)
+            .hasMessage("Unable to parse expression in variables")
+            .hasCauseInstanceOf(ELException.class);
     }
 
     private Expression buildExpression(String expressionContent) {
