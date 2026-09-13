@@ -1,0 +1,30 @@
+name: Cleanup on PR closed
+
+on:
+  pull_request_target:
+    types:
+      - closed
+
+jobs:
+  cleanup-gh-cache:
+    permissions:
+      actions: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: Alfresco/alfresco-build-tools/.github/actions/gh-cache-cleanup-on-merge@567a9393acca033008ce34eafcb200469e4ea2f5 # v18.27.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  cleanup-preview-prs:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Close downstream preview PRs for this source PR only
+        uses: ./.github/actions/close-orphaned-preview-prs
+        with:
+          source-pr-number: ${{ github.event.pull_request.number }}
+          source-pr-state: ${{ github.event.pull_request.merged == true && 'MERGED' || 'CLOSED' }}
+          github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
