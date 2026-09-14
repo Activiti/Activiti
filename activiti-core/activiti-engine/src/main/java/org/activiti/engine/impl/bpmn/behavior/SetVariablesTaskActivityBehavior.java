@@ -17,6 +17,9 @@ package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.Map;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Behavior of the built-in "set variables" service task
@@ -27,10 +30,18 @@ import org.activiti.engine.delegate.DelegateExecution;
  * configures the task as asynchronous during parsing to create a transaction boundary before the
  * variable update, while still performing the same in-memory variable calculation and assignment
  * logic.</p>
+ *
+ * <p>If an error occurs during variable calculation, it is caught and logged. An internal variable
+ * is set to track the error, which the SetVariablesTaskErrorEventListener will detect and use to
+ * publish a SET_VARIABLES_TASK_ERROR_RECEIVED event to the query service. The execution does
+ * not proceed past the task (i.e., leave() is not called), allowing proper error tracking without
+ * rolling back the transaction.</p>
  */
 public class SetVariablesTaskActivityBehavior extends AbstractBpmnActivityBehavior {
 
     private static final long serialVersionUID = 1L;
+    private static final Logger logger = LoggerFactory.getLogger(SetVariablesTaskActivityBehavior.class);
+    private static final String ERROR_VARIABLE_NAME = "_setVariablesTaskError";
 
     private final VariablesCalculator variablesCalculator;
 
@@ -40,10 +51,23 @@ public class SetVariablesTaskActivityBehavior extends AbstractBpmnActivityBehavi
 
     @Override
     public void execute(DelegateExecution execution) {
-        Map<String, Object> variables = variablesCalculator.calculateInputVariables(execution);
-        if (variables != null && !variables.isEmpty()) {
-            execution.setVariables(variables);
+        try {
+            Map<String, Object> variables = variablesCalculator.calculateInputVariables(execution);
+            if (variables != null && !variables.isEmpty()) {
+                execution.setVariables(variables);
+            }
+            leave(execution);
+        } catch (Exception e) {
+            logger.error(
+                "Error calculating variables for SetVariablesTask in execution {}. "
+                    + "The execution will remain in the current activity state for manual intervention or event processing.",
+                execution.getId(),
+                e
+            );
+
+            if (execution instanceof ExecutionEntity) {
+                ((ExecutionEntity) execution).setVariable(ERROR_VARIABLE_NAME, e.getMessage());
+            }
         }
-        leave(execution);
     }
 }
