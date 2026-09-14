@@ -18,6 +18,7 @@ package org.activiti.engine.impl.bpmn.behavior;
 import java.util.Map;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,9 +32,9 @@ import org.slf4j.LoggerFactory;
  * variable update, while still performing the same in-memory variable calculation and assignment
  * logic.</p>
  *
- * <p>If an error occurs during variable calculation, it is caught and an INTEGRATION_ERROR_RECEIVED
- * event is published to notify the query service. The execution does not proceed past the task,
- * allowing proper error tracking without rolling back the transaction.</p>
+ * <p>If an error occurs during variable calculation, it is caught and the task is marked as failed.
+ * The process instance remains running but the activity is not left. Runtime bundle will detect
+ * the failure through execution state and publish an integration error event to the query service.</p>
  */
 public class SetVariablesTaskActivityBehavior extends AbstractBpmnActivityBehavior {
 
@@ -57,64 +58,27 @@ public class SetVariablesTaskActivityBehavior extends AbstractBpmnActivityBehavi
         } catch (Exception e) {
             logger.error(
                 "Error calculating variables for SetVariablesTask in execution {}. " +
-                "Publishing INTEGRATION_ERROR_RECEIVED event for query service.",
+                "Marking execution as failed without rolling back transaction.",
                 execution.getId(),
                 e
             );
-            publishIntegrationErrorEvent(execution, e);
+            handleError(execution, e);
         }
     }
 
-    private void publishIntegrationErrorEvent(DelegateExecution execution, Exception error) {
+    private void handleError(DelegateExecution execution, Exception error) {
         try {
-            var eventPublisher = Context.getProcessEngineConfiguration().getEventPublisher();
-            if (eventPublisher != null) {
-                var integrationErrorEvent = createIntegrationErrorEvent(execution, error);
-                if (integrationErrorEvent != null) {
-                    eventPublisher.publishEvent(integrationErrorEvent);
-                }
-            }
-        } catch (Exception e) {
-            logger.warn("Failed to publish integration error event for SetVariablesTask", e);
-        }
-    }
+            // Store error information on execution for runtime bundle to detect
+            execution.setVariable("_SET_VARIABLES_TASK_ERROR", Boolean.TRUE);
+            execution.setVariable("_SET_VARIABLES_TASK_ERROR_MESSAGE", error.getMessage());
+            execution.setVariable("_SET_VARIABLES_TASK_ERROR_CLASS", error.getClass().getName());
 
-    private Object createIntegrationErrorEvent(DelegateExecution execution, Exception error) {
-        try {
-            Class<?> integrationContextImplClass = Class.forName(
-                "org.activiti.api.runtime.model.impl.IntegrationContextImpl"
+            logger.debug(
+                "SetVariablesTask error stored on execution {}. Runtime bundle will publish integration error event.",
+                execution.getId()
             );
-            Class<?> integrationErrorEventImplClass = Class.forName(
-                "org.activiti.cloud.api.process.model.impl.events.CloudIntegrationErrorReceivedEventImpl"
-            );
-
-            Object integrationContext = integrationContextImplClass.getDeclaredConstructor().newInstance();
-            integrationContextImplClass.getMethod("setId", String.class).invoke(integrationContext, execution.getId());
-            integrationContextImplClass
-                .getMethod("setExecutionId", String.class)
-                .invoke(integrationContext, execution.getId());
-            integrationContextImplClass
-                .getMethod("setProcessInstanceId", String.class)
-                .invoke(integrationContext, execution.getProcessInstanceId());
-            integrationContextImplClass
-                .getMethod("setProcessDefinitionId", String.class)
-                .invoke(integrationContext, execution.getProcessDefinitionId());
-
-            Object errorEvent = integrationErrorEventImplClass
-                .getDeclaredConstructor(Object.class, String.class, String.class)
-                .newInstance(integrationContext, error.getClass().getName(), error.getMessage());
-
-            integrationErrorEventImplClass
-                .getMethod("setProcessInstanceId", String.class)
-                .invoke(errorEvent, execution.getProcessInstanceId());
-            integrationErrorEventImplClass
-                .getMethod("setProcessDefinitionId", String.class)
-                .invoke(errorEvent, execution.getProcessDefinitionId());
-
-            return errorEvent;
         } catch (Exception e) {
-            logger.warn("Failed to create integration error event for SetVariablesTask", e);
-            return null;
+            logger.warn("Failed to handle SetVariablesTask error for execution " + execution.getId(), e);
         }
     }
 }
