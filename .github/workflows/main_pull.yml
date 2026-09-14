@@ -65,7 +65,7 @@ jobs:
         if: ${{ needs.pre-checks.outputs.preview == 'true' }}
         run: |
           GITHUB_PR_NUMBER=PR-${{ github.event.pull_request.number }}
-          echo 0.0.1-${GITHUB_PR_NUMBER}-${GITHUB_RUN_NUMBER}-SNAPSHOT > VERSION
+          echo 0.0.1-${GITHUB_PR_NUMBER}-SNAPSHOT > VERSION
 
       - name: Set VERSION env variable
         id: version
@@ -106,7 +106,7 @@ jobs:
       - name: Set preview version
         run: |
           GITHUB_PR_NUMBER=PR-${{ github.event.pull_request.number }}
-          echo 0.0.1-${GITHUB_PR_NUMBER}-${GITHUB_RUN_NUMBER}-SNAPSHOT > VERSION
+          echo 0.0.1-${GITHUB_PR_NUMBER}-SNAPSHOT > VERSION
 
       - name: Set VERSION env variable
         run: |
