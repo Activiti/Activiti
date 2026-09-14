@@ -89,25 +89,26 @@ public class SetVariablesTaskActivityBehavior extends AbstractBpmnActivityBehavi
             );
 
             Object integrationContext = integrationContextImplClass.getDeclaredConstructor().newInstance();
-            integrationContextImplClass.getMethod("setId", String.class)
+            integrationContextImplClass.getMethod("setId", String.class).invoke(integrationContext, execution.getId());
+            integrationContextImplClass
+                .getMethod("setExecutionId", String.class)
                 .invoke(integrationContext, execution.getId());
-            integrationContextImplClass.getMethod("setExecutionId", String.class)
-                .invoke(integrationContext, execution.getId());
-            integrationContextImplClass.getMethod("setProcessInstanceId", String.class)
+            integrationContextImplClass
+                .getMethod("setProcessInstanceId", String.class)
                 .invoke(integrationContext, execution.getProcessInstanceId());
-            integrationContextImplClass.getMethod("setProcessDefinitionId", String.class)
+            integrationContextImplClass
+                .getMethod("setProcessDefinitionId", String.class)
                 .invoke(integrationContext, execution.getProcessDefinitionId());
 
-            Object errorEvent = integrationErrorEventImplClass.getDeclaredConstructor(
-                    Object.class,
-                    String.class,
-                    String.class
-                )
+            Object errorEvent = integrationErrorEventImplClass
+                .getDeclaredConstructor(Object.class, String.class, String.class)
                 .newInstance(integrationContext, error.getClass().getName(), error.getMessage());
 
-            integrationErrorEventImplClass.getMethod("setProcessInstanceId", String.class)
+            integrationErrorEventImplClass
+                .getMethod("setProcessInstanceId", String.class)
                 .invoke(errorEvent, execution.getProcessInstanceId());
-            integrationErrorEventImplClass.getMethod("setProcessDefinitionId", String.class)
+            integrationErrorEventImplClass
+                .getMethod("setProcessDefinitionId", String.class)
                 .invoke(errorEvent, execution.getProcessDefinitionId());
 
             return errorEvent;
