@@ -69,9 +69,7 @@ public class SetVariablesTaskErrorEventListener implements ExecutionListener {
 
     private Object createSetVariablesTaskErrorEvent(DelegateExecution execution, String errorMessage) {
         try {
-            Class<?> setVariablesTaskErrorClass = Class.forName(
-                "org.activiti.api.process.model.SetVariablesTaskError"
-            );
+            Class<?> setVariablesTaskErrorClass = Class.forName("org.activiti.api.process.model.SetVariablesTaskError");
             Class<?> eventImplClass = Class.forName(
                 "org.activiti.api.runtime.event.impl.SetVariablesTaskErrorEventImpl"
             );
@@ -84,11 +82,14 @@ public class SetVariablesTaskErrorEventListener implements ExecutionListener {
                 .getDeclaredConstructor(setVariablesTaskErrorClass)
                 .newInstance(errorEntity);
 
-            eventImplClass.getMethod("setProcessInstanceId", String.class)
+            eventImplClass
+                .getMethod("setProcessInstanceId", String.class)
                 .invoke(errorEvent, execution.getProcessInstanceId());
-            eventImplClass.getMethod("setProcessDefinitionId", String.class)
+            eventImplClass
+                .getMethod("setProcessDefinitionId", String.class)
                 .invoke(errorEvent, execution.getProcessDefinitionId());
-            eventImplClass.getMethod("setBusinessKey", String.class)
+            eventImplClass
+                .getMethod("setBusinessKey", String.class)
                 .invoke(errorEvent, execution.getProcessInstanceBusinessKey());
 
             return errorEvent;

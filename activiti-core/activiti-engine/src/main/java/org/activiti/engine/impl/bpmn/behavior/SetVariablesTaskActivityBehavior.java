@@ -59,8 +59,8 @@ public class SetVariablesTaskActivityBehavior extends AbstractBpmnActivityBehavi
             leave(execution);
         } catch (Exception e) {
             logger.error(
-                "Error calculating variables for SetVariablesTask in execution {}. "
-                    + "The execution will remain in the current activity state for manual intervention or event processing.",
+                "Error calculating variables for SetVariablesTask in execution {}. " +
+                "The execution will remain in the current activity state for manual intervention or event processing.",
                 execution.getId(),
                 e
             );
