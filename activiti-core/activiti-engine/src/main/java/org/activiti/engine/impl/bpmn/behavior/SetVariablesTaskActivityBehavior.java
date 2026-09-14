@@ -82,10 +82,10 @@ public class SetVariablesTaskActivityBehavior extends AbstractBpmnActivityBehavi
     private Object createIntegrationErrorEvent(DelegateExecution execution, Exception error) {
         try {
             Class<?> integrationContextImplClass = Class.forName(
-                "org.activiti.runtime.api.model.impl.IntegrationContextImpl"
+                "org.activiti.api.runtime.model.impl.IntegrationContextImpl"
             );
             Class<?> integrationErrorEventImplClass = Class.forName(
-                "org.activiti.runtime.api.event.impl.IntegrationErrorReceivedEventImpl"
+                "org.activiti.cloud.api.process.model.impl.events.CloudIntegrationErrorReceivedEventImpl"
             );
 
             Object integrationContext = integrationContextImplClass.getDeclaredConstructor().newInstance();
