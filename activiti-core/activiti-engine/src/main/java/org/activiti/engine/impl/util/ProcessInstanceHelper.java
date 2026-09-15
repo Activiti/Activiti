@@ -28,6 +28,8 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.Message;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.Process;
+import org.activiti.bpmn.model.Signal;
+import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.ValuedDataObject;
 import org.activiti.engine.ActivitiException;
@@ -39,6 +41,7 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.ProcessInstanceCreationOptions;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.ExpressionManager;
+import org.activiti.engine.impl.event.EventDefinitionExpressionUtil;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
@@ -329,6 +332,29 @@ public class ProcessInstanceHelper {
                                 correlationKey.ifPresent(subscription::setConfiguration);
 
                                 messageEventSubscriptions.add(subscription);
+                            } else if (eventDefinition instanceof SignalEventDefinition signalEventDefinition) {
+                                BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(
+                                    processInstance.getProcessDefinitionId()
+                                );
+                                Signal signal = EventDefinitionExpressionUtil.determineSignal(
+                                    signalEventDefinition,
+                                    bpmnModel
+                                );
+                                ExecutionEntity signalExecution = commandContext
+                                    .getExecutionEntityManager()
+                                    .createChildExecution(processInstance);
+                                signalExecution.setCurrentFlowElement(startEvent);
+                                signalExecution.setEventScope(true);
+
+                                String signalName = EventDefinitionExpressionUtil.determineSignalName(
+                                    signalEventDefinition,
+                                    bpmnModel,
+                                    signalExecution
+                                );
+
+                                commandContext
+                                    .getEventSubscriptionEntityManager()
+                                    .insertSignalEvent(signalName, signal, signalExecution);
                             }
                         }
                     }
