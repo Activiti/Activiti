@@ -25,7 +25,10 @@ import java.util.List;
 import java.util.Map;
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessInstance;
+import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
+import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.engine.ActivitiException;
+import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,6 +45,7 @@ public class ProcessRuntimeVariableMappingTest {
     private static final String VARIABLE_MAPPING_EXPRESSION_PROCESS = "connectorVarMappingExpression";
     private static final String OUTPUT_MAPPING_EXPRESSION_VARIABLE_PROCESS = "outputMappingExpVar";
     private static final String OUTPUT_MAPPING_EXPRESSION_VALUE_PROCESS = "outputMappingExpValue";
+    private static final String START_OUTPUT_MAPPING_PROCESS = "startOutputMapping";
 
     @Autowired
     private ProcessBaseRuntime processBaseRuntime;
@@ -51,6 +55,12 @@ public class ProcessRuntimeVariableMappingTest {
 
     @Autowired
     private ProcessCleanUpUtil processCleanUpUtil;
+
+    @Autowired
+    private ProcessRuntime processRuntime;
+
+    @Autowired
+    private SecurityUtil securityUtil;
 
     @BeforeEach
     public void setUp() {
@@ -138,5 +148,23 @@ public class ProcessRuntimeVariableMappingTest {
                 tuple("outVar", "Resolved expression: value-set-in-connector"),
                 tuple("outVarFromJsonExpression", "Tower of London")
             );
+    }
+
+    @Test
+    public void should_mapStartFormObjectPropertyToStringVariableWithSameName() {
+        securityUtil.logInAs("user");
+
+        ProcessInstance processInstance = processRuntime.start(
+            ProcessPayloadBuilder.start()
+                .withProcessDefinitionKey(START_OUTPUT_MAPPING_PROCESS)
+                .withVariable("approvalOutcome", Map.of("id", "approved", "name", "Approved"))
+                .build()
+        );
+
+        List<VariableInstance> variables = processBaseRuntime.getProcessVariablesByProcessId(processInstance.getId());
+
+        assertThat(variables)
+            .extracting(VariableInstance::getName, VariableInstance::getValue)
+            .containsOnly(tuple("approvalOutcome", "Approved"));
     }
 }

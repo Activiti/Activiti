@@ -85,18 +85,7 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
                         String.join(", ", missingRequiredVars)
                 );
             }
-            Set<String> varsWithMismatchedTypes = validateVariablesAgainstDefinitions(
-                processedVariables,
-                variableDefinitionMap
-            );
-            if (!varsWithMismatchedTypes.isEmpty()) {
-                throw new ActivitiException(
-                    "Can't start process '" +
-                        processDefinition.getKey() +
-                        "' as variables fail type validation - " +
-                        String.join(", ", varsWithMismatchedTypes)
-                );
-            }
+            validateVariableTypes(processDefinition, processedVariables, variableDefinitionMap);
         }
 
         return processedVariables;
@@ -118,6 +107,15 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
                 variables
             );
             if (!calculateOutPutVariables.isEmpty()) {
+                Map<String, Object> unmappedVariables = new HashMap<>(
+                    Optional.ofNullable(variables).orElse(emptyMap())
+                );
+                calculateOutPutVariables.keySet().forEach(unmappedVariables::remove);
+                validateVariableTypes(
+                    processDefinition,
+                    unmappedVariables,
+                    processExtensionService.getExtensionsFor(processDefinition).getProperties()
+                );
                 processVariables = calculateOutPutVariables;
             }
 
@@ -187,6 +185,22 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
             }
         });
         return mismatchedVars;
+    }
+
+    private void validateVariableTypes(
+        ProcessDefinition processDefinition,
+        Map<String, Object> variables,
+        Map<String, VariableDefinition> variableDefinitionMap
+    ) {
+        Set<String> varsWithMismatchedTypes = validateVariablesAgainstDefinitions(variables, variableDefinitionMap);
+        if (!varsWithMismatchedTypes.isEmpty()) {
+            throw new ActivitiException(
+                "Can't start process '" +
+                    processDefinition.getKey() +
+                    "' as variables fail type validation - " +
+                    String.join(", ", varsWithMismatchedTypes)
+            );
+        }
     }
 
     public void startProcessInstance(
