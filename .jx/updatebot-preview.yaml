@@ -4,7 +4,7 @@ spec:
   rules:
     - urls:
         - https://github.com/Activiti/activiti-cloud
-      reusePullRequest: false
+      reusePullRequest: true
       changes:
         - regex:
             pattern: "<activiti.version>(.*)</activiti.version>"
