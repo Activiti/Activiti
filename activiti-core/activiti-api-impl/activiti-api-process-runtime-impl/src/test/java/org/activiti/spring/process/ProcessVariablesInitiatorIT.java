@@ -28,8 +28,10 @@ import java.io.InputStream;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
+import org.activiti.bpmn.model.StartEvent;
 import org.activiti.engine.*;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.spring.process.model.Extension;
 import org.activiti.spring.process.model.ProcessExtensionModel;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -256,6 +258,76 @@ public class ProcessVariablesInitiatorIT {
                 .containsEntry("height-meters", null)
                 .containsEntry("jsonvar", null)
                 .containsEntry("positionInTheQueue", 10);
+        }
+    }
+
+    @Test
+    public void calculateOutputVariablesShouldMapObjectPropertyToStringVariableWithSameName() throws Exception {
+        try (
+            InputStream inputStream = Thread.currentThread()
+                .getContextClassLoader()
+                .getResourceAsStream("processes/start-output-mapping-extensions.json")
+        ) {
+            ProcessExtensionModel extension = reader.read(inputStream);
+            Extension processExtension = extension.getExtensions("Process_startOutputMapping");
+
+            ProcessDefinition processDefinition = mock(ProcessDefinition.class);
+            given(processExtensionService.getExtensionsFor(processDefinition)).willReturn(processExtension);
+            given(processExtensionService.getExtensionsForId("process-definition-id")).willReturn(processExtension);
+            given(processExtensionService.hasExtensionsFor(processDefinition)).willReturn(true);
+            given(processDefinition.getId()).willReturn("process-definition-id");
+            given(processDefinition.getKey()).willReturn("Process_startOutputMapping");
+
+            StartEvent startEvent = new StartEvent();
+            startEvent.setId("startEvent");
+
+            Map<String, Object> variables = processVariablesInitiator.calculateOutputVariables(
+                singletonMap("approvalOutcome", map("id", "approved", "name", "Approved")),
+                processDefinition,
+                startEvent
+            );
+
+            assertThat(variables).containsOnly(entry("approvalOutcome", "Approved"));
+        }
+    }
+
+    @Test
+    public void calculateOutputVariablesShouldRejectUnmappedObjectForStringVariableWhenOutputMappingExists()
+        throws Exception {
+        try (
+            InputStream inputStream = Thread.currentThread()
+                .getContextClassLoader()
+                .getResourceAsStream("processes/start-output-mapping-extensions.json")
+        ) {
+            ProcessExtensionModel extension = reader.read(inputStream);
+            Extension processExtension = extension.getExtensions("Process_startOutputMapping");
+
+            ProcessDefinition processDefinition = mock(ProcessDefinition.class);
+            given(processExtensionService.getExtensionsFor(processDefinition)).willReturn(processExtension);
+            given(processExtensionService.getExtensionsForId("process-definition-id")).willReturn(processExtension);
+            given(processExtensionService.hasExtensionsFor(processDefinition)).willReturn(true);
+            given(processDefinition.getId()).willReturn("process-definition-id");
+            given(processDefinition.getKey()).willReturn("Process_startOutputMapping");
+
+            StartEvent startEvent = new StartEvent();
+            startEvent.setId("startEvent");
+
+            Throwable thrownException = catchThrowable(() ->
+                processVariablesInitiator.calculateOutputVariables(
+                    map(
+                        "approvalOutcome",
+                        map("id", "approved", "name", "Approved"),
+                        "unmappedOutcome",
+                        map("id", "rejected", "name", "Rejected")
+                    ),
+                    processDefinition,
+                    startEvent
+                )
+            );
+
+            assertThat(thrownException)
+                .isInstanceOf(ActivitiException.class)
+                .hasMessageContaining("as variables fail type validation - unmappedOutcome");
         }
     }
 }

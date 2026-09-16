@@ -28,8 +28,12 @@ import org.activiti.api.process.model.payloads.SetProcessVariablesPayload;
 import org.activiti.api.process.model.payloads.SignalPayload;
 import org.activiti.api.process.model.payloads.StartMessagePayload;
 import org.activiti.api.process.model.payloads.StartProcessPayload;
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.Process;
 import org.activiti.common.util.DateFormatterProvider;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.spring.process.ProcessExtensionService;
 import org.activiti.spring.process.model.Extension;
 import org.activiti.spring.process.model.VariableDefinition;
@@ -42,19 +46,22 @@ public class ProcessVariablesPayloadValidator {
     private final ProcessExtensionService processExtensionService;
     private final VariableNameValidator variableNameValidator;
     private final ExpressionResolver expressionResolver;
+    private final RepositoryService repositoryService;
 
     public ProcessVariablesPayloadValidator(
         DateFormatterProvider dateFormatterProvider,
         ProcessExtensionService processExtensionService,
         VariableValidationService variableValidationService,
         VariableNameValidator variableNameValidator,
-        ExpressionResolver expressionResolver
+        ExpressionResolver expressionResolver,
+        RepositoryService repositoryService
     ) {
         this.dateFormatterProvider = dateFormatterProvider;
         this.processExtensionService = processExtensionService;
         this.variableValidationService = variableValidationService;
         this.variableNameValidator = variableNameValidator;
         this.expressionResolver = expressionResolver;
+        this.repositoryService = repositoryService;
     }
 
     private Optional<Map<String, VariableDefinition>> getVariableDefinitionMap(String processDefinitionId) {
@@ -68,7 +75,8 @@ public class ProcessVariablesPayloadValidator {
     private boolean validateVariablesAgainstDefinitions(
         Optional<Map<String, VariableDefinition>> variableDefinitionMap,
         Map.Entry<String, Object> payloadVar,
-        Set<String> mismatchedVars
+        Set<String> mismatchedVars,
+        Set<String> variablesExcludedFromTypeValidation
     ) {
         if (variableDefinitionMap.isPresent()) {
             String name = payloadVar.getKey();
@@ -90,6 +98,7 @@ public class ProcessVariablesPayloadValidator {
 
                     //Check type
                     if (
+                        !variablesExcludedFromTypeValidation.contains(name) &&
                         !variableValidationService
                             .validateWithErrors(payloadVar.getValue(), variableDefinitionEntry.getValue())
                             .isEmpty()
@@ -106,6 +115,14 @@ public class ProcessVariablesPayloadValidator {
     }
 
     private void checkPayloadVariables(Map<String, Object> variablePayloadMap, String processDefinitionId) {
+        checkPayloadVariables(variablePayloadMap, processDefinitionId, Set.of());
+    }
+
+    private void checkPayloadVariables(
+        Map<String, Object> variablePayloadMap,
+        String processDefinitionId,
+        Set<String> variablesExcludedFromTypeValidation
+    ) {
         if (variablePayloadMap == null) {
             return;
         }
@@ -135,7 +152,12 @@ public class ProcessVariablesPayloadValidator {
                     )
                 );
             } else {
-                boolean found = validateVariablesAgainstDefinitions(variableDefinitionMap, payloadVar, mismatchedVars);
+                boolean found = validateVariablesAgainstDefinitions(
+                    variableDefinitionMap,
+                    payloadVar,
+                    mismatchedVars,
+                    variablesExcludedFromTypeValidation
+                );
 
                 if (!found) {
                     //Try to parse a new string variable as date
@@ -175,7 +197,43 @@ public class ProcessVariablesPayloadValidator {
     }
 
     public void checkStartProcessPayloadVariables(StartProcessPayload startProcessPayload, String processDefinitionId) {
-        checkPayloadVariables(startProcessPayload.getVariables(), processDefinitionId);
+        if (startProcessPayload.getVariables() == null || startProcessPayload.getVariables().isEmpty()) {
+            return;
+        }
+
+        checkPayloadVariables(
+            startProcessPayload.getVariables(),
+            processDefinitionId,
+            getStartOutputMappedVariableNames(processDefinitionId)
+        );
+    }
+
+    private Set<String> getStartOutputMappedVariableNames(String processDefinitionId) {
+        if (processDefinitionId == null) {
+            return Set.of();
+        }
+
+        Extension processExtensionModel = processExtensionService.getExtensionsForId(processDefinitionId);
+        if (processExtensionModel.getMappings().isEmpty()) {
+            return Set.of();
+        }
+
+        ProcessDefinition processDefinition = repositoryService.getProcessDefinition(processDefinitionId);
+        BpmnModel bpmnModel = repositoryService.getBpmnModel(processDefinitionId);
+        Process process = processDefinition != null && bpmnModel != null
+            ? bpmnModel.getProcessById(processDefinition.getKey())
+            : null;
+        if (
+            process == null ||
+            process.getInitialFlowElement() == null
+        ) {
+            return Set.of();
+        }
+
+        return processExtensionModel
+            .getMappingForFlowElement(process.getInitialFlowElement().getId())
+            .getOutputs()
+            .keySet();
     }
 
     public void checkStartMessagePayloadVariables(StartMessagePayload startMessagePayload, String processDefinitionId) {
