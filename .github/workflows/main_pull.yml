@@ -129,10 +129,7 @@ jobs:
     needs:
       - build
       - publish
-    if: |
-      ${{ github.event_name == 'pull_request' &&
-          contains(github.event.pull_request.labels.*.name, 'preview-propagation') &&
-          contains(github.event.pull_request.labels.*.name, 'preview') }}
+    if: ${{ github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'preview-propagation') && contains(github.event.pull_request.labels.*.name, 'preview') }}
     env:
       VERSION: ${{ needs.build.outputs.version }}
       DEVELOPMENT_BRANCH: ${{ github.base_ref }}
