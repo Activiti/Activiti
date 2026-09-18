@@ -58,17 +58,16 @@ public class ExpressionResolver {
     }
 
     private Object resolveExpressions(final ExpressionEvaluator expressionEvaluator, final Object value) {
-        if (value instanceof String) {
-            return resolveExpressionsString(expressionEvaluator, (String) value);
-        } else if (value instanceof ObjectNode) {
-            return resolveExpressionsMap(expressionEvaluator, mapper.convertValue(value, MAP_STRING_OBJECT_TYPE));
-        } else if (value instanceof Map<?, ?>) {
-            return resolveExpressionsMap(expressionEvaluator, (Map<String, ?>) value);
-        } else if (value instanceof List<?>) {
-            return resolveExpressionsList(expressionEvaluator, (List<?>) value);
-        } else {
-            return value;
-        }
+        return switch (value) {
+            case String sourceString -> resolveExpressionsString(expressionEvaluator, sourceString);
+            case ObjectNode objectNode -> resolveExpressionsMap(
+                expressionEvaluator,
+                mapper.convertValue(objectNode, MAP_STRING_OBJECT_TYPE)
+            );
+            case Map<?, ?> sourceMap -> resolveExpressionsMap(expressionEvaluator, (Map<String, ?>) sourceMap);
+            case List<?> sourceList -> resolveExpressionsList(expressionEvaluator, sourceList);
+            default -> value;
+        };
     }
 
     private List<Object> resolveExpressionsList(
@@ -148,19 +147,14 @@ public class ExpressionResolver {
     }
 
     public boolean containsExpression(final Object source) {
-        if (source == null) {
-            return false;
-        } else if (source instanceof String) {
-            return containsExpressionString((String) source);
-        } else if (source instanceof ObjectNode) {
-            return containsExpressionMap(mapper.convertValue(source, MAP_STRING_OBJECT_TYPE));
-        } else if (source instanceof Map<?, ?>) {
-            return containsExpressionMap((Map<String, ?>) source);
-        } else if (source instanceof List<?>) {
-            return containsExpressionList((List<?>) source);
-        } else {
-            return false;
-        }
+        return switch (source) {
+            case null -> false;
+            case String sourceString -> containsExpressionString(sourceString);
+            case ObjectNode objectNode -> containsExpressionMap(mapper.convertValue(objectNode, MAP_STRING_OBJECT_TYPE));
+            case Map<?, ?> sourceMap -> containsExpressionMap((Map<String, ?>) sourceMap);
+            case List<?> sourceList -> containsExpressionList(sourceList);
+            default -> false;
+        };
     }
 
     private boolean containsExpressionString(final String sourceString) {

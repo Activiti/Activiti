@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.el.ExpressionManager;
@@ -33,6 +34,9 @@ import org.activiti.engine.impl.interceptor.DelegateInterceptor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import tools.jackson.databind.JsonNode;
@@ -42,9 +46,9 @@ import tools.jackson.databind.node.ObjectNode;
 @ExtendWith(MockitoExtension.class)
 public class ExpressionResolverTest {
 
-    private ExpressionResolver expressionResolver;
+    private static final JsonMapper MAPPER = new JsonMapper();
 
-    private JsonMapper mapper = new JsonMapper();
+    private ExpressionResolver expressionResolver;
 
     @Mock
     private ExpressionManager expressionManager;
@@ -57,7 +61,7 @@ public class ExpressionResolverTest {
 
     @BeforeEach
     public void setUp() {
-        expressionResolver = new ExpressionResolver(expressionManager, mapper, delegateInterceptor);
+        expressionResolver = new ExpressionResolver(expressionManager, MAPPER, delegateInterceptor);
     }
 
     @Test
@@ -208,219 +212,150 @@ public class ExpressionResolverTest {
         assertThat(result).containsExactlyInAnyOrder("name", "place", "list");
     }
 
-    @Test
-    public void resolveExpressionsMap_should_replaceExpressionByValue_when_stringIsAnExpression() {
+    @ParameterizedTest
+    @MethodSource("stringResolutionCases")
+    public void resolveExpressionsMap_should_handleStringValues(
+        String variableName,
+        Object sourceValue,
+        Map<String, Object> resolvedExpressions,
+        List<String> unresolvableExpressions,
+        Object expectedValue
+    ) {
         //given
-        Expression expression = buildExpression("${name}");
-        given(expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor)).willReturn("John");
+        stubResolvedExpressions(resolvedExpressions);
+        stubUnresolvableExpressions(unresolvableExpressions);
 
         //when
         Map<String, Object> result = expressionResolver.resolveExpressionsMap(
             expressionEvaluator,
-            singletonMap("name", "${name}")
+            singletonMap(variableName, sourceValue)
         );
+
         //then
-        assertThat(result).containsEntry("name", "John");
+        assertThat(result).containsEntry(variableName, expectedValue);
     }
 
-    @Test
-    public void resolveExpressionsMap_should_replaceExpressionByValue_when_stringContainsAnExpression() {
+    @ParameterizedTest
+    @MethodSource("structuredResolutionCases")
+    public void resolveExpressionsMap_should_handleStructuredValues(
+        String variableName,
+        Object sourceValue,
+        Map<String, Object> resolvedExpressions,
+        List<String> unresolvableExpressions,
+        Object expectedValue
+    ) {
         //given
-        Expression nameExpression = buildExpression("${name}");
-        given(expressionEvaluator.evaluate(nameExpression, expressionManager, delegateInterceptor)).willReturn("John");
-
-        Expression placeExpression = buildExpression("${place}");
-        given(expressionEvaluator.evaluate(placeExpression, expressionManager, delegateInterceptor)).willReturn(
-            "London"
-        );
+        stubResolvedExpressions(resolvedExpressions);
+        stubUnresolvableExpressions(unresolvableExpressions);
 
         //when
         Map<String, Object> result = expressionResolver.resolveExpressionsMap(
             expressionEvaluator,
-            singletonMap("welcomeMessage", "Welcome to ${place}, ${name}!")
-        );
-        //then
-        assertThat(result).containsEntry("welcomeMessage", "Welcome to London, John!");
-    }
-
-    @Test
-    public void resolveExpressionsMap_should_returnItself_when_stringIsEmpty() {
-        //when
-        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
-            expressionEvaluator,
-            singletonMap("empty", "")
+            singletonMap(variableName, sourceValue)
         );
 
         //then
-        assertThat(result).containsEntry("empty", "");
+        assertThat(result).containsEntry(variableName, expectedValue);
     }
 
-    @Test
-    public void resolveExpressionsMap_should_returnItself_when_stringIsNull() {
-        //when
-        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
-            expressionEvaluator,
-            singletonMap("empty", null)
-        );
-        //then
-        assertThat(result).containsEntry("empty", null);
-    }
-
-    @Test
-    public void resolveExpressionsMap_should_removeExpressionContent_when_notAbleToResolveExpressionInString() {
-        //given
-        Expression expression = buildExpression("${nonResolvableExpression}");
-        given(expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor)).willThrow(
-            new ActivitiException("Invalid property")
-        );
-
-        //when
-        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
-            expressionEvaluator,
-            singletonMap("result", "Welcome to ${nonResolvableExpression}!")
-        );
-        //then
-        assertThat(result).containsEntry("result", "Welcome to !");
-    }
-
-    @Test
-    public void resolveExpressionsMap_should_removeExpressionContent_when_notAbleToResolveIt() {
-        //given
-        Expression expression = buildExpression("${nonResolvableExpression}");
-        given(expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor)).willThrow(
-            new ActivitiException("Invalid property")
-        );
-
-        //when
-        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
-            expressionEvaluator,
-            singletonMap("result", "${nonResolvableExpression}")
-        );
-        //then
-        assertThat(result).containsEntry("result", null);
-    }
-
-    @Test
-    public void resolveExpressionsMap_should_replaceExpressionByValue_when_ObjectNodeContainsAnExpression()
-        throws IOException {
-        //given
-        Expression nameExpression = buildExpression("${name}");
-        given(expressionEvaluator.evaluate(nameExpression, expressionManager, delegateInterceptor)).willReturn("John");
-
-        Expression placeExpression = buildExpression("${place}");
-        given(expressionEvaluator.evaluate(placeExpression, expressionManager, delegateInterceptor)).willReturn(null);
-
-        Expression ageExpression = buildExpression("${age}");
-        given(expressionEvaluator.evaluate(ageExpression, expressionManager, delegateInterceptor)).willReturn(30);
-
-        JsonNode node = mapper.readTree("{\"name\":\"${name}\",\"place\":\"${place}\",\"age\":\"${age}\"}");
-
-        //when
-        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
-            expressionEvaluator,
-            singletonMap("node", node)
-        );
-        //then
-        assertThat(result).containsEntry("node", map("name", "John", "place", null, "age", 30));
-    }
-
-    @Test
-    public void resolveExpressionsMap_should_removeExpressionContent_when_ObjecNodeContainsAnExpressionUnableToBeResolved()
-        throws IOException {
-        //given
-        Expression nameExpression = buildExpression("${name}");
-        given(expressionEvaluator.evaluate(nameExpression, expressionManager, delegateInterceptor)).willThrow(
-            new ActivitiException("Invalid property")
-        );
-
-        JsonNode node = mapper.readTree("{\"name\":\"${name}\",\"age\": 30}");
-
-        //when
-        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
-            expressionEvaluator,
-            singletonMap("node", node)
-        );
-        //then
-        assertThat(result).containsEntry("node", map("name", null, "age", 30));
-    }
-
-    @Test
-    public void resolveExpressionsMap_should_replaceExpressionByValue_when_ListContainsAnExpression() {
-        //given
-        Expression placeExpression = buildExpression("${place}");
-        given(expressionEvaluator.evaluate(placeExpression, expressionManager, delegateInterceptor)).willReturn(
-            "London"
-        );
-
-        //when
-        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
-            expressionEvaluator,
-            singletonMap("places", asList("${place}", "Paris", "Berlin"))
-        );
-        //then
-        assertThat(result).containsEntry("places", asList("London", "Paris", "Berlin"));
-    }
-
-    @Test
-    public void resolveExpressionsMap_should_removeExpressionContent_when_ListContainsAnExpressionUnableToBeResolved() {
-        //given
-        Expression placeExpression = buildExpression("${place}");
-        given(expressionEvaluator.evaluate(placeExpression, expressionManager, delegateInterceptor)).willThrow(
-            new ActivitiException("Invalid property")
-        );
-
-        //when
-        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
-            expressionEvaluator,
-            singletonMap("places", asList("${place}", "Paris", "Berlin"))
-        );
-        //then
-        assertThat(result).containsEntry("places", asList(null, "Paris", "Berlin"));
-    }
-
-    @Test
-    public void resolveExpressionsMap_should_replaceExpressionByValue_when_MapContainsAnExpression() {
-        //given
-        Expression playerExpression = buildExpression("${player}");
-        given(expressionEvaluator.evaluate(playerExpression, expressionManager, delegateInterceptor)).willReturn(
-            "Agatha"
-        );
-
-        //when
-        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
-            expressionEvaluator,
-            singletonMap("players", map("Red", "John", "Green", "Peter", "Blue", "Mary", "Yellow", "${player}"))
-        );
-
-        //then
-        assertThat(result).containsEntry(
-            "players",
-            map("Red", "John", "Green", "Peter", "Blue", "Mary", "Yellow", "Agatha")
+    private static Stream<Arguments> stringResolutionCases() {
+        return Stream.of(
+            Arguments.of("name", "${name}", singletonMap("${name}", "John"), List.<String>of(), "John"),
+            Arguments.of(
+                "welcomeMessage",
+                "Welcome to ${place}, ${name}!",
+                map("${name}", "John", "${place}", "London"),
+                List.<String>of(),
+                "Welcome to London, John!"
+            ),
+            Arguments.of("empty", "", Map.<String, Object>of(), List.<String>of(), ""),
+            Arguments.of("empty", null, Map.<String, Object>of(), List.<String>of(), null),
+            Arguments.of(
+                "result",
+                "Welcome to ${nonResolvableExpression}!",
+                Map.<String, Object>of(),
+                List.of("${nonResolvableExpression}"),
+                "Welcome to !"
+            ),
+            Arguments.of(
+                "result",
+                "${nonResolvableExpression}",
+                Map.<String, Object>of(),
+                List.of("${nonResolvableExpression}"),
+                null
+            )
         );
     }
 
-    @Test
-    public void resolveExpressionsMap_should_removeExpressionContent_when_MapContainsAnExpressionUnableToBeResolved() {
-        //given
-
-        Expression playerExpression = buildExpression("${player}");
-        given(expressionEvaluator.evaluate(playerExpression, expressionManager, delegateInterceptor)).willThrow(
-            new ActivitiException("Invalid property")
-        );
-
+    private static Stream<Arguments> structuredResolutionCases() {
         Map<String, Object> players = map("Red", "John", "Green", "Peter", "Blue", "Mary", "Yellow", "${player}");
+        Map<String, Object> expectedPlayers = new HashMap<>(players);
+        expectedPlayers.put("Yellow", null);
 
-        //when
-        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
-            expressionEvaluator,
-            singletonMap("players", players)
+        return Stream.of(
+            Arguments.of(
+                "node",
+                readNode("{\"name\":\"${name}\",\"place\":\"${place}\",\"age\":\"${age}\"}"),
+                map("${name}", "John", "${place}", null, "${age}", 30),
+                List.<String>of(),
+                map("name", "John", "place", null, "age", 30)
+            ),
+            Arguments.of(
+                "node",
+                readNode("{\"name\":\"${name}\",\"age\": 30}"),
+                Map.<String, Object>of(),
+                List.of("${name}"),
+                map("name", null, "age", 30)
+            ),
+            Arguments.of(
+                "places",
+                asList("${place}", "Paris", "Berlin"),
+                singletonMap("${place}", "London"),
+                List.<String>of(),
+                asList("London", "Paris", "Berlin")
+            ),
+            Arguments.of(
+                "places",
+                asList("${place}", "Paris", "Berlin"),
+                Map.<String, Object>of(),
+                List.of("${place}"),
+                asList(null, "Paris", "Berlin")
+            ),
+            Arguments.of(
+                "players",
+                map("Red", "John", "Green", "Peter", "Blue", "Mary", "Yellow", "${player}"),
+                singletonMap("${player}", "Agatha"),
+                List.<String>of(),
+                map("Red", "John", "Green", "Peter", "Blue", "Mary", "Yellow", "Agatha")
+            ),
+            Arguments.of("players", players, Map.<String, Object>of(), List.of("${player}"), expectedPlayers)
         );
+    }
 
-        Map<String, Object> expectedResult = new HashMap<>(players);
-        expectedResult.put("Yellow", null);
+    private static JsonNode readNode(String json) {
+        try {
+            return MAPPER.readTree(json);
+        } catch (IOException ex) {
+            throw new IllegalStateException(ex);
+        }
+    }
 
-        //then
-        assertThat(result).containsEntry("players", expectedResult);
+    private void stubResolvedExpressions(Map<String, Object> resolvedExpressions) {
+        resolvedExpressions.forEach((expressionContent, resolvedValue) -> {
+            Expression expression = buildExpression(expressionContent);
+            given(expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor)).willReturn(
+                resolvedValue
+            );
+        });
+    }
+
+    private void stubUnresolvableExpressions(List<String> unresolvableExpressions) {
+        unresolvableExpressions.forEach(expressionContent -> {
+            Expression expression = buildExpression(expressionContent);
+            given(expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor)).willThrow(
+                new ActivitiException("Invalid property")
+            );
+        });
     }
 
     private Expression buildExpression(String expressionContent) {
