@@ -45,6 +45,13 @@ public class ExpressionResolver {
     );
     private static final char NESTED_EXPRESSION_DELIMITER = '$';
 
+    static {
+        logger.info(
+            "ExpressionResolver initialized with MAX_VAR_SIZE_FOR_EXPRESSION_PARSING: {}",
+            formatMaxVarSizeForLogging(MAX_VAR_SIZE_FOR_EXPRESSION_PARSING)
+        );
+    }
+
     private JsonMapper mapper;
     private final DelegateInterceptor delegateInterceptor;
     private final int maxVarSizeForExpressionParsing;
@@ -69,10 +76,6 @@ public class ExpressionResolver {
         this.mapper = mapper;
         this.delegateInterceptor = delegateInterceptor;
         this.maxVarSizeForExpressionParsing = maxVarSizeForExpressionParsing;
-        logger.info(
-            "ExpressionResolver initialized with MAX_VAR_SIZE_FOR_EXPRESSION_PARSING: {}",
-            formatMaxVarSizeForLogging(maxVarSizeForExpressionParsing)
-        );
     }
 
     /**

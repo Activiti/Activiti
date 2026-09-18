@@ -63,7 +63,7 @@ Added targeted test cases covering:
 6. Default unlimited configuration
 7. Configuration parsing helpers
 
-**All tests pass:** ✅ 28 tests run, 0 failures, 0 errors
+**Focused tests updated alongside the implementation:** ✅
 
 ## Configuration
 
