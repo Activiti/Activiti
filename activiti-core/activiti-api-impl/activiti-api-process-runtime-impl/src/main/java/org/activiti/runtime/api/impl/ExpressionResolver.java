@@ -443,8 +443,10 @@ public class ExpressionResolver {
     }
 
     private boolean isClosingExpressionDelimiter(Character delimiter) {
-        return delimiter != null &&
-            (delimiter == '{' || delimiter == NESTED_EXPRESSION_DELIMITER || delimiter == OUTER_EXPRESSION_DELIMITER);
+        return (
+            delimiter != null &&
+            (delimiter == '{' || delimiter == NESTED_EXPRESSION_DELIMITER || delimiter == OUTER_EXPRESSION_DELIMITER)
+        );
     }
 
     private boolean hasOnlyOuterExpressionDelimiter(Deque<Character> delimiterStack) {
