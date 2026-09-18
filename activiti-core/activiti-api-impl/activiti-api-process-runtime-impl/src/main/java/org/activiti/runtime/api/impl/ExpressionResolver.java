@@ -36,7 +36,7 @@ import tools.jackson.databind.node.ObjectNode;
 public class ExpressionResolver {
 
     private static final TypeReference<Map<String, ?>> MAP_STRING_OBJECT_TYPE = new TypeReference<Map<String, ?>>() {};
-    private final Logger logger = LoggerFactory.getLogger(ExpressionResolver.class);
+    private static final Logger logger = LoggerFactory.getLogger(ExpressionResolver.class);
 
     private static final String EXPRESSION_PATTERN_STRING = "([\\$]\\{([^\\}]*)\\})";
     private static final Pattern EXPRESSION_PATTERN = Pattern.compile(EXPRESSION_PATTERN_STRING);
@@ -55,7 +55,11 @@ public class ExpressionResolver {
                     maxSize = DEFAULT_MAX_VAR_SIZE_FOR_EXPRESSION_PARSING;
                 }
             } catch (NumberFormatException e) {
-                // Keep default value
+                logger.warn(
+                    "Invalid value for MAX_VAR_SIZE_FOR_EXPRESSION_PARSING environment variable: {}. Using default: {} bytes",
+                    envValue,
+                    DEFAULT_MAX_VAR_SIZE_FOR_EXPRESSION_PARSING
+                );
             }
         }
         MAX_VAR_SIZE_FOR_EXPRESSION_PARSING = maxSize;
