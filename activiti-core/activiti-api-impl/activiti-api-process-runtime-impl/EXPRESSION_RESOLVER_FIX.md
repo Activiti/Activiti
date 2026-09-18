@@ -393,7 +393,7 @@ If issues arise, rollback is straightforward:
 
 - ✅ **Fixed:** OutOfMemoryError from regex catastrophic backtracking
 - ✅ **How:** Replaced regex with O(n) linear parser
-- ✅ **Impact:** No breaking changes, better performance, more robust
+- ✅ **Impact:** Better performance, broader expression coverage, and an optional limit for oversized values
 - ⚙️ **Config:** `MAX_VAR_SIZE_FOR_EXPRESSION_PARSING` env var (optional)
 - 📊 **Default:** Unlimited (new parser is efficient)
 - 💡 **Recommendation:** Set to 1MB (`1048576`) for production safety

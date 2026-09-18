@@ -305,6 +305,25 @@ public class ExpressionResolverTest {
     }
 
     @Test
+    public void resolveExpressionsMap_should_replaceExpressionByValue_when_stringContainsAdjacentExpressions() {
+        //given
+        Expression firstExpression = buildExpression("${first}");
+        given(expressionEvaluator.evaluate(firstExpression, expressionManager, delegateInterceptor)).willReturn("Hello");
+
+        Expression secondExpression = buildExpression("${second}");
+        given(expressionEvaluator.evaluate(secondExpression, expressionManager, delegateInterceptor)).willReturn("World");
+
+        //when
+        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
+            expressionEvaluator,
+            singletonMap("message", "${first}${second}")
+        );
+
+        //then
+        assertThat(result).containsEntry("message", "HelloWorld");
+    }
+
+    @Test
     public void resolveExpressionsMap_should_replaceExpressionByValue_when_expressionContainsClosingBraceInBody() {
         //given
         String expressionContent = "${foo['}']}";
