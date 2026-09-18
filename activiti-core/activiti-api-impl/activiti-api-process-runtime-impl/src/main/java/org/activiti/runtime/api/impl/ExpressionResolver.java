@@ -45,13 +45,6 @@ public class ExpressionResolver {
     );
     private static final char NESTED_EXPRESSION_DELIMITER = '$';
 
-    static {
-        logger.info(
-            "ExpressionResolver initialized with MAX_VAR_SIZE_FOR_EXPRESSION_PARSING: {}",
-            formatMaxVarSizeForLogging(MAX_VAR_SIZE_FOR_EXPRESSION_PARSING)
-        );
-    }
-
     private JsonMapper mapper;
     private final DelegateInterceptor delegateInterceptor;
     private final int maxVarSizeForExpressionParsing;
@@ -314,7 +307,11 @@ public class ExpressionResolver {
 
             switch (currentCharacter) {
                 case '$':
-                    if (index + 1 < sourceString.length() && sourceString.charAt(index + 1) == '{') {
+                    if (
+                        !delimiterStack.isEmpty() &&
+                        index + 1 < sourceString.length() &&
+                        sourceString.charAt(index + 1) == '{'
+                    ) {
                         delimiterStack.push(NESTED_EXPRESSION_DELIMITER);
                         index++;
                     }

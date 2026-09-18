@@ -47,8 +47,8 @@ at org.activiti.runtime.api.impl.ExtensionsVariablesMappingProvider.calculateInp
 4. **Added getter/configuration helpers**:
    - `getMaxVarSizeForExpressionParsing()` for testing and monitoring
 
-5. **Added initialization logging**:
-   - Logs the configured max size on startup
+5. **Added configuration helpers**:
+   - Keep the parsing limit behavior centralized
 
 ### Test Coverage
 
@@ -133,16 +133,9 @@ env:
    - Recommended: leave unlimited unless a deployment needs a hard guard
 
 4. **Deploy and monitor:**
-   - Check startup logs for: `"ExpressionResolver initialized with MAX_VAR_SIZE_FOR_EXPRESSION_PARSING: unlimited"` or a configured character limit
    - Monitor DEBUG logs for: `"Skipping expression parsing for string exceeding max size"`
 
 ## Monitoring and Troubleshooting
-
-### Startup Verification
-Look for this log line in runtime-bundle startup:
-```
-INFO  o.a.r.a.i.ExpressionResolver - ExpressionResolver initialized with MAX_VAR_SIZE_FOR_EXPRESSION_PARSING: unlimited
-```
 
 ### Runtime Monitoring
 Enable DEBUG logging to see when large strings are skipped:
