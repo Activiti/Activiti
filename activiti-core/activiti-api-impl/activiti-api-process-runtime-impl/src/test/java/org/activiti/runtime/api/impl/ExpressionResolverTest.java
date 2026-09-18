@@ -298,6 +298,40 @@ public class ExpressionResolverTest {
     }
 
     @Test
+    public void resolveExpressionsMap_should_replaceExpressionByValue_when_expressionContainsDoubleQuotedClosingBrace() {
+        //given
+        String expressionContent = "${foo[\"}\"]}";
+        Expression expression = buildExpression(expressionContent);
+        given(expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor)).willReturn("John");
+
+        //when
+        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
+            expressionEvaluator,
+            singletonMap("name", expressionContent)
+        );
+
+        //then
+        assertThat(result).containsEntry("name", "John");
+    }
+
+    @Test
+    public void resolveExpressionsMap_should_replaceExpressionByValue_when_expressionContainsBacktickQuotedClosingBrace() {
+        //given
+        String expressionContent = "${foo[`}`]}";
+        Expression expression = buildExpression(expressionContent);
+        given(expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor)).willReturn("John");
+
+        //when
+        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
+            expressionEvaluator,
+            singletonMap("name", expressionContent)
+        );
+
+        //then
+        assertThat(result).containsEntry("name", "John");
+    }
+
+    @Test
     public void resolveExpressionsMap_should_replaceExpressionByValue_when_expressionContainsNestedExpression() {
         //given
         String expressionContent = "${outer(${inner})}";

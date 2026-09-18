@@ -318,6 +318,7 @@ public class ExpressionResolver {
                     break;
                 case '\'':
                 case '"':
+                case '`':
                     activeQuote = currentCharacter;
                     break;
                 case '{':
