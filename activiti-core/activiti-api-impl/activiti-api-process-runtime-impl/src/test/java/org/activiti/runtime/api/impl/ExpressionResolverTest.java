@@ -228,7 +228,17 @@ public class ExpressionResolverTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "${foo['}']}", "${outer(${inner})}", "${foo${bar}}", "${foo[bar}}", "${{a}}" })
+    @ValueSource(
+        strings = {
+            "${foo['}']}",
+            "${foo[\"}\"]}",
+            "${foo[`}`]}",
+            "${outer(${inner})}",
+            "${foo${bar}}",
+            "${foo[bar}}",
+            "${{a}}",
+        }
+    )
     public void findVariableNamesContainingExpressions_should_returnVariableNames_forSupportedExpressionPatterns(
         String sourceValue
     ) {

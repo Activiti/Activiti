@@ -406,10 +406,6 @@ public class ExpressionResolver {
         int currentIndex,
         ExpressionRangeParserState parserState
     ) {
-        if (parserState.delimiterStack.isEmpty()) {
-            return new ExpressionRange(parserState.expressionStart, currentIndex);
-        }
-
         Character currentDelimiter = parserState.delimiterStack.peek();
         if (!isClosingExpressionDelimiter(currentDelimiter)) {
             if (parserState.compatibilityFallbackEnd < 0) {
