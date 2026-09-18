@@ -366,10 +366,44 @@ public class ExpressionResolverTest {
     }
 
     @Test
+    public void resolveExpressionsMap_should_replaceExpressionByValue_when_expressionContainsTopLevelNestedExpression() {
+        //given
+        String expressionContent = "${outer ${inner} tail}";
+        Expression expression = buildExpression(expressionContent);
+        given(expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor)).willReturn("John");
+
+        //when
+        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
+            expressionEvaluator,
+            singletonMap("name", expressionContent)
+        );
+
+        //then
+        assertThat(result).containsEntry("name", "John");
+    }
+
+    @Test
     public void resolveExpressionsMap_should_preserveMalformedNestedCompatibility() {
         //given
         String sourceValue = "${foo${bar}}";
         Expression expression = buildExpression("${foo${bar}");
+        given(expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor)).willReturn("John");
+
+        //when
+        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
+            expressionEvaluator,
+            singletonMap("name", sourceValue)
+        );
+
+        //then
+        assertThat(result).containsEntry("name", "John}");
+    }
+
+    @Test
+    public void resolveExpressionsMap_should_preserveMalformedBracketCompatibility() {
+        //given
+        String sourceValue = "${foo[bar}}";
+        Expression expression = buildExpression("${foo[bar}");
         given(expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor)).willReturn("John");
 
         //when

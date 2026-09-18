@@ -311,9 +311,7 @@ public class ExpressionResolver {
             switch (currentCharacter) {
                 case '$':
                     if (index + 1 < sourceString.length() && sourceString.charAt(index + 1) == '{') {
-                        if (!hasOnlyOuterExpressionDelimiter(delimiterStack)) {
-                            delimiterStack.push(NESTED_EXPRESSION_DELIMITER);
-                        }
+                        delimiterStack.push(NESTED_EXPRESSION_DELIMITER);
                         index++;
                     }
                     break;
@@ -344,6 +342,15 @@ public class ExpressionResolver {
                         if (closedDelimiter == OUTER_EXPRESSION_DELIMITER) {
                             return new ExpressionRange(expressionStart, index);
                         }
+                        if (
+                            closedDelimiter == NESTED_EXPRESSION_DELIMITER &&
+                            hasOnlyOuterExpressionDelimiter(delimiterStack) &&
+                            hasTrailingClosingBrace(sourceString, index)
+                        ) {
+                            return new ExpressionRange(expressionStart, index);
+                        }
+                    } else {
+                        return new ExpressionRange(expressionStart, index);
                     }
                     break;
                 case ']':
@@ -366,6 +373,10 @@ public class ExpressionResolver {
 
     private boolean hasOnlyOuterExpressionDelimiter(Deque<Character> delimiterStack) {
         return delimiterStack.size() == 1 && delimiterStack.peek() == OUTER_EXPRESSION_DELIMITER;
+    }
+
+    private boolean hasTrailingClosingBrace(String sourceString, int currentIndex) {
+        return currentIndex + 1 < sourceString.length() && sourceString.charAt(currentIndex + 1) == '}';
     }
 
     private static final class ExpressionRange {
