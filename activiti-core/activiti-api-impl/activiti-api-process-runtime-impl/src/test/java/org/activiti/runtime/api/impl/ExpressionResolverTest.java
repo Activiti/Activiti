@@ -480,7 +480,7 @@ public class ExpressionResolverTest {
     }
 
     @Test
-    public void resolveExpressionsMap_should_parseParsing_when_stringIsAtConfiguredMaxSize() {
+    public void resolveExpressionsMap_should_parse_when_stringIsAtConfiguredMaxSize() {
         // given
         int maxSize = 64;
         String expressionContent = "${name}";
@@ -586,6 +586,11 @@ public class ExpressionResolverTest {
     @Test
     public void resolveMaxVarSizeForExpressionParsing_should_returnConfiguredLimit_when_valueIsPositive() {
         assertThat(ExpressionResolver.resolveMaxVarSizeForExpressionParsing("512000")).isEqualTo(512000);
+    }
+
+    @Test
+    public void resolveMaxVarSizeForExpressionParsing_should_returnUnlimited_when_valueOverflowsInteger() {
+        assertThat(ExpressionResolver.resolveMaxVarSizeForExpressionParsing("2147483648")).isEqualTo(Integer.MAX_VALUE);
     }
 
     /**

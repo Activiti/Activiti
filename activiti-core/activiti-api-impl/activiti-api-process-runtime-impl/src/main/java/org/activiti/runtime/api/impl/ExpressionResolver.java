@@ -76,7 +76,7 @@ public class ExpressionResolver {
      * Returns the maximum variable size for expression parsing.
      * Strings exceeding this size will skip expression resolution to prevent OutOfMemoryError.
      *
-     * @return the maximum size in bytes
+     * @return the maximum size in characters
      */
     public static int getMaxVarSizeForExpressionParsing() {
         return MAX_VAR_SIZE_FOR_EXPRESSION_PARSING;
@@ -92,28 +92,26 @@ public class ExpressionResolver {
             if (maxSize > 0) {
                 return maxSize;
             }
-
-            logger.warn(
-                "Invalid value for MAX_VAR_SIZE_FOR_EXPRESSION_PARSING environment variable: {}. Using default: {}",
-                envValue,
-                formatMaxVarSizeForLogging(DEFAULT_MAX_VAR_SIZE_FOR_EXPRESSION_PARSING)
-            );
         } catch (NumberFormatException e) {
-            logger.warn(
-                "Invalid value for MAX_VAR_SIZE_FOR_EXPRESSION_PARSING environment variable: {}. Using default: {}",
-                envValue,
-                formatMaxVarSizeForLogging(DEFAULT_MAX_VAR_SIZE_FOR_EXPRESSION_PARSING)
-            );
-            return DEFAULT_MAX_VAR_SIZE_FOR_EXPRESSION_PARSING;
+            return logInvalidMaxVarSizeAndReturnDefault(envValue);
         }
 
-        return DEFAULT_MAX_VAR_SIZE_FOR_EXPRESSION_PARSING;
+        return logInvalidMaxVarSizeAndReturnDefault(envValue);
     }
 
     private static String formatMaxVarSizeForLogging(int maxVarSizeForExpressionParsing) {
         return maxVarSizeForExpressionParsing == Integer.MAX_VALUE
             ? "unlimited"
-            : maxVarSizeForExpressionParsing + " bytes";
+            : maxVarSizeForExpressionParsing + " characters";
+    }
+
+    private static int logInvalidMaxVarSizeAndReturnDefault(String envValue) {
+        logger.warn(
+            "Invalid value for MAX_VAR_SIZE_FOR_EXPRESSION_PARSING environment variable: {}. Using default: {}",
+            envValue,
+            formatMaxVarSizeForLogging(DEFAULT_MAX_VAR_SIZE_FOR_EXPRESSION_PARSING)
+        );
+        return DEFAULT_MAX_VAR_SIZE_FOR_EXPRESSION_PARSING;
     }
 
     private Object resolveExpressions(final ExpressionEvaluator expressionEvaluator, final Object value) {
@@ -153,11 +151,11 @@ public class ExpressionResolver {
             return sourceString;
         }
 
-        // Skip expression parsing for strings exceeding the size limit to prevent OutOfMemoryError
+        // Skip expression parsing for strings exceeding the configured size limit to prevent OutOfMemoryError
         if (sourceString.length() > maxVarSizeForExpressionParsing) {
             if (logger.isDebugEnabled()) {
                 logger.debug(
-                    "Skipping expression parsing for string exceeding max size: {} bytes (limit: {})",
+                    "Skipping expression parsing for string exceeding max size: {} characters (limit: {})",
                     sourceString.length(),
                     formatMaxVarSizeForLogging(maxVarSizeForExpressionParsing)
                 );

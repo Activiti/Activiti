@@ -147,7 +147,7 @@ INFO  o.a.r.a.i.ExpressionResolver - ExpressionResolver initialized with MAX_VAR
 ### Runtime Monitoring
 Enable DEBUG logging to see when large strings are skipped:
 ```
-DEBUG o.a.r.a.i.ExpressionResolver - Skipping expression parsing for string exceeding max size: 150000 bytes (limit: 102400 bytes)
+DEBUG o.a.r.a.i.ExpressionResolver - Skipping expression parsing for string exceeding max size: 150000 characters (limit: 102400 characters)
 ```
 
 ### If Variables Are Not Being Resolved
