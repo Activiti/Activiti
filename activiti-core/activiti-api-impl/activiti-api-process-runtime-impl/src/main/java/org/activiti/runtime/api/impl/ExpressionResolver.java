@@ -348,7 +348,7 @@ public class ExpressionResolver {
                 yield null;
             }
             case '{' -> {
-                pushPlainBrace(parserState.delimiterStack);
+                pushPlainBrace(currentIndex, parserState);
                 yield null;
             }
             case '[' -> pushAndContinue(parserState.delimiterStack, '[');
@@ -380,9 +380,12 @@ public class ExpressionResolver {
         return null;
     }
 
-    private void pushPlainBrace(Deque<Character> delimiterStack) {
-        if (!hasOnlyOuterExpressionDelimiter(delimiterStack)) {
-            delimiterStack.push('{');
+    private void pushPlainBrace(int currentIndex, ExpressionRangeParserState parserState) {
+        if (
+            currentIndex == parserState.expressionStart + EXPRESSION_PREFIX.length() ||
+            !hasOnlyOuterExpressionDelimiter(parserState.delimiterStack)
+        ) {
+            parserState.delimiterStack.push('{');
         }
     }
 

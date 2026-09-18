@@ -420,12 +420,9 @@ Activiti/activiti-core/activiti-api-impl/activiti-api-process-runtime-impl/
 └── src/test/java/org/activiti/runtime/api/impl/ExpressionResolverTest.java
 ```
 
-### Key Commits
+### Change Summary
 
-```
-fc14ce0cba - Make ExpressionResolver scanning linear (PRIMARY FIX)
-0e5197d777 - Log ExpressionResolver config once
-92a54f5403 - Preserve malformed expression compatibility
-f9ae648424 - Handle quoted ExpressionResolver braces
-6925bb975b - Sanitize ExpressionResolver invalid config log
-```
+- Linear expression scanning replaced the regex-based matcher
+- Expression parsing compatibility was retained for the covered malformed-expression scenarios
+- Logging and configuration handling were tightened around the new parser
+- Regression coverage was expanded for nested, quoted, and oversized inputs
