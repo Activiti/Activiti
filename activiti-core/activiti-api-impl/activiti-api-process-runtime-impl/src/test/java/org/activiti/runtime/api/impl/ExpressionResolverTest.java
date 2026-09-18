@@ -209,6 +209,19 @@ public class ExpressionResolverTest {
     }
 
     @Test
+    public void findVariableNamesContainingExpressions_should_returnVariableNames_when_largeVariableContainsExpression() {
+        // given
+        String largeExpressionValue = buildLargeString(200_000) + "${place}";
+        Map<String, Object> source = singletonMap("place", largeExpressionValue);
+
+        // when
+        List<String> result = expressionResolver.findVariableNamesContainingExpressions(source);
+
+        // then
+        assertThat(result).containsExactly("place");
+    }
+
+    @Test
     public void resolveExpressionsMap_should_replaceExpressionByValue_when_stringIsAnExpression() {
         //given
         Expression expression = buildExpression("${name}");
@@ -430,10 +443,11 @@ public class ExpressionResolverTest {
     }
 
     @Test
-    public void resolveExpressionsMap_should_skipParsing_when_stringExceedsMaxSize() {
+    public void resolveExpressionsMap_should_skipParsing_when_stringExceedsConfiguredMaxSize() {
         // given
-        int maxSize = ExpressionResolver.getMaxVarSizeForExpressionParsing();
+        int maxSize = 64;
         String largeString = buildLargeString(maxSize + 100);
+        ExpressionResolver expressionResolver = buildExpressionResolver(maxSize);
 
         // when
         Map<String, Object> result = expressionResolver.resolveExpressionsMap(
@@ -446,10 +460,11 @@ public class ExpressionResolverTest {
     }
 
     @Test
-    public void resolveExpressionsMap_should_skipParsing_when_stringWithExpressionExceedsMaxSize() {
+    public void resolveExpressionsMap_should_skipParsing_when_stringWithExpressionExceedsConfiguredMaxSize() {
         // given
-        int maxSize = ExpressionResolver.getMaxVarSizeForExpressionParsing();
+        int maxSize = 64;
         String largeStringWithExpression = buildLargeString(maxSize + 100) + "${name}";
+        ExpressionResolver expressionResolver = buildExpressionResolver(maxSize);
 
         // Expression should NOT be called because the string is too large
         // If it were called and we didn't mock it, the test would fail
@@ -465,12 +480,13 @@ public class ExpressionResolverTest {
     }
 
     @Test
-    public void resolveExpressionsMap_should_parseParsing_when_stringIsAtMaxSize() {
+    public void resolveExpressionsMap_should_parseParsing_when_stringIsAtConfiguredMaxSize() {
         // given
-        int maxSize = ExpressionResolver.getMaxVarSizeForExpressionParsing();
+        int maxSize = 64;
         String expressionContent = "${name}";
         String padding = buildLargeString(maxSize - expressionContent.length());
         String stringAtMaxSize = padding + expressionContent;
+        ExpressionResolver expressionResolver = buildExpressionResolver(maxSize);
 
         Expression nameExpression = buildExpression(expressionContent);
         given(expressionEvaluator.evaluate(nameExpression, expressionManager, delegateInterceptor)).willReturn("John");
@@ -488,8 +504,9 @@ public class ExpressionResolverTest {
     @Test
     public void resolveExpressionsMap_should_skipParsing_when_nestedMapContainsLargeString() {
         // given
-        int maxSize = ExpressionResolver.getMaxVarSizeForExpressionParsing();
+        int maxSize = 64;
         String largeString = buildLargeString(maxSize + 100);
+        ExpressionResolver expressionResolver = buildExpressionResolver(maxSize);
 
         Map<String, Object> nestedMap = new HashMap<>();
         nestedMap.put("largeValue", largeString);
@@ -511,8 +528,9 @@ public class ExpressionResolverTest {
     @Test
     public void resolveExpressionsMap_should_skipParsing_when_listContainsLargeString() {
         // given
-        int maxSize = ExpressionResolver.getMaxVarSizeForExpressionParsing();
+        int maxSize = 64;
         String largeString = buildLargeString(maxSize + 100);
+        ExpressionResolver expressionResolver = buildExpressionResolver(maxSize);
 
         // when
         Map<String, Object> result = expressionResolver.resolveExpressionsMap(
@@ -527,9 +545,10 @@ public class ExpressionResolverTest {
     @Test
     public void resolveExpressionsMap_should_resolveSmallStrings_when_mixedWithLargeStrings() {
         // given
-        int maxSize = ExpressionResolver.getMaxVarSizeForExpressionParsing();
+        int maxSize = 64;
         String largeString = buildLargeString(maxSize + 100);
         String smallExpression = "${name}";
+        ExpressionResolver expressionResolver = buildExpressionResolver(maxSize);
 
         Expression nameExpression = buildExpression(smallExpression);
         given(expressionEvaluator.evaluate(nameExpression, expressionManager, delegateInterceptor)).willReturn("John");
@@ -547,14 +566,26 @@ public class ExpressionResolverTest {
     }
 
     @Test
-    public void getMaxVarSizeForExpressionParsing_should_returnConfiguredValue() {
+    public void getMaxVarSizeForExpressionParsing_should_returnUnlimitedByDefault() {
         // when
         int maxSize = ExpressionResolver.getMaxVarSizeForExpressionParsing();
 
         // then
-        assertThat(maxSize).isGreaterThan(0);
-        // Default is 100KB unless overridden by environment variable
-        // We just verify it's a positive number
+        assertThat(maxSize).isEqualTo(Integer.MAX_VALUE);
+    }
+
+    @Test
+    public void resolveMaxVarSizeForExpressionParsing_should_returnUnlimited_when_valueIsMissingOrInvalid() {
+        assertThat(ExpressionResolver.resolveMaxVarSizeForExpressionParsing(null)).isEqualTo(Integer.MAX_VALUE);
+        assertThat(ExpressionResolver.resolveMaxVarSizeForExpressionParsing(" ")).isEqualTo(Integer.MAX_VALUE);
+        assertThat(ExpressionResolver.resolveMaxVarSizeForExpressionParsing("0")).isEqualTo(Integer.MAX_VALUE);
+        assertThat(ExpressionResolver.resolveMaxVarSizeForExpressionParsing("-1")).isEqualTo(Integer.MAX_VALUE);
+        assertThat(ExpressionResolver.resolveMaxVarSizeForExpressionParsing("invalid")).isEqualTo(Integer.MAX_VALUE);
+    }
+
+    @Test
+    public void resolveMaxVarSizeForExpressionParsing_should_returnConfiguredLimit_when_valueIsPositive() {
+        assertThat(ExpressionResolver.resolveMaxVarSizeForExpressionParsing("512000")).isEqualTo(512000);
     }
 
     /**
@@ -567,5 +598,9 @@ public class ExpressionResolverTest {
             sb.append(pattern);
         }
         return sb.substring(0, size);
+    }
+
+    private ExpressionResolver buildExpressionResolver(int maxVarSizeForExpressionParsing) {
+        return new ExpressionResolver(expressionManager, mapper, delegateInterceptor, maxVarSizeForExpressionParsing);
     }
 }

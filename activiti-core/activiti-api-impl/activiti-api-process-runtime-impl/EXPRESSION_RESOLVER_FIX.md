@@ -30,46 +30,46 @@ at org.activiti.runtime.api.impl.ExtensionsVariablesMappingProvider.calculateInp
 
 **File:** `../Activiti/activiti-core/activiti-api-impl/activiti-api-process-runtime-impl/src/main/java/org/activiti/runtime/api/impl/ExpressionResolver.java`
 
-1. **Added configurable size limit** (lines 45-64):
+1. **Added configurable size limit**:
    - Environment variable: `MAX_VAR_SIZE_FOR_EXPRESSION_PARSING`
-   - Default value: 100KB (102,400 bytes)
+   - Default value: unlimited
    - Can be overridden by setting the environment variable to any positive integer
 
-2. **Added size check before regex** (lines 98-107):
+2. **Added optional size check before expression resolution**:
    - Strings exceeding the limit skip expression parsing entirely
    - Debug logging when skipping due to size
    - Returns original string unchanged
 
-3. **Added defensive check in placeholder resolution** (lines 131-134):
-   - Additional safety check in `resolveInStringPlaceHolder()`
+3. **Replaced regex-based expression scanning with string scanning**:
+   - `containsExpressionString()` no longer runs the regex matcher across the full value
+   - `resolveExpressionsString()` and `resolveInStringPlaceHolder()` detect placeholders without the backtracking-prone pattern
 
-4. **Added getter method** (lines 85-92):
+4. **Added getter/configuration helpers**:
    - `getMaxVarSizeForExpressionParsing()` for testing and monitoring
 
-5. **Added initialization logging** (lines 77-81):
+5. **Added initialization logging**:
    - Logs the configured max size on startup
 
 ### Test Coverage
 
 **File:** `../Activiti/activiti-core/activiti-api-impl/activiti-api-process-runtime-impl/src/test/java/org/activiti/runtime/api/impl/ExpressionResolverTest.java`
 
-Added 8 new test cases:
-1. `resolveExpressionsMap_should_skipParsing_when_stringExceedsMaxSize()`
-2. `resolveExpressionsMap_should_skipParsing_when_stringWithExpressionExceedsMaxSize()`
-3. `resolveExpressionsMap_should_parseParsing_when_stringIsAtMaxSize()`
-4. `resolveExpressionsMap_should_skipParsing_when_nestedMapContainsLargeString()`
-5. `resolveExpressionsMap_should_skipParsing_when_listContainsLargeString()`
-6. `resolveExpressionsMap_should_resolveSmallStrings_when_mixedWithLargeStrings()`
-7. `getMaxVarSizeForExpressionParsing_should_returnConfiguredValue()`
-8. Helper method: `buildLargeString(int size)`
+Added targeted test cases covering:
+1. Configured size-limit skip behavior
+2. Boundary behavior at the configured limit
+3. Nested maps/lists with configured limits
+4. Mixed large/small value handling
+5. Large-value expression detection without regex matching
+6. Default unlimited configuration
+7. Configuration parsing helpers
 
 **All tests pass:** ✅ 28 tests run, 0 failures, 0 errors
 
 ## Configuration
 
 ### Default Behavior
-- Max size: 100KB (102,400 bytes)
-- Strings larger than this will skip expression resolution
+- Max size: unlimited
+- All strings are parsed unless a positive limit is configured
 - No environment variable configuration needed
 
 ### Custom Configuration
@@ -82,7 +82,7 @@ export MAX_VAR_SIZE_FOR_EXPRESSION_PARSING=512000
 # Set to 1MB
 export MAX_VAR_SIZE_FOR_EXPRESSION_PARSING=1048576
 
-# Disable limit (not recommended!)
+# Restore effectively unlimited parsing
 export MAX_VAR_SIZE_FOR_EXPRESSION_PARSING=2147483647
 ```
 
@@ -96,20 +96,20 @@ env:
 ## Impact Analysis
 
 ### What This Fix Does
-✅ Prevents OutOfMemoryError from large strings during expression resolution  
-✅ Maintains backward compatibility - no behavior change for normal-sized strings  
-✅ Configurable via environment variable  
+✅ Avoids the unbounded regex scan in expression detection/resolution paths
+✅ Maintains parsing behavior by default
+✅ Optional size guard remains configurable via environment variable
 ✅ Logs when skipping to aid debugging  
-✅ No performance impact on normal operations
+✅ No regex backtracking risk in the detection path
 
 ### What This Fix Does NOT Break
-✅ Normal expression resolution (strings < 100KB) works exactly as before  
+✅ Normal expression resolution works exactly as before when no limit is configured
 ✅ All existing tests continue to pass  
 ✅ Nested structures (maps, lists) are handled correctly  
 ✅ Mixed scenarios (large + small strings) work correctly
 
 ### Behavior Changes
-⚠️ **Strings exceeding the limit will NOT have expressions resolved**
+⚠️ **Strings exceeding a configured limit will NOT have expressions resolved**
 - Example: A 200KB string containing `${variable}` will be returned as-is
 - This is intentional to prevent OutOfMemoryError
 - Logged at DEBUG level for visibility
@@ -130,10 +130,10 @@ env:
 
 3. **Optional: Configure custom limit**
    - Add environment variable to deployment configuration
-   - Recommended: Start with default (100KB) and adjust if needed
+   - Recommended: leave unlimited unless a deployment needs a hard guard
 
 4. **Deploy and monitor:**
-   - Check startup logs for: `"ExpressionResolver initialized with MAX_VAR_SIZE_FOR_EXPRESSION_PARSING: X bytes"`
+   - Check startup logs for: `"ExpressionResolver initialized with MAX_VAR_SIZE_FOR_EXPRESSION_PARSING: unlimited"` or a configured byte limit
    - Monitor DEBUG logs for: `"Skipping expression parsing for string exceeding max size"`
 
 ## Monitoring and Troubleshooting
@@ -141,7 +141,7 @@ env:
 ### Startup Verification
 Look for this log line in runtime-bundle startup:
 ```
-INFO  o.a.r.a.i.ExpressionResolver - ExpressionResolver initialized with MAX_VAR_SIZE_FOR_EXPRESSION_PARSING: 102400 bytes
+INFO  o.a.r.a.i.ExpressionResolver - ExpressionResolver initialized with MAX_VAR_SIZE_FOR_EXPRESSION_PARSING: unlimited
 ```
 
 ### Runtime Monitoring
@@ -166,7 +166,7 @@ DEBUG o.a.r.a.i.ExpressionResolver - Skipping expression parsing for string exce
 
 1. `../Activiti/activiti-core/activiti-api-impl/activiti-api-process-runtime-impl/src/main/java/org/activiti/runtime/api/impl/ExpressionResolver.java`
    - Added size limit configuration
-   - Added size checks before regex operations
+   - Replaced regex-based expression scanning with string scanning
    - Added logging and getter method
 
 2. `../Activiti/activiti-core/activiti-api-impl/activiti-api-process-runtime-impl/src/test/java/org/activiti/runtime/api/impl/ExpressionResolverTest.java`

@@ -21,8 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.interceptor.DelegateInterceptor;
@@ -38,35 +36,15 @@ public class ExpressionResolver {
     private static final TypeReference<Map<String, ?>> MAP_STRING_OBJECT_TYPE = new TypeReference<Map<String, ?>>() {};
     private static final Logger logger = LoggerFactory.getLogger(ExpressionResolver.class);
 
-    private static final String EXPRESSION_PATTERN_STRING = "([\\$]\\{([^\\}]*)\\})";
-    private static final Pattern EXPRESSION_PATTERN = Pattern.compile(EXPRESSION_PATTERN_STRING);
-    private static final int EXPRESSION_KEY_INDEX = 1;
-
-    private static final int DEFAULT_MAX_VAR_SIZE_FOR_EXPRESSION_PARSING = 100 * 1024; // 100KB
-    private static final int MAX_VAR_SIZE_FOR_EXPRESSION_PARSING;
-
-    static {
-        int maxSize = DEFAULT_MAX_VAR_SIZE_FOR_EXPRESSION_PARSING;
-        String envValue = System.getenv("MAX_VAR_SIZE_FOR_EXPRESSION_PARSING");
-        if (envValue != null && !envValue.trim().isEmpty()) {
-            try {
-                maxSize = Integer.parseInt(envValue.trim());
-                if (maxSize <= 0) {
-                    maxSize = DEFAULT_MAX_VAR_SIZE_FOR_EXPRESSION_PARSING;
-                }
-            } catch (NumberFormatException e) {
-                logger.warn(
-                    "Invalid value for MAX_VAR_SIZE_FOR_EXPRESSION_PARSING environment variable: {}. Using default: {} bytes",
-                    envValue,
-                    DEFAULT_MAX_VAR_SIZE_FOR_EXPRESSION_PARSING
-                );
-            }
-        }
-        MAX_VAR_SIZE_FOR_EXPRESSION_PARSING = maxSize;
-    }
+    private static final String EXPRESSION_PREFIX = "${";
+    private static final int DEFAULT_MAX_VAR_SIZE_FOR_EXPRESSION_PARSING = Integer.MAX_VALUE;
+    private static final int MAX_VAR_SIZE_FOR_EXPRESSION_PARSING = resolveMaxVarSizeForExpressionParsing(
+        System.getenv("MAX_VAR_SIZE_FOR_EXPRESSION_PARSING")
+    );
 
     private JsonMapper mapper;
     private final DelegateInterceptor delegateInterceptor;
+    private final int maxVarSizeForExpressionParsing;
 
     private ExpressionManager expressionManager;
 
@@ -75,12 +53,22 @@ public class ExpressionResolver {
         JsonMapper mapper,
         DelegateInterceptor delegateInterceptor
     ) {
+        this(expressionManager, mapper, delegateInterceptor, MAX_VAR_SIZE_FOR_EXPRESSION_PARSING);
+    }
+
+    ExpressionResolver(
+        ExpressionManager expressionManager,
+        JsonMapper mapper,
+        DelegateInterceptor delegateInterceptor,
+        int maxVarSizeForExpressionParsing
+    ) {
         this.expressionManager = expressionManager;
         this.mapper = mapper;
         this.delegateInterceptor = delegateInterceptor;
+        this.maxVarSizeForExpressionParsing = maxVarSizeForExpressionParsing;
         logger.info(
-            "ExpressionResolver initialized with MAX_VAR_SIZE_FOR_EXPRESSION_PARSING: {} bytes",
-            MAX_VAR_SIZE_FOR_EXPRESSION_PARSING
+            "ExpressionResolver initialized with MAX_VAR_SIZE_FOR_EXPRESSION_PARSING: {}",
+            formatMaxVarSizeForLogging(maxVarSizeForExpressionParsing)
         );
     }
 
@@ -92,6 +80,40 @@ public class ExpressionResolver {
      */
     public static int getMaxVarSizeForExpressionParsing() {
         return MAX_VAR_SIZE_FOR_EXPRESSION_PARSING;
+    }
+
+    static int resolveMaxVarSizeForExpressionParsing(String envValue) {
+        if (StringUtils.isBlank(envValue)) {
+            return DEFAULT_MAX_VAR_SIZE_FOR_EXPRESSION_PARSING;
+        }
+
+        try {
+            int maxSize = Integer.parseInt(envValue.trim());
+            if (maxSize > 0) {
+                return maxSize;
+            }
+
+            logger.warn(
+                "Invalid value for MAX_VAR_SIZE_FOR_EXPRESSION_PARSING environment variable: {}. Using default: {}",
+                envValue,
+                formatMaxVarSizeForLogging(DEFAULT_MAX_VAR_SIZE_FOR_EXPRESSION_PARSING)
+            );
+        } catch (NumberFormatException e) {
+            logger.warn(
+                "Invalid value for MAX_VAR_SIZE_FOR_EXPRESSION_PARSING environment variable: {}. Using default: {}",
+                envValue,
+                formatMaxVarSizeForLogging(DEFAULT_MAX_VAR_SIZE_FOR_EXPRESSION_PARSING)
+            );
+            return DEFAULT_MAX_VAR_SIZE_FOR_EXPRESSION_PARSING;
+        }
+
+        return DEFAULT_MAX_VAR_SIZE_FOR_EXPRESSION_PARSING;
+    }
+
+    private static String formatMaxVarSizeForLogging(int maxVarSizeForExpressionParsing) {
+        return maxVarSizeForExpressionParsing == Integer.MAX_VALUE
+            ? "unlimited"
+            : maxVarSizeForExpressionParsing + " bytes";
     }
 
     private Object resolveExpressions(final ExpressionEvaluator expressionEvaluator, final Object value) {
@@ -132,18 +154,18 @@ public class ExpressionResolver {
         }
 
         // Skip expression parsing for strings exceeding the size limit to prevent OutOfMemoryError
-        if (sourceString.length() > MAX_VAR_SIZE_FOR_EXPRESSION_PARSING) {
+        if (sourceString.length() > maxVarSizeForExpressionParsing) {
             if (logger.isDebugEnabled()) {
                 logger.debug(
-                    "Skipping expression parsing for string exceeding max size: {} bytes (limit: {} bytes)",
+                    "Skipping expression parsing for string exceeding max size: {} bytes (limit: {})",
                     sourceString.length(),
-                    MAX_VAR_SIZE_FOR_EXPRESSION_PARSING
+                    formatMaxVarSizeForLogging(maxVarSizeForExpressionParsing)
                 );
             }
             return sourceString;
         }
 
-        if (sourceString.matches(EXPRESSION_PATTERN_STRING)) {
+        if (isWholeExpression(sourceString)) {
             return resolveObjectPlaceHolder(expressionEvaluator, sourceString);
         } else {
             return resolveInStringPlaceHolder(expressionEvaluator, sourceString);
@@ -168,25 +190,38 @@ public class ExpressionResolver {
         final String sourceString
     ) {
         // Size check already done in resolveExpressionsString, but adding defensive check
-        if (sourceString.length() > MAX_VAR_SIZE_FOR_EXPRESSION_PARSING) {
+        if (sourceString.length() > maxVarSizeForExpressionParsing) {
             return sourceString;
         }
 
-        final Matcher matcher = EXPRESSION_PATTERN.matcher(sourceString);
-        final StringBuffer sb = new StringBuffer();
-        while (matcher.find()) {
-            final String expressionKey = matcher.group(EXPRESSION_KEY_INDEX);
+        int currentIndex = 0;
+        StringBuilder result = new StringBuilder(sourceString.length());
+        while (currentIndex < sourceString.length()) {
+            int expressionStart = sourceString.indexOf(EXPRESSION_PREFIX, currentIndex);
+            if (expressionStart < 0) {
+                result.append(sourceString, currentIndex, sourceString.length());
+                break;
+            }
+
+            int expressionEnd = findExpressionEnd(sourceString, expressionStart);
+            if (expressionEnd < 0) {
+                result.append(sourceString, currentIndex, sourceString.length());
+                break;
+            }
+
+            result.append(sourceString, currentIndex, expressionStart);
+            final String expressionKey = sourceString.substring(expressionStart, expressionEnd + 1);
             final Expression expression = expressionManager.createExpression(expressionKey);
             try {
                 final Object value = expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor);
-                matcher.appendReplacement(sb, Objects.toString(value));
+                result.append(Objects.toString(value));
             } catch (final Exception e) {
                 logger.warn("Unable to resolve expression in variables", e);
-                matcher.appendReplacement(sb, "");
+                result.append("");
             }
+            currentIndex = expressionEnd + 1;
         }
-        matcher.appendTail(sb);
-        return sb.toString();
+        return result.toString();
     }
 
     public List<String> findVariableNamesContainingExpressions(final Map<String, ?> source) {
@@ -219,7 +254,7 @@ public class ExpressionResolver {
     }
 
     private boolean containsExpressionString(final String sourceString) {
-        return EXPRESSION_PATTERN.matcher(sourceString).find();
+        return findExpressionStart(sourceString, 0) >= 0;
     }
 
     private boolean containsExpressionMap(final Map<String, ?> source) {
@@ -238,5 +273,23 @@ public class ExpressionResolver {
             }
         }
         return false;
+    }
+
+    private boolean isWholeExpression(String sourceString) {
+        int expressionStart = findExpressionStart(sourceString, 0);
+        return expressionStart == 0 && findExpressionEnd(sourceString, expressionStart) == sourceString.length() - 1;
+    }
+
+    private int findExpressionStart(String sourceString, int fromIndex) {
+        int expressionStart = sourceString.indexOf(EXPRESSION_PREFIX, fromIndex);
+        if (expressionStart < 0) {
+            return -1;
+        }
+
+        return findExpressionEnd(sourceString, expressionStart) >= 0 ? expressionStart : -1;
+    }
+
+    private int findExpressionEnd(String sourceString, int expressionStart) {
+        return expressionStart >= 0 ? sourceString.indexOf('}', expressionStart + EXPRESSION_PREFIX.length()) : -1;
     }
 }
