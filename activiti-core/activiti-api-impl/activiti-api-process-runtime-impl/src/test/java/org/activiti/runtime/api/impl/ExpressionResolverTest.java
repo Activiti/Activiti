@@ -235,6 +235,7 @@ public class ExpressionResolverTest {
             "${foo[`}`]}",
             "${outer(${inner})}",
             "${foo${bar}}",
+            "${a${b${c}}}",
             "${foo[bar}}",
             "${{a}}",
         }
@@ -318,6 +319,7 @@ public class ExpressionResolverTest {
             "${foo[`}`]}",
             "${{a}}",
             "${foo${bar}}",
+            "${a${b${c}}}",
             "${outer(${inner})}",
             "${outer({a: 1})}",
             "${foo({bar})}",
@@ -367,6 +369,23 @@ public class ExpressionResolverTest {
         //given
         String sourceValue = "prefix ${foo${bar}} suffix";
         Expression expression = buildExpression("${foo${bar}}");
+        given(expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor)).willReturn("John");
+
+        //when
+        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
+            expressionEvaluator,
+            singletonMap("name", sourceValue)
+        );
+
+        //then
+        assertThat(result).containsEntry("name", "prefix John suffix");
+    }
+
+    @Test
+    public void resolveExpressionsMap_should_replaceDeeplyNestedExpressionInsideSurroundingText() {
+        //given
+        String sourceValue = "prefix ${a${b${c}}} suffix";
+        Expression expression = buildExpression("${a${b${c}}}");
         given(expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor)).willReturn("John");
 
         //when

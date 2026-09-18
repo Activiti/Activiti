@@ -418,14 +418,26 @@ public class ExpressionResolver {
         if (closedDelimiter == OUTER_EXPRESSION_DELIMITER) {
             return new ExpressionRange(parserState.expressionStart, currentIndex);
         }
-        if (
-            closedDelimiter == NESTED_EXPRESSION_DELIMITER &&
-            hasOnlyOuterExpressionDelimiter(parserState.delimiterStack) &&
-            hasTrailingClosingBrace(sourceString, currentIndex)
-        ) {
-            return new ExpressionRange(parserState.expressionStart, currentIndex + 1);
+        if (closedDelimiter == NESTED_EXPRESSION_DELIMITER) {
+            return closeNestedExpression(sourceString, currentIndex, parserState);
         }
         return null;
+    }
+
+    private ExpressionRange closeNestedExpression(
+        String sourceString,
+        int currentIndex,
+        ExpressionRangeParserState parserState
+    ) {
+        if (
+            !hasOnlyOuterExpressionDelimiter(parserState.delimiterStack) ||
+            !hasTrailingClosingBrace(sourceString, currentIndex)
+        ) {
+            return null;
+        }
+
+        parserState.delimiterStack.pop();
+        return new ExpressionRange(parserState.expressionStart, currentIndex + 1);
     }
 
     private boolean isClosingExpressionDelimiter(char delimiter) {
