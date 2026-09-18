@@ -28,7 +28,7 @@ at org.activiti.runtime.api.impl.ExtensionsVariablesMappingProvider.calculateInp
 
 ### Changes Made
 
-**File:** `../Activiti/activiti-core/activiti-api-impl/activiti-api-process-runtime-impl/src/main/java/org/activiti/runtime/api/impl/ExpressionResolver.java`
+**File:** `activiti-core/activiti-api-impl/activiti-api-process-runtime-impl/src/main/java/org/activiti/runtime/api/impl/ExpressionResolver.java`
 
 1. **Added configurable size limit**:
    - Environment variable: `MAX_VAR_SIZE_FOR_EXPRESSION_PARSING`
@@ -52,7 +52,7 @@ at org.activiti.runtime.api.impl.ExtensionsVariablesMappingProvider.calculateInp
 
 ### Test Coverage
 
-**File:** `../Activiti/activiti-core/activiti-api-impl/activiti-api-process-runtime-impl/src/test/java/org/activiti/runtime/api/impl/ExpressionResolverTest.java`
+**File:** `activiti-core/activiti-api-impl/activiti-api-process-runtime-impl/src/test/java/org/activiti/runtime/api/impl/ExpressionResolverTest.java`
 
 Added targeted test cases covering:
 1. Configured size-limit skip behavior
@@ -164,12 +164,12 @@ DEBUG o.a.r.a.i.ExpressionResolver - Skipping expression parsing for string exce
 
 ## Files Changed
 
-1. `../Activiti/activiti-core/activiti-api-impl/activiti-api-process-runtime-impl/src/main/java/org/activiti/runtime/api/impl/ExpressionResolver.java`
+1. `activiti-core/activiti-api-impl/activiti-api-process-runtime-impl/src/main/java/org/activiti/runtime/api/impl/ExpressionResolver.java`
    - Added size limit configuration
    - Replaced regex-based expression scanning with string scanning
    - Added logging and getter method
 
-2. `../Activiti/activiti-core/activiti-api-impl/activiti-api-process-runtime-impl/src/test/java/org/activiti/runtime/api/impl/ExpressionResolverTest.java`
+2. `activiti-core/activiti-api-impl/activiti-api-process-runtime-impl/src/test/java/org/activiti/runtime/api/impl/ExpressionResolverTest.java`
    - Added targeted tests for configurable limits and non-regex expression scanning
    - Added helper method for large string generation
 
