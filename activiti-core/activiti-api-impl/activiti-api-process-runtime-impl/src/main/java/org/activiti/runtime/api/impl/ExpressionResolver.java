@@ -308,11 +308,7 @@ public class ExpressionResolver {
 
             switch (currentCharacter) {
                 case '$':
-                    if (
-                        !delimiterStack.isEmpty() &&
-                        index + 1 < sourceString.length() &&
-                        sourceString.charAt(index + 1) == '{'
-                    ) {
+                    if (index + 1 < sourceString.length() && sourceString.charAt(index + 1) == '{') {
                         delimiterStack.push(NESTED_EXPRESSION_DELIMITER);
                         index++;
                     }
@@ -336,7 +332,10 @@ public class ExpressionResolver {
                         return new ExpressionRange(expressionStart, index);
                     }
                     if (delimiterStack.peek() == '{' || delimiterStack.peek() == NESTED_EXPRESSION_DELIMITER) {
-                        delimiterStack.pop();
+                        char closedDelimiter = delimiterStack.pop();
+                        if (closedDelimiter == NESTED_EXPRESSION_DELIMITER && delimiterStack.isEmpty()) {
+                            return new ExpressionRange(expressionStart, index);
+                        }
                     }
                     break;
                 case ']':
