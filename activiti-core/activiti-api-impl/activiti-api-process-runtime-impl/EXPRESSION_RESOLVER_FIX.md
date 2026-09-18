@@ -140,7 +140,7 @@ Added targeted test cases covering:
 - Max size: **unlimited** (`Integer.MAX_VALUE`)
 - All strings are parsed regardless of size (linear parser handles this efficiently)
 - No environment variable configuration needed
-- **New parser eliminates catastrophic backtracking, so unlimited is safe**
+- **New parser avoids the regex backtracking failure mode that motivated this change**
 
 ### When to Configure a Limit
 
@@ -327,7 +327,7 @@ Memory: Minimal - single pass, no regex state
 
 - String: 1MB with 10,000 `{` and `}` characters
 - Old regex approach: **OutOfMemoryError** (never completes)
-- New linear parser: **~5ms** to parse
+- New linear parser: completes in linear time without the regex backtracking behavior
 
 ### Expression Handling Improvements
 

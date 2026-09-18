@@ -311,7 +311,9 @@ public class ExpressionResolver {
             switch (currentCharacter) {
                 case '$':
                     if (index + 1 < sourceString.length() && sourceString.charAt(index + 1) == '{') {
-                        delimiterStack.push(NESTED_EXPRESSION_DELIMITER);
+                        if (!hasOnlyOuterExpressionDelimiter(delimiterStack)) {
+                            delimiterStack.push(NESTED_EXPRESSION_DELIMITER);
+                        }
                         index++;
                     }
                     break;
@@ -340,9 +342,6 @@ public class ExpressionResolver {
                     ) {
                         char closedDelimiter = delimiterStack.pop();
                         if (closedDelimiter == OUTER_EXPRESSION_DELIMITER) {
-                            return new ExpressionRange(expressionStart, index);
-                        }
-                        if (closedDelimiter == NESTED_EXPRESSION_DELIMITER && hasOnlyOuterExpressionDelimiter(delimiterStack)) {
                             return new ExpressionRange(expressionStart, index);
                         }
                     }
