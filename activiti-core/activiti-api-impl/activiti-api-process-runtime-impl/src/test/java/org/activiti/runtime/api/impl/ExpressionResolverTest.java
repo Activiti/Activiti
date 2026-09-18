@@ -308,10 +308,14 @@ public class ExpressionResolverTest {
     public void resolveExpressionsMap_should_replaceExpressionByValue_when_stringContainsAdjacentExpressions() {
         //given
         Expression firstExpression = buildExpression("${first}");
-        given(expressionEvaluator.evaluate(firstExpression, expressionManager, delegateInterceptor)).willReturn("Hello");
+        given(expressionEvaluator.evaluate(firstExpression, expressionManager, delegateInterceptor)).willReturn(
+            "Hello"
+        );
 
         Expression secondExpression = buildExpression("${second}");
-        given(expressionEvaluator.evaluate(secondExpression, expressionManager, delegateInterceptor)).willReturn("World");
+        given(expressionEvaluator.evaluate(secondExpression, expressionManager, delegateInterceptor)).willReturn(
+            "World"
+        );
 
         //when
         Map<String, Object> result = expressionResolver.resolveExpressionsMap(
