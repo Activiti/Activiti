@@ -92,10 +92,10 @@ public class ExpressionResolver {
                 return maxSize;
             }
         } catch (NumberFormatException e) {
-            return logInvalidMaxVarSizeAndReturnDefault(envValue);
+            return logInvalidMaxVarSizeAndReturnDefault();
         }
 
-        return logInvalidMaxVarSizeAndReturnDefault(envValue);
+        return logInvalidMaxVarSizeAndReturnDefault();
     }
 
     private static String formatMaxVarSizeForLogging(int maxVarSizeForExpressionParsing) {
@@ -104,10 +104,9 @@ public class ExpressionResolver {
             : maxVarSizeForExpressionParsing + " characters";
     }
 
-    private static int logInvalidMaxVarSizeAndReturnDefault(String envValue) {
+    private static int logInvalidMaxVarSizeAndReturnDefault() {
         logger.warn(
-            "Invalid value for MAX_VAR_SIZE_FOR_EXPRESSION_PARSING environment variable: {}. Using default: {}",
-            envValue,
+            "MAX_VAR_SIZE_FOR_EXPRESSION_PARSING was set to an invalid value. Using default: {}",
             formatMaxVarSizeForLogging(DEFAULT_MAX_VAR_SIZE_FOR_EXPRESSION_PARSING)
         );
         return DEFAULT_MAX_VAR_SIZE_FOR_EXPRESSION_PARSING;
