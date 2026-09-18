@@ -203,8 +203,8 @@ env:
 **Improvements Over Original:**
 
 - ✅ Handles nested `${...}` inside balanced delimiters such as `${outer(${inner})}` (regex couldn't)
-- ✅ Handles `${"string with } inside"}` quoted braces (regex failed)
-- ✅ Handles escape sequences properly: `${"string with \" quote"}`
+- ✅ Handles quoted braces in single-quoted, double-quoted, and backtick-quoted sections
+- ✅ Handles escaped quotes inside quoted sections, such as `${"string with \" quote"}`
 - ✅ Predictable O(n) performance regardless of input
 
 ### What This Fix Does NOT Break ✅

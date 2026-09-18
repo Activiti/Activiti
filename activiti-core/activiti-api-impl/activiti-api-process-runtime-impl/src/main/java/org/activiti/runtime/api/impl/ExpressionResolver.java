@@ -323,7 +323,9 @@ public class ExpressionResolver {
                     activeQuote = currentCharacter;
                     break;
                 case '{':
-                    delimiterStack.push('{');
+                    if (!hasOnlyOuterExpressionDelimiter(delimiterStack)) {
+                        delimiterStack.push('{');
+                    }
                     break;
                 case '[':
                     delimiterStack.push('[');
