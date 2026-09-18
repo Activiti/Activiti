@@ -43,6 +43,7 @@ public class ExpressionResolver {
     private static final int MAX_VAR_SIZE_FOR_EXPRESSION_PARSING = resolveMaxVarSizeForExpressionParsing(
         System.getenv("MAX_VAR_SIZE_FOR_EXPRESSION_PARSING")
     );
+    private static final char OUTER_EXPRESSION_DELIMITER = '#';
     private static final char NESTED_EXPRESSION_DELIMITER = '$';
 
     private JsonMapper mapper;
@@ -288,6 +289,7 @@ public class ExpressionResolver {
                     sourceString.charAt(index + 1) == EXPRESSION_PREFIX.charAt(1)
                 ) {
                     expressionStart = index;
+                    delimiterStack.push(OUTER_EXPRESSION_DELIMITER);
                     index++;
                 }
                 continue;
@@ -331,9 +333,20 @@ public class ExpressionResolver {
                     if (delimiterStack.isEmpty()) {
                         return new ExpressionRange(expressionStart, index);
                     }
-                    if (delimiterStack.peek() == '{' || delimiterStack.peek() == NESTED_EXPRESSION_DELIMITER) {
+                    if (
+                        delimiterStack.peek() == '{' ||
+                        delimiterStack.peek() == NESTED_EXPRESSION_DELIMITER ||
+                        delimiterStack.peek() == OUTER_EXPRESSION_DELIMITER
+                    ) {
                         char closedDelimiter = delimiterStack.pop();
-                        if (closedDelimiter == NESTED_EXPRESSION_DELIMITER && delimiterStack.isEmpty()) {
+                        if (closedDelimiter == OUTER_EXPRESSION_DELIMITER) {
+                            return new ExpressionRange(expressionStart, index);
+                        }
+                        if (
+                            closedDelimiter == NESTED_EXPRESSION_DELIMITER &&
+                            delimiterStack.size() == 1 &&
+                            delimiterStack.peek() == OUTER_EXPRESSION_DELIMITER
+                        ) {
                             return new ExpressionRange(expressionStart, index);
                         }
                     }

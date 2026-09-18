@@ -209,8 +209,8 @@ env:
 
 ### What This Fix Does NOT Break ✅
 
-- ✅ **100% backward compatible** - all existing expressions work identically
-- ✅ **All existing tests pass** - no functional regression
+- ✅ **Existing covered expressions remain compatible** - the current regression suite still exercises the supported cases
+- ✅ **Current regression tests pass** - no regression in the scenarios covered by this module's tests
 - ✅ **Nested structures** (maps, lists) handled correctly
 - ✅ **Mixed scenarios** (large + small strings) work correctly
 - ✅ **Default behavior unchanged** - unlimited parsing by default
