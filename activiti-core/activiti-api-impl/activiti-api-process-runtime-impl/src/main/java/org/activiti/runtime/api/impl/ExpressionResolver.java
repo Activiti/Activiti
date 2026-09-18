@@ -92,7 +92,7 @@ public class ExpressionResolver {
             if (maxSize > 0) {
                 return maxSize;
             }
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException _) {
             return logInvalidMaxVarSizeAndReturnDefault("non-numeric");
         }
 
@@ -106,11 +106,13 @@ public class ExpressionResolver {
     }
 
     private static int logInvalidMaxVarSizeAndReturnDefault(String reason) {
-        logger.warn(
-            "MAX_VAR_SIZE_FOR_EXPRESSION_PARSING was set to an invalid {} value. Using default: {}",
-            reason,
-            formatMaxVarSizeForLogging(DEFAULT_MAX_VAR_SIZE_FOR_EXPRESSION_PARSING)
-        );
+        if (logger.isWarnEnabled()) {
+            logger.warn(
+                "MAX_VAR_SIZE_FOR_EXPRESSION_PARSING was set to an invalid {} value. Using default: {}",
+                reason,
+                formatMaxVarSizeForLogging(DEFAULT_MAX_VAR_SIZE_FOR_EXPRESSION_PARSING)
+            );
+        }
         return DEFAULT_MAX_VAR_SIZE_FOR_EXPRESSION_PARSING;
     }
 
@@ -275,109 +277,160 @@ public class ExpressionResolver {
     }
 
     private ExpressionRange findNextExpressionRange(String sourceString, int fromIndex) {
-        int expressionStart = -1;
-        int compatibilityFallbackEnd = -1;
-        char activeQuote = 0;
-        boolean escaped = false;
-        Deque<Character> delimiterStack = new ArrayDeque<>();
+        ExpressionRangeParserState parserState = new ExpressionRangeParserState();
+        int index = Math.max(0, fromIndex);
 
-        for (int index = Math.max(0, fromIndex); index < sourceString.length(); index++) {
+        while (index < sourceString.length()) {
             char currentCharacter = sourceString.charAt(index);
 
-            if (expressionStart < 0) {
-                if (
-                    currentCharacter == EXPRESSION_PREFIX.charAt(0) &&
-                    index + 1 < sourceString.length() &&
-                    sourceString.charAt(index + 1) == EXPRESSION_PREFIX.charAt(1)
-                ) {
-                    expressionStart = index;
-                    delimiterStack.push(OUTER_EXPRESSION_DELIMITER);
-                    index++;
+            if (!parserState.isExpressionStarted()) {
+                index = advanceUntilExpressionStart(sourceString, index, currentCharacter, parserState);
+            } else if (parserState.isInsideQuote()) {
+                updateQuotedState(currentCharacter, parserState);
+            } else {
+                ExpressionRange expressionRange = handleExpressionCharacter(
+                    sourceString,
+                    index,
+                    currentCharacter,
+                    parserState
+                );
+                if (expressionRange != null) {
+                    return expressionRange;
                 }
-                continue;
             }
 
-            if (activeQuote != 0) {
-                if (currentCharacter == '\\' && !escaped) {
-                    escaped = true;
-                    continue;
-                }
-
-                if (currentCharacter == activeQuote && !escaped) {
-                    activeQuote = 0;
-                }
-                escaped = false;
-                continue;
+            if (parserState.skipNextCharacter) {
+                index++;
+                parserState.skipNextCharacter = false;
             }
-
-            switch (currentCharacter) {
-                case '$':
-                    if (index + 1 < sourceString.length() && sourceString.charAt(index + 1) == '{') {
-                        delimiterStack.push(NESTED_EXPRESSION_DELIMITER);
-                        index++;
-                    }
-                    break;
-                case '\'':
-                case '"':
-                case '`':
-                    activeQuote = currentCharacter;
-                    break;
-                case '{':
-                    if (!hasOnlyOuterExpressionDelimiter(delimiterStack)) {
-                        delimiterStack.push('{');
-                    }
-                    break;
-                case '[':
-                    delimiterStack.push('[');
-                    break;
-                case '(':
-                    delimiterStack.push('(');
-                    break;
-                case '}':
-                    if (delimiterStack.isEmpty()) {
-                        return new ExpressionRange(expressionStart, index);
-                    }
-                    if (
-                        delimiterStack.peek() == '{' ||
-                        delimiterStack.peek() == NESTED_EXPRESSION_DELIMITER ||
-                        delimiterStack.peek() == OUTER_EXPRESSION_DELIMITER
-                    ) {
-                        char closedDelimiter = delimiterStack.pop();
-                        if (closedDelimiter == OUTER_EXPRESSION_DELIMITER) {
-                            return new ExpressionRange(expressionStart, index);
-                        }
-                        if (
-                            closedDelimiter == NESTED_EXPRESSION_DELIMITER &&
-                            hasOnlyOuterExpressionDelimiter(delimiterStack) &&
-                            hasTrailingClosingBrace(sourceString, index)
-                        ) {
-                            return new ExpressionRange(expressionStart, index);
-                        }
-                    } else {
-                        if (compatibilityFallbackEnd < 0) {
-                            compatibilityFallbackEnd = index;
-                        }
-                    }
-                    break;
-                case ']':
-                    if (!delimiterStack.isEmpty() && delimiterStack.peek() == '[') {
-                        delimiterStack.pop();
-                    }
-                    break;
-                case ')':
-                    if (!delimiterStack.isEmpty() && delimiterStack.peek() == '(') {
-                        delimiterStack.pop();
-                    }
-                    break;
-                default:
-                    break;
-            }
+            index++;
         }
 
-        if (expressionStart >= 0 && compatibilityFallbackEnd >= 0) {
-            return new ExpressionRange(expressionStart, compatibilityFallbackEnd);
+        return parserState.getCompatibilityFallbackRange();
+    }
+
+    private int advanceUntilExpressionStart(
+        String sourceString,
+        int currentIndex,
+        char currentCharacter,
+        ExpressionRangeParserState parserState
+    ) {
+        if (isExpressionOpening(sourceString, currentIndex, currentCharacter)) {
+            parserState.expressionStart = currentIndex;
+            parserState.delimiterStack.push(OUTER_EXPRESSION_DELIMITER);
+            return currentIndex + 1;
+        }
+        return currentIndex;
+    }
+
+    private void updateQuotedState(char currentCharacter, ExpressionRangeParserState parserState) {
+        if (currentCharacter == '\\' && !parserState.escaped) {
+            parserState.escaped = true;
+            return;
+        }
+
+        if (currentCharacter == parserState.activeQuote && !parserState.escaped) {
+            parserState.activeQuote = 0;
+        }
+        parserState.escaped = false;
+    }
+
+    private ExpressionRange handleExpressionCharacter(
+        String sourceString,
+        int currentIndex,
+        char currentCharacter,
+        ExpressionRangeParserState parserState
+    ) {
+        return switch (currentCharacter) {
+            case '$' -> handleNestedExpressionOpening(sourceString, currentIndex, parserState);
+            case '\'', '"', '`' -> {
+                parserState.activeQuote = currentCharacter;
+                yield null;
+            }
+            case '{' -> {
+                pushPlainBrace(parserState.delimiterStack);
+                yield null;
+            }
+            case '[' -> pushAndContinue(parserState.delimiterStack, '[');
+            case '(' -> pushAndContinue(parserState.delimiterStack, '(');
+            case '}' -> handleClosingBrace(sourceString, currentIndex, parserState);
+            case ']' -> popMatchingDelimiter(parserState.delimiterStack, '[');
+            case ')' -> popMatchingDelimiter(parserState.delimiterStack, '(');
+            default -> null;
+        };
+    }
+
+    private boolean isExpressionOpening(String sourceString, int currentIndex, char currentCharacter) {
+        return (
+            currentCharacter == EXPRESSION_PREFIX.charAt(0) &&
+            currentIndex + 1 < sourceString.length() &&
+            sourceString.charAt(currentIndex + 1) == EXPRESSION_PREFIX.charAt(1)
+        );
+    }
+
+    private ExpressionRange handleNestedExpressionOpening(
+        String sourceString,
+        int currentIndex,
+        ExpressionRangeParserState parserState
+    ) {
+        if (isExpressionOpening(sourceString, currentIndex, '$')) {
+            parserState.delimiterStack.push(NESTED_EXPRESSION_DELIMITER);
+            parserState.skipNextCharacter = true;
         }
         return null;
+    }
+
+    private void pushPlainBrace(Deque<Character> delimiterStack) {
+        if (!hasOnlyOuterExpressionDelimiter(delimiterStack)) {
+            delimiterStack.push('{');
+        }
+    }
+
+    private ExpressionRange pushAndContinue(Deque<Character> delimiterStack, char delimiter) {
+        delimiterStack.push(delimiter);
+        return null;
+    }
+
+    private ExpressionRange popMatchingDelimiter(Deque<Character> delimiterStack, char delimiter) {
+        if (!delimiterStack.isEmpty() && delimiterStack.peek() == delimiter) {
+            delimiterStack.pop();
+        }
+        return null;
+    }
+
+    private ExpressionRange handleClosingBrace(
+        String sourceString,
+        int currentIndex,
+        ExpressionRangeParserState parserState
+    ) {
+        if (parserState.delimiterStack.isEmpty()) {
+            return new ExpressionRange(parserState.expressionStart, currentIndex);
+        }
+
+        Character currentDelimiter = parserState.delimiterStack.peek();
+        if (!isClosingExpressionDelimiter(currentDelimiter)) {
+            if (parserState.compatibilityFallbackEnd < 0) {
+                parserState.compatibilityFallbackEnd = currentIndex;
+            }
+            return null;
+        }
+
+        char closedDelimiter = parserState.delimiterStack.pop();
+        if (closedDelimiter == OUTER_EXPRESSION_DELIMITER) {
+            return new ExpressionRange(parserState.expressionStart, currentIndex);
+        }
+        if (
+            closedDelimiter == NESTED_EXPRESSION_DELIMITER &&
+            hasOnlyOuterExpressionDelimiter(parserState.delimiterStack) &&
+            hasTrailingClosingBrace(sourceString, currentIndex)
+        ) {
+            return new ExpressionRange(parserState.expressionStart, currentIndex);
+        }
+        return null;
+    }
+
+    private boolean isClosingExpressionDelimiter(char delimiter) {
+        return delimiter == '{' || delimiter == NESTED_EXPRESSION_DELIMITER || delimiter == OUTER_EXPRESSION_DELIMITER;
     }
 
     private boolean hasOnlyOuterExpressionDelimiter(Deque<Character> delimiterStack) {
@@ -396,6 +449,31 @@ public class ExpressionResolver {
         private ExpressionRange(int start, int end) {
             this.start = start;
             this.end = end;
+        }
+
+        private static final class ExpressionRangeParserState {
+
+            private int expressionStart = -1;
+            private int compatibilityFallbackEnd = -1;
+            private char activeQuote = 0;
+            private boolean escaped = false;
+            private boolean skipNextCharacter = false;
+            private final Deque<Character> delimiterStack = new ArrayDeque<>();
+
+            private boolean isExpressionStarted() {
+                return expressionStart >= 0;
+            }
+
+            private boolean isInsideQuote() {
+                return activeQuote != 0;
+            }
+
+            private ExpressionRange getCompatibilityFallbackRange() {
+                if (expressionStart >= 0 && compatibilityFallbackEnd >= 0) {
+                    return new ExpressionRange(expressionStart, compatibilityFallbackEnd);
+                }
+                return null;
+            }
         }
     }
 }

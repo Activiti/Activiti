@@ -19,6 +19,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonMap;
 import static org.activiti.engine.impl.util.CollectionUtil.map;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -26,6 +27,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.el.ExpressionManager;
@@ -33,6 +35,10 @@ import org.activiti.engine.impl.interceptor.DelegateInterceptor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import tools.jackson.databind.JsonNode;
@@ -221,46 +227,13 @@ public class ExpressionResolverTest {
         assertThat(result).containsExactly("place");
     }
 
-    @Test
-    public void findVariableNamesContainingExpressions_should_returnVariableNames_when_expressionContainsClosingBraceInBody() {
+    @ParameterizedTest
+    @ValueSource(strings = { "${foo['}']}", "${outer(${inner})}", "${foo${bar}}", "${foo[bar}}" })
+    public void findVariableNamesContainingExpressions_should_returnVariableNames_forSupportedExpressionPatterns(
+        String sourceValue
+    ) {
         // given
-        Map<String, Object> source = singletonMap("value", "${foo['}']}");
-
-        // when
-        List<String> result = expressionResolver.findVariableNamesContainingExpressions(source);
-
-        // then
-        assertThat(result).containsExactly("value");
-    }
-
-    @Test
-    public void findVariableNamesContainingExpressions_should_returnVariableNames_when_expressionContainsNestedExpression() {
-        // given
-        Map<String, Object> source = singletonMap("value", "${outer(${inner})}");
-
-        // when
-        List<String> result = expressionResolver.findVariableNamesContainingExpressions(source);
-
-        // then
-        assertThat(result).containsExactly("value");
-    }
-
-    @Test
-    public void findVariableNamesContainingExpressions_should_returnVariableNames_when_expressionContainsMalformedNestedExpression() {
-        // given
-        Map<String, Object> source = singletonMap("value", "${foo${bar}}");
-
-        // when
-        List<String> result = expressionResolver.findVariableNamesContainingExpressions(source);
-
-        // then
-        assertThat(result).containsExactly("value");
-    }
-
-    @Test
-    public void findVariableNamesContainingExpressions_should_returnVariableNames_when_expressionContainsMalformedBracketExpression() {
-        // given
-        Map<String, Object> source = singletonMap("value", "${foo[bar}}");
+        Map<String, Object> source = singletonMap("value", sourceValue);
 
         // when
         List<String> result = expressionResolver.findVariableNamesContainingExpressions(source);
@@ -327,10 +300,22 @@ public class ExpressionResolverTest {
         assertThat(result).containsEntry("message", "HelloWorld");
     }
 
-    @Test
-    public void resolveExpressionsMap_should_replaceExpressionByValue_when_expressionContainsClosingBraceInBody() {
+    @ParameterizedTest
+    @ValueSource(
+        strings = {
+            "${foo['}']}",
+            "${foo[\"}\"]}",
+            "${foo[`}`]}",
+            "${outer(${inner})}",
+            "${outer({a: 1})}",
+            "${outer ${inner} tail}",
+            "${foo(bar})}"
+        }
+    )
+    public void resolveExpressionsMap_should_replaceExpressionByValue_forSupportedExpressionPatterns(
+        String expressionContent
+    ) {
         //given
-        String expressionContent = "${foo['}']}";
         Expression expression = buildExpression(expressionContent);
         given(expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor)).willReturn("John");
 
@@ -344,164 +329,14 @@ public class ExpressionResolverTest {
         assertThat(result).containsEntry("name", "John");
     }
 
-    @Test
-    public void resolveExpressionsMap_should_replaceExpressionByValue_when_expressionContainsDoubleQuotedClosingBrace() {
+    @ParameterizedTest
+    @MethodSource("compatibleMalformedExpressions")
+    public void resolveExpressionsMap_should_preserveCompatibilityForMalformedExpressions(
+        String sourceValue,
+        String expressionContent
+    ) {
         //given
-        String expressionContent = "${foo[\"}\"]}";
         Expression expression = buildExpression(expressionContent);
-        given(expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor)).willReturn("John");
-
-        //when
-        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
-            expressionEvaluator,
-            singletonMap("name", expressionContent)
-        );
-
-        //then
-        assertThat(result).containsEntry("name", "John");
-    }
-
-    @Test
-    public void resolveExpressionsMap_should_replaceExpressionByValue_when_expressionContainsBacktickQuotedClosingBrace() {
-        //given
-        String expressionContent = "${foo[`}`]}";
-        Expression expression = buildExpression(expressionContent);
-        given(expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor)).willReturn("John");
-
-        //when
-        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
-            expressionEvaluator,
-            singletonMap("name", expressionContent)
-        );
-
-        //then
-        assertThat(result).containsEntry("name", "John");
-    }
-
-    @Test
-    public void resolveExpressionsMap_should_replaceExpressionByValue_when_expressionContainsNestedExpression() {
-        //given
-        String expressionContent = "${outer(${inner})}";
-        Expression expression = buildExpression(expressionContent);
-        given(expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor)).willReturn("John");
-
-        //when
-        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
-            expressionEvaluator,
-            singletonMap("name", expressionContent)
-        );
-
-        //then
-        assertThat(result).containsEntry("name", "John");
-    }
-
-    @Test
-    public void resolveExpressionsMap_should_replaceExpressionByValue_when_expressionContainsBalancedPlainDelimiters() {
-        //given
-        String expressionContent = "${outer({a: 1})}";
-        Expression expression = buildExpression(expressionContent);
-        given(expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor)).willReturn("John");
-
-        //when
-        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
-            expressionEvaluator,
-            singletonMap("name", expressionContent)
-        );
-
-        //then
-        assertThat(result).containsEntry("name", "John");
-    }
-
-    @Test
-    public void resolveExpressionsMap_should_replaceExpressionByValue_when_expressionContainsTopLevelNestedExpression() {
-        //given
-        String expressionContent = "${outer ${inner} tail}";
-        Expression expression = buildExpression(expressionContent);
-        given(expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor)).willReturn("John");
-
-        //when
-        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
-            expressionEvaluator,
-            singletonMap("name", expressionContent)
-        );
-
-        //then
-        assertThat(result).containsEntry("name", "John");
-    }
-
-    @Test
-    public void resolveExpressionsMap_should_replaceExpressionByValue_when_expressionContainsClosingBraceInsideParentheses() {
-        //given
-        String expressionContent = "${foo(bar})}";
-        Expression expression = buildExpression(expressionContent);
-        given(expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor)).willReturn("John");
-
-        //when
-        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
-            expressionEvaluator,
-            singletonMap("name", expressionContent)
-        );
-
-        //then
-        assertThat(result).containsEntry("name", "John");
-    }
-
-    @Test
-    public void resolveExpressionsMap_should_preserveMalformedNestedCompatibility() {
-        //given
-        String sourceValue = "${foo${bar}}";
-        Expression expression = buildExpression("${foo${bar}");
-        given(expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor)).willReturn("John");
-
-        //when
-        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
-            expressionEvaluator,
-            singletonMap("name", sourceValue)
-        );
-
-        //then
-        assertThat(result).containsEntry("name", "John}");
-    }
-
-    @Test
-    public void resolveExpressionsMap_should_preserveTrailingBraceAfterNestedExpression() {
-        //given
-        String sourceValue = "${outer(${inner})}}";
-        Expression expression = buildExpression("${outer(${inner})}");
-        given(expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor)).willReturn("John");
-
-        //when
-        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
-            expressionEvaluator,
-            singletonMap("name", sourceValue)
-        );
-
-        //then
-        assertThat(result).containsEntry("name", "John}");
-    }
-
-    @Test
-    public void resolveExpressionsMap_should_preserveMalformedBracketCompatibility() {
-        //given
-        String sourceValue = "${foo[bar}}";
-        Expression expression = buildExpression("${foo[bar}");
-        given(expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor)).willReturn("John");
-
-        //when
-        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
-            expressionEvaluator,
-            singletonMap("name", sourceValue)
-        );
-
-        //then
-        assertThat(result).containsEntry("name", "John}");
-    }
-
-    @Test
-    public void resolveExpressionsMap_should_preserveTopLevelBraceCompatibility() {
-        //given
-        String sourceValue = "${foo{bar}}";
-        Expression expression = buildExpression("${foo{bar}");
         given(expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor)).willReturn("John");
 
         //when
@@ -705,10 +540,10 @@ public class ExpressionResolverTest {
         // given
         int maxSize = 64;
         String largeString = buildLargeString(maxSize + 100);
-        ExpressionResolver expressionResolver = buildExpressionResolver(maxSize);
+        ExpressionResolver limitedExpressionResolver = buildExpressionResolver(maxSize);
 
         // when
-        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
+        Map<String, Object> result = limitedExpressionResolver.resolveExpressionsMap(
             expressionEvaluator,
             singletonMap("largeValue", largeString)
         );
@@ -722,13 +557,13 @@ public class ExpressionResolverTest {
         // given
         int maxSize = 64;
         String largeStringWithExpression = buildLargeString(maxSize + 100) + "${name}";
-        ExpressionResolver expressionResolver = buildExpressionResolver(maxSize);
+        ExpressionResolver limitedExpressionResolver = buildExpressionResolver(maxSize);
 
         // Expression should NOT be called because the string is too large
         // If it were called and we didn't mock it, the test would fail
 
         // when
-        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
+        Map<String, Object> result = limitedExpressionResolver.resolveExpressionsMap(
             expressionEvaluator,
             singletonMap("largeValue", largeStringWithExpression)
         );
@@ -744,13 +579,13 @@ public class ExpressionResolverTest {
         String expressionContent = "${name}";
         String padding = buildLargeString(maxSize - expressionContent.length());
         String stringAtMaxSize = padding + expressionContent;
-        ExpressionResolver expressionResolver = buildExpressionResolver(maxSize);
+        ExpressionResolver limitedExpressionResolver = buildExpressionResolver(maxSize);
 
         Expression nameExpression = buildExpression(expressionContent);
         given(expressionEvaluator.evaluate(nameExpression, expressionManager, delegateInterceptor)).willReturn("John");
 
         // when
-        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
+        Map<String, Object> result = limitedExpressionResolver.resolveExpressionsMap(
             expressionEvaluator,
             singletonMap("value", stringAtMaxSize)
         );
@@ -764,14 +599,14 @@ public class ExpressionResolverTest {
         // given
         int maxSize = 64;
         String largeString = buildLargeString(maxSize + 100);
-        ExpressionResolver expressionResolver = buildExpressionResolver(maxSize);
+        ExpressionResolver limitedExpressionResolver = buildExpressionResolver(maxSize);
 
         Map<String, Object> nestedMap = new HashMap<>();
         nestedMap.put("largeValue", largeString);
         nestedMap.put("normalValue", "normal");
 
         // when
-        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
+        Map<String, Object> result = limitedExpressionResolver.resolveExpressionsMap(
             expressionEvaluator,
             singletonMap("nested", nestedMap)
         );
@@ -779,8 +614,7 @@ public class ExpressionResolverTest {
         // then
         @SuppressWarnings("unchecked")
         Map<String, Object> resultNested = (Map<String, Object>) result.get("nested");
-        assertThat(resultNested).containsEntry("largeValue", largeString);
-        assertThat(resultNested).containsEntry("normalValue", "normal");
+        assertThat(resultNested).containsEntry("largeValue", largeString).containsEntry("normalValue", "normal");
     }
 
     @Test
@@ -788,10 +622,10 @@ public class ExpressionResolverTest {
         // given
         int maxSize = 64;
         String largeString = buildLargeString(maxSize + 100);
-        ExpressionResolver expressionResolver = buildExpressionResolver(maxSize);
+        ExpressionResolver limitedExpressionResolver = buildExpressionResolver(maxSize);
 
         // when
-        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
+        Map<String, Object> result = limitedExpressionResolver.resolveExpressionsMap(
             expressionEvaluator,
             singletonMap("values", asList("small", largeString, "another"))
         );
@@ -806,7 +640,7 @@ public class ExpressionResolverTest {
         int maxSize = 64;
         String largeString = buildLargeString(maxSize + 100);
         String smallExpression = "${name}";
-        ExpressionResolver expressionResolver = buildExpressionResolver(maxSize);
+        ExpressionResolver limitedExpressionResolver = buildExpressionResolver(maxSize);
 
         Expression nameExpression = buildExpression(smallExpression);
         given(expressionEvaluator.evaluate(nameExpression, expressionManager, delegateInterceptor)).willReturn("John");
@@ -816,11 +650,10 @@ public class ExpressionResolverTest {
         input.put("small", smallExpression);
 
         // when
-        Map<String, Object> result = expressionResolver.resolveExpressionsMap(expressionEvaluator, input);
+        Map<String, Object> result = limitedExpressionResolver.resolveExpressionsMap(expressionEvaluator, input);
 
         // then
-        assertThat(result).containsEntry("large", largeString); // Not resolved due to size
-        assertThat(result).containsEntry("small", "John"); // Resolved normally
+        assertThat(result).containsEntry("large", largeString).containsEntry("small", "John");
     }
 
     @Test
@@ -865,5 +698,14 @@ public class ExpressionResolverTest {
 
     private ExpressionResolver buildExpressionResolver(int maxVarSizeForExpressionParsing) {
         return new ExpressionResolver(expressionManager, mapper, delegateInterceptor, maxVarSizeForExpressionParsing);
+    }
+
+    private static Stream<Arguments> compatibleMalformedExpressions() {
+        return Stream.of(
+            arguments("${foo${bar}}", "${foo${bar}"),
+            arguments("${outer(${inner})}}", "${outer(${inner})}"),
+            arguments("${foo[bar}}", "${foo[bar}"),
+            arguments("${foo{bar}}", "${foo{bar}")
+        );
     }
 }
