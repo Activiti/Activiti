@@ -2,12 +2,13 @@
 
 ## Executive Summary
 
-**Problem:** OutOfMemoryError crashes in runtime-bundle during expression resolution  
-**Root Cause:** Regex catastrophic backtracking on large strings  
-**Solution:** Replaced regex with O(n) linear parser + optional size limit  
+**Problem:** OutOfMemoryError crashes in runtime-bundle during expression resolution
+**Root Cause:** Regex catastrophic backtracking on large strings
+**Solution:** Replaced regex with O(n) linear parser + optional size limit
 **Result:** ✅ No more OutOfMemoryError + Better expression support + Backward compatible
 
 **Key Improvements:**
+
 - 🎯 **Primary fix:** Linear parser eliminates catastrophic backtracking
 - ⚡ **Performance:** O(n) guaranteed vs O(2^n) worst case
 - 🔧 **Robustness:** Handles nested expressions, quotes, escape sequences
@@ -34,6 +35,7 @@ Pattern: `([\\$]\\{([^\\}]*)\\})`
 When a large string (e.g., 1MB+) contained many `$`, `{`, and `}` characters, the regex engine would exhaust memory trying to match the entire string, leading to OutOfMemoryError.
 
 **Additional Problems with Regex Approach:**
+
 - ❌ Catastrophic backtracking: O(2^n) complexity in worst case
 - ❌ Could not handle nested expressions: `${foo['${bar}']}`
 - ❌ Failed on quoted strings with braces: `${"string with } inside"}`
@@ -41,6 +43,7 @@ When a large string (e.g., 1MB+) contained many `$`, `{`, and `}` characters, th
 - ❌ Memory allocation during pattern compilation for large strings
 
 ### Stacktrace Location
+
 ```
 at java.util.regex.Pattern$BitClass.<init>()V (Pattern.java:3665)
 at org.activiti.runtime.api.impl.ExpressionResolver.resolveExpressionsString()
@@ -91,21 +94,22 @@ The new `findNextExpressionRange()` method uses a state machine approach:
 
 ```java
 private ExpressionRange findNextExpressionRange(String sourceString, int fromIndex) {
-    // State tracking
-    int expressionStart = -1;
-    char activeQuote = 0;
-    boolean escaped = false;
-    Deque<Character> delimiterStack = new ArrayDeque<>();
-    
-    // Single pass through string - O(n)
-    for (int index = fromIndex; index < sourceString.length(); index++) {
-        // Track quotes, escapes, nested delimiters
-        // Find matching closing brace
-    }
+  // State tracking
+  int expressionStart = -1;
+  char activeQuote = 0;
+  boolean escaped = false;
+  Deque<Character> delimiterStack = new ArrayDeque<>();
+
+  // Single pass through string - O(n)
+  for (int index = fromIndex; index < sourceString.length(); index++) {
+    // Track quotes, escapes, nested delimiters
+    // Find matching closing brace
+  }
 }
 ```
 
 **How it works:**
+
 1. Scans string character by character (single pass)
 2. Detects `${` to start expression tracking
 3. Tracks state: inside quotes, escaped characters, nested delimiters
@@ -118,6 +122,7 @@ private ExpressionRange findNextExpressionRange(String sourceString, int fromInd
 **File:** `activiti-core/activiti-api-impl/activiti-api-process-runtime-impl/src/test/java/org/activiti/runtime/api/impl/ExpressionResolverTest.java`
 
 Added targeted test cases covering:
+
 1. Configured size-limit skip behavior
 2. Boundary behavior at the configured limit
 3. Nested maps/lists with configured limits
@@ -131,6 +136,7 @@ Added targeted test cases covering:
 ## Configuration
 
 ### Default Behavior
+
 - Max size: **unlimited** (`Integer.MAX_VALUE`)
 - All strings are parsed regardless of size (linear parser handles this efficiently)
 - No environment variable configuration needed
@@ -139,12 +145,14 @@ Added targeted test cases covering:
 ### When to Configure a Limit
 
 You should set `MAX_VAR_SIZE_FOR_EXPRESSION_PARSING` if:
+
 - 🔒 **Defense in depth**: Add an extra safety net against extreme edge cases
 - 💾 **Memory constraints**: Running in memory-constrained environments
 - 📊 **Known use case**: You know variables should never exceed a certain size
 - ⚠️ **Suspicious data**: Processing untrusted input that might contain extremely large payloads
 
 **Recommended values:**
+
 - **Conservative**: `512000` (500KB) - reasonable for most business data
 - **Generous**: `1048576` (1MB) - for document processing, large JSON
 - **Very large**: `5242880` (5MB) - for base64 encoded files or bulk data
@@ -168,10 +176,11 @@ export MAX_VAR_SIZE_FOR_EXPRESSION_PARSING=2147483647
 ```
 
 **Kubernetes/Docker Configuration:**
+
 ```yaml
 env:
   - name: MAX_VAR_SIZE_FOR_EXPRESSION_PARSING
-    value: "1048576"  # 1MB recommended for production
+    value: "1048576" # 1MB recommended for production
 ```
 
 ## Impact Analysis
@@ -179,17 +188,20 @@ env:
 ### What This Fix Does ✅
 
 **Primary Fix:**
+
 - 🎯 **Eliminates catastrophic backtracking** - replaces regex with O(n) linear parser
 - ⚡ **Better performance** - single-pass parsing vs exponential regex matching
 - 🔧 **More robust** - handles nested expressions, quoted strings, escape sequences
 - 💾 **Memory efficient** - no regex pattern compilation overhead
 
 **Additional Safety:**
+
 - 🛡️ **Optional size guard** - configurable via `MAX_VAR_SIZE_FOR_EXPRESSION_PARSING`
 - 📝 **Debug logging** - visibility when large strings are skipped
 - 🧪 **Better testability** - instance-level configuration for testing
 
 **Improvements Over Original:**
+
 - ✅ Handles `${foo['${bar}']}` nested expressions (regex couldn't)
 - ✅ Handles `${"string with } inside"}` quoted braces (regex failed)
 - ✅ Handles escape sequences properly: `${"string with \" quote"}`
@@ -207,12 +219,14 @@ env:
 ### Behavior Changes ⚠️
 
 **Only when `MAX_VAR_SIZE_FOR_EXPRESSION_PARSING` is configured:**
+
 - Strings exceeding the limit will NOT have expressions resolved
 - Example with limit=100000: A 200KB string containing `${variable}` is returned as-is
 - This is intentional - provides safety net for extreme cases
 - Logged at DEBUG level for visibility
 
 **Enhanced Expression Handling** (Improvements, not breaking changes):
+
 - Nested expressions now work correctly
 - Quoted strings with special characters now work correctly
 - Complex expressions are parsed more accurately
@@ -241,24 +255,27 @@ This fix went through several iterations:
 ## Deployment Steps
 
 1. **Build the Activiti module:**
+
    ```bash
    cd Activiti
    mvn clean install -pl activiti-core/activiti-api-impl/activiti-api-process-runtime-impl
    ```
 
 2. **Rebuild dependent services:**
+
    ```bash
    cd hxp-process-services
    mvn clean install
    ```
 
 3. **Recommended: Configure size limit for production**
+
    ```bash
    # Add to deployment configuration
    # Conservative approach - set 1MB limit as safety net
    export MAX_VAR_SIZE_FOR_EXPRESSION_PARSING=1048576
    ```
-   
+
    **Why set a limit even with the new parser?**
    - Defense in depth - extra safety layer
    - Prevents accidental processing of extremely large variables
@@ -273,12 +290,15 @@ This fix went through several iterations:
 ## Monitoring and Troubleshooting
 
 ### Runtime Monitoring
+
 Enable DEBUG logging to see when large strings are skipped:
+
 ```
 DEBUG o.a.r.a.i.ExpressionResolver - Skipping expression parsing for string exceeding max size: 150000 characters (limit: 102400 characters)
 ```
 
 ### If Variables Are Not Being Resolved
+
 1. Check if the variable size exceeds the limit
 2. Consider increasing the limit via environment variable
 3. Review if such large variables actually need expression resolution
@@ -298,25 +318,26 @@ Memory: Pattern compilation + backtracking state = GBs
 
 ```
 Input: 1MB string with many { } characters
-Guaranteed: O(n) - linear time complexity  
+Guaranteed: O(n) - linear time complexity
 Result: Parsed in milliseconds
 Memory: Minimal - single pass, no regex state
 ```
 
 **Benchmark Example:**
+
 - String: 1MB with 10,000 `{` and `}` characters
 - Old regex approach: **OutOfMemoryError** (never completes)
 - New linear parser: **~5ms** to parse
 
 ### Expression Handling Improvements
 
-| Expression Type | Regex (Old) | Linear Parser (New) |
-|----------------|-------------|---------------------|
-| `${simple}` | ✅ Works | ✅ Works |
-| `${nested['${inner}']}` | ❌ Fails | ✅ Works |
-| `${"string with } inside"}` | ❌ Fails | ✅ Works |
-| `${"escaped \" quote"}` | ❌ Fails | ✅ Works |
-| Large strings (1MB+) | ❌ OutOfMemoryError | ✅ Works |
+| Expression Type             | Regex (Old)         | Linear Parser (New) |
+| --------------------------- | ------------------- | ------------------- |
+| `${simple}`                 | ✅ Works            | ✅ Works            |
+| `${nested['${inner}']}`     | ❌ Fails            | ✅ Works            |
+| `${"string with } inside"}` | ❌ Fails            | ✅ Works            |
+| `${"escaped \" quote"}`     | ❌ Fails            | ✅ Works            |
+| Large strings (1MB+)        | ❌ OutOfMemoryError | ✅ Works            |
 
 ## Related Issues
 
@@ -343,12 +364,14 @@ Memory: Minimal - single pass, no regex state
 ## Testing
 
 ### Unit Tests
+
 ```bash
 cd Activiti
 mvn test -pl activiti-core/activiti-api-impl/activiti-api-process-runtime-impl -Dtest=ExpressionResolverTest
 ```
 
 ### Integration Testing Recommendations
+
 1. Test with actual large payloads from connectors
 2. Verify expressions in normal-sized strings still work
 3. Test with environment variable set to different values
@@ -357,6 +380,7 @@ mvn test -pl activiti-core/activiti-api-impl/activiti-api-process-runtime-impl -
 ## Rollback Plan
 
 If issues arise, rollback is straightforward:
+
 1. Revert the changes to `ExpressionResolver.java`
 2. Rebuild and redeploy
 3. No database changes or configuration cleanup needed
@@ -366,6 +390,7 @@ If issues arise, rollback is straightforward:
 ## Quick Reference
 
 ### TL;DR
+
 - ✅ **Fixed:** OutOfMemoryError from regex catastrophic backtracking
 - ✅ **How:** Replaced regex with O(n) linear parser
 - ✅ **Impact:** No breaking changes, better performance, more robust

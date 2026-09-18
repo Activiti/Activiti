@@ -267,7 +267,9 @@ public class ExpressionResolver {
 
     private boolean isWholeExpression(String sourceString) {
         ExpressionRange expressionRange = findNextExpressionRange(sourceString, 0);
-        return expressionRange != null && expressionRange.start == 0 && expressionRange.end == sourceString.length() - 1;
+        return (
+            expressionRange != null && expressionRange.start == 0 && expressionRange.end == sourceString.length() - 1
+        );
     }
 
     private ExpressionRange findNextExpressionRange(String sourceString, int fromIndex) {
@@ -333,9 +335,7 @@ public class ExpressionResolver {
                     if (delimiterStack.isEmpty()) {
                         return new ExpressionRange(expressionStart, index);
                     }
-                    if (
-                        delimiterStack.peek() == '{' || delimiterStack.peek() == NESTED_EXPRESSION_DELIMITER
-                    ) {
+                    if (delimiterStack.peek() == '{' || delimiterStack.peek() == NESTED_EXPRESSION_DELIMITER) {
                         delimiterStack.pop();
                     }
                     break;
