@@ -223,10 +223,7 @@ public class ProcessVariablesPayloadValidator {
         Process process = processDefinition != null && bpmnModel != null
             ? bpmnModel.getProcessById(processDefinition.getKey())
             : null;
-        if (
-            process == null ||
-            process.getInitialFlowElement() == null
-        ) {
+        if (process == null || process.getInitialFlowElement() == null) {
             return Set.of();
         }
 

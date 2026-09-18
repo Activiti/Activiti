@@ -411,9 +411,7 @@ public class ProcessVariablesPayloadValidatorTest {
         assertDoesNotThrow(() ->
             processVariablesValidator.checkStartProcessPayloadVariables(
                 ProcessPayloadBuilder.start()
-                    .withVariables(
-                        singletonMap("approvalOutcome", map("id", "approved", "name", "Approved"))
-                    )
+                    .withVariables(singletonMap("approvalOutcome", map("id", "approved", "name", "Approved")))
                     .build(),
                 "10"
             )
@@ -479,10 +477,7 @@ public class ProcessVariablesPayloadValidatorTest {
 
     @Test
     public void should_returnError_when_nonStartPayloadsHaveObjectForDeclaredStringVariable() {
-        Map<String, Object> variables = singletonMap(
-            "approvalOutcome",
-            map("id", "approved", "name", "Approved")
-        );
+        Map<String, Object> variables = singletonMap("approvalOutcome", map("id", "approved", "name", "Approved"));
 
         Throwable throwable = catchThrowable(() ->
             processVariablesValidator.checkPayloadVariables(
@@ -491,9 +486,7 @@ public class ProcessVariablesPayloadValidatorTest {
             )
         );
 
-        assertThat(throwable)
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessageContaining("approvalOutcome");
+        assertThat(throwable).isInstanceOf(IllegalStateException.class).hasMessageContaining("approvalOutcome");
 
         throwable = catchThrowable(() ->
             processVariablesValidator.checkStartMessagePayloadVariables(
@@ -502,9 +495,7 @@ public class ProcessVariablesPayloadValidatorTest {
             )
         );
 
-        assertThat(throwable)
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessageContaining("approvalOutcome");
+        assertThat(throwable).isInstanceOf(IllegalStateException.class).hasMessageContaining("approvalOutcome");
 
         throwable = catchThrowable(() ->
             processVariablesValidator.checkReceiveMessagePayloadVariables(
@@ -513,17 +504,13 @@ public class ProcessVariablesPayloadValidatorTest {
             )
         );
 
-        assertThat(throwable)
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessageContaining("approvalOutcome");
+        assertThat(throwable).isInstanceOf(IllegalStateException.class).hasMessageContaining("approvalOutcome");
 
         throwable = catchThrowable(() ->
             processVariablesValidator.checkSignalPayloadVariables(new SignalPayload("signal", variables), "10")
         );
 
-        assertThat(throwable)
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessageContaining("approvalOutcome");
+        assertThat(throwable).isInstanceOf(IllegalStateException.class).hasMessageContaining("approvalOutcome");
     }
 
     private void givenStartOutputMapping() {
