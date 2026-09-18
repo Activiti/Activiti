@@ -76,9 +76,9 @@ at org.activiti.runtime.api.impl.ExtensionsVariablesMappingProvider.calculateInp
    - No regex pattern compilation or backtracking
    - **This is the primary fix - eliminates the root cause entirely!**
 
-4. **Added utility methods**:
-   - `findVariableNamesContainingExpressions()` - lists which variables have expressions
-   - `isWholeExpression()` - checks if entire string is one expression
+4. **Updated utility behavior**:
+   - `findVariableNamesContainingExpressions()` - still lists which variables have expressions, now using the linear scanner
+   - `isWholeExpression()` - still checks if the entire string is one expression, now using the linear scanner
    - `getMaxVarSizeForExpressionParsing()` - for testing and monitoring
 
 5. **Improved testability**:
