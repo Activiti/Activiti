@@ -42,6 +42,25 @@ public class ExpressionResolver {
     private static final Pattern EXPRESSION_PATTERN = Pattern.compile(EXPRESSION_PATTERN_STRING);
     private static final int EXPRESSION_KEY_INDEX = 1;
 
+    private static final int DEFAULT_MAX_VAR_SIZE_FOR_EXPRESSION_PARSING = 100 * 1024; // 100KB
+    private static final int MAX_VAR_SIZE_FOR_EXPRESSION_PARSING;
+
+    static {
+        int maxSize = DEFAULT_MAX_VAR_SIZE_FOR_EXPRESSION_PARSING;
+        String envValue = System.getenv("MAX_VAR_SIZE_FOR_EXPRESSION_PARSING");
+        if (envValue != null && !envValue.trim().isEmpty()) {
+            try {
+                maxSize = Integer.parseInt(envValue.trim());
+                if (maxSize < 0) {
+                    maxSize = DEFAULT_MAX_VAR_SIZE_FOR_EXPRESSION_PARSING;
+                }
+            } catch (NumberFormatException e) {
+                // Keep default value
+            }
+        }
+        MAX_VAR_SIZE_FOR_EXPRESSION_PARSING = maxSize;
+    }
+
     private JsonMapper mapper;
     private final DelegateInterceptor delegateInterceptor;
 
@@ -55,6 +74,20 @@ public class ExpressionResolver {
         this.expressionManager = expressionManager;
         this.mapper = mapper;
         this.delegateInterceptor = delegateInterceptor;
+        logger.info(
+            "ExpressionResolver initialized with MAX_VAR_SIZE_FOR_EXPRESSION_PARSING: {} bytes",
+            MAX_VAR_SIZE_FOR_EXPRESSION_PARSING
+        );
+    }
+
+    /**
+     * Returns the maximum variable size for expression parsing.
+     * Strings exceeding this size will skip expression resolution to prevent OutOfMemoryError.
+     *
+     * @return the maximum size in bytes
+     */
+    public static int getMaxVarSizeForExpressionParsing() {
+        return MAX_VAR_SIZE_FOR_EXPRESSION_PARSING;
     }
 
     private Object resolveExpressions(final ExpressionEvaluator expressionEvaluator, final Object value) {
@@ -93,6 +126,19 @@ public class ExpressionResolver {
         if (StringUtils.isBlank(sourceString)) {
             return sourceString;
         }
+
+        // Skip expression parsing for strings exceeding the size limit to prevent OutOfMemoryError
+        if (sourceString.length() > MAX_VAR_SIZE_FOR_EXPRESSION_PARSING) {
+            if (logger.isDebugEnabled()) {
+                logger.debug(
+                    "Skipping expression parsing for string exceeding max size: {} bytes (limit: {} bytes)",
+                    sourceString.length(),
+                    MAX_VAR_SIZE_FOR_EXPRESSION_PARSING
+                );
+            }
+            return sourceString;
+        }
+
         if (sourceString.matches(EXPRESSION_PATTERN_STRING)) {
             return resolveObjectPlaceHolder(expressionEvaluator, sourceString);
         } else {
@@ -117,6 +163,11 @@ public class ExpressionResolver {
         final ExpressionEvaluator expressionEvaluator,
         final String sourceString
     ) {
+        // Size check already done in resolveExpressionsString, but adding defensive check
+        if (sourceString.length() > MAX_VAR_SIZE_FOR_EXPRESSION_PARSING) {
+            return sourceString;
+        }
+
         final Matcher matcher = EXPRESSION_PATTERN.matcher(sourceString);
         final StringBuffer sb = new StringBuffer();
         while (matcher.find()) {
