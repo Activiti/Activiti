@@ -1,0 +1,38 @@
+{
+  "id": "setVariablesTaskInvalidModel",
+  "name": "setVariablesTaskInvalid.bpmn",
+  "extensions": {
+    "setVariablesTaskInvalidProcess": {
+      "properties": {
+        "first-name-id": {
+          "id": "first-name-id",
+          "name": "firstName",
+          "type": "string",
+          "value": "John"
+        },
+        "last-name-id": {
+          "id": "last-name-id",
+          "name": "lastName",
+          "type": "string",
+          "value": "Doe"
+        },
+        "age-id": {
+          "id": "age-id",
+          "name": "age",
+          "type": "integer",
+          "value": 21
+        }
+      },
+      "mappings": {
+        "setVarsTask": {
+          "inputs": {
+            "brokenValue": {
+              "type": "value",
+              "value": "${firstName + }"
+            }
+          }
+        }
+      }
+    }
+  }
+}
