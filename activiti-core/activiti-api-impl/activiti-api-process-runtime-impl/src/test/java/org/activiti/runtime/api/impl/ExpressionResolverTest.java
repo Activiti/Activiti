@@ -309,7 +309,7 @@ public class ExpressionResolverTest {
             "${outer(${inner})}",
             "${outer({a: 1})}",
             "${outer ${inner} tail}",
-            "${foo(bar})}"
+            "${foo(bar})}",
         }
     )
     public void resolveExpressionsMap_should_replaceExpressionByValue_forSupportedExpressionPatterns(
