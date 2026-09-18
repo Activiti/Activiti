@@ -157,7 +157,7 @@ DEBUG o.a.r.a.i.ExpressionResolver - Skipping expression parsing for string exce
 
 ## Related Issues
 
-- **Original Issue:** AAE-XXXXX (OutOfMemoryError in runtime-bundle)
+- **Original Issue:** AAE-52162 (OutOfMemoryError in runtime-bundle)
 - **Similar Fixed Issues:**
   - AAE-44864: Fix OutOfMemoryError for audit export
   - AAE-43063: Fix JuelExpressionResolver performance
