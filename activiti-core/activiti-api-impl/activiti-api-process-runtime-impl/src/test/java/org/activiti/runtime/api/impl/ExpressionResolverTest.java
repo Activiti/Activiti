@@ -383,6 +383,23 @@ public class ExpressionResolverTest {
     }
 
     @Test
+    public void resolveExpressionsMap_should_replaceExpressionByValue_when_expressionContainsClosingBraceInsideParentheses() {
+        //given
+        String expressionContent = "${foo(bar})}";
+        Expression expression = buildExpression(expressionContent);
+        given(expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor)).willReturn("John");
+
+        //when
+        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
+            expressionEvaluator,
+            singletonMap("name", expressionContent)
+        );
+
+        //then
+        assertThat(result).containsEntry("name", "John");
+    }
+
+    @Test
     public void resolveExpressionsMap_should_preserveMalformedNestedCompatibility() {
         //given
         String sourceValue = "${foo${bar}}";

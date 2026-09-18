@@ -5,15 +5,15 @@
 **Problem:** OutOfMemoryError crashes in runtime-bundle during expression resolution
 **Root Cause:** Regex catastrophic backtracking on large strings
 **Solution:** Replaced regex with O(n) linear parser + optional size limit
-**Result:** ✅ No more OutOfMemoryError + Better expression support + Backward compatible
+**Result:** ✅ No more OutOfMemoryError + Better expression support + Compatibility preserved for the covered scenarios
 
 **Key Improvements:**
 
 - 🎯 **Primary fix:** Linear parser eliminates catastrophic backtracking
 - ⚡ **Performance:** O(n) guaranteed vs O(2^n) worst case
-- 🔧 **Robustness:** Handles nested expressions, quotes, escape sequences
+- 🔧 **Robustness:** Handles the nested-expression and quoted-brace cases covered by the regression tests
 - 🛡️ **Safety net:** Optional configurable size limit via env var
-- ✅ **Compatibility:** 100% backward compatible, all tests pass
+- ✅ **Compatibility:** Regression-tested compatibility for the covered expression scenarios
 
 ---
 

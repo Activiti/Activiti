@@ -275,6 +275,7 @@ public class ExpressionResolver {
 
     private ExpressionRange findNextExpressionRange(String sourceString, int fromIndex) {
         int expressionStart = -1;
+        int compatibilityFallbackEnd = -1;
         char activeQuote = 0;
         boolean escaped = false;
         Deque<Character> delimiterStack = new ArrayDeque<>();
@@ -350,7 +351,9 @@ public class ExpressionResolver {
                             return new ExpressionRange(expressionStart, index);
                         }
                     } else {
-                        return new ExpressionRange(expressionStart, index);
+                        if (compatibilityFallbackEnd < 0) {
+                            compatibilityFallbackEnd = index;
+                        }
                     }
                     break;
                 case ']':
@@ -368,6 +371,9 @@ public class ExpressionResolver {
             }
         }
 
+        if (expressionStart >= 0 && compatibilityFallbackEnd >= 0) {
+            return new ExpressionRange(expressionStart, compatibilityFallbackEnd);
+        }
         return null;
     }
 
