@@ -307,6 +307,7 @@ public class ExpressionResolverTest {
             "${foo[\"}\"]}",
             "${foo[`}`]}",
             "${{a}}",
+            "${foo${bar}}",
             "${outer(${inner})}",
             "${outer({a: 1})}",
             "${foo({bar})}",
@@ -349,6 +350,23 @@ public class ExpressionResolverTest {
 
         //then
         assertThat(result).containsEntry("name", "John}");
+    }
+
+    @Test
+    public void resolveExpressionsMap_should_replaceNestedExpressionInsideSurroundingText() {
+        //given
+        String sourceValue = "prefix ${foo${bar}} suffix";
+        Expression expression = buildExpression("${foo${bar}}");
+        given(expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor)).willReturn("John");
+
+        //when
+        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
+            expressionEvaluator,
+            singletonMap("name", sourceValue)
+        );
+
+        //then
+        assertThat(result).containsEntry("name", "prefix John suffix");
     }
 
     @Test
@@ -704,7 +722,6 @@ public class ExpressionResolverTest {
 
     private static Stream<Arguments> compatibleMalformedExpressions() {
         return Stream.of(
-            arguments("${foo${bar}}", "${foo${bar}"),
             arguments("${outer(${inner})}}", "${outer(${inner})}"),
             arguments("${foo[bar}}", "${foo[bar}"),
             arguments("${foo{bar}}", "${foo{bar}")

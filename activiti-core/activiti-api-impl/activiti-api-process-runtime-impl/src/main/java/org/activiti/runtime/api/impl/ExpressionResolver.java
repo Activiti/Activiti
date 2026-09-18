@@ -427,7 +427,7 @@ public class ExpressionResolver {
             hasOnlyOuterExpressionDelimiter(parserState.delimiterStack) &&
             hasTrailingClosingBrace(sourceString, currentIndex)
         ) {
-            return new ExpressionRange(parserState.expressionStart, currentIndex);
+            return new ExpressionRange(parserState.expressionStart, currentIndex + 1);
         }
         return null;
     }
