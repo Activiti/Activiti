@@ -246,6 +246,30 @@ public class ExpressionResolverTest {
     }
 
     @Test
+    public void findVariableNamesContainingExpressions_should_returnVariableNames_when_expressionContainsMalformedNestedExpression() {
+        // given
+        Map<String, Object> source = singletonMap("value", "${foo${bar}}");
+
+        // when
+        List<String> result = expressionResolver.findVariableNamesContainingExpressions(source);
+
+        // then
+        assertThat(result).containsExactly("value");
+    }
+
+    @Test
+    public void findVariableNamesContainingExpressions_should_returnVariableNames_when_expressionContainsMalformedBracketExpression() {
+        // given
+        Map<String, Object> source = singletonMap("value", "${foo[bar}}");
+
+        // when
+        List<String> result = expressionResolver.findVariableNamesContainingExpressions(source);
+
+        // then
+        assertThat(result).containsExactly("value");
+    }
+
+    @Test
     public void resolveExpressionsMap_should_replaceExpressionByValue_when_stringIsAnExpression() {
         //given
         Expression expression = buildExpression("${name}");
@@ -421,6 +445,23 @@ public class ExpressionResolverTest {
         //given
         String sourceValue = "${foo${bar}}";
         Expression expression = buildExpression("${foo${bar}");
+        given(expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor)).willReturn("John");
+
+        //when
+        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
+            expressionEvaluator,
+            singletonMap("name", sourceValue)
+        );
+
+        //then
+        assertThat(result).containsEntry("name", "John}");
+    }
+
+    @Test
+    public void resolveExpressionsMap_should_preserveTrailingBraceAfterNestedExpression() {
+        //given
+        String sourceValue = "${outer(${inner})}}";
+        Expression expression = buildExpression("${outer(${inner})}");
         given(expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor)).willReturn("John");
 
         //when
