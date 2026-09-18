@@ -15,14 +15,14 @@
  */
 package org.activiti.runtime.api.impl;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.interceptor.DelegateInterceptor;
@@ -36,14 +36,19 @@ import tools.jackson.databind.node.ObjectNode;
 public class ExpressionResolver {
 
     private static final TypeReference<Map<String, ?>> MAP_STRING_OBJECT_TYPE = new TypeReference<Map<String, ?>>() {};
-    private final Logger logger = LoggerFactory.getLogger(ExpressionResolver.class);
+    private static final Logger logger = LoggerFactory.getLogger(ExpressionResolver.class);
 
-    private static final String EXPRESSION_PATTERN_STRING = "([\\$]\\{([^\\}]*)\\})";
-    private static final Pattern EXPRESSION_PATTERN = Pattern.compile(EXPRESSION_PATTERN_STRING);
-    private static final int EXPRESSION_KEY_INDEX = 1;
+    private static final String EXPRESSION_PREFIX = "${";
+    private static final int DEFAULT_MAX_VAR_SIZE_FOR_EXPRESSION_PARSING = Integer.MAX_VALUE;
+    private static final int MAX_VAR_SIZE_FOR_EXPRESSION_PARSING = resolveMaxVarSizeForExpressionParsing(
+        System.getenv("MAX_VAR_SIZE_FOR_EXPRESSION_PARSING")
+    );
+    private static final char OUTER_EXPRESSION_DELIMITER = '#';
+    private static final char NESTED_EXPRESSION_DELIMITER = '$';
 
     private JsonMapper mapper;
     private final DelegateInterceptor delegateInterceptor;
+    private final int maxVarSizeForExpressionParsing;
 
     private ExpressionManager expressionManager;
 
@@ -52,9 +57,63 @@ public class ExpressionResolver {
         JsonMapper mapper,
         DelegateInterceptor delegateInterceptor
     ) {
+        this(expressionManager, mapper, delegateInterceptor, MAX_VAR_SIZE_FOR_EXPRESSION_PARSING);
+    }
+
+    ExpressionResolver(
+        ExpressionManager expressionManager,
+        JsonMapper mapper,
+        DelegateInterceptor delegateInterceptor,
+        int maxVarSizeForExpressionParsing
+    ) {
         this.expressionManager = expressionManager;
         this.mapper = mapper;
         this.delegateInterceptor = delegateInterceptor;
+        this.maxVarSizeForExpressionParsing = maxVarSizeForExpressionParsing;
+    }
+
+    /**
+     * Returns the maximum variable size for expression parsing.
+     * Strings exceeding this size will skip expression resolution to prevent OutOfMemoryError.
+     *
+     * @return the maximum size in characters
+     */
+    public static int getMaxVarSizeForExpressionParsing() {
+        return MAX_VAR_SIZE_FOR_EXPRESSION_PARSING;
+    }
+
+    static int resolveMaxVarSizeForExpressionParsing(String envValue) {
+        if (StringUtils.isBlank(envValue)) {
+            return DEFAULT_MAX_VAR_SIZE_FOR_EXPRESSION_PARSING;
+        }
+
+        try {
+            int maxSize = Integer.parseInt(envValue.trim());
+            if (maxSize > 0) {
+                return maxSize;
+            }
+        } catch (NumberFormatException _) {
+            return logInvalidMaxVarSizeAndReturnDefault("non-numeric");
+        }
+
+        return logInvalidMaxVarSizeAndReturnDefault("non-positive");
+    }
+
+    private static String formatMaxVarSizeForLogging(int maxVarSizeForExpressionParsing) {
+        return maxVarSizeForExpressionParsing == Integer.MAX_VALUE
+            ? "unlimited"
+            : maxVarSizeForExpressionParsing + " characters";
+    }
+
+    private static int logInvalidMaxVarSizeAndReturnDefault(String reason) {
+        if (logger.isWarnEnabled()) {
+            logger.warn(
+                "MAX_VAR_SIZE_FOR_EXPRESSION_PARSING was set to an invalid {} value. Using default: {}",
+                reason,
+                formatMaxVarSizeForLogging(DEFAULT_MAX_VAR_SIZE_FOR_EXPRESSION_PARSING)
+            );
+        }
+        return DEFAULT_MAX_VAR_SIZE_FOR_EXPRESSION_PARSING;
     }
 
     private Object resolveExpressions(final ExpressionEvaluator expressionEvaluator, final Object value) {
@@ -93,7 +152,20 @@ public class ExpressionResolver {
         if (StringUtils.isBlank(sourceString)) {
             return sourceString;
         }
-        if (sourceString.matches(EXPRESSION_PATTERN_STRING)) {
+
+        // Skip expression parsing for strings exceeding the configured size limit to prevent OutOfMemoryError
+        if (sourceString.length() > maxVarSizeForExpressionParsing) {
+            if (logger.isDebugEnabled()) {
+                logger.debug(
+                    "Skipping expression parsing for string exceeding max size: {} characters (limit: {})",
+                    sourceString.length(),
+                    formatMaxVarSizeForLogging(maxVarSizeForExpressionParsing)
+                );
+            }
+            return sourceString;
+        }
+
+        if (isWholeExpression(sourceString)) {
             return resolveObjectPlaceHolder(expressionEvaluator, sourceString);
         } else {
             return resolveInStringPlaceHolder(expressionEvaluator, sourceString);
@@ -117,21 +189,33 @@ public class ExpressionResolver {
         final ExpressionEvaluator expressionEvaluator,
         final String sourceString
     ) {
-        final Matcher matcher = EXPRESSION_PATTERN.matcher(sourceString);
-        final StringBuffer sb = new StringBuffer();
-        while (matcher.find()) {
-            final String expressionKey = matcher.group(EXPRESSION_KEY_INDEX);
+        // Size check already done in resolveExpressionsString, but adding defensive check
+        if (sourceString.length() > maxVarSizeForExpressionParsing) {
+            return sourceString;
+        }
+
+        int currentIndex = 0;
+        StringBuilder result = new StringBuilder(sourceString.length());
+        while (currentIndex < sourceString.length()) {
+            ExpressionRange expressionRange = findNextExpressionRange(sourceString, currentIndex);
+            if (expressionRange == null) {
+                result.append(sourceString, currentIndex, sourceString.length());
+                break;
+            }
+
+            result.append(sourceString, currentIndex, expressionRange.start);
+            final String expressionKey = sourceString.substring(expressionRange.start, expressionRange.end + 1);
             final Expression expression = expressionManager.createExpression(expressionKey);
             try {
                 final Object value = expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor);
-                matcher.appendReplacement(sb, Objects.toString(value));
+                result.append(Objects.toString(value));
             } catch (final Exception e) {
                 logger.warn("Unable to resolve expression in variables", e);
-                matcher.appendReplacement(sb, "");
+                result.append("");
             }
+            currentIndex = expressionRange.end + 1;
         }
-        matcher.appendTail(sb);
-        return sb.toString();
+        return result.toString();
     }
 
     public List<String> findVariableNamesContainingExpressions(final Map<String, ?> source) {
@@ -164,7 +248,7 @@ public class ExpressionResolver {
     }
 
     private boolean containsExpressionString(final String sourceString) {
-        return EXPRESSION_PATTERN.matcher(sourceString).find();
+        return findNextExpressionRange(sourceString, 0) != null;
     }
 
     private boolean containsExpressionMap(final Map<String, ?> source) {
@@ -183,5 +267,229 @@ public class ExpressionResolver {
             }
         }
         return false;
+    }
+
+    private boolean isWholeExpression(String sourceString) {
+        ExpressionRange expressionRange = findNextExpressionRange(sourceString, 0);
+        return (
+            expressionRange != null && expressionRange.start == 0 && expressionRange.end == sourceString.length() - 1
+        );
+    }
+
+    private ExpressionRange findNextExpressionRange(String sourceString, int fromIndex) {
+        ExpressionRangeParserState parserState = new ExpressionRangeParserState();
+        int index = Math.max(0, fromIndex);
+
+        while (index < sourceString.length()) {
+            char currentCharacter = sourceString.charAt(index);
+
+            if (!parserState.isExpressionStarted()) {
+                index = advanceUntilExpressionStart(sourceString, index, currentCharacter, parserState);
+            } else if (parserState.isInsideQuote()) {
+                updateQuotedState(currentCharacter, parserState);
+            } else {
+                ExpressionRange expressionRange = handleExpressionCharacter(
+                    sourceString,
+                    index,
+                    currentCharacter,
+                    parserState
+                );
+                if (expressionRange != null) {
+                    return expressionRange;
+                }
+            }
+
+            if (parserState.skipNextCharacter) {
+                index++;
+                parserState.skipNextCharacter = false;
+            }
+            index++;
+        }
+
+        return parserState.getCompatibilityFallbackRange();
+    }
+
+    private int advanceUntilExpressionStart(
+        String sourceString,
+        int currentIndex,
+        char currentCharacter,
+        ExpressionRangeParserState parserState
+    ) {
+        if (isExpressionOpening(sourceString, currentIndex, currentCharacter)) {
+            parserState.expressionStart = currentIndex;
+            parserState.delimiterStack.push(OUTER_EXPRESSION_DELIMITER);
+            return currentIndex + 1;
+        }
+        return currentIndex;
+    }
+
+    private void updateQuotedState(char currentCharacter, ExpressionRangeParserState parserState) {
+        if (currentCharacter == '\\' && !parserState.escaped) {
+            parserState.escaped = true;
+            return;
+        }
+
+        if (currentCharacter == parserState.activeQuote && !parserState.escaped) {
+            parserState.activeQuote = 0;
+        }
+        parserState.escaped = false;
+    }
+
+    private ExpressionRange handleExpressionCharacter(
+        String sourceString,
+        int currentIndex,
+        char currentCharacter,
+        ExpressionRangeParserState parserState
+    ) {
+        return switch (currentCharacter) {
+            case '$' -> handleNestedExpressionOpening(sourceString, currentIndex, parserState);
+            case '\'', '"', '`' -> {
+                parserState.activeQuote = currentCharacter;
+                yield null;
+            }
+            case '{' -> {
+                pushPlainBrace(currentIndex, parserState);
+                yield null;
+            }
+            case '[' -> pushAndContinue(parserState.delimiterStack, '[');
+            case '(' -> pushAndContinue(parserState.delimiterStack, '(');
+            case '}' -> handleClosingBrace(sourceString, currentIndex, parserState);
+            case ']' -> popMatchingDelimiter(parserState.delimiterStack, '[');
+            case ')' -> popMatchingDelimiter(parserState.delimiterStack, '(');
+            default -> null;
+        };
+    }
+
+    private boolean isExpressionOpening(String sourceString, int currentIndex, char currentCharacter) {
+        return (
+            currentCharacter == EXPRESSION_PREFIX.charAt(0) &&
+            currentIndex + 1 < sourceString.length() &&
+            sourceString.charAt(currentIndex + 1) == EXPRESSION_PREFIX.charAt(1)
+        );
+    }
+
+    private ExpressionRange handleNestedExpressionOpening(
+        String sourceString,
+        int currentIndex,
+        ExpressionRangeParserState parserState
+    ) {
+        if (isExpressionOpening(sourceString, currentIndex, '$')) {
+            parserState.delimiterStack.push(NESTED_EXPRESSION_DELIMITER);
+            parserState.skipNextCharacter = true;
+        }
+        return null;
+    }
+
+    private void pushPlainBrace(int currentIndex, ExpressionRangeParserState parserState) {
+        if (
+            currentIndex == parserState.expressionStart + EXPRESSION_PREFIX.length() ||
+            !hasOnlyOuterExpressionDelimiter(parserState.delimiterStack)
+        ) {
+            parserState.delimiterStack.push('{');
+        }
+    }
+
+    private ExpressionRange pushAndContinue(Deque<Character> delimiterStack, char delimiter) {
+        delimiterStack.push(delimiter);
+        return null;
+    }
+
+    private ExpressionRange popMatchingDelimiter(Deque<Character> delimiterStack, char delimiter) {
+        if (!delimiterStack.isEmpty() && delimiterStack.peek() == delimiter) {
+            delimiterStack.pop();
+        }
+        return null;
+    }
+
+    private ExpressionRange handleClosingBrace(
+        String sourceString,
+        int currentIndex,
+        ExpressionRangeParserState parserState
+    ) {
+        Character currentDelimiter = parserState.delimiterStack.peek();
+        if (!isClosingExpressionDelimiter(currentDelimiter)) {
+            if (parserState.compatibilityFallbackEnd < 0) {
+                parserState.compatibilityFallbackEnd = currentIndex;
+            }
+            return null;
+        }
+
+        char closedDelimiter = parserState.delimiterStack.pop();
+        if (closedDelimiter == OUTER_EXPRESSION_DELIMITER) {
+            return new ExpressionRange(parserState.expressionStart, currentIndex);
+        }
+        if (closedDelimiter == NESTED_EXPRESSION_DELIMITER) {
+            return closeNestedExpression(sourceString, currentIndex, parserState);
+        }
+        return null;
+    }
+
+    private ExpressionRange closeNestedExpression(
+        String sourceString,
+        int currentIndex,
+        ExpressionRangeParserState parserState
+    ) {
+        if (
+            !hasOnlyOuterExpressionDelimiter(parserState.delimiterStack) ||
+            !hasTrailingClosingBrace(sourceString, currentIndex)
+        ) {
+            return null;
+        }
+
+        parserState.delimiterStack.pop();
+        return parserState.delimiterStack.isEmpty()
+            ? new ExpressionRange(parserState.expressionStart, currentIndex + 1)
+            : null;
+    }
+
+    private boolean isClosingExpressionDelimiter(Character delimiter) {
+        return (
+            delimiter != null &&
+            (delimiter == '{' || delimiter == NESTED_EXPRESSION_DELIMITER || delimiter == OUTER_EXPRESSION_DELIMITER)
+        );
+    }
+
+    private boolean hasOnlyOuterExpressionDelimiter(Deque<Character> delimiterStack) {
+        return delimiterStack.size() == 1 && delimiterStack.peek() == OUTER_EXPRESSION_DELIMITER;
+    }
+
+    private boolean hasTrailingClosingBrace(String sourceString, int currentIndex) {
+        return currentIndex + 1 < sourceString.length() && sourceString.charAt(currentIndex + 1) == '}';
+    }
+
+    private static final class ExpressionRange {
+
+        private final int start;
+        private final int end;
+
+        private ExpressionRange(int start, int end) {
+            this.start = start;
+            this.end = end;
+        }
+    }
+
+    private static final class ExpressionRangeParserState {
+
+        private int expressionStart = -1;
+        private int compatibilityFallbackEnd = -1;
+        private char activeQuote = 0;
+        private boolean escaped = false;
+        private boolean skipNextCharacter = false;
+        private final Deque<Character> delimiterStack = new ArrayDeque<>();
+
+        private boolean isExpressionStarted() {
+            return expressionStart >= 0;
+        }
+
+        private boolean isInsideQuote() {
+            return activeQuote != 0;
+        }
+
+        private ExpressionRange getCompatibilityFallbackRange() {
+            if (expressionStart >= 0 && compatibilityFallbackEnd >= 0) {
+                return new ExpressionRange(expressionStart, compatibilityFallbackEnd);
+            }
+            return null;
+        }
     }
 }

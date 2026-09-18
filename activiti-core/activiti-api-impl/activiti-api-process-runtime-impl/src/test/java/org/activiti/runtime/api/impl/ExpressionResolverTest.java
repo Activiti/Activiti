@@ -19,6 +19,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonMap;
 import static org.activiti.engine.impl.util.CollectionUtil.map;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -26,6 +27,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.el.ExpressionManager;
@@ -33,6 +35,10 @@ import org.activiti.engine.impl.interceptor.DelegateInterceptor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import tools.jackson.databind.JsonNode;
@@ -209,6 +215,46 @@ public class ExpressionResolverTest {
     }
 
     @Test
+    public void findVariableNamesContainingExpressions_should_returnVariableNames_when_largeVariableContainsExpression() {
+        // given
+        String largeExpressionValue = buildLargeString(200_000) + "${place}";
+        Map<String, Object> source = singletonMap("place", largeExpressionValue);
+
+        // when
+        List<String> result = expressionResolver.findVariableNamesContainingExpressions(source);
+
+        // then
+        assertThat(result).containsExactly("place");
+    }
+
+    @ParameterizedTest
+    @ValueSource(
+        strings = {
+            "${foo['}']}",
+            "${foo[\"}\"]}",
+            "${foo[`}`]}",
+            "${outer(${inner})}",
+            "${foo(${bar})}",
+            "${foo${bar}}",
+            "${a${b${c}}}",
+            "${foo[bar}}",
+            "${{a}}",
+        }
+    )
+    public void findVariableNamesContainingExpressions_should_returnVariableNames_forSupportedExpressionPatterns(
+        String sourceValue
+    ) {
+        // given
+        Map<String, Object> source = singletonMap("value", sourceValue);
+
+        // when
+        List<String> result = expressionResolver.findVariableNamesContainingExpressions(source);
+
+        // then
+        assertThat(result).containsExactly("value");
+    }
+
+    @Test
     public void resolveExpressionsMap_should_replaceExpressionByValue_when_stringIsAnExpression() {
         //given
         Expression expression = buildExpression("${name}");
@@ -241,6 +287,117 @@ public class ExpressionResolverTest {
         );
         //then
         assertThat(result).containsEntry("welcomeMessage", "Welcome to London, John!");
+    }
+
+    @Test
+    public void resolveExpressionsMap_should_replaceExpressionByValue_when_stringContainsAdjacentExpressions() {
+        //given
+        Expression firstExpression = buildExpression("${first}");
+        given(expressionEvaluator.evaluate(firstExpression, expressionManager, delegateInterceptor)).willReturn(
+            "Hello"
+        );
+
+        Expression secondExpression = buildExpression("${second}");
+        given(expressionEvaluator.evaluate(secondExpression, expressionManager, delegateInterceptor)).willReturn(
+            "World"
+        );
+
+        //when
+        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
+            expressionEvaluator,
+            singletonMap("message", "${first}${second}")
+        );
+
+        //then
+        assertThat(result).containsEntry("message", "HelloWorld");
+    }
+
+    @ParameterizedTest
+    @ValueSource(
+        strings = {
+            "${foo['}']}",
+            "${foo[\"}\"]}",
+            "${foo[`}`]}",
+            "${{a}}",
+            "${foo${bar}}",
+            "${a${b${c}}}",
+            "${outer(${inner})}",
+            "${foo(${bar})}",
+            "${outer({a: 1})}",
+            "${foo({bar})}",
+            "${outer ${inner} tail}",
+            "${foo(bar})}",
+        }
+    )
+    public void resolveExpressionsMap_should_replaceExpressionByValue_forSupportedExpressionPatterns(
+        String expressionContent
+    ) {
+        //given
+        Expression expression = buildExpression(expressionContent);
+        given(expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor)).willReturn("John");
+
+        //when
+        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
+            expressionEvaluator,
+            singletonMap("name", expressionContent)
+        );
+
+        //then
+        assertThat(result).containsEntry("name", "John");
+    }
+
+    @ParameterizedTest
+    @MethodSource("compatibleMalformedExpressions")
+    public void resolveExpressionsMap_should_preserveCompatibilityForMalformedExpressions(
+        String sourceValue,
+        String expressionContent
+    ) {
+        //given
+        Expression expression = buildExpression(expressionContent);
+        given(expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor)).willReturn("John");
+
+        //when
+        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
+            expressionEvaluator,
+            singletonMap("name", sourceValue)
+        );
+
+        //then
+        assertThat(result).containsEntry("name", "John}");
+    }
+
+    @Test
+    public void resolveExpressionsMap_should_replaceNestedExpressionInsideSurroundingText() {
+        //given
+        String sourceValue = "prefix ${foo${bar}} suffix";
+        Expression expression = buildExpression("${foo${bar}}");
+        given(expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor)).willReturn("John");
+
+        //when
+        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
+            expressionEvaluator,
+            singletonMap("name", sourceValue)
+        );
+
+        //then
+        assertThat(result).containsEntry("name", "prefix John suffix");
+    }
+
+    @Test
+    public void resolveExpressionsMap_should_replaceDeeplyNestedExpressionInsideSurroundingText() {
+        //given
+        String sourceValue = "prefix ${a${b${c}}} suffix";
+        Expression expression = buildExpression("${a${b${c}}}");
+        given(expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor)).willReturn("John");
+
+        //when
+        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
+            expressionEvaluator,
+            singletonMap("name", sourceValue)
+        );
+
+        //then
+        assertThat(result).containsEntry("name", "prefix John suffix");
     }
 
     @Test
@@ -427,5 +584,178 @@ public class ExpressionResolverTest {
         Expression expression = mock(Expression.class);
         given(expressionManager.createExpression(expressionContent)).willReturn(expression);
         return expression;
+    }
+
+    @Test
+    public void resolveExpressionsMap_should_skipParsing_when_stringExceedsConfiguredMaxSize() {
+        // given
+        int maxSize = 64;
+        String largeString = buildLargeString(maxSize + 100);
+        ExpressionResolver limitedExpressionResolver = buildExpressionResolver(maxSize);
+
+        // when
+        Map<String, Object> result = limitedExpressionResolver.resolveExpressionsMap(
+            expressionEvaluator,
+            singletonMap("largeValue", largeString)
+        );
+
+        // then - should return the original string without attempting expression resolution
+        assertThat(result).containsEntry("largeValue", largeString);
+    }
+
+    @Test
+    public void resolveExpressionsMap_should_skipParsing_when_stringWithExpressionExceedsConfiguredMaxSize() {
+        // given
+        int maxSize = 64;
+        String largeStringWithExpression = buildLargeString(maxSize + 100) + "${name}";
+        ExpressionResolver limitedExpressionResolver = buildExpressionResolver(maxSize);
+
+        // Expression should NOT be called because the string is too large
+        // If it were called and we didn't mock it, the test would fail
+
+        // when
+        Map<String, Object> result = limitedExpressionResolver.resolveExpressionsMap(
+            expressionEvaluator,
+            singletonMap("largeValue", largeStringWithExpression)
+        );
+
+        // then - should return the original string without attempting expression resolution
+        assertThat(result).containsEntry("largeValue", largeStringWithExpression);
+    }
+
+    @Test
+    public void resolveExpressionsMap_should_parse_when_stringIsAtConfiguredMaxSize() {
+        // given
+        int maxSize = 64;
+        String expressionContent = "${name}";
+        String padding = buildLargeString(maxSize - expressionContent.length());
+        String stringAtMaxSize = padding + expressionContent;
+        ExpressionResolver limitedExpressionResolver = buildExpressionResolver(maxSize);
+
+        Expression nameExpression = buildExpression(expressionContent);
+        given(expressionEvaluator.evaluate(nameExpression, expressionManager, delegateInterceptor)).willReturn("John");
+
+        // when
+        Map<String, Object> result = limitedExpressionResolver.resolveExpressionsMap(
+            expressionEvaluator,
+            singletonMap("value", stringAtMaxSize)
+        );
+
+        // then - the expression is still resolved at the boundary
+        assertThat(result).containsEntry("value", padding + "John");
+    }
+
+    @Test
+    public void resolveExpressionsMap_should_skipParsing_when_nestedMapContainsLargeString() {
+        // given
+        int maxSize = 64;
+        String largeString = buildLargeString(maxSize + 100);
+        ExpressionResolver limitedExpressionResolver = buildExpressionResolver(maxSize);
+
+        Map<String, Object> nestedMap = new HashMap<>();
+        nestedMap.put("largeValue", largeString);
+        nestedMap.put("normalValue", "normal");
+
+        // when
+        Map<String, Object> result = limitedExpressionResolver.resolveExpressionsMap(
+            expressionEvaluator,
+            singletonMap("nested", nestedMap)
+        );
+
+        // then
+        @SuppressWarnings("unchecked")
+        Map<String, Object> resultNested = (Map<String, Object>) result.get("nested");
+        assertThat(resultNested).containsEntry("largeValue", largeString).containsEntry("normalValue", "normal");
+    }
+
+    @Test
+    public void resolveExpressionsMap_should_skipParsing_when_listContainsLargeString() {
+        // given
+        int maxSize = 64;
+        String largeString = buildLargeString(maxSize + 100);
+        ExpressionResolver limitedExpressionResolver = buildExpressionResolver(maxSize);
+
+        // when
+        Map<String, Object> result = limitedExpressionResolver.resolveExpressionsMap(
+            expressionEvaluator,
+            singletonMap("values", asList("small", largeString, "another"))
+        );
+
+        // then
+        assertThat(result).containsEntry("values", asList("small", largeString, "another"));
+    }
+
+    @Test
+    public void resolveExpressionsMap_should_resolveSmallStrings_when_mixedWithLargeStrings() {
+        // given
+        int maxSize = 64;
+        String largeString = buildLargeString(maxSize + 100);
+        String smallExpression = "${name}";
+        ExpressionResolver limitedExpressionResolver = buildExpressionResolver(maxSize);
+
+        Expression nameExpression = buildExpression(smallExpression);
+        given(expressionEvaluator.evaluate(nameExpression, expressionManager, delegateInterceptor)).willReturn("John");
+
+        Map<String, Object> input = new HashMap<>();
+        input.put("large", largeString);
+        input.put("small", smallExpression);
+
+        // when
+        Map<String, Object> result = limitedExpressionResolver.resolveExpressionsMap(expressionEvaluator, input);
+
+        // then
+        assertThat(result).containsEntry("large", largeString).containsEntry("small", "John");
+    }
+
+    @Test
+    public void getMaxVarSizeForExpressionParsing_should_returnUnlimitedByDefault() {
+        // when
+        int maxSize = ExpressionResolver.getMaxVarSizeForExpressionParsing();
+
+        // then
+        assertThat(maxSize).isEqualTo(Integer.MAX_VALUE);
+    }
+
+    @Test
+    public void resolveMaxVarSizeForExpressionParsing_should_returnUnlimited_when_valueIsMissingOrInvalid() {
+        assertThat(ExpressionResolver.resolveMaxVarSizeForExpressionParsing(null)).isEqualTo(Integer.MAX_VALUE);
+        assertThat(ExpressionResolver.resolveMaxVarSizeForExpressionParsing(" ")).isEqualTo(Integer.MAX_VALUE);
+        assertThat(ExpressionResolver.resolveMaxVarSizeForExpressionParsing("0")).isEqualTo(Integer.MAX_VALUE);
+        assertThat(ExpressionResolver.resolveMaxVarSizeForExpressionParsing("-1")).isEqualTo(Integer.MAX_VALUE);
+        assertThat(ExpressionResolver.resolveMaxVarSizeForExpressionParsing("invalid")).isEqualTo(Integer.MAX_VALUE);
+    }
+
+    @Test
+    public void resolveMaxVarSizeForExpressionParsing_should_returnConfiguredLimit_when_valueIsPositive() {
+        assertThat(ExpressionResolver.resolveMaxVarSizeForExpressionParsing("512000")).isEqualTo(512000);
+    }
+
+    @Test
+    public void resolveMaxVarSizeForExpressionParsing_should_returnUnlimited_when_valueOverflowsInteger() {
+        assertThat(ExpressionResolver.resolveMaxVarSizeForExpressionParsing("2147483648")).isEqualTo(Integer.MAX_VALUE);
+    }
+
+    /**
+     * Helper method to build a large string of specified size.
+     */
+    private String buildLargeString(int size) {
+        StringBuilder sb = new StringBuilder(size);
+        String pattern = "0123456789";
+        while (sb.length() < size) {
+            sb.append(pattern);
+        }
+        return sb.substring(0, size);
+    }
+
+    private ExpressionResolver buildExpressionResolver(int maxVarSizeForExpressionParsing) {
+        return new ExpressionResolver(expressionManager, mapper, delegateInterceptor, maxVarSizeForExpressionParsing);
+    }
+
+    private static Stream<Arguments> compatibleMalformedExpressions() {
+        return Stream.of(
+            arguments("${outer(${inner})}}", "${outer(${inner})}"),
+            arguments("${foo[bar}}", "${foo[bar}"),
+            arguments("${foo{bar}}", "${foo{bar}")
+        );
     }
 }
