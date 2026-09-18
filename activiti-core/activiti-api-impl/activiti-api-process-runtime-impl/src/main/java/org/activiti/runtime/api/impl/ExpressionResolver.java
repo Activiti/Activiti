@@ -450,30 +450,30 @@ public class ExpressionResolver {
             this.start = start;
             this.end = end;
         }
+    }
 
-        private static final class ExpressionRangeParserState {
+    private static final class ExpressionRangeParserState {
 
-            private int expressionStart = -1;
-            private int compatibilityFallbackEnd = -1;
-            private char activeQuote = 0;
-            private boolean escaped = false;
-            private boolean skipNextCharacter = false;
-            private final Deque<Character> delimiterStack = new ArrayDeque<>();
+        private int expressionStart = -1;
+        private int compatibilityFallbackEnd = -1;
+        private char activeQuote = 0;
+        private boolean escaped = false;
+        private boolean skipNextCharacter = false;
+        private final Deque<Character> delimiterStack = new ArrayDeque<>();
 
-            private boolean isExpressionStarted() {
-                return expressionStart >= 0;
+        private boolean isExpressionStarted() {
+            return expressionStart >= 0;
+        }
+
+        private boolean isInsideQuote() {
+            return activeQuote != 0;
+        }
+
+        private ExpressionRange getCompatibilityFallbackRange() {
+            if (expressionStart >= 0 && compatibilityFallbackEnd >= 0) {
+                return new ExpressionRange(expressionStart, compatibilityFallbackEnd);
             }
-
-            private boolean isInsideQuote() {
-                return activeQuote != 0;
-            }
-
-            private ExpressionRange getCompatibilityFallbackRange() {
-                if (expressionStart >= 0 && compatibilityFallbackEnd >= 0) {
-                    return new ExpressionRange(expressionStart, compatibilityFallbackEnd);
-                }
-                return null;
-            }
+            return null;
         }
     }
 }
