@@ -202,7 +202,7 @@ env:
 
 **Improvements Over Original:**
 
-- ✅ Handles `${foo['${bar}']}` nested expressions (regex couldn't)
+- ✅ Handles nested `${...}` inside balanced delimiters such as `${outer(${inner})}` (regex couldn't)
 - ✅ Handles `${"string with } inside"}` quoted braces (regex failed)
 - ✅ Handles escape sequences properly: `${"string with \" quote"}`
 - ✅ Predictable O(n) performance regardless of input

@@ -342,11 +342,7 @@ public class ExpressionResolver {
                         if (closedDelimiter == OUTER_EXPRESSION_DELIMITER) {
                             return new ExpressionRange(expressionStart, index);
                         }
-                        if (
-                            closedDelimiter == NESTED_EXPRESSION_DELIMITER &&
-                            delimiterStack.size() == 1 &&
-                            delimiterStack.peek() == OUTER_EXPRESSION_DELIMITER
-                        ) {
+                        if (closedDelimiter == NESTED_EXPRESSION_DELIMITER && hasOnlyOuterExpressionDelimiter(delimiterStack)) {
                             return new ExpressionRange(expressionStart, index);
                         }
                     }
@@ -367,6 +363,10 @@ public class ExpressionResolver {
         }
 
         return null;
+    }
+
+    private boolean hasOnlyOuterExpressionDelimiter(Deque<Character> delimiterStack) {
+        return delimiterStack.size() == 1 && delimiterStack.peek() == OUTER_EXPRESSION_DELIMITER;
     }
 
     private static final class ExpressionRange {
