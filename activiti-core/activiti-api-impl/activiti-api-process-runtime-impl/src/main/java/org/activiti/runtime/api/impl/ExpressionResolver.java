@@ -51,7 +51,7 @@ public class ExpressionResolver {
         if (envValue != null && !envValue.trim().isEmpty()) {
             try {
                 maxSize = Integer.parseInt(envValue.trim());
-                if (maxSize < 0) {
+                if (maxSize <= 0) {
                     maxSize = DEFAULT_MAX_VAR_SIZE_FOR_EXPRESSION_PARSING;
                 }
             } catch (NumberFormatException e) {
