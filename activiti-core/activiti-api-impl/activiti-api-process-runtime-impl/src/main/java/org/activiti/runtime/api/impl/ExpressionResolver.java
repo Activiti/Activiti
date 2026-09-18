@@ -59,6 +59,7 @@ public class ExpressionResolver {
 
     private Object resolveExpressions(final ExpressionEvaluator expressionEvaluator, final Object value) {
         return switch (value) {
+            case null -> null;
             case String sourceString -> resolveExpressionsString(expressionEvaluator, sourceString);
             case ObjectNode objectNode -> resolveExpressionsMap(
                 expressionEvaluator,

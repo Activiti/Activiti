@@ -22,7 +22,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -103,7 +102,7 @@ public class ExpressionResolverTest {
     public void containsExpression_should_returnFalse_when_ObjectNodeDoesNotContainExpressionPattern()
         throws Exception {
         //given
-        ObjectNode objectNode = mapper.readValue("{\"name\":  \"Peter\"}", ObjectNode.class);
+        ObjectNode objectNode = MAPPER.readValue("{\"name\":  \"Peter\"}", ObjectNode.class);
 
         //when
         boolean containsExpression = expressionResolver.containsExpression(objectNode);
@@ -115,7 +114,7 @@ public class ExpressionResolverTest {
     @Test
     public void containsExpression_should_returnTrue_when_ObjectNodeContainsExpressionPattern() throws Exception {
         //given
-        ObjectNode objectNode = mapper.readValue("{\"name\":  \"${name}\"}", ObjectNode.class);
+        ObjectNode objectNode = MAPPER.readValue("{\"name\":  \"${name}\"}", ObjectNode.class);
 
         //when
         boolean containsExpression = expressionResolver.containsExpression(objectNode);
@@ -333,11 +332,7 @@ public class ExpressionResolverTest {
     }
 
     private static JsonNode readNode(String json) {
-        try {
-            return MAPPER.readTree(json);
-        } catch (IOException ex) {
-            throw new IllegalStateException(ex);
-        }
+        return MAPPER.readTree(json);
     }
 
     private void stubResolvedExpressions(Map<String, Object> resolvedExpressions) {
