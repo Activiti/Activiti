@@ -234,6 +234,18 @@ public class ExpressionResolverTest {
     }
 
     @Test
+    public void findVariableNamesContainingExpressions_should_returnVariableNames_when_expressionContainsNestedExpression() {
+        // given
+        Map<String, Object> source = singletonMap("value", "${outer(${inner})}");
+
+        // when
+        List<String> result = expressionResolver.findVariableNamesContainingExpressions(source);
+
+        // then
+        assertThat(result).containsExactly("value");
+    }
+
+    @Test
     public void resolveExpressionsMap_should_replaceExpressionByValue_when_stringIsAnExpression() {
         //given
         Expression expression = buildExpression("${name}");
@@ -272,6 +284,23 @@ public class ExpressionResolverTest {
     public void resolveExpressionsMap_should_replaceExpressionByValue_when_expressionContainsClosingBraceInBody() {
         //given
         String expressionContent = "${foo['}']}";
+        Expression expression = buildExpression(expressionContent);
+        given(expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor)).willReturn("John");
+
+        //when
+        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
+            expressionEvaluator,
+            singletonMap("name", expressionContent)
+        );
+
+        //then
+        assertThat(result).containsEntry("name", "John");
+    }
+
+    @Test
+    public void resolveExpressionsMap_should_replaceExpressionByValue_when_expressionContainsNestedExpression() {
+        //given
+        String expressionContent = "${outer(${inner})}";
         Expression expression = buildExpression(expressionContent);
         given(expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor)).willReturn("John");
 

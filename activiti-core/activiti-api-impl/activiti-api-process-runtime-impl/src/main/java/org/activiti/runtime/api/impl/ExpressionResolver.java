@@ -302,7 +302,8 @@ public class ExpressionResolver {
 
         char activeQuote = 0;
         boolean escaped = false;
-        int curlyDepth = 0;
+        int braceDepth = 0;
+        int nestedExpressionDepth = 0;
         int squareDepth = 0;
         int roundDepth = 0;
 
@@ -323,12 +324,18 @@ public class ExpressionResolver {
             }
 
             switch (currentCharacter) {
+                case '$':
+                    if (index + 1 < sourceString.length() && sourceString.charAt(index + 1) == '{') {
+                        nestedExpressionDepth++;
+                        index++;
+                    }
+                    break;
                 case '\'':
                 case '"':
                     activeQuote = currentCharacter;
                     break;
                 case '{':
-                    curlyDepth++;
+                    braceDepth++;
                     break;
                 case '[':
                     squareDepth++;
@@ -337,11 +344,13 @@ public class ExpressionResolver {
                     roundDepth++;
                     break;
                 case '}':
-                    if (curlyDepth == 0 && squareDepth == 0 && roundDepth == 0) {
+                    if (braceDepth == 0 && nestedExpressionDepth == 0 && squareDepth == 0 && roundDepth == 0) {
                         return index;
                     }
-                    if (curlyDepth > 0) {
-                        curlyDepth--;
+                    if (braceDepth > 0) {
+                        braceDepth--;
+                    } else if (nestedExpressionDepth > 0) {
+                        nestedExpressionDepth--;
                     }
                     break;
                 case ']':

@@ -170,7 +170,7 @@ DEBUG o.a.r.a.i.ExpressionResolver - Skipping expression parsing for string exce
    - Added logging and getter method
 
 2. `../Activiti/activiti-core/activiti-api-impl/activiti-api-process-runtime-impl/src/test/java/org/activiti/runtime/api/impl/ExpressionResolverTest.java`
-   - Added 8 new test cases
+   - Added targeted tests for configurable limits and non-regex expression scanning
    - Added helper method for large string generation
 
 ## Testing
