@@ -437,7 +437,9 @@ public class ExpressionResolver {
         }
 
         parserState.delimiterStack.pop();
-        return new ExpressionRange(parserState.expressionStart, currentIndex + 1);
+        return parserState.delimiterStack.isEmpty()
+            ? new ExpressionRange(parserState.expressionStart, currentIndex + 1)
+            : null;
     }
 
     private boolean isClosingExpressionDelimiter(Character delimiter) {
