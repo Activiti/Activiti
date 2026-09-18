@@ -240,12 +240,12 @@ This fix went through several iterations:
    - Added size check before regex matching
    - Default: 100KB limit
 
-2. **Copilot Improvements (5 commits):**
-   - `fc14ce0cba` - **Replaced regex with linear scanner** ⭐ (biggest improvement)
-   - `0e5197d777` - Log configuration once (cleaner logging)
-   - `92a54f5403` - Preserve malformed expression compatibility
-   - `f9ae648424` - Handle quoted braces in expressions
-   - `6925bb975b` - Sanitize invalid config log messages
+2. **Follow-up improvements:**
+   - Replaced regex scanning with a linear scanner
+   - Logged configuration in a cleaner way
+   - Preserved malformed-expression compatibility
+   - Handled quoted braces in expressions
+   - Kept invalid-config logging sanitized and explicit
 
 3. **Final State:**
    - **Primary fix:** O(n) linear parser eliminates catastrophic backtracking
