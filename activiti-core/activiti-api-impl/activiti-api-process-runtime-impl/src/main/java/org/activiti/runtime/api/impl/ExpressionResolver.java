@@ -15,6 +15,8 @@
  */
 package org.activiti.runtime.api.impl;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -41,6 +43,7 @@ public class ExpressionResolver {
     private static final int MAX_VAR_SIZE_FOR_EXPRESSION_PARSING = resolveMaxVarSizeForExpressionParsing(
         System.getenv("MAX_VAR_SIZE_FOR_EXPRESSION_PARSING")
     );
+    private static final char NESTED_EXPRESSION_DELIMITER = '$';
 
     private JsonMapper mapper;
     private final DelegateInterceptor delegateInterceptor;
@@ -195,20 +198,14 @@ public class ExpressionResolver {
         int currentIndex = 0;
         StringBuilder result = new StringBuilder(sourceString.length());
         while (currentIndex < sourceString.length()) {
-            int expressionStart = findExpressionStart(sourceString, currentIndex);
-            if (expressionStart < 0) {
+            ExpressionRange expressionRange = findNextExpressionRange(sourceString, currentIndex);
+            if (expressionRange == null) {
                 result.append(sourceString, currentIndex, sourceString.length());
                 break;
             }
 
-            int expressionEnd = findExpressionEnd(sourceString, expressionStart);
-            if (expressionEnd < 0) {
-                result.append(sourceString, currentIndex, sourceString.length());
-                break;
-            }
-
-            result.append(sourceString, currentIndex, expressionStart);
-            final String expressionKey = sourceString.substring(expressionStart, expressionEnd + 1);
+            result.append(sourceString, currentIndex, expressionRange.start);
+            final String expressionKey = sourceString.substring(expressionRange.start, expressionRange.end + 1);
             final Expression expression = expressionManager.createExpression(expressionKey);
             try {
                 final Object value = expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor);
@@ -217,7 +214,7 @@ public class ExpressionResolver {
                 logger.warn("Unable to resolve expression in variables", e);
                 result.append("");
             }
-            currentIndex = expressionEnd + 1;
+            currentIndex = expressionRange.end + 1;
         }
         return result.toString();
     }
@@ -252,7 +249,7 @@ public class ExpressionResolver {
     }
 
     private boolean containsExpressionString(final String sourceString) {
-        return findExpressionStart(sourceString, 0) >= 0;
+        return findNextExpressionRange(sourceString, 0) != null;
     }
 
     private boolean containsExpressionMap(final Map<String, ?> source) {
@@ -274,41 +271,30 @@ public class ExpressionResolver {
     }
 
     private boolean isWholeExpression(String sourceString) {
-        int expressionStart = findExpressionStart(sourceString, 0);
-        return expressionStart == 0 && findExpressionEnd(sourceString, expressionStart) == sourceString.length() - 1;
+        ExpressionRange expressionRange = findNextExpressionRange(sourceString, 0);
+        return expressionRange != null && expressionRange.start == 0 && expressionRange.end == sourceString.length() - 1;
     }
 
-    private int findExpressionStart(String sourceString, int fromIndex) {
-        int searchIndex = fromIndex;
-        while (searchIndex >= 0 && searchIndex < sourceString.length()) {
-            int expressionStart = sourceString.indexOf(EXPRESSION_PREFIX, searchIndex);
-            if (expressionStart < 0) {
-                return -1;
-            }
-
-            if (findExpressionEnd(sourceString, expressionStart) >= 0) {
-                return expressionStart;
-            }
-
-            searchIndex = expressionStart + EXPRESSION_PREFIX.length();
-        }
-        return -1;
-    }
-
-    private int findExpressionEnd(String sourceString, int expressionStart) {
-        if (expressionStart < 0) {
-            return -1;
-        }
-
+    private ExpressionRange findNextExpressionRange(String sourceString, int fromIndex) {
+        int expressionStart = -1;
         char activeQuote = 0;
         boolean escaped = false;
-        int braceDepth = 0;
-        int nestedExpressionDepth = 0;
-        int squareDepth = 0;
-        int roundDepth = 0;
+        Deque<Character> delimiterStack = new ArrayDeque<>();
 
-        for (int index = expressionStart + EXPRESSION_PREFIX.length(); index < sourceString.length(); index++) {
+        for (int index = Math.max(0, fromIndex); index < sourceString.length(); index++) {
             char currentCharacter = sourceString.charAt(index);
+
+            if (expressionStart < 0) {
+                if (
+                    currentCharacter == EXPRESSION_PREFIX.charAt(0) &&
+                    index + 1 < sourceString.length() &&
+                    sourceString.charAt(index + 1) == EXPRESSION_PREFIX.charAt(1)
+                ) {
+                    expressionStart = index;
+                    index++;
+                }
+                continue;
+            }
 
             if (activeQuote != 0) {
                 if (currentCharacter == '\\' && !escaped) {
@@ -326,7 +312,7 @@ public class ExpressionResolver {
             switch (currentCharacter) {
                 case '$':
                     if (index + 1 < sourceString.length() && sourceString.charAt(index + 1) == '{') {
-                        nestedExpressionDepth++;
+                        delimiterStack.push(NESTED_EXPRESSION_DELIMITER);
                         index++;
                     }
                     break;
@@ -335,32 +321,32 @@ public class ExpressionResolver {
                     activeQuote = currentCharacter;
                     break;
                 case '{':
-                    braceDepth++;
+                    delimiterStack.push('{');
                     break;
                 case '[':
-                    squareDepth++;
+                    delimiterStack.push('[');
                     break;
                 case '(':
-                    roundDepth++;
+                    delimiterStack.push('(');
                     break;
                 case '}':
-                    if (braceDepth == 0 && nestedExpressionDepth == 0 && squareDepth == 0 && roundDepth == 0) {
-                        return index;
+                    if (delimiterStack.isEmpty()) {
+                        return new ExpressionRange(expressionStart, index);
                     }
-                    if (braceDepth > 0) {
-                        braceDepth--;
-                    } else if (nestedExpressionDepth > 0) {
-                        nestedExpressionDepth--;
+                    if (
+                        delimiterStack.peek() == '{' || delimiterStack.peek() == NESTED_EXPRESSION_DELIMITER
+                    ) {
+                        delimiterStack.pop();
                     }
                     break;
                 case ']':
-                    if (squareDepth > 0) {
-                        squareDepth--;
+                    if (!delimiterStack.isEmpty() && delimiterStack.peek() == '[') {
+                        delimiterStack.pop();
                     }
                     break;
                 case ')':
-                    if (roundDepth > 0) {
-                        roundDepth--;
+                    if (!delimiterStack.isEmpty() && delimiterStack.peek() == '(') {
+                        delimiterStack.pop();
                     }
                     break;
                 default:
@@ -368,6 +354,17 @@ public class ExpressionResolver {
             }
         }
 
-        return -1;
+        return null;
+    }
+
+    private static final class ExpressionRange {
+
+        private final int start;
+        private final int end;
+
+        private ExpressionRange(int start, int end) {
+            this.start = start;
+            this.end = end;
+        }
     }
 }

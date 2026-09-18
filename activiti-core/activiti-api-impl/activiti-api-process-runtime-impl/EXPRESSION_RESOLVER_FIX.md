@@ -133,7 +133,7 @@ env:
    - Recommended: leave unlimited unless a deployment needs a hard guard
 
 4. **Deploy and monitor:**
-   - Check startup logs for: `"ExpressionResolver initialized with MAX_VAR_SIZE_FOR_EXPRESSION_PARSING: unlimited"` or a configured byte limit
+   - Check startup logs for: `"ExpressionResolver initialized with MAX_VAR_SIZE_FOR_EXPRESSION_PARSING: unlimited"` or a configured character limit
    - Monitor DEBUG logs for: `"Skipping expression parsing for string exceeding max size"`
 
 ## Monitoring and Troubleshooting
