@@ -195,7 +195,7 @@ public class ExpressionResolver {
         int currentIndex = 0;
         StringBuilder result = new StringBuilder(sourceString.length());
         while (currentIndex < sourceString.length()) {
-            int expressionStart = sourceString.indexOf(EXPRESSION_PREFIX, currentIndex);
+            int expressionStart = findExpressionStart(sourceString, currentIndex);
             if (expressionStart < 0) {
                 result.append(sourceString, currentIndex, sourceString.length());
                 break;
@@ -279,15 +279,86 @@ public class ExpressionResolver {
     }
 
     private int findExpressionStart(String sourceString, int fromIndex) {
-        int expressionStart = sourceString.indexOf(EXPRESSION_PREFIX, fromIndex);
+        int searchIndex = fromIndex;
+        while (searchIndex >= 0 && searchIndex < sourceString.length()) {
+            int expressionStart = sourceString.indexOf(EXPRESSION_PREFIX, searchIndex);
+            if (expressionStart < 0) {
+                return -1;
+            }
+
+            if (findExpressionEnd(sourceString, expressionStart) >= 0) {
+                return expressionStart;
+            }
+
+            searchIndex = expressionStart + EXPRESSION_PREFIX.length();
+        }
+        return -1;
+    }
+
+    private int findExpressionEnd(String sourceString, int expressionStart) {
         if (expressionStart < 0) {
             return -1;
         }
 
-        return findExpressionEnd(sourceString, expressionStart) >= 0 ? expressionStart : -1;
-    }
+        char activeQuote = 0;
+        boolean escaped = false;
+        int curlyDepth = 0;
+        int squareDepth = 0;
+        int roundDepth = 0;
 
-    private int findExpressionEnd(String sourceString, int expressionStart) {
-        return expressionStart >= 0 ? sourceString.indexOf('}', expressionStart + EXPRESSION_PREFIX.length()) : -1;
+        for (int index = expressionStart + EXPRESSION_PREFIX.length(); index < sourceString.length(); index++) {
+            char currentCharacter = sourceString.charAt(index);
+
+            if (activeQuote != 0) {
+                if (currentCharacter == '\\' && !escaped) {
+                    escaped = true;
+                    continue;
+                }
+
+                if (currentCharacter == activeQuote && !escaped) {
+                    activeQuote = 0;
+                }
+                escaped = false;
+                continue;
+            }
+
+            switch (currentCharacter) {
+                case '\'':
+                case '"':
+                    activeQuote = currentCharacter;
+                    break;
+                case '{':
+                    curlyDepth++;
+                    break;
+                case '[':
+                    squareDepth++;
+                    break;
+                case '(':
+                    roundDepth++;
+                    break;
+                case '}':
+                    if (curlyDepth == 0 && squareDepth == 0 && roundDepth == 0) {
+                        return index;
+                    }
+                    if (curlyDepth > 0) {
+                        curlyDepth--;
+                    }
+                    break;
+                case ']':
+                    if (squareDepth > 0) {
+                        squareDepth--;
+                    }
+                    break;
+                case ')':
+                    if (roundDepth > 0) {
+                        roundDepth--;
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        return -1;
     }
 }
