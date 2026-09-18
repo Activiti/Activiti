@@ -468,7 +468,12 @@ public class ExpressionResolverTest {
     public void resolveExpressionsMap_should_parseParsing_when_stringIsAtMaxSize() {
         // given
         int maxSize = ExpressionResolver.getMaxVarSizeForExpressionParsing();
-        String stringAtMaxSize = buildLargeString(maxSize);
+        String expressionContent = "${name}";
+        String padding = buildLargeString(maxSize - expressionContent.length());
+        String stringAtMaxSize = padding + expressionContent;
+
+        Expression nameExpression = buildExpression(expressionContent);
+        given(expressionEvaluator.evaluate(nameExpression, expressionManager, delegateInterceptor)).willReturn("John");
 
         // when
         Map<String, Object> result = expressionResolver.resolveExpressionsMap(
@@ -476,8 +481,8 @@ public class ExpressionResolverTest {
             singletonMap("value", stringAtMaxSize)
         );
 
-        // then - should still attempt to parse (at the boundary)
-        assertThat(result).containsEntry("value", stringAtMaxSize);
+        // then - the expression is still resolved at the boundary
+        assertThat(result).containsEntry("value", padding + "John");
     }
 
     @Test
