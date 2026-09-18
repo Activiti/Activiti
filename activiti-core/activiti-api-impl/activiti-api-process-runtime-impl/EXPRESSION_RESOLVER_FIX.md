@@ -285,13 +285,14 @@ This fix went through several iterations:
 4. **Deploy and monitor:**
    - Check startup logs (if configured): Variable parsing behavior
    - Monitor DEBUG logs for: `"Skipping expression parsing for string exceeding max size"`
+   - Remember that values over the configured limit are returned unchanged, so any `${...}` placeholders inside them will remain unresolved by design
    - Verify normal expression resolution still works
 
 ## Monitoring and Troubleshooting
 
 ### Runtime Monitoring
 
-Enable DEBUG logging to see when large strings are skipped:
+Enable DEBUG logging to see when large strings are skipped. When the size limit is configured, skipped values are returned unchanged, so unresolved `${...}` placeholders in oversized payloads are expected rather than a parser failure:
 
 ```
 DEBUG o.a.r.a.i.ExpressionResolver - Skipping expression parsing for string exceeding max size: 150000 characters (limit: 102400 characters)
@@ -300,8 +301,9 @@ DEBUG o.a.r.a.i.ExpressionResolver - Skipping expression parsing for string exce
 ### If Variables Are Not Being Resolved
 
 1. Check if the variable size exceeds the limit
-2. Consider increasing the limit via environment variable
-3. Review if such large variables actually need expression resolution
+2. Confirm whether the unresolved `${...}` placeholder is inside a value that was intentionally skipped
+3. Consider increasing the limit via environment variable
+4. Review if such large variables actually need expression resolution
 
 ## Performance Comparison
 
