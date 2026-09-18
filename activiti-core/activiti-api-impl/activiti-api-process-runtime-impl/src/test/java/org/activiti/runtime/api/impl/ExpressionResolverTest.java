@@ -428,4 +428,144 @@ public class ExpressionResolverTest {
         given(expressionManager.createExpression(expressionContent)).willReturn(expression);
         return expression;
     }
+
+    @Test
+    public void resolveExpressionsMap_should_skipParsing_when_stringExceedsMaxSize() {
+        // given
+        int maxSize = ExpressionResolver.getMaxVarSizeForExpressionParsing();
+        String largeString = buildLargeString(maxSize + 100);
+
+        // when
+        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
+            expressionEvaluator,
+            singletonMap("largeValue", largeString)
+        );
+
+        // then - should return the original string without attempting expression resolution
+        assertThat(result).containsEntry("largeValue", largeString);
+    }
+
+    @Test
+    public void resolveExpressionsMap_should_skipParsing_when_stringWithExpressionExceedsMaxSize() {
+        // given
+        int maxSize = ExpressionResolver.getMaxVarSizeForExpressionParsing();
+        String largeStringWithExpression = buildLargeString(maxSize + 100) + "${name}";
+
+        // Expression should NOT be called because the string is too large
+        // If it were called and we didn't mock it, the test would fail
+
+        // when
+        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
+            expressionEvaluator,
+            singletonMap("largeValue", largeStringWithExpression)
+        );
+
+        // then - should return the original string without attempting expression resolution
+        assertThat(result).containsEntry("largeValue", largeStringWithExpression);
+    }
+
+    @Test
+    public void resolveExpressionsMap_should_parseParsing_when_stringIsAtMaxSize() {
+        // given
+        int maxSize = ExpressionResolver.getMaxVarSizeForExpressionParsing();
+        String expressionContent = "${name}";
+        String padding = buildLargeString(maxSize - expressionContent.length());
+        String stringAtMaxSize = padding + expressionContent;
+
+        Expression nameExpression = buildExpression(expressionContent);
+        given(expressionEvaluator.evaluate(nameExpression, expressionManager, delegateInterceptor)).willReturn("John");
+
+        // when
+        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
+            expressionEvaluator,
+            singletonMap("value", stringAtMaxSize)
+        );
+
+        // then - the expression is still resolved at the boundary
+        assertThat(result).containsEntry("value", padding + "John");
+    }
+
+    @Test
+    public void resolveExpressionsMap_should_skipParsing_when_nestedMapContainsLargeString() {
+        // given
+        int maxSize = ExpressionResolver.getMaxVarSizeForExpressionParsing();
+        String largeString = buildLargeString(maxSize + 100);
+
+        Map<String, Object> nestedMap = new HashMap<>();
+        nestedMap.put("largeValue", largeString);
+        nestedMap.put("normalValue", "normal");
+
+        // when
+        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
+            expressionEvaluator,
+            singletonMap("nested", nestedMap)
+        );
+
+        // then
+        @SuppressWarnings("unchecked")
+        Map<String, Object> resultNested = (Map<String, Object>) result.get("nested");
+        assertThat(resultNested).containsEntry("largeValue", largeString);
+        assertThat(resultNested).containsEntry("normalValue", "normal");
+    }
+
+    @Test
+    public void resolveExpressionsMap_should_skipParsing_when_listContainsLargeString() {
+        // given
+        int maxSize = ExpressionResolver.getMaxVarSizeForExpressionParsing();
+        String largeString = buildLargeString(maxSize + 100);
+
+        // when
+        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
+            expressionEvaluator,
+            singletonMap("values", asList("small", largeString, "another"))
+        );
+
+        // then
+        assertThat(result).containsEntry("values", asList("small", largeString, "another"));
+    }
+
+    @Test
+    public void resolveExpressionsMap_should_resolveSmallStrings_when_mixedWithLargeStrings() {
+        // given
+        int maxSize = ExpressionResolver.getMaxVarSizeForExpressionParsing();
+        String largeString = buildLargeString(maxSize + 100);
+        String smallExpression = "${name}";
+
+        Expression nameExpression = buildExpression(smallExpression);
+        given(expressionEvaluator.evaluate(nameExpression, expressionManager, delegateInterceptor)).willReturn("John");
+
+        Map<String, Object> input = new HashMap<>();
+        input.put("large", largeString);
+        input.put("small", smallExpression);
+
+        // when
+        Map<String, Object> result = expressionResolver.resolveExpressionsMap(expressionEvaluator, input);
+
+        // then
+        assertThat(result).containsEntry("large", largeString); // Not resolved due to size
+        assertThat(result).containsEntry("small", "John"); // Resolved normally
+    }
+
+    @Test
+    public void getMaxVarSizeForExpressionParsing_should_returnConfiguredValue() {
+        // when
+        int maxSize = ExpressionResolver.getMaxVarSizeForExpressionParsing();
+
+        // then
+        assertThat(maxSize).isGreaterThan(0);
+        // Default is 100KB unless overridden by environment variable
+        // We just verify it's a positive number
+    }
+
+    /**
+     * Helper method to build a large string of specified size.
+     */
+    private String buildLargeString(int size) {
+        StringBuilder sb = new StringBuilder(size);
+        String pattern = "0123456789";
+        while (sb.length() < size) {
+            sb.append(pattern);
+        }
+        return sb.substring(0, size);
+    }
 }
