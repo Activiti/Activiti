@@ -15,6 +15,7 @@
  */
 package org.activiti.engine.impl.variable;
 
+import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tools.jackson.core.JacksonException;
@@ -83,9 +84,10 @@ public class JsonType implements VariableType {
         }
 
         if (JsonNode.class.isAssignableFrom(value.getClass()) || serializePOJOsInVariablesToJson) {
-            try {
-                return jsonMapper.writeValueAsString(value).length() <= maxLength;
-            } catch (JacksonException e) {
+            try (var counter = new CountingOutputStream()) {
+                jsonMapper.writeValue(counter, value);
+                return counter.getCount() <= maxLength;
+            } catch (JacksonException | IOException e) {
                 logger.error("Error writing json variable of type " + value.getClass(), e);
             }
         }

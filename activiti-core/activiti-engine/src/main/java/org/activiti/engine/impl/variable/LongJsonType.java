@@ -15,6 +15,7 @@
  */
 package org.activiti.engine.impl.variable;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import org.activiti.engine.ActivitiException;
 import org.slf4j.Logger;
@@ -55,9 +56,10 @@ public class LongJsonType extends SerializableType {
         }
 
         if (JsonNode.class.isAssignableFrom(value.getClass()) || serializePOJOsInVariablesToJson) {
-            try {
-                return jsonMapper.writeValueAsString(value).length() >= minLength;
-            } catch (JacksonException e) {
+            try (var counter = new CountingOutputStream()) {
+                jsonMapper.writeValue(counter, value);
+                return counter.getCount() >= minLength;
+            } catch (JacksonException | IOException e) {
                 logger.error("Error writing json variable of type " + value.getClass(), e);
             }
         }
