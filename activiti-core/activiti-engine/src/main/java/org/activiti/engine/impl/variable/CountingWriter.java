@@ -15,23 +15,38 @@
  */
 package org.activiti.engine.impl.variable;
 
-import java.io.OutputStream;
+import java.io.Writer;
 
-public class CountingOutputStream extends OutputStream {
+public class CountingWriter extends Writer {
 
-    private long count = 0;
+    private long characterCount = 0;
 
-    @Override
-    public void write(int b) {
-        count++;
+    public long getCharacterCount() {
+        return characterCount;
     }
 
     @Override
-    public void write(byte[] b, int off, int len) {
-        count += len;
+    public void write(int c) {
+        characterCount++;
     }
 
-    public long getCount() {
-        return count;
+    @Override
+    public void write(char[] cbuf, int off, int len) {
+        characterCount += len;
+    }
+
+    @Override
+    public void write(String str, int off, int len) {
+        characterCount += len;
+    }
+
+    @Override
+    public void flush() {
+        // No-op: nothing cached in memory
+    }
+
+    @Override
+    public void close() {
+        // No-op: nothing to release
     }
 }
