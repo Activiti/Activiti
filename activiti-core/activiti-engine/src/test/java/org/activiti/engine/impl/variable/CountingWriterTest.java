@@ -21,12 +21,12 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import tools.jackson.databind.json.JsonMapper;
 
-public class CountingWriterTest {
+class CountingWriterTest {
 
     private final JsonMapper jsonMapper = new JsonMapper();
 
     @Test
-    public void getCharacterCount_should_trackCharactersWrittenAcrossWriterMethods() {
+    void getCharacterCount_should_trackCharactersWrittenAcrossWriterMethods() {
         CountingWriter writer = new CountingWriter();
 
         writer.write('a');
@@ -37,7 +37,7 @@ public class CountingWriterTest {
     }
 
     @Test
-    public void getCharacterCount_should_matchSerializedJsonLength() throws Exception {
+    void getCharacterCount_should_matchSerializedJsonLength() throws Exception {
         CountingWriter writer = new CountingWriter();
         Map<String, Object> value = Map.of("message", "hé🙂");
 
@@ -47,7 +47,7 @@ public class CountingWriterTest {
     }
 
     @Test
-    public void closeAndFlush_should_notChangeCharacterCount() {
+    void closeAndFlush_should_notChangeCharacterCount() {
         CountingWriter writer = new CountingWriter();
         writer.write("value", 0, 5);
 
