@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.TaskService;
@@ -66,6 +67,7 @@ import org.activiti.engine.impl.cmd.SaveTaskCmd;
 import org.activiti.engine.impl.cmd.SetTaskDueDateCmd;
 import org.activiti.engine.impl.cmd.SetTaskPriorityCmd;
 import org.activiti.engine.impl.cmd.SetTaskVariablesCmd;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
 import org.activiti.engine.runtime.DataObject;
 import org.activiti.engine.task.Attachment;
@@ -194,7 +196,11 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
     }
 
     public List<IdentityLink> getIdentityLinksForTask(String taskId) {
-        return commandExecutor.execute(new GetIdentityLinksForTaskCmd(taskId));
+        final var command = new GetIdentityLinksForTaskCmd(taskId);
+
+        return Optional.ofNullable(Context.getCommandContext())
+            .map(command::execute)
+            .orElseGet(() -> commandExecutor.execute(command));
     }
 
     public void claim(String taskId, String userId) {
