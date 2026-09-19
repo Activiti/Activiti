@@ -200,7 +200,7 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
 
         return Optional.ofNullable(Context.getCommandContext())
             .map(command::execute)
-            .orElse(commandExecutor.execute(command));
+            .orElseGet(() -> commandExecutor.execute(command));
     }
 
     public void claim(String taskId, String userId) {
