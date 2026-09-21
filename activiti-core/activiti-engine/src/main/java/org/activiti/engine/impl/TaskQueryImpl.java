@@ -353,7 +353,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
             throw new ActivitiIllegalArgumentException("AssigneeLike is null");
         }
         if (orActive) {
-            currentOrQueryObject.assigneeLike = assignee;
+            currentOrQueryObject.assigneeLike = assigneeLike;
         } else {
             this.assigneeLike = assigneeLike;
         }

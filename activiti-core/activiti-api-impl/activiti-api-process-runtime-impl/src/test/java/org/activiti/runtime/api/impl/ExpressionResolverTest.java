@@ -167,6 +167,48 @@ public class ExpressionResolverTest {
     }
 
     @Test
+    public void findVariableNamesContainingExpressions_should_returnEmptyList_when_sourceIsNull() {
+        //when
+        List<String> result = expressionResolver.findVariableNamesContainingExpressions(null);
+
+        //then
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void findVariableNamesContainingExpressions_should_returnEmptyList_when_noVariableContainsExpression() {
+        //given
+        Map<String, Object> source = map("name", "John", "age", 30);
+
+        //when
+        List<String> result = expressionResolver.findVariableNamesContainingExpressions(source);
+
+        //then
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void findVariableNamesContainingExpressions_should_returnVariableNames_when_someVariablesContainExpressions() {
+        //given
+        Map<String, Object> source = map(
+            "name",
+            "${name}",
+            "age",
+            30,
+            "place",
+            "${place}",
+            "list",
+            asList("first", "${item}")
+        );
+
+        //when
+        List<String> result = expressionResolver.findVariableNamesContainingExpressions(source);
+
+        //then
+        assertThat(result).containsExactlyInAnyOrder("name", "place", "list");
+    }
+
+    @Test
     public void resolveExpressionsMap_should_replaceExpressionByValue_when_stringIsAnExpression() {
         //given
         Expression expression = buildExpression("${name}");

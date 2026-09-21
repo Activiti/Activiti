@@ -8,10 +8,9 @@ permissions:
   contents: read
   pull-requests: read
 
+model: gpt-5-mini
 engine:
   id: copilot
-  model: gpt-5-mini
-
 tools:
   github:
     toolsets: [context, pull_requests, repos]
@@ -24,17 +23,23 @@ network:
     - api.osv.dev
     - api.scorecard.dev
     - search.maven.org
+    - api.github.com
+    - github.com
 
 safe-outputs:
   add-comment:
     hide-older-comments: true
   add-labels:
     allowed: [security:low, security:medium, security:high]
+    issue-intent: false
   remove-labels:
     allowed: [security:low, security:medium, security:high]
   submit-pull-request-review:
+    allowed-events: [COMMENT, REQUEST_CHANGES]
+    supersede-older-reviews: true
+  dismiss-pull-request-review:
 
-source: Alfresco/alfresco-build-tools/.github/workflows/supply-chain-review.md@7bc0fc6f4f11df6c065b57d4a6aa90d7ea362b2f
+source: Alfresco/alfresco-build-tools/.github/workflows/supply-chain-review.md@599eebd2a1b84e76d540e41036520df3a64c7cbd
 ---
 
 # Supply Chain Review
@@ -57,7 +62,7 @@ For each changed dependency extract:
 - Old version (or mark as `NEW DEPENDENCY` if newly added)
 - New version
 
-If no dependency files were changed, post a brief PR comment stating that no dependency changes were detected and no review is needed, then stop.
+If no dependency files were changed, post a brief PR comment stating that no dependency changes were detected, then go directly to Step 6 — treating this as LOW risk — to remove any stale `security:*` labels and submit the required pull request review, then stop.
 
 ## Step 1b — Filter Internal Dependencies
 
@@ -74,7 +79,7 @@ For each internal dependency found:
 2. Record the package name (with `@` replaced by `(at)` for GitHub comment compatibility), ecosystem, old version, and new version in a separate "Internal Dependencies (Skipped)" list.
 3. Continue with Step 2 only for the remaining external/public dependencies.
 
-If ALL changed dependencies are internal, skip Steps 2-4 and proceed directly to Step 5, posting a report that lists the internal dependencies and notes that no external supply chain analysis was performed.
+If ALL changed dependencies are internal, skip Steps 2-4 and proceed directly to Step 5 — treating this as LOW risk for Step 6 — posting a report that lists the internal dependencies and notes that no external supply chain analysis was performed.
 
 ## Step 2 — Collect Data for Each Dependency
 
@@ -268,7 +273,7 @@ Verify that the source repository URL in registry metadata points to the canonic
 Assign a risk score (0-100) to each dependency using these guidelines:
 
 | Priority | Signal                                                                                                                                                                                                                                                     | Typical Impact |
-| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------|
 | Highest  | Known CRITICAL/HIGH CVEs in new version, confirmed typosquatting, malicious code in diff, build provenance mismatch (tag points to different code than published artifact), tag mimicry on fork                                                            | 60+ points     |
 | High     | Maintainer takeover pattern (publisher changed + old maintainers removed), dangerous install scripts, known compromised package, moved/recreated tag with different commit, provenance attestations removed from package that previously had them          | 20-40 points   |
 | Medium   | Low OpenSSF Scorecard (< 3), publisher changed (without full takeover), new install scripts, very recent publish (< 48h), obfuscated code in diff, unsigned lightweight tags on security-critical packages, absence of provenance on high-profile packages | 10-20 points   |
@@ -304,9 +309,9 @@ GitHub enforces a maximum of 10 mentions per comment. Package names containing `
 
 ### Internal Dependencies (Skipped)
 
-| Package           | Ecosystem | Old Version | New Version | Reason                          |
-|-------------------|-----------|-------------|-------------|---------------------------------|
-| (at)hyland/core   | npm       | 3.1.0       | 3.2.0       | Internal ((at)hyland/* scope)   |
+| Package         | Ecosystem | Old Version | New Version | Reason                        |
+|-----------------|-----------|-------------|-------------|-------------------------------|
+| (at)hyland/core | npm       | 3.1.0       | 3.2.0       | Internal ((at)hyland/* scope) |
 
 _These dependencies are internal packages not available on public registries. External API checks were skipped._
 
@@ -342,18 +347,42 @@ No suspicious patterns detected. Routine upgrade.
 
 ## Step 6 — Apply Label and Review Status
 
-- First, remove any `security:low`, `security:medium`, or `security:high` labels already present on the PR from a previous review — this PR may have been reviewed before (e.g., after a new commit), and stale risk labels must not remain alongside the new one.
-- Then apply a label to the PR based on the highest risk level found:
-  - `security:low` for LOW risk
-  - `security:medium` for MEDIUM risk
-  - `security:high` for HIGH or CRITICAL risk
-- If the highest risk level is HIGH or CRITICAL, submit a pull request review requesting changes, with a summary of the critical findings.
-- If the risk is MEDIUM, submit a pull request review as a comment, noting that human review is recommended.
-- If the risk is LOW, do not submit a review — the PR comment is sufficient.
+### 6a. Labels — order-independent update
+
+Determine the single target label for the highest risk level found: `security:low`, `security:medium`, or `security:high`.
+
+- Remove only the OTHER `security:*` labels (the ones that do NOT match the target) if present on the PR — this clears stale risk labels left by a previous review (e.g., after a new commit changed the risk level).
+- Add the target label if it is not already present.
+- **Never remove the target label itself.** Because the remove and add operations act on disjoint labels, the final state is correct regardless of which of the two safe-output calls (`add_labels` / `remove_labels`) happens to be processed first — do NOT rely on emitting them in a particular order, since that ordering is not guaranteed. (Do not, for example, remove all three `security:*` labels and then add the target back — if the removal is processed after the add, the target label would be stripped again, leaving the PR with no risk label at all.)
+
+### 6b. Dismiss stale reviews from this workflow
+
+Every review this workflow posts (see 6c) MUST start its body with the exact literal marker line `**Supply Chain Review**` as the first line, so future runs can recognize their own prior reviews.
+
+Before posting the new review:
+
+1. Fetch the PR's existing reviews (GitHub MCP `pull_requests` toolset).
+2. Identify any review that is authored by this workflow's actor AND whose body starts with the `**Supply Chain Review**` marker AND is still in the `CHANGES_REQUESTED` state — that is a stale review from an earlier run of this same workflow (e.g., posted before the flagged dependency was fixed, downgraded, or removed).
+3. For each such review, call `dismiss_pull_request_review` with its explicit numeric `review_id` (do NOT use `'auto'` — this repository may run other agentic workflows that also post as the same actor, and `'auto'` would dismiss their reviews too) and a justification of at least 20 characters (e.g., "Superseded by a newer Supply Chain Review run.").
+
+Do this even though `submit-pull-request-review` is also configured with `supersede-older-reviews: true` — that setting is best-effort and may not always recognize the prior review, so the explicit dismissal above is the reliable mechanism and must always be attempted.
+
+### 6c. Submit the review
+
+**Always submit a pull request review — in every invocation, with no exceptions.** This is not conditional on risk level. Submit a review even when there are no dependency changes, when all dependencies are internal, or when risk is LOW — skipping it would mean a stale `REQUEST_CHANGES` review from an earlier run is never replaced or dismissed.
+
+The review body must start with the `**Supply Chain Review**` marker line (see 6b), followed by the assessment:
+
+- If the highest risk level is HIGH or CRITICAL, submit the review as **request changes**, with a summary of the critical findings.
+- If the risk is MEDIUM, submit the review as a **comment**, noting that human review is recommended.
+- If the risk is LOW (including when there are no dependency changes, or all changed dependencies are internal), submit the review as a **comment**, summarizing that no concerns were found and the PR comment has the full detail.
+- **Never submit the review as an approval, under any circumstance** — this workflow only ever comments or requests changes; a human always makes the merge decision.
 
 ## Important Guidelines
 
-- **Never approve or merge the PR** — all actions are advisory or blocking only. A human always makes the merge decision.
+- **Never approve or merge the PR** — all actions are advisory or blocking only. A human always makes the merge decision. Every review this workflow submits must use the comment or request-changes event — never the approve event.
+- **Always submit exactly one pull request review per invocation, regardless of outcome**, and always prefix its body with the `**Supply Chain Review**` marker — this is required so that a later run of this same workflow can find and dismiss it via `dismiss_pull_request_review` once it becomes stale (see Step 6b). Do not rely on `supersede-older-reviews` alone; it is best-effort.
+- **Never remove the `security:*` label matching the current risk level** when clearing stale labels — only remove the other ones, so the final label state is correct no matter which safe-output call is processed first (see Step 6a).
 - Be specific in findings — cite exact data (vulnerability ID, maintainer name, script content, file path, API response) rather than vague warnings.
 - For Maven packages, adapt npm-specific checks appropriately (e.g., install scripts become build plugin analysis, maintainer metadata may be limited).
 - When a package is a NEW dependency (no old version), pay extra attention to project health, name legitimacy, and install scripts since there is no historical baseline to compare against.

@@ -86,9 +86,19 @@ class SetVariablesTaskTest {
 
     @Test
     void should_setAllDeclaredTargetVariablesAndKeepSources() {
-        List<VariableInstance> variables = processBaseRuntime.getProcessVariablesByProcessId(
-            processBaseRuntime.startProcessWithProcessDefinitionKey(SET_VARIABLES_TASK_PROCESS).getId()
+        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(
+            SET_VARIABLES_TASK_PROCESS
         );
+        waitForVariablesToBePresent(
+            processInstance.getId(),
+            "copiedName",
+            "literalGreeting",
+            "fullName",
+            "greetingMsg",
+            "doubledAge"
+        );
+
+        List<VariableInstance> variables = processBaseRuntime.getProcessVariablesByProcessId(processInstance.getId());
 
         assertThat(variables)
             .extracting(VariableInstance::getName, VariableInstance::getValue)
@@ -110,9 +120,38 @@ class SetVariablesTaskTest {
         ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(
             SET_VARIABLES_TASK_PROCESS
         );
+        waitForVariablesToBePresent(
+            processInstance.getId(),
+            "copiedName",
+            "literalGreeting",
+            "fullName",
+            "greetingMsg",
+            "doubledAge"
+        );
         return processBaseRuntime
             .getProcessVariablesByProcessId(processInstance.getId())
             .stream()
             .collect(Collectors.toMap(VariableInstance::getName, VariableInstance::getValue));
+    }
+
+    private void waitForVariablesToBePresent(String processInstanceId, String... expectedNames) {
+        long timeout = System.currentTimeMillis() + 5000L;
+        while (System.currentTimeMillis() < timeout) {
+            List<String> actualNames = processBaseRuntime
+                .getProcessVariablesByProcessId(processInstanceId)
+                .stream()
+                .map(VariableInstance::getName)
+                .toList();
+            if (List.of(expectedNames).stream().allMatch(actualNames::contains)) {
+                return;
+            }
+            try {
+                Thread.sleep(50L);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new IllegalStateException("Interrupted while waiting for set-variables task execution", e);
+            }
+        }
+        throw new IllegalStateException("Timed out waiting for set-variables task execution");
     }
 }
