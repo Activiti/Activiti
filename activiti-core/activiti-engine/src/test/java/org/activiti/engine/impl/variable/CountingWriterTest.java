@@ -1,0 +1,59 @@
+/*
+ * Copyright 2010-2026 Hyland Software, Inc. and its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.activiti.engine.impl.variable;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Map;
+import org.junit.jupiter.api.Test;
+import tools.jackson.databind.json.JsonMapper;
+
+class CountingWriterTest {
+
+    private final JsonMapper jsonMapper = new JsonMapper();
+
+    @Test
+    void getCharacterCount_should_trackCharactersWrittenAcrossWriterMethods() {
+        CountingWriter writer = new CountingWriter();
+
+        writer.write('a');
+        writer.write(new char[] { 'b', 'c', 'd', 'e' }, 1, 2);
+        writer.write("fghi", 1, 2);
+
+        assertThat(writer.getCharacterCount()).isEqualTo(5);
+    }
+
+    @Test
+    void getCharacterCount_should_matchSerializedJsonLength() throws Exception {
+        CountingWriter writer = new CountingWriter();
+        Map<String, Object> value = Map.of("message", "hé🙂");
+
+        jsonMapper.writeValue(writer, value);
+
+        assertThat(writer.getCharacterCount()).isEqualTo(jsonMapper.writeValueAsString(value).length());
+    }
+
+    @Test
+    void closeAndFlush_should_notChangeCharacterCount() {
+        CountingWriter writer = new CountingWriter();
+        writer.write("value", 0, 5);
+
+        writer.flush();
+        writer.close();
+
+        assertThat(writer.getCharacterCount()).isEqualTo(5);
+    }
+}

@@ -43,7 +43,7 @@ jobs:
         id: check_pr_preview
         shell: bash
         run: |
-          echo "preview=${{ contains(github.event.pull_request.labels.*.name, 'preview') }}" >> $GITHUB_OUTPUT
+          echo "preview=${{ contains(github.event.pull_request.labels.*.name, 'preview') }}" >> "$GITHUB_OUTPUT"
 
   build:
     runs-on: ubuntu-latest
@@ -51,6 +51,8 @@ jobs:
     permissions:
       actions: write
       contents: read
+    outputs:
+      version: ${{ env.VERSION }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -63,18 +65,19 @@ jobs:
         if: ${{ needs.pre-checks.outputs.preview == 'true' }}
         run: |
           GITHUB_PR_NUMBER=PR-${{ github.event.pull_request.number }}
-          echo 0.0.1-${GITHUB_PR_NUMBER}-${GITHUB_RUN_NUMBER}-SNAPSHOT > VERSION
+          echo "0.0.1-${GITHUB_PR_NUMBER}-SNAPSHOT" > VERSION
 
       - name: Set VERSION env variable
+        id: version
         if: ${{ needs.pre-checks.outputs.preview == 'true' }}
         run: |
           VERSION=$(cat VERSION)
-          echo set VERSION=$VERSION
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "set VERSION=$VERSION"
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
 
       - name: Update pom files to the new version
         if: ${{ needs.pre-checks.outputs.preview == 'true' }}
-        run: mvn -B versions:set -DnewVersion=$VERSION -DprocessAllModules=true -DgenerateBackupPoms=false
+        run: mvn -B versions:set -DnewVersion="$VERSION" -DprocessAllModules=true -DgenerateBackupPoms=false
 
       - uses: ./.github/actions/maven-build-and-analyze
         with:
@@ -102,16 +105,16 @@ jobs:
       - name: Set preview version
         run: |
           GITHUB_PR_NUMBER=PR-${{ github.event.pull_request.number }}
-          echo 0.0.1-${GITHUB_PR_NUMBER}-${GITHUB_RUN_NUMBER}-SNAPSHOT > VERSION
+          echo "0.0.1-${GITHUB_PR_NUMBER}-SNAPSHOT" > VERSION
 
       - name: Set VERSION env variable
         run: |
           VERSION=$(cat VERSION)
-          echo set VERSION=$VERSION
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "set VERSION=$VERSION"
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
 
       - name: Update pom files to the new version
-        run: mvn -B versions:set -DnewVersion=$VERSION -DprocessAllModules=true -DgenerateBackupPoms=false
+        run: mvn -B versions:set -DnewVersion="$VERSION" -DprocessAllModules=true -DgenerateBackupPoms=false
 
       - name: Deploy preview with Maven
         shell: bash
@@ -120,3 +123,55 @@ jobs:
           MAVEN_CLI_OPTS: --show-version --no-transfer-progress --settings settings.xml
           MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+
+  propagate-preview:
+    runs-on: ubuntu-latest
+    needs:
+      - build
+      - publish
+    if: ${{ github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'preview-propagation') && contains(github.event.pull_request.labels.*.name, 'preview') }}
+    env:
+      VERSION: ${{ needs.build.outputs.version }}
+      DEVELOPMENT_BRANCH: ${{ github.base_ref }}
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Use preview updatebot config
+        shell: bash
+        run: cp .jx/updatebot-preview.yaml .jx/updatebot.yaml
+      - uses: Alfresco/alfresco-build-tools/.github/actions/jx-updatebot-pr@567a9393acca033008ce34eafcb200469e4ea2f5 # v18.27.0
+        env:
+          BUILD_RUN_ID: ${{ github.run_id }}
+        with:
+          version: ${{ env.VERSION }}
+          auto-merge: 'false'
+          labels: 'do-not-merge,preview-source-pr-${{ github.event.pull_request.number }}'
+          base-branch-name: ${{ env.DEVELOPMENT_BRANCH }}
+          git-username: ${{ vars.HXPS_GIT_USERNAME }}
+          git-token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          git-author-name: ${{ vars.HXPS_GIT_USERNAME }}
+          git-author-email: ${{ vars.HXPS_GIT_EMAIL }}
+          gpg-private-key: ${{ secrets.HXPS_GIT_COMMIT_SIGNING_PRIVATE_KEY }}
+          gpg-private-key-fingerprint: ${{ secrets.HXPS_GIT_COMMIT_SIGNING_FINGERPRINT }}
+          commit-message: "Preview snapshot PR: activiti ${{ env.VERSION }} from ${{ github.server_url }}/${{ github.repository }}/pull/${{ github.event.pull_request.number }}"
+
+      - name: Check source PR is still open
+        id: source-pr-state
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
+        run: |
+          STATE=$(gh pr view "${{ github.event.pull_request.number }}" \
+            --repo "${{ github.repository }}" \
+            --json state --jq .state)
+          echo "state=$STATE" >> "$GITHUB_OUTPUT"
+
+      - name: Close preview PRs if source PR closed while propagating
+        if: ${{ steps.source-pr-state.outputs.state != 'OPEN' }}
+        uses: ./.github/actions/close-orphaned-preview-prs
+        with:
+          source-pr-number: ${{ github.event.pull_request.number }}
+          source-pr-state: ${{ steps.source-pr-state.outputs.state }}
+          github-token: ${{ secrets.BOT_GITHUB_TOKEN }}

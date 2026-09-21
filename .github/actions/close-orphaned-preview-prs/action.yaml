@@ -1,0 +1,49 @@
+name: Close orphaned preview PRs
+description: >
+  Closes any open downstream preview PR labeled "preview-source-pr-<N>" in
+  activiti-cloud for an Activiti source PR that is no longer open. Shared by
+  the on-close cleanup job and by the propagate-preview job's post-creation guard.
+inputs:
+  source-pr-number:
+    description: The Activiti PR number the preview PRs reference
+    required: true
+  source-pr-state:
+    description: Current state of the source PR, e.g. "MERGED" or "CLOSED"
+    required: true
+  github-token:
+    description: Token with pull-requests:write on downstream repos
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Close labeled preview PRs in downstream repos
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+        SOURCE_PR_NUMBER: ${{ inputs.source-pr-number }}
+        SOURCE_PR_STATE: ${{ inputs.source-pr-state }}
+      run: |
+        SOURCE_LABEL="preview-source-pr-${SOURCE_PR_NUMBER}"
+        CLOSE_REASON=$( [ "$SOURCE_PR_STATE" = "MERGED" ] && echo "merged" || echo "closed" )
+        REPOS=(
+          "Activiti/activiti-cloud"
+        )
+        for REPO in "${REPOS[@]}"; do
+          echo "Looking for open PRs labelled '$SOURCE_LABEL' in $REPO..."
+          PR_NUMBERS=$(gh pr list \
+            --repo "$REPO" \
+            --label "$SOURCE_LABEL" \
+            --state open \
+            --json number \
+            --jq '.[].number')
+          if [ -z "$PR_NUMBERS" ]; then
+            echo "No open preview PRs found in $REPO"
+          else
+            for PR in $PR_NUMBERS; do
+              echo "Closing PR #$PR in $REPO"
+              gh pr close "$PR" \
+                --repo "$REPO" \
+                --comment "Automatically closed: source PR #${SOURCE_PR_NUMBER} in Activiti was ${CLOSE_REASON}."
+            done
+          fi
+        done
