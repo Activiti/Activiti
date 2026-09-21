@@ -142,8 +142,8 @@ public abstract class RuntimeEventImpl<ENTITY_TYPE, EVENT_TYPE extends Enum<?>>
             .append(businessKey)
             .append(", parentProcessInstanceId=")
             .append(parentProcessInstanceId)
-            .append(", entity=")
-            .append(entity)
+            .append(", entityType=")
+            .append(entity != null ? entity.getClass().getSimpleName() : null)
             .append("]");
         return builder.toString();
     }

@@ -89,9 +89,6 @@ public class VariableInstanceImpl<T> implements VariableInstance {
             ", taskId='" +
             taskId +
             '\'' +
-            ", value='" +
-            value +
-            '\'' +
             '}'
         );
     }
