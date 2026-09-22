@@ -83,8 +83,9 @@ public class JsonType implements VariableType {
         }
 
         if (JsonNode.class.isAssignableFrom(value.getClass()) || serializePOJOsInVariablesToJson) {
-            try {
-                return jsonMapper.writeValueAsString(value).length() <= maxLength;
+            try (var writer = new CountingWriter()) {
+                jsonMapper.writeValue(writer, value);
+                return writer.getCharacterCount() <= maxLength;
             } catch (JacksonException e) {
                 logger.error("Error writing json variable of type " + value.getClass(), e);
             }
