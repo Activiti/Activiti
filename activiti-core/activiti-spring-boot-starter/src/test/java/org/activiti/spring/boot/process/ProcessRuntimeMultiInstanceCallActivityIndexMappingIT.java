@@ -59,22 +59,22 @@ public class ProcessRuntimeMultiInstanceCallActivityIndexMappingIT {
     private SecurityUtil securityUtil;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         securityUtil.logInAs("user");
     }
 
     @AfterEach
-    public void cleanUp() {
+    void cleanUp() {
         processCleanUpUtil.cleanUpWithAdmin();
     }
 
     @Test
-    public void should_visitEachCollectionElementOnce_when_indexVariableIsMappedAsInputAndOutputsComeFromVariableCategories() {
+    void should_visitEachCollectionElementOnce_when_indexVariableIsMappedAsInputAndOutputsComeFromVariableCategories() {
         assertEachCollectionElementIsVisitedOnce(CALLER_WITH_CATEGORY_BASED_OUTPUTS);
     }
 
     @Test
-    public void should_visitEachCollectionElementOnce_when_indexVariableIsMappedAsInputAndOutputsAreDeclaredExplicitly() {
+    void should_visitEachCollectionElementOnce_when_indexVariableIsMappedAsInputAndOutputsAreDeclaredExplicitly() {
         assertEachCollectionElementIsVisitedOnce(CALLER_WITH_EXPLICIT_OUTPUTS);
     }
 
