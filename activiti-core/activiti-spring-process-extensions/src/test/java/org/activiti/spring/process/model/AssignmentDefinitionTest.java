@@ -49,7 +49,7 @@ class AssignmentDefinitionTest {
         assignment2.setAllowSelfService(true);
 
         assertThat(assignment1).isEqualTo(assignment2);
-        assertThat(assignment1.hashCode()).isEqualTo(assignment2.hashCode());
+        assertThat(assignment1).hasSameHashCodeAs(assignment2);
     }
 
     @Test
