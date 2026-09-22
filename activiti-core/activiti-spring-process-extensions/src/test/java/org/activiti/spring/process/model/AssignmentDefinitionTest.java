@@ -48,8 +48,7 @@ class AssignmentDefinitionTest {
         AssignmentDefinition assignment2 = new AssignmentDefinition("1", ASSIGNEE, STATIC, MANUAL);
         assignment2.setAllowSelfService(true);
 
-        assertThat(assignment1).isEqualTo(assignment2);
-        assertThat(assignment1).hasSameHashCodeAs(assignment2);
+        assertThat(assignment1).isEqualTo(assignment2).hasSameHashCodeAs(assignment2);
     }
 
     @Test
