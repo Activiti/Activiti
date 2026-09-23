@@ -256,7 +256,26 @@ class ExtensionTest {
                     new AssignmentDefinition("2", CANDIDATES, IDENTITY, MANUAL),
                     new AssignmentDefinition("3", CANDIDATES, EXPRESSION, SEQUENTIAL)
                 );
+            assertThat(assignments.get("task-1").isAllowSelfService()).isFalse();
         }
+    }
+
+    @Test
+    void should_readAllowSelfServiceFromAssignmentDefinition() throws Exception {
+        AssignmentDefinition assignment = MAPPER.readValue(
+            """
+            {
+              "id": "1",
+              "assignment": "assignee",
+              "type": "static",
+              "mode": "manual",
+              "allowSelfService": true
+            }
+            """,
+            AssignmentDefinition.class
+        );
+
+        assertThat(assignment.isAllowSelfService()).isTrue();
     }
 
     @Test
