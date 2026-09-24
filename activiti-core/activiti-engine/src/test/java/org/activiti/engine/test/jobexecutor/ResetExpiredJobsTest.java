@@ -64,8 +64,8 @@ public class ResetExpiredJobsTest extends PluggableActivitiTestCase {
         // Move clock to past the lock time
         Date newDate = new Date(
             startOfTestTime.getTime() +
-            processEngineConfiguration.getAsyncExecutor().getAsyncJobLockTimeInMillis() +
-            10000
+                processEngineConfiguration.getAsyncExecutor().getAsyncJobLockTimeInMillis() +
+                10000
         );
         processEngineConfiguration.getClock().setCurrentTime(newDate);
 

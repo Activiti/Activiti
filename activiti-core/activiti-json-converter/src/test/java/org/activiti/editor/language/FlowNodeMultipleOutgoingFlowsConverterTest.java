@@ -44,18 +44,18 @@ public class FlowNodeMultipleOutgoingFlowsConverterTest extends AbstractConverte
         assertThat(sequenceFlows.size() == 3).isTrue();
         assertThat(
             sequenceFlows.getFirst().getId().equals("sid-B9EE4ECE-BF72-4C25-B768-8295906E5CF8") ||
-            sequenceFlows.getFirst().getId().equals("sid-D2491B73-0382-4EC2-AAAC-C8FD129E4CBE") ||
-            sequenceFlows.getFirst().getId().equals("sid-7036D56C-E8EF-493B-ADEC-57EED4C6CE1F")
+                sequenceFlows.getFirst().getId().equals("sid-D2491B73-0382-4EC2-AAAC-C8FD129E4CBE") ||
+                sequenceFlows.getFirst().getId().equals("sid-7036D56C-E8EF-493B-ADEC-57EED4C6CE1F")
         ).isTrue();
         assertThat(
             sequenceFlows.get(1).getId().equals("sid-B9EE4ECE-BF72-4C25-B768-8295906E5CF8") ||
-            sequenceFlows.get(1).getId().equals("sid-D2491B73-0382-4EC2-AAAC-C8FD129E4CBE") ||
-            sequenceFlows.get(1).getId().equals("sid-7036D56C-E8EF-493B-ADEC-57EED4C6CE1F")
+                sequenceFlows.get(1).getId().equals("sid-D2491B73-0382-4EC2-AAAC-C8FD129E4CBE") ||
+                sequenceFlows.get(1).getId().equals("sid-7036D56C-E8EF-493B-ADEC-57EED4C6CE1F")
         ).isTrue();
         assertThat(
             sequenceFlows.get(2).getId().equals("sid-B9EE4ECE-BF72-4C25-B768-8295906E5CF8") ||
-            sequenceFlows.get(2).getId().equals("sid-D2491B73-0382-4EC2-AAAC-C8FD129E4CBE") ||
-            sequenceFlows.get(2).getId().equals("sid-7036D56C-E8EF-493B-ADEC-57EED4C6CE1F")
+                sequenceFlows.get(2).getId().equals("sid-D2491B73-0382-4EC2-AAAC-C8FD129E4CBE") ||
+                sequenceFlows.get(2).getId().equals("sid-7036D56C-E8EF-493B-ADEC-57EED4C6CE1F")
         ).isTrue();
         assertThat(sequenceFlows.getFirst().getSourceRef().equals("parallel1")).isTrue();
         assertThat(sequenceFlows.get(1).getSourceRef().equals("parallel1")).isTrue();
@@ -68,18 +68,18 @@ public class FlowNodeMultipleOutgoingFlowsConverterTest extends AbstractConverte
         assertThat(sequenceFlows.size() == 3).isTrue();
         assertThat(
             sequenceFlows.getFirst().getId().equals("sid-4C19E041-42FA-485D-9D09-D47CCD9DB270") ||
-            sequenceFlows.getFirst().getId().equals("sid-05A991A6-0296-4867-ACBA-EF9EEC68FB8A") ||
-            sequenceFlows.getFirst().getId().equals("sid-C546AC84-379D-4094-9DC3-548593F2EA0D")
+                sequenceFlows.getFirst().getId().equals("sid-05A991A6-0296-4867-ACBA-EF9EEC68FB8A") ||
+                sequenceFlows.getFirst().getId().equals("sid-C546AC84-379D-4094-9DC3-548593F2EA0D")
         ).isTrue();
         assertThat(
             sequenceFlows.get(1).getId().equals("sid-4C19E041-42FA-485D-9D09-D47CCD9DB270") ||
-            sequenceFlows.get(1).getId().equals("sid-05A991A6-0296-4867-ACBA-EF9EEC68FB8A") ||
-            sequenceFlows.get(1).getId().equals("sid-C546AC84-379D-4094-9DC3-548593F2EA0D")
+                sequenceFlows.get(1).getId().equals("sid-05A991A6-0296-4867-ACBA-EF9EEC68FB8A") ||
+                sequenceFlows.get(1).getId().equals("sid-C546AC84-379D-4094-9DC3-548593F2EA0D")
         ).isTrue();
         assertThat(
             sequenceFlows.get(2).getId().equals("sid-4C19E041-42FA-485D-9D09-D47CCD9DB270") ||
-            sequenceFlows.get(2).getId().equals("sid-05A991A6-0296-4867-ACBA-EF9EEC68FB8A") ||
-            sequenceFlows.get(2).getId().equals("sid-C546AC84-379D-4094-9DC3-548593F2EA0D")
+                sequenceFlows.get(2).getId().equals("sid-05A991A6-0296-4867-ACBA-EF9EEC68FB8A") ||
+                sequenceFlows.get(2).getId().equals("sid-C546AC84-379D-4094-9DC3-548593F2EA0D")
         ).isTrue();
         assertThat(sequenceFlows.getFirst().getTargetRef().equals("parallel2")).isTrue();
         assertThat(sequenceFlows.get(1).getTargetRef().equals("parallel2")).isTrue();

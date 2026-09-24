@@ -563,7 +563,7 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
         assertThat(jobQuery.count()).isEqualTo(1);
 
         // After setting the clock to time '1 hour and 5 seconds', the timer should fire.
-        processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
+        processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + (60 * 60 * 1000 + 5000)));
         waitForJobExecutorOnCondition(
             5000L,
             100L,
@@ -630,7 +630,7 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
         // should fire.
         processEngineConfiguration
             .getClock()
-            .setCurrentTime(new Date(startTime.getTime() + ((2 * 60 * 60 * 1000) + 5000)));
+            .setCurrentTime(new Date(startTime.getTime() + (2 * 60 * 60 * 1000 + 5000)));
         waitForJobExecutorOnCondition(
             2000L,
             100L,
@@ -648,7 +648,7 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
         // After setting the clock to time '3 hours and 5 seconds', the timer should fire again.
         processEngineConfiguration
             .getClock()
-            .setCurrentTime(new Date(startTime.getTime() + ((3 * 60 * 60 * 1000) + 5000)));
+            .setCurrentTime(new Date(startTime.getTime() + (3 * 60 * 60 * 1000 + 5000)));
         waitForJobExecutorOnCondition(
             2000L,
             100L,

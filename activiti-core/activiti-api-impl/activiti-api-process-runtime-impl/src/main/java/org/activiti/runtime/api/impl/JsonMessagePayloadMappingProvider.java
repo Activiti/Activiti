@@ -44,8 +44,8 @@ public class JsonMessagePayloadMappingProvider implements MessagePayloadMappingP
     }
 
     public Optional<Map<String, Object>> getMessagePayload(DelegateExecution execution) {
-        return Optional.of(variablesCalculator.calculateInputVariables(execution)).filter(payload ->
-            !payload.isEmpty()
+        return Optional.of(variablesCalculator.calculateInputVariables(execution)).filter(
+            payload -> !payload.isEmpty()
         );
     }
 

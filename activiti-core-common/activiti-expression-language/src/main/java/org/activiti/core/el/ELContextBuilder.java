@@ -84,7 +84,7 @@ public class ELContextBuilder {
     private CompositeELResolver createCompositeResolver() {
         CompositeELResolver elResolver = new CompositeELResolver();
         elResolver.add(
-            new ReadOnlyMapELResolver((Objects.nonNull(variables) ? new HashMap<>(variables) : Collections.emptyMap()))
+            new ReadOnlyMapELResolver(Objects.nonNull(variables) ? new HashMap<>(variables) : Collections.emptyMap())
         );
         addResolvers(elResolver);
         return elResolver;

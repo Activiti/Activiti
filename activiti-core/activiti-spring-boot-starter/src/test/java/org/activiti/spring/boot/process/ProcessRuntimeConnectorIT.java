@@ -87,11 +87,9 @@ public class ProcessRuntimeConnectorIT {
         );
 
         //then
-        assertThat(variables)
-            .extracting(VariableInstance::getName, VariableInstance::getValue)
-            .containsOnly(
-                tuple("age", 21), //default value incremented by one by the connector
-                tuple("name", "Paul") //static value passed to the connector ans send back as part of integration result
-            );
+        assertThat(variables).extracting(VariableInstance::getName, VariableInstance::getValue).containsOnly(
+            tuple("age", 21), //default value incremented by one by the connector
+            tuple("name", "Paul") //static value passed to the connector ans send back as part of integration result
+        );
     }
 }

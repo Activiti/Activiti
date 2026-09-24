@@ -83,18 +83,16 @@ public class MockSupportWithActivitiTestCaseTest extends ActivitiTestCase {
     }
 
     @Deployment
-    @MockServiceTasks(
-        {
-            @MockServiceTask(
-                originalClassName = "com.yourcompany.delegate1",
-                mockedClassName = "org.activiti.standalone.testing.helpers.ServiceTaskTestMock"
-            ),
-            @MockServiceTask(
-                originalClassName = "com.yourcompany.delegate2",
-                mockedClassName = "org.activiti.standalone.testing.helpers.ServiceTaskTestMock"
-            ),
-        }
-    )
+    @MockServiceTasks({
+        @MockServiceTask(
+            originalClassName = "com.yourcompany.delegate1",
+            mockedClassName = "org.activiti.standalone.testing.helpers.ServiceTaskTestMock"
+        ),
+        @MockServiceTask(
+            originalClassName = "com.yourcompany.delegate2",
+            mockedClassName = "org.activiti.standalone.testing.helpers.ServiceTaskTestMock"
+        ),
+    })
     public void testMockedServiceTasksAnnotation() {
         assertThat(ServiceTaskTestMock.CALL_COUNT.get()).isEqualTo(0);
         runtimeService.startProcessInstanceByKey("mockSupportTest");
@@ -109,9 +107,11 @@ public class MockSupportWithActivitiTestCaseTest extends ActivitiTestCase {
         assertThat(mockSupport().getNrOfNoOpServiceTaskExecutions()).isEqualTo(5);
 
         for (int i = 1; i <= 5; i++) {
-            assertThat(mockSupport().getExecutedNoOpServiceTaskDelegateClassNames().get(i - 1)).isEqualTo(
-                "com.yourcompany.delegate" + i
-            );
+            assertThat(
+                mockSupport()
+                    .getExecutedNoOpServiceTaskDelegateClassNames()
+                    .get(i - 1)
+            ).isEqualTo("com.yourcompany.delegate" + i);
         }
     }
 
@@ -130,9 +130,11 @@ public class MockSupportWithActivitiTestCaseTest extends ActivitiTestCase {
         assertThat(mockSupport().getNrOfNoOpServiceTaskExecutions()).isEqualTo(5);
 
         for (int i = 1; i <= 5; i++) {
-            assertThat(mockSupport().getExecutedNoOpServiceTaskDelegateClassNames().get(i - 1)).isEqualTo(
-                "com.yourcompany.delegate" + i
-            );
+            assertThat(
+                mockSupport()
+                    .getExecutedNoOpServiceTaskDelegateClassNames()
+                    .get(i - 1)
+            ).isEqualTo("com.yourcompany.delegate" + i);
         }
     }
 }

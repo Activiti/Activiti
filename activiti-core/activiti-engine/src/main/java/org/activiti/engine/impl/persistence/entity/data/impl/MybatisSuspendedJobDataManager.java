@@ -33,7 +33,8 @@ import org.activiti.engine.runtime.Job;
  */
 public class MybatisSuspendedJobDataManager
     extends AbstractDataManager<SuspendedJobEntity>
-    implements SuspendedJobDataManager {
+    implements SuspendedJobDataManager
+{
 
     protected CachedEntityMatcher<SuspendedJobEntity> suspendedJobsByExecutionIdMatcher =
         new SuspendedJobsByExecutionIdMatcher();

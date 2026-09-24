@@ -24,7 +24,8 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
  */
 public class ExecutionsByParentExecutionIdAndActivityIdEntityMatcher
-    extends CachedEntityMatcherAdapter<ExecutionEntity> {
+    extends CachedEntityMatcherAdapter<ExecutionEntity>
+{
 
     @Override
     public boolean isRetained(ExecutionEntity executionEntity, Object parameter) {

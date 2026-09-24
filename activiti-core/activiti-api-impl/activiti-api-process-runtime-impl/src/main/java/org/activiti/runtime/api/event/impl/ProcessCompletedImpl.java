@@ -24,7 +24,8 @@ import org.activiti.api.runtime.event.impl.RuntimeEventImpl;
 
 public class ProcessCompletedImpl
     extends RuntimeEventImpl<ProcessInstance, ProcessRuntimeEvent.ProcessEvents>
-    implements ProcessCompletedEvent {
+    implements ProcessCompletedEvent
+{
 
     private final String actor;
 

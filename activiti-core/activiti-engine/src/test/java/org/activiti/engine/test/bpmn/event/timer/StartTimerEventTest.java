@@ -46,7 +46,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
         assertThat(jobQuery.count()).isEqualTo(1);
 
         // After setting the clock to time '50 minutes and 5 seconds', the second timer should fire
-        processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((50 * 60 * 1000) + 5000)));
+        processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + (50 * 60 * 1000 + 5000)));
         waitForJobExecutorToProcessAllJobs(5000L, 200L);
 
         List<ProcessInstance> pi = runtimeService
@@ -126,7 +126,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
             .getClock()
             .setCurrentTime(
                 new Date(
-                    processEngineConfiguration.getClock().getCurrentTime().getTime() + ((minutes * 60 * 1000) + 5000)
+                    processEngineConfiguration.getClock().getCurrentTime().getTime() + (minutes * 60 * 1000 + 5000)
                 )
             );
     }
@@ -429,8 +429,8 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
                 .createDeployment()
                 .addClasspathResource(
                     "org/activiti/engine/test/bpmn/event/timer/StartTimerEventTest.testTimersRecreatedOnDeploymentDelete_v" +
-                    i +
-                    ".bpmn20.xml"
+                        i +
+                        ".bpmn20.xml"
                 )
                 .deploy();
         }
@@ -562,7 +562,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
         // path D: triggerd at 18:50:20 (Cron)
 
         // Moving 7 seconds (18:50:08) should trigger one timer (the second start timer in the process diagram)
-        Date newDate = new Date(startTime.getTime() + (7 * 1000));
+        Date newDate = new Date(startTime.getTime() + 7 * 1000);
         processEngineConfiguration.getClock().setCurrentTime(newDate);
         List<Job> executableTimers = managementService.createTimerJobQuery().executable().list();
         assertThat(executableTimers).hasSize(1);
@@ -579,7 +579,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
         // path D: triggerd at 18:50:20 (Cron)
 
         // Moving 4 seconds (18:50:12) should trigger both path A and B
-        newDate = new Date(newDate.getTime() + (4 * 1000));
+        newDate = new Date(newDate.getTime() + 4 * 1000);
         processEngineConfiguration.getClock().setCurrentTime(newDate);
 
         executableTimers = managementService.createTimerJobQuery().executable().list();
@@ -596,7 +596,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
         // path D: triggerd at 18:50:20 (Cron)
 
         // Moving 6 seconds (18:50:18) should trigger B and C
-        newDate = new Date(newDate.getTime() + (6 * 1000));
+        newDate = new Date(newDate.getTime() + 6 * 1000);
         processEngineConfiguration.getClock().setCurrentTime(newDate);
 
         executableTimers = managementService.createTimerJobQuery().executable().list();
@@ -613,7 +613,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
         // path D: triggerd at 18:50:20 (Cron)
 
         // Moving 10 seconds (18:50:28) should trigger A and D
-        newDate = new Date(newDate.getTime() + (6 * 1000));
+        newDate = new Date(newDate.getTime() + 6 * 1000);
         processEngineConfiguration.getClock().setCurrentTime(newDate);
 
         executableTimers = managementService.createTimerJobQuery().executable().list();

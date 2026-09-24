@@ -78,12 +78,14 @@ public class MailActivityBehavior extends AbstractBpmnActivityBehavior {
             String ccStr = getStringFromField(cc, execution);
             String bccStr = getStringFromField(bcc, execution);
             String subjectStr = getStringFromField(subject, execution);
-            String textStr = textVar == null
-                ? getStringFromField(text, execution)
-                : getStringFromField(getExpression(execution, textVar), execution);
-            String htmlStr = htmlVar == null
-                ? getStringFromField(html, execution)
-                : getStringFromField(getExpression(execution, htmlVar), execution);
+            String textStr =
+                textVar == null
+                    ? getStringFromField(text, execution)
+                    : getStringFromField(getExpression(execution, textVar), execution);
+            String htmlStr =
+                htmlVar == null
+                    ? getStringFromField(html, execution)
+                    : getStringFromField(getExpression(execution, htmlVar), execution);
             String charSetStr = getStringFromField(charset, execution);
             List<File> files = new LinkedList<File>();
             List<DataSource> dataSources = new LinkedList<DataSource>();

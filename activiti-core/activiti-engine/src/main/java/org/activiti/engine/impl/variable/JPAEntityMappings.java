@@ -110,7 +110,7 @@ public class JPAEntityMappings {
         } catch (InvocationTargetException ite) {
             throw new ActivitiException(
                 "Exception occurred while getting value from id field/method on JPAEntity: " +
-                ite.getCause().getMessage(),
+                    ite.getCause().getMessage(),
                 ite.getCause()
             );
         }

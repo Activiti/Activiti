@@ -1265,7 +1265,7 @@ class CustomVariableType implements VariableType {
         valueFields.setBytes(null);
         valueFields.setBytes(new byte[] { 4, 5, 6 });
 
-        byte[] value = (o == null ? null : ((CustomType) o).getValue());
+        byte[] value = o == null ? null : ((CustomType) o).getValue();
         valueFields.setBytes(value);
     }
 

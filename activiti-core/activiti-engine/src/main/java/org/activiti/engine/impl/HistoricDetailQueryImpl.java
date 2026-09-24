@@ -32,7 +32,8 @@ import org.activiti.engine.impl.variable.JPAEntityVariableType;
  */
 public class HistoricDetailQueryImpl
     extends AbstractQuery<HistoricDetailQuery, HistoricDetail>
-    implements HistoricDetailQuery {
+    implements HistoricDetailQuery
+{
 
     private static final long serialVersionUID = 1L;
     protected String id;

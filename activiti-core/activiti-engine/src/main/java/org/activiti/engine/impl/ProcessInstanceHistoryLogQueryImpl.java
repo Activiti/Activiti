@@ -35,7 +35,8 @@ import org.activiti.engine.impl.variable.JPAEntityVariableType;
 
  */
 public class ProcessInstanceHistoryLogQueryImpl
-    implements ProcessInstanceHistoryLogQuery, Command<ProcessInstanceHistoryLog> {
+    implements ProcessInstanceHistoryLogQuery, Command<ProcessInstanceHistoryLog>
+{
 
     protected CommandExecutor commandExecutor;
 

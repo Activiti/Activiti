@@ -70,7 +70,7 @@ public class DecisionTaskJsonConverter extends BaseBpmnJsonConverter implements 
         if (
             decisionTableReferenceNode != null &&
             decisionTableReferenceNode.has("id") &&
-            !(decisionTableReferenceNode.get("id").isNull())
+            !decisionTableReferenceNode.get("id").isNull()
         ) {
             String decisionTableId = decisionTableReferenceNode.get("id").asString();
             if (decisionTableMap != null) {

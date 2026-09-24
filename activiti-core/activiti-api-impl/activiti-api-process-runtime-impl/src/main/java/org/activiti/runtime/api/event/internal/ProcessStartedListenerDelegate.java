@@ -40,13 +40,11 @@ public class ProcessStartedListenerDelegate implements ActivitiEventListener {
     @Override
     public void onEvent(ActivitiEvent event) {
         if (event instanceof ActivitiProcessStartedEvent) {
-            processInstanceStartedEventConverter
-                .from((ActivitiProcessStartedEvent) event)
-                .ifPresent(convertedEvent -> {
-                    for (ProcessRuntimeEventListener<ProcessStartedEvent> listener : listeners) {
-                        listener.onEvent(convertedEvent);
-                    }
-                });
+            processInstanceStartedEventConverter.from((ActivitiProcessStartedEvent) event).ifPresent(convertedEvent -> {
+                for (ProcessRuntimeEventListener<ProcessStartedEvent> listener : listeners) {
+                    listener.onEvent(convertedEvent);
+                }
+            });
         }
     }
 

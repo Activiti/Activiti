@@ -26,7 +26,8 @@ import org.activiti.engine.impl.persistence.entity.data.HistoricIdentityLinkData
  */
 public class HistoricIdentityLinkEntityManagerImpl
     extends AbstractEntityManager<HistoricIdentityLinkEntity>
-    implements HistoricIdentityLinkEntityManager {
+    implements HistoricIdentityLinkEntityManager
+{
 
     protected HistoricIdentityLinkDataManager historicIdentityLinkDataManager;
 

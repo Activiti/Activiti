@@ -366,8 +366,8 @@ public class DefaultJobManager implements JobManager {
                     } else {
                         throw new ActivitiException(
                             "Timer '" +
-                            ((ExecutionEntity) variableScope).getActivityId() +
-                            "' was not configured with a valid duration/time, either hand in a java.util.Date or a String in format 'yyyy-MM-dd'T'hh:mm:ss'"
+                                ((ExecutionEntity) variableScope).getActivityId() +
+                                "' was not configured with a valid duration/time, either hand in a java.util.Date or a String in format 'yyyy-MM-dd'T'hh:mm:ss'"
                         );
                     }
 

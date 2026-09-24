@@ -24,7 +24,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ToAPITaskCandidateGroupAddedEventConverter
-    implements EventConverter<TaskCandidateGroupAddedEvent, ActivitiEntityEvent> {
+    implements EventConverter<TaskCandidateGroupAddedEvent, ActivitiEntityEvent>
+{
 
     private static final Logger logger = LoggerFactory.getLogger(ToAPITaskCandidateGroupAddedEventConverter.class);
 

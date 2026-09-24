@@ -33,7 +33,8 @@ import org.activiti.engine.task.IdentityLinkType;
  */
 public class IdentityLinkEntityManagerImpl
     extends AbstractEntityManager<IdentityLinkEntity>
-    implements IdentityLinkEntityManager {
+    implements IdentityLinkEntityManager
+{
 
     protected IdentityLinkDataManager identityLinkDataManager;
 
@@ -270,9 +271,10 @@ public class IdentityLinkEntityManagerImpl
 
     @Override
     public void deleteIdentityLink(ExecutionEntity executionEntity, String userId, String groupId, String type) {
-        String id = executionEntity.getProcessInstanceId() != null
-            ? executionEntity.getProcessInstanceId()
-            : executionEntity.getId();
+        String id =
+            executionEntity.getProcessInstanceId() != null
+                ? executionEntity.getProcessInstanceId()
+                : executionEntity.getId();
         List<IdentityLinkEntity> identityLinks = findIdentityLinkByProcessInstanceUserGroupAndType(
             id,
             userId,

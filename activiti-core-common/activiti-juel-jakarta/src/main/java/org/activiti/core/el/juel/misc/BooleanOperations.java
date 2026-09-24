@@ -42,19 +42,19 @@ public class BooleanOperations {
         Class<?> t1 = o1.getClass();
         Class<?> t2 = o2.getClass();
         if (BigDecimal.class.isAssignableFrom(t1) || BigDecimal.class.isAssignableFrom(t2)) {
-            return (converter.convert(o1, BigDecimal.class).compareTo(converter.convert(o2, BigDecimal.class)) < 0);
+            return converter.convert(o1, BigDecimal.class).compareTo(converter.convert(o2, BigDecimal.class)) < 0;
         }
         if (SIMPLE_FLOAT_TYPES.contains(t1) || SIMPLE_FLOAT_TYPES.contains(t2)) {
-            return (converter.convert(o1, Double.class) < converter.convert(o2, Double.class));
+            return converter.convert(o1, Double.class) < converter.convert(o2, Double.class);
         }
         if (BigInteger.class.isAssignableFrom(t1) || BigInteger.class.isAssignableFrom(t2)) {
-            return (converter.convert(o1, BigInteger.class).compareTo(converter.convert(o2, BigInteger.class)) < 0);
+            return converter.convert(o1, BigInteger.class).compareTo(converter.convert(o2, BigInteger.class)) < 0;
         }
         if (SIMPLE_INTEGER_TYPES.contains(t1) || SIMPLE_INTEGER_TYPES.contains(t2)) {
-            return (converter.convert(o1, Long.class) < converter.convert(o2, Long.class));
+            return converter.convert(o1, Long.class) < converter.convert(o2, Long.class);
         }
         if (t1 == String.class || t2 == String.class) {
-            return (converter.convert(o1, String.class).compareTo(converter.convert(o2, String.class)) < 0);
+            return converter.convert(o1, String.class).compareTo(converter.convert(o2, String.class)) < 0;
         }
         if (o1 instanceof Comparable) {
             return ((Comparable) o1).compareTo(o2) < 0;
@@ -70,19 +70,19 @@ public class BooleanOperations {
         Class<?> t1 = o1.getClass();
         Class<?> t2 = o2.getClass();
         if (BigDecimal.class.isAssignableFrom(t1) || BigDecimal.class.isAssignableFrom(t2)) {
-            return (converter.convert(o1, BigDecimal.class).compareTo(converter.convert(o2, BigDecimal.class)) > 0);
+            return converter.convert(o1, BigDecimal.class).compareTo(converter.convert(o2, BigDecimal.class)) > 0;
         }
         if (SIMPLE_FLOAT_TYPES.contains(t1) || SIMPLE_FLOAT_TYPES.contains(t2)) {
-            return (converter.convert(o1, Double.class) > converter.convert(o2, Double.class));
+            return converter.convert(o1, Double.class) > converter.convert(o2, Double.class);
         }
         if (BigInteger.class.isAssignableFrom(t1) || BigInteger.class.isAssignableFrom(t2)) {
-            return (converter.convert(o1, BigInteger.class).compareTo(converter.convert(o2, BigInteger.class)) > 0);
+            return converter.convert(o1, BigInteger.class).compareTo(converter.convert(o2, BigInteger.class)) > 0;
         }
         if (SIMPLE_INTEGER_TYPES.contains(t1) || SIMPLE_INTEGER_TYPES.contains(t2)) {
-            return (converter.convert(o1, Long.class) > converter.convert(o2, Long.class));
+            return converter.convert(o1, Long.class) > converter.convert(o2, Long.class);
         }
         if (t1 == String.class || t2 == String.class) {
-            return (converter.convert(o1, String.class).compareTo(converter.convert(o2, String.class)) > 0);
+            return converter.convert(o1, String.class).compareTo(converter.convert(o2, String.class)) > 0;
         }
         if (o1 instanceof Comparable) {
             return ((Comparable) o1).compareTo(o2) > 0;
@@ -143,13 +143,13 @@ public class BooleanOperations {
         Class<?> t1 = o1.getClass();
         Class<?> t2 = o2.getClass();
         if (BigDecimal.class.isAssignableFrom(t1) || BigDecimal.class.isAssignableFrom(t2)) {
-            return (converter.convert(o1, BigDecimal.class).compareTo(converter.convert(o2, BigDecimal.class)) == 0);
+            return converter.convert(o1, BigDecimal.class).compareTo(converter.convert(o2, BigDecimal.class)) == 0;
         }
         if (SIMPLE_FLOAT_TYPES.contains(t1) || SIMPLE_FLOAT_TYPES.contains(t2)) {
             return converter.convert(o1, Double.class).equals(converter.convert(o2, Double.class));
         }
         if (BigInteger.class.isAssignableFrom(t1) || BigInteger.class.isAssignableFrom(t2)) {
-            return (converter.convert(o1, BigInteger.class).compareTo(converter.convert(o2, BigInteger.class)) == 0);
+            return converter.convert(o1, BigInteger.class).compareTo(converter.convert(o2, BigInteger.class)) == 0;
         }
         if (SIMPLE_INTEGER_TYPES.contains(t1) || SIMPLE_INTEGER_TYPES.contains(t2)) {
             return converter.convert(o1, Long.class).equals(converter.convert(o2, Long.class));

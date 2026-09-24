@@ -88,11 +88,11 @@ public abstract class FlowNode extends FlowElement {
     }
 
     public boolean hasIncomingFlows() {
-        return (CollectionUtils.isNotEmpty(this.incomingFlows));
+        return CollectionUtils.isNotEmpty(this.incomingFlows);
     }
 
     public boolean hasOutgoingFlows() {
-        return (CollectionUtils.isNotEmpty(this.outgoingFlows));
+        return CollectionUtils.isNotEmpty(this.outgoingFlows);
     }
 
     public boolean isLinkCatchEvent() {

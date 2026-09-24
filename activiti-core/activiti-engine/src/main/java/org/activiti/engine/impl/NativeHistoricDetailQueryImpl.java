@@ -24,7 +24,8 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 
 public class NativeHistoricDetailQueryImpl
     extends AbstractNativeQuery<NativeHistoricDetailQuery, HistoricDetail>
-    implements NativeHistoricDetailQuery {
+    implements NativeHistoricDetailQuery
+{
 
     private static final long serialVersionUID = 1L;
 

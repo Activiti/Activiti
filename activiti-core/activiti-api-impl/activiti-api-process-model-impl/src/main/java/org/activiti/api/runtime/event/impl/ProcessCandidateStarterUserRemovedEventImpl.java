@@ -24,7 +24,8 @@ public class ProcessCandidateStarterUserRemovedEventImpl
         ProcessCandidateStarterUser,
         ProcessCandidateStarterUserEvent.ProcessCandidateStarterUserEvents
     >
-    implements ProcessCandidateStarterUserRemovedEvent {
+    implements ProcessCandidateStarterUserRemovedEvent
+{
 
     public ProcessCandidateStarterUserRemovedEventImpl() {}
 

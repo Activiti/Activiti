@@ -35,7 +35,8 @@ import org.activiti.engine.impl.variable.VariableTypes;
  */
 public class HistoricVariableInstanceQueryImpl
     extends AbstractQuery<HistoricVariableInstanceQuery, HistoricVariableInstance>
-    implements HistoricVariableInstanceQuery {
+    implements HistoricVariableInstanceQuery
+{
 
     private static final long serialVersionUID = 1L;
     protected String id;

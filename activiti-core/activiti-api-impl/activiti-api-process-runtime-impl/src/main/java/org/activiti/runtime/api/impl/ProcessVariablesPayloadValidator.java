@@ -58,9 +58,8 @@ public class ProcessVariablesPayloadValidator {
     }
 
     private Optional<Map<String, VariableDefinition>> getVariableDefinitionMap(String processDefinitionId) {
-        Extension processExtensionModel = processDefinitionId != null
-            ? processExtensionService.getExtensionsForId(processDefinitionId)
-            : null;
+        Extension processExtensionModel =
+            processDefinitionId != null ? processExtensionService.getExtensionsForId(processDefinitionId) : null;
 
         return Optional.ofNullable(processExtensionModel).map(Extension::getProperties);
     }
@@ -126,12 +125,12 @@ public class ProcessVariablesPayloadValidator {
             // Check variable name
             if (!variableNameValidator.validate(name)) {
                 activitiExceptions.add(
-                    new ActivitiException(MessageFormat.format(errorVariableName, (name != null ? name : "null")))
+                    new ActivitiException(MessageFormat.format(errorVariableName, name != null ? name : "null"))
                 );
             } else if (expressionResolver.containsExpression(payloadVar.getValue())) {
                 activitiExceptions.add(
                     new ActivitiException(
-                        MessageFormat.format(errorVariableExpressionValue, (name != null ? name : "null"))
+                        MessageFormat.format(errorVariableExpressionValue, name != null ? name : "null")
                     )
                 );
             } else {
@@ -140,7 +139,7 @@ public class ProcessVariablesPayloadValidator {
                 if (!found) {
                     //Try to parse a new string variable as date
                     Object value = payloadVar.getValue();
-                    if (value != null && (value instanceof String)) {
+                    if (value != null && value instanceof String) {
                         try {
                             payloadVar.setValue(dateFormatterProvider.toDate(value));
                         } catch (Exception e) {

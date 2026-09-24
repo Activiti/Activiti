@@ -22,7 +22,8 @@ import org.activiti.api.task.runtime.events.TaskSuspendedEvent;
 
 public class TaskSuspendedImpl
     extends RuntimeEventImpl<Task, TaskRuntimeEvent.TaskEvents>
-    implements TaskSuspendedEvent {
+    implements TaskSuspendedEvent
+{
 
     public TaskSuspendedImpl() {}
 

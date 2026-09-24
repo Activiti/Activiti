@@ -192,8 +192,8 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
                         assertThat(historicTaskInstance.getProcessInstanceId())
                             .as(
                                 "Historic task " +
-                                historicTaskInstance.getTaskDefinitionKey() +
-                                " has no process instance id"
+                                    historicTaskInstance.getTaskDefinitionKey() +
+                                    " has no process instance id"
                             )
                             .isNotNull();
                         assertThat(historicTaskInstance.getExecutionId())
@@ -202,15 +202,15 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
                         assertThat(historicTaskInstance.getProcessDefinitionId())
                             .as(
                                 "Historic task " +
-                                historicTaskInstance.getTaskDefinitionKey() +
-                                " has no process definition id"
+                                    historicTaskInstance.getTaskDefinitionKey() +
+                                    " has no process definition id"
                             )
                             .isNotNull();
                         assertThat(historicTaskInstance.getTaskDefinitionKey())
                             .as(
                                 "Historic task " +
-                                historicTaskInstance.getTaskDefinitionKey() +
-                                " has no task definition key"
+                                    historicTaskInstance.getTaskDefinitionKey() +
+                                    " has no task definition key"
                             )
                             .isNotNull();
                         assertThat(historicTaskInstance.getCreateTime())
@@ -236,50 +236,50 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
                         assertThat(historicActivityInstance.getActivityId())
                             .as(
                                 "Historic activity instance " +
-                                historicActivityInstance.getActivityId() +
-                                " has no activity id"
+                                    historicActivityInstance.getActivityId() +
+                                    " has no activity id"
                             )
                             .isNotNull();
                         assertThat(historicActivityInstance.getActivityType())
                             .as(
                                 "Historic activity instance " +
-                                historicActivityInstance.getActivityId() +
-                                " has no activity type"
+                                    historicActivityInstance.getActivityId() +
+                                    " has no activity type"
                             )
                             .isNotNull();
                         assertThat(historicActivityInstance.getProcessDefinitionId())
                             .as(
                                 "Historic activity instance " +
-                                historicActivityInstance.getActivityId() +
-                                " has no process definition id"
+                                    historicActivityInstance.getActivityId() +
+                                    " has no process definition id"
                             )
                             .isNotNull();
                         assertThat(historicActivityInstance.getProcessInstanceId())
                             .as(
                                 "Historic activity instance " +
-                                historicActivityInstance.getActivityId() +
-                                " has no process instance id"
+                                    historicActivityInstance.getActivityId() +
+                                    " has no process instance id"
                             )
                             .isNotNull();
                         assertThat(historicActivityInstance.getExecutionId())
                             .as(
                                 "Historic activity instance " +
-                                historicActivityInstance.getActivityId() +
-                                " has no execution id"
+                                    historicActivityInstance.getActivityId() +
+                                    " has no execution id"
                             )
                             .isNotNull();
                         assertThat(historicActivityInstance.getStartTime())
                             .as(
                                 "Historic activity instance " +
-                                historicActivityInstance.getActivityId() +
-                                " has no start time"
+                                    historicActivityInstance.getActivityId() +
+                                    " has no start time"
                             )
                             .isNotNull();
                         assertThat(historicActivityInstance.getEndTime())
                             .as(
                                 "Historic activity instance " +
-                                historicActivityInstance.getActivityId() +
-                                " has no end time"
+                                    historicActivityInstance.getActivityId() +
+                                    " has no end time"
                             )
                             .isNotNull();
                     }
@@ -312,8 +312,9 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
 
             log.info("dropping and recreating db");
 
-            CommandExecutor commandExecutor =
-                ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration().getCommandExecutor();
+            CommandExecutor commandExecutor = ((ProcessEngineImpl) processEngine)
+                .getProcessEngineConfiguration()
+                .getCommandExecutor();
             CommandConfig config = new CommandConfig().transactionNotSupported();
             commandExecutor.execute(
                 config,
@@ -411,15 +412,15 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
                     assertThat(historicActivityInstance.getStartTime())
                         .as(
                             "Historic activity instance " +
-                            historicActivityInstance.getActivityId() +
-                            " has no start time"
+                                historicActivityInstance.getActivityId() +
+                                " has no start time"
                         )
                         .isNotNull();
                     assertThat(historicActivityInstance.getEndTime())
                         .as(
                             "Historic activity instance " +
-                            historicActivityInstance.getActivityId() +
-                            " has no end time"
+                                historicActivityInstance.getActivityId() +
+                                " has no end time"
                         )
                         .isNotNull();
                 }

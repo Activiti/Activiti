@@ -33,8 +33,8 @@ public class ExtendedInMemoryUserDetailsManager extends InMemoryUserDetailsManag
         groups = user
             .getAuthorities()
             .stream()
-            .filter(x -> (x.getAuthority().contains("GROUP")))
-            .map(x -> (x.getAuthority()))
+            .filter(x -> x.getAuthority().contains("GROUP"))
+            .map(x -> x.getAuthority())
             .collect(Collectors.toList());
     }
 

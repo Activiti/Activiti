@@ -146,31 +146,27 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
     }
 
     protected void makeSureJobDue(final Job job) {
-        processEngineConfiguration
-            .getCommandExecutor()
-            .execute(
-                new Command<Void>() {
-                    public Void execute(CommandContext commandContext) {
-                        Date currentTime = processEngineConfiguration.getClock().getCurrentTime();
-                        commandContext
-                            .getTimerJobEntityManager()
-                            .findById(job.getId())
-                            .setDuedate(new Date(currentTime.getTime() - 10000));
-                        return null;
-                    }
+        processEngineConfiguration.getCommandExecutor().execute(
+            new Command<Void>() {
+                public Void execute(CommandContext commandContext) {
+                    Date currentTime = processEngineConfiguration.getClock().getCurrentTime();
+                    commandContext
+                        .getTimerJobEntityManager()
+                        .findById(job.getId())
+                        .setDuedate(new Date(currentTime.getTime() - 10000));
+                    return null;
                 }
-            );
+            }
+        );
     }
 
     protected List<TimerJobEntity> executeAcquireJobsCommand() {
-        return processEngineConfiguration
-            .getCommandExecutor()
-            .execute(
-                new Command<List<TimerJobEntity>>() {
-                    public List<TimerJobEntity> execute(CommandContext commandContext) {
-                        return commandContext.getTimerJobEntityManager().findTimerJobsToExecute(new Page(0, 1));
-                    }
+        return processEngineConfiguration.getCommandExecutor().execute(
+            new Command<List<TimerJobEntity>>() {
+                public List<TimerJobEntity> execute(CommandContext commandContext) {
+                    return commandContext.getTimerJobEntityManager().findTimerJobsToExecute(new Page(0, 1));
                 }
-            );
+            }
+        );
     }
 }

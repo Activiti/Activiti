@@ -303,7 +303,7 @@ public class AsyncExecutorTest {
         processEngine
             .getProcessEngineConfiguration()
             .getClock()
-            .setCurrentTime(new Date(currentTime.getTime() + (nrOfSeconds * 1000L)));
+            .setCurrentTime(new Date(currentTime.getTime() + nrOfSeconds * 1000L));
     }
 
     private void cleanup(ProcessEngine processEngine) {

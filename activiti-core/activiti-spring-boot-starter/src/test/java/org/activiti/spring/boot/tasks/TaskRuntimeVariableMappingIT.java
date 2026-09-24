@@ -453,11 +453,11 @@ public class TaskRuntimeVariableMappingIT {
 
     private void waitForTaskOnProcessInstance(ProcessInstance processInstance, String taskName) {
         await().untilAsserted(() -> {
-                securityUtil.logInAs("user");
-                assertThat(taskBaseRuntime.getTasksByProcessInstanceId(processInstance.getId()))
-                    .extracting(Task::getName)
-                    .containsExactly(taskName);
-            });
+            securityUtil.logInAs("user");
+            assertThat(taskBaseRuntime.getTasksByProcessInstanceId(processInstance.getId()))
+                .extracting(Task::getName)
+                .containsExactly(taskName);
+        });
     }
 
     @Test

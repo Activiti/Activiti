@@ -284,18 +284,16 @@ public abstract class TestHelper {
             log.error(EMPTY_LINE);
             log.error(outputMessage.toString());
 
-            ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration()
-                .getCommandExecutor()
-                .execute(
-                    new Command<Object>() {
-                        public Object execute(CommandContext commandContext) {
-                            DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
-                            dbSqlSession.dbSchemaDrop();
-                            dbSqlSession.dbSchemaCreate();
-                            return null;
-                        }
+            ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration().getCommandExecutor().execute(
+                new Command<Object>() {
+                    public Object execute(CommandContext commandContext) {
+                        DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
+                        dbSqlSession.dbSchemaDrop();
+                        dbSqlSession.dbSchemaCreate();
+                        return null;
                     }
-                );
+                }
+            );
 
             throw new AssertionError(outputMessage.toString());
         }

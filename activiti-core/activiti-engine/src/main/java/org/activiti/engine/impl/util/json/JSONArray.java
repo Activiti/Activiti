@@ -370,7 +370,7 @@ public class JSONArray {
      * @return An object value, or null if there is no object at that index.
      */
     public Object opt(int index) {
-        return (index < 0 || index >= length()) ? null : this.myArrayList.get(index);
+        return index < 0 || index >= length() ? null : this.myArrayList.get(index);
     }
 
     /**

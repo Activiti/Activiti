@@ -32,10 +32,10 @@ public class ActivitiWrongDbException extends ActivitiException {
     public ActivitiWrongDbException(String libraryVersion, String dbVersion) {
         super(
             "version mismatch: activiti library version is '" +
-            libraryVersion +
-            "', db version is " +
-            dbVersion +
-            " Hint: Set <property name=\"databaseSchemaUpdate\" to value=\"true\" or value=\"create-drop\" (use create-drop for testing only!) in bean processEngineConfiguration in activiti.cfg.xml for automatic schema creation"
+                libraryVersion +
+                "', db version is " +
+                dbVersion +
+                " Hint: Set <property name=\"databaseSchemaUpdate\" to value=\"true\" or value=\"create-drop\" (use create-drop for testing only!) in bean processEngineConfiguration in activiti.cfg.xml for automatic schema creation"
         );
         this.libraryVersion = libraryVersion;
         this.dbVersion = dbVersion;

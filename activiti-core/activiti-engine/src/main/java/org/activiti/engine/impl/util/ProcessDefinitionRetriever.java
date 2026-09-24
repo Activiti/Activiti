@@ -41,19 +41,20 @@ public class ProcessDefinitionRetriever {
             deploymentCache
         );
         if (processDefinition == null) {
-            processDefinition = (processDefinitionKey != null && hasNoTenant(tenantId))
-                ? this.getProcessDefinitionByProcessDefinitionKey(processDefinitionKey, deploymentCache)
-                : this.getProcessDefinitionByProcessDefinitionKeyAndTenantId(
-                    processDefinitionKey,
-                    tenantId,
-                    deploymentCache
-                );
+            processDefinition =
+                processDefinitionKey != null && hasNoTenant(tenantId)
+                    ? this.getProcessDefinitionByProcessDefinitionKey(processDefinitionKey, deploymentCache)
+                    : this.getProcessDefinitionByProcessDefinitionKeyAndTenantId(
+                          processDefinitionKey,
+                          tenantId,
+                          deploymentCache
+                      );
             if (processDefinition == null) {
                 throw new ActivitiObjectNotFoundException(
                     "No process definition found for key '" +
-                    processDefinitionKey +
-                    "' for tenant identifier " +
-                    tenantId,
+                        processDefinitionKey +
+                        "' for tenant identifier " +
+                        tenantId,
                     ProcessDefinition.class
                 );
             }

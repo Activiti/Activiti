@@ -61,16 +61,16 @@ public class SetProcessInstanceBusinessKeyCmd implements Command<Void>, Serializ
         } else if (!processInstance.isProcessInstanceType()) {
             throw new ActivitiIllegalArgumentException(
                 "A process instance id is required, but the provided id " +
-                "'" +
-                processInstanceId +
-                "' " +
-                "points to a child execution of process instance " +
-                "'" +
-                processInstance.getProcessInstanceId() +
-                "'. " +
-                "Please invoke the " +
-                getClass().getSimpleName() +
-                " with a root execution id."
+                    "'" +
+                    processInstanceId +
+                    "' " +
+                    "points to a child execution of process instance " +
+                    "'" +
+                    processInstance.getProcessInstanceId() +
+                    "'. " +
+                    "Please invoke the " +
+                    getClass().getSimpleName() +
+                    " with a root execution id."
             );
         }
 

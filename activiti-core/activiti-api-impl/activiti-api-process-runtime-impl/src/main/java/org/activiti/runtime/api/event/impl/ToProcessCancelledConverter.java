@@ -22,7 +22,8 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
 
 public class ToProcessCancelledConverter
-    implements EventConverter<ProcessCancelledEvent, ActivitiProcessCancelledEvent> {
+    implements EventConverter<ProcessCancelledEvent, ActivitiProcessCancelledEvent>
+{
 
     private final APIProcessInstanceConverter processInstanceConverter;
 

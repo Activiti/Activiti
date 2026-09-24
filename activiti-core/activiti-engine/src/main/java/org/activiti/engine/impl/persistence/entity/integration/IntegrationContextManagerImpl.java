@@ -25,7 +25,8 @@ import org.activiti.engine.impl.persistence.entity.data.integration.IntegrationC
 
 public class IntegrationContextManagerImpl
     extends AbstractEntityManager<IntegrationContextEntity>
-    implements IntegrationContextManager {
+    implements IntegrationContextManager
+{
 
     private final IntegrationContextDataManager dataManager;
 

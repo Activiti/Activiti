@@ -80,9 +80,9 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
             if (!missingRequiredVars.isEmpty()) {
                 throw new ActivitiException(
                     "Can't start process '" +
-                    processDefinition.getKey() +
-                    "' without required variables - " +
-                    String.join(", ", missingRequiredVars)
+                        processDefinition.getKey() +
+                        "' without required variables - " +
+                        String.join(", ", missingRequiredVars)
                 );
             }
             Set<String> varsWithMismatchedTypes = validateVariablesAgainstDefinitions(
@@ -92,9 +92,9 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
             if (!varsWithMismatchedTypes.isEmpty()) {
                 throw new ActivitiException(
                     "Can't start process '" +
-                    processDefinition.getKey() +
-                    "' as variables fail type validation - " +
-                    String.join(", ", varsWithMismatchedTypes)
+                        processDefinition.getKey() +
+                        "' as variables fail type validation - " +
+                        String.join(", ", varsWithMismatchedTypes)
                 );
             }
         }

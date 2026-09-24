@@ -51,13 +51,11 @@ public class TaskCandidateUserRemovedListenerDelegate implements ActivitiEventLi
             event.getProcessDefinitionId()
         );
         if (event instanceof ActivitiEntityEvent) {
-            converter
-                .from((ActivitiEntityEvent) event)
-                .ifPresent(convertedEvent -> {
-                    for (TaskRuntimeEventListener<TaskCandidateUserRemovedEvent> listener : listeners) {
-                        listener.onEvent(convertedEvent);
-                    }
-                });
+            converter.from((ActivitiEntityEvent) event).ifPresent(convertedEvent -> {
+                for (TaskRuntimeEventListener<TaskCandidateUserRemovedEvent> listener : listeners) {
+                    listener.onEvent(convertedEvent);
+                }
+            });
         }
     }
 

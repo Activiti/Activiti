@@ -21,7 +21,8 @@ import org.activiti.api.process.model.events.BPMNTimerFailedEvent;
 
 public class BPMNTimerFailedEventImpl
     extends RuntimeEventImpl<BPMNTimer, BPMNTimerEvent.TimerEvents>
-    implements BPMNTimerFailedEvent {
+    implements BPMNTimerFailedEvent
+{
 
     public BPMNTimerFailedEventImpl() {}
 

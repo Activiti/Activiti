@@ -36,10 +36,10 @@ public class LinkEventDefinitionXMLConverterTest {
         // Act
         String generatedXml = convertToXml(eventDefinition);
         String expectedXml = """
-            <bpmn2:linkEventDefinition id="id" name="name">
-                <bpmn2:target>target</bpmn2:target>
-             </bpmn2:linkEventDefinition>
-            """;
+        <bpmn2:linkEventDefinition id="id" name="name">
+            <bpmn2:target>target</bpmn2:target>
+         </bpmn2:linkEventDefinition>
+        """;
         // Assert
         assertThat(generatedXml).isEqualToIgnoringWhitespace(expectedXml);
     }
@@ -67,11 +67,11 @@ public class LinkEventDefinitionXMLConverterTest {
         // Act
         String generatedXml = convertToXml(eventDefinition);
         String expectedXml = """
-            <bpmn2:linkEventDefinition id="id" name="name">
-                <bpmn2:source>source1</bpmn2:source>
-                <bpmn2:source>source2</bpmn2:source>
-            </bpmn2:linkEventDefinition>
-            """;
+        <bpmn2:linkEventDefinition id="id" name="name">
+            <bpmn2:source>source1</bpmn2:source>
+            <bpmn2:source>source2</bpmn2:source>
+        </bpmn2:linkEventDefinition>
+        """;
         // Assert
         assertThat(generatedXml).isEqualToIgnoringWhitespace(expectedXml);
     }
@@ -88,10 +88,10 @@ public class LinkEventDefinitionXMLConverterTest {
         // Act
         String generatedXml = convertToXml(eventDefinition);
         String expectedXml = """
-            <bpmn2:linkEventDefinition id="id" name="">
-                <bpmn2:source>source1</bpmn2:source>
-            </bpmn2:linkEventDefinition>
-            """;
+        <bpmn2:linkEventDefinition id="id" name="">
+            <bpmn2:source>source1</bpmn2:source>
+        </bpmn2:linkEventDefinition>
+        """;
         // Assert
         assertThat(generatedXml).isEqualToIgnoringWhitespace(expectedXml);
     }

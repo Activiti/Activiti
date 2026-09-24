@@ -21,7 +21,8 @@ import org.activiti.api.process.model.events.ProcessDeployedEvent;
 
 public class ProcessDeployedEventImpl
     extends RuntimeEventImpl<ProcessDefinition, ProcessDefinitionEvent.ProcessDefinitionEvents>
-    implements ProcessDeployedEvent {
+    implements ProcessDeployedEvent
+{
 
     private String processModelContent;
 

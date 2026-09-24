@@ -118,9 +118,9 @@ public class UserTaskCandidateGroupAndAssigneeTest {
             )
             .expect(
                 processInstance().hasTask("Task Group1", Task.TaskStatus.CREATED, createdTask -> {
-                        assertThat(taskRuntime.userCandidates(createdTask.getId())).isEmpty();
-                        assertThat(taskRuntime.groupCandidates(createdTask.getId())).contains("group1");
-                    })
+                    assertThat(taskRuntime.userCandidates(createdTask.getId())).isEmpty();
+                    assertThat(taskRuntime.groupCandidates(createdTask.getId())).contains("group1");
+                })
             );
 
         // Check with user1 as he is a candidate

@@ -29,7 +29,8 @@ import org.activiti.engine.impl.persistence.entity.data.HistoricProcessInstanceD
  */
 public class HistoricProcessInstanceEntityManagerImpl
     extends AbstractEntityManager<HistoricProcessInstanceEntity>
-    implements HistoricProcessInstanceEntityManager {
+    implements HistoricProcessInstanceEntityManager
+{
 
     protected HistoricProcessInstanceDataManager historicProcessInstanceDataManager;
 

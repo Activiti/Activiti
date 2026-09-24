@@ -27,7 +27,8 @@ import org.activiti.engine.impl.delegate.invocation.JavaDelegateInvocation;
  */
 public class ServiceTaskJavaDelegateActivityBehavior
     extends TaskActivityBehavior
-    implements ActivityBehavior, ExecutionListener {
+    implements ActivityBehavior, ExecutionListener
+{
 
     private static final long serialVersionUID = 1L;
 

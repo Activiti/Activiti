@@ -65,9 +65,9 @@ public class ClassDelegateUtil {
             } catch (IllegalAccessException e) {
                 throw new ActivitiException(
                     "Illegal access when calling '" +
-                    declaration.getName() +
-                    "' on class " +
-                    target.getClass().getName(),
+                        declaration.getName() +
+                        "' on class " +
+                        target.getClass().getName(),
                     e
                 );
             } catch (InvocationTargetException e) {
@@ -81,22 +81,22 @@ public class ClassDelegateUtil {
             if (field == null) {
                 throw new ActivitiIllegalArgumentException(
                     "Field definition uses non-existing field '" +
-                    declaration.getName() +
-                    "' on class " +
-                    target.getClass().getName()
+                        declaration.getName() +
+                        "' on class " +
+                        target.getClass().getName()
                 );
             }
             // Check if the delegate field's type is correct
             if (!fieldTypeCompatible(declaration, field)) {
                 throw new ActivitiIllegalArgumentException(
                     "Incompatible type set on field declaration '" +
-                    declaration.getName() +
-                    "' for class " +
-                    target.getClass().getName() +
-                    ". Declared value has type " +
-                    declaration.getValue().getClass().getName() +
-                    ", while expecting " +
-                    field.getType().getName()
+                        declaration.getName() +
+                        "' for class " +
+                        target.getClass().getName() +
+                        ". Declared value has type " +
+                        declaration.getValue().getClass().getName() +
+                        ", while expecting " +
+                        field.getType().getName()
                 );
             }
             ReflectUtil.setField(field, target, declaration.getValue());

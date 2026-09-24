@@ -198,14 +198,14 @@ public class TaskRuntimeHelper {
             if (task == null) {
                 throw new NotFoundException(
                     "Unable to find task for the given id: " +
-                    taskId +
-                    " for user: " +
-                    authenticatedUserId +
-                    " (with groups: " +
-                    userGroups +
-                    " & with roles: " +
-                    userRoles +
-                    ")"
+                        taskId +
+                        " for user: " +
+                        authenticatedUserId +
+                        " (with groups: " +
+                        userGroups +
+                        " & with roles: " +
+                        userRoles +
+                        ")"
                 );
             }
 

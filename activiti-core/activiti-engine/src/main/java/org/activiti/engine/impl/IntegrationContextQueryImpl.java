@@ -26,7 +26,8 @@ import org.activiti.engine.integration.IntegrationContextQuery;
 
 public class IntegrationContextQueryImpl
     extends AbstractQuery<IntegrationContextQuery, IntegrationContextEntity>
-    implements IntegrationContextQuery, Serializable {
+    implements IntegrationContextQuery, Serializable
+{
 
     private static final long serialVersionUID = 1L;
 

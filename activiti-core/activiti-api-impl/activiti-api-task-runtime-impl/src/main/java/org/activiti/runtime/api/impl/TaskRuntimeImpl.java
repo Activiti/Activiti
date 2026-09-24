@@ -169,8 +169,8 @@ public class TaskRuntimeImpl implements TaskRuntime {
         } catch (IllegalStateException ex) {
             throw new IllegalStateException(
                 "The authenticated user cannot complete task" +
-                completeTaskPayload.getTaskId() +
-                " due he/she cannot access to the task"
+                    completeTaskPayload.getTaskId() +
+                    " due he/she cannot access to the task"
             );
         }
         // validate the task does have an assignee
@@ -199,8 +199,8 @@ public class TaskRuntimeImpl implements TaskRuntime {
         } catch (IllegalStateException ex) {
             throw new IllegalStateException(
                 "The authenticated user cannot claim task" +
-                claimTaskPayload.getTaskId() +
-                " due it is not a candidate for it"
+                    claimTaskPayload.getTaskId() +
+                    " due it is not a candidate for it"
             );
         }
 
@@ -244,8 +244,8 @@ public class TaskRuntimeImpl implements TaskRuntime {
         } catch (IllegalStateException ex) {
             throw new IllegalStateException(
                 "The authenticated user cannot delete the task" +
-                deleteTaskPayload.getTaskId() +
-                " due it is not the current assignee"
+                    deleteTaskPayload.getTaskId() +
+                    " due it is not the current assignee"
             );
         }
         String authenticatedUserId = securityManager.getAuthenticatedUserId();
@@ -301,9 +301,8 @@ public class TaskRuntimeImpl implements TaskRuntime {
 
     @Override
     public Task nextTask(TaskIdentificationStrategy strategy) {
-        TaskIdentificationStrategy effectiveStrategy = strategy == null
-            ? TaskIdentificationStrategy.CLAIM_BEFORE_OPEN_OLDEST_FIRST
-            : strategy;
+        TaskIdentificationStrategy effectiveStrategy =
+            strategy == null ? TaskIdentificationStrategy.CLAIM_BEFORE_OPEN_OLDEST_FIRST : strategy;
 
         return nextTaskStrategies.get(effectiveStrategy).get();
     }
@@ -340,8 +339,8 @@ public class TaskRuntimeImpl implements TaskRuntime {
         } catch (IllegalStateException ex) {
             throw new IllegalStateException(
                 "The authenticated user cannot update the task" +
-                candidateUsersPayload.getTaskId() +
-                " due it is not the current assignee"
+                    candidateUsersPayload.getTaskId() +
+                    " due it is not the current assignee"
             );
         }
 
@@ -367,8 +366,8 @@ public class TaskRuntimeImpl implements TaskRuntime {
         } catch (IllegalStateException ex) {
             throw new IllegalStateException(
                 "The authenticated user cannot update the task" +
-                candidateUsersPayload.getTaskId() +
-                " due it is not the current assignee"
+                    candidateUsersPayload.getTaskId() +
+                    " due it is not the current assignee"
             );
         }
 
@@ -394,8 +393,8 @@ public class TaskRuntimeImpl implements TaskRuntime {
         } catch (IllegalStateException ex) {
             throw new IllegalStateException(
                 "The authenticated user cannot update the task" +
-                candidateGroupsPayload.getTaskId() +
-                " due it is not the current assignee"
+                    candidateGroupsPayload.getTaskId() +
+                    " due it is not the current assignee"
             );
         }
 
@@ -423,8 +422,8 @@ public class TaskRuntimeImpl implements TaskRuntime {
         } catch (IllegalStateException ex) {
             throw new IllegalStateException(
                 "The authenticated user cannot update the task" +
-                candidateGroupsPayload.getTaskId() +
-                " due it is not the current assignee"
+                    candidateGroupsPayload.getTaskId() +
+                    " due it is not the current assignee"
             );
         }
 
@@ -526,14 +525,14 @@ public class TaskRuntimeImpl implements TaskRuntime {
             if (internalTask == null) {
                 throw new NotFoundException(
                     "Unable to find task for the given id: " +
-                    taskId +
-                    " for user: " +
-                    authenticatedUserId +
-                    " (with groups: " +
-                    userGroups +
-                    " & with roles: " +
-                    userRoles +
-                    ")"
+                        taskId +
+                        " for user: " +
+                        authenticatedUserId +
+                        " (with groups: " +
+                        userGroups +
+                        " & with roles: " +
+                        userRoles +
+                        ")"
                 );
             }
             return taskService.getIdentityLinksForTask(taskId);

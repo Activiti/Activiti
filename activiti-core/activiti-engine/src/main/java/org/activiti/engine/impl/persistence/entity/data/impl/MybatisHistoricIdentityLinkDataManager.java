@@ -29,7 +29,8 @@ import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.Histor
  */
 public class MybatisHistoricIdentityLinkDataManager
     extends AbstractDataManager<HistoricIdentityLinkEntity>
-    implements HistoricIdentityLinkDataManager {
+    implements HistoricIdentityLinkDataManager
+{
 
     protected CachedEntityMatcher<HistoricIdentityLinkEntity> historicIdentityLinksByProcInstMatcher =
         new HistoricIdentityLinksByProcInstMatcher();

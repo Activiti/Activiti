@@ -33,7 +33,8 @@ import org.activiti.engine.runtime.Job;
  */
 public class MybatisDeadLetterJobDataManager
     extends AbstractDataManager<DeadLetterJobEntity>
-    implements DeadLetterJobDataManager {
+    implements DeadLetterJobDataManager
+{
 
     protected CachedEntityMatcher<DeadLetterJobEntity> deadLetterByExecutionIdMatcher =
         new DeadLetterJobsByExecutionIdMatcher();

@@ -61,7 +61,7 @@ public final class ObjectValueExpression extends ValueExpression {
             if (type != other.type) {
                 return false;
             }
-            return (object == other.object || (object != null && object.equals(other.object)));
+            return object == other.object || (object != null && object.equals(other.object));
         }
         return false;
     }

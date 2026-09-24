@@ -213,7 +213,7 @@ public class StartTimerEventRepeatWithEndExpressionTest extends PluggableActivit
         processEngineConfiguration
             .getClock()
             .setCurrentTime(
-                new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + ((minutes * 60 * 1000)))
+                new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + (minutes * 60 * 1000))
             );
     }
 }

@@ -42,9 +42,8 @@ public class Context {
     protected static ThreadLocal<Map<String, ObjectNode>> bpmnOverrideContextThreadLocal = new ThreadLocal<
         Map<String, ObjectNode>
     >();
-    protected static ThreadLocal<ProcessDefinitionHelper> processDefinitionHelperThreadLocal = new ThreadLocal<
-        ProcessDefinitionHelper
-    >();
+    protected static ThreadLocal<ProcessDefinitionHelper> processDefinitionHelperThreadLocal =
+        new ThreadLocal<ProcessDefinitionHelper>();
 
     protected static ResourceBundle.Control resourceBundleControl = new ResourceBundleControl();
 

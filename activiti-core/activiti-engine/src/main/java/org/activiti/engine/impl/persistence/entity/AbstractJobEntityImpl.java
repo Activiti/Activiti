@@ -32,7 +32,8 @@ import org.apache.commons.lang3.StringUtils;
  */
 public abstract class AbstractJobEntityImpl
     extends AbstractEntity
-    implements AbstractJobEntity, BulkDeleteable, Serializable {
+    implements AbstractJobEntity, BulkDeleteable, Serializable
+{
 
     private static final long serialVersionUID = 1L;
 

@@ -36,7 +36,8 @@ import org.activiti.engine.impl.variable.VariableType;
  */
 public class VariableInstanceEntityManagerImpl
     extends AbstractEntityManager<VariableInstanceEntity>
-    implements VariableInstanceEntityManager {
+    implements VariableInstanceEntityManager
+{
 
     protected VariableInstanceDataManager variableInstanceDataManager;
 

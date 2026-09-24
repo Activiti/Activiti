@@ -32,8 +32,9 @@ public abstract class TimerEventCompatibilityTest extends PluggableActivitiTestC
         String activityId = TimerEventHandler.getActivityIdFromConfiguration(job.getJobHandlerConfiguration());
 
         final TimerJobEntity finalJob = job;
-        CommandExecutor commandExecutor =
-            ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration().getCommandExecutor();
+        CommandExecutor commandExecutor = ((ProcessEngineImpl) processEngine)
+            .getProcessEngineConfiguration()
+            .getCommandExecutor();
         CommandConfig config = new CommandConfig().transactionNotSupported();
         final String finalActivityId = activityId;
         commandExecutor.execute(
@@ -71,7 +72,7 @@ public abstract class TimerEventCompatibilityTest extends PluggableActivitiTestC
         processEngineConfiguration
             .getClock()
             .setCurrentTime(
-                new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + ((minutes * 60 * 1000)))
+                new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + (minutes * 60 * 1000))
             );
     }
 }

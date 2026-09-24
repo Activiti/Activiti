@@ -28,7 +28,8 @@ import org.activiti.engine.delegate.event.ActivitiExceptionEvent;
  */
 public class ActivitiEntityExceptionEventImpl
     extends ActivitiEventImpl
-    implements ActivitiEntityEvent, ActivitiExceptionEvent {
+    implements ActivitiEntityEvent, ActivitiExceptionEvent
+{
 
     protected Object entity;
     protected Throwable cause;

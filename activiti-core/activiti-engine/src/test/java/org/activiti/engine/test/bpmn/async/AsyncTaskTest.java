@@ -154,7 +154,9 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
         assertThat(managementService.createJobQuery().count()).isEqualTo(2);
 
         // now the timer triggers:
-        Context.getProcessEngineConfiguration().getClock().setCurrentTime(new Date(System.currentTimeMillis() + 10000));
+        Context.getProcessEngineConfiguration()
+            .getClock()
+            .setCurrentTime(new Date(System.currentTimeMillis() + 10000));
         waitForJobExecutorToProcessAllJobs(5000L, 100L);
 
         // and we are done:

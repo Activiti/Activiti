@@ -63,8 +63,7 @@ public class DebugInfoOperationExecuted extends AbstractDebugInfo {
         StringBuilder strb = new StringBuilder(35);
 
         // Timing info
-        strb
-            .append("[")
+        strb.append("[")
             .append(dateFormat.format(new Date(getPreExecutionTime())))
             .append(" - ")
             .append(dateFormat.format(new Date(getPostExecutionTime())))
@@ -80,8 +79,7 @@ public class DebugInfoOperationExecuted extends AbstractDebugInfo {
             strb.append("with execution ").append(getExecutionId());
 
             if (getFlowElementId() != null) {
-                strb
-                    .append(" at flow element ")
+                strb.append(" at flow element ")
                     .append(getFlowElementId())
                     .append(" (")
                     .append(getFlowElementClass().getSimpleName())

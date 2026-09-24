@@ -24,7 +24,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ProcessCandidateStarterGroupRemovedListener
-    implements ProcessRuntimeEventListener<ProcessCandidateStarterGroupRemovedEvent> {
+    implements ProcessRuntimeEventListener<ProcessCandidateStarterGroupRemovedEvent>
+{
 
     private List<ProcessCandidateStarterGroup> candidateStarterGroups = new ArrayList<>();
 

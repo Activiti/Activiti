@@ -62,10 +62,10 @@ public class RuntimeReceiveMessagePayloadEventListener implements ReceiveMessage
         } else {
             throw new ActivitiObjectNotFoundException(
                 "Message subscription name '" +
-                messageName +
-                "' with correlation key '" +
-                correlationKey +
-                "' not found."
+                    messageName +
+                    "' with correlation key '" +
+                    correlationKey +
+                    "' not found."
             );
         }
     }

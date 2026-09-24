@@ -92,12 +92,12 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
             .isThrownBy(() -> commandExecutor.execute(command))
             .withMessageContaining(
                 "A process instance id is required, but the provided id '" +
-                execution.getId() +
-                "' points to a child execution of process instance '" +
-                pi.getId() +
-                "'. Please invoke the " +
-                command.getClass().getSimpleName() +
-                " with a root execution id."
+                    execution.getId() +
+                    "' points to a child execution of process instance '" +
+                    pi.getId() +
+                    "'. Please invoke the " +
+                    command.getClass().getSimpleName() +
+                    " with a root execution id."
             );
     }
 

@@ -28,7 +28,8 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 @SuppressWarnings("rawtypes")
 public class ActivitiEntityWithVariablesEventImpl
     extends ActivitiEntityEventImpl
-    implements ActivitiEntityWithVariablesEvent {
+    implements ActivitiEntityWithVariablesEvent
+{
 
     protected Map variables;
     protected boolean localScope;

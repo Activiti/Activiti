@@ -95,10 +95,10 @@ public class SignalEventReceivedCmd implements Command<Void> {
             if (signalEvents.isEmpty()) {
                 throw new ActivitiException(
                     "Execution '" +
-                    executionId +
-                    "' has not subscribed to a signal event with name '" +
-                    eventName +
-                    "'."
+                        executionId +
+                        "' has not subscribed to a signal event with name '" +
+                        eventName +
+                        "'."
                 );
             }
         }

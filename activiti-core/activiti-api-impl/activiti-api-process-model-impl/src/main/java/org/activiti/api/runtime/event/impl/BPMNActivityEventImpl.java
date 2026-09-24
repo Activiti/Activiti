@@ -21,7 +21,8 @@ import org.activiti.api.runtime.event.impl.RuntimeEventImpl;
 
 public abstract class BPMNActivityEventImpl
     extends RuntimeEventImpl<BPMNActivity, BPMNActivityEvent.ActivityEvents>
-    implements BPMNActivityEvent {
+    implements BPMNActivityEvent
+{
 
     public BPMNActivityEventImpl() {}
 

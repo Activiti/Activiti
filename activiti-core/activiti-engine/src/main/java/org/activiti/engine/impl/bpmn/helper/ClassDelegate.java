@@ -68,7 +68,8 @@ public class ClassDelegate
         TransactionDependentExecutionListener,
         TransactionDependentTaskListener,
         SubProcessActivityBehavior,
-        CustomPropertiesResolver {
+        CustomPropertiesResolver
+{
 
     private static final long serialVersionUID = 1L;
 
@@ -200,10 +201,10 @@ public class ClassDelegate
         } else {
             throw new ActivitiIllegalArgumentException(
                 delegateInstance.getClass().getName() +
-                " doesn't implement " +
-                ExecutionListener.class +
-                " nor " +
-                JavaDelegate.class
+                    " doesn't implement " +
+                    ExecutionListener.class +
+                    " nor " +
+                    JavaDelegate.class
             );
         }
     }
@@ -215,8 +216,8 @@ public class ClassDelegate
         } else {
             throw new ActivitiIllegalArgumentException(
                 delegateInstance.getClass().getName() +
-                " doesn't implement " +
-                TransactionDependentExecutionListener.class
+                    " doesn't implement " +
+                    TransactionDependentExecutionListener.class
             );
         }
     }
@@ -351,10 +352,10 @@ public class ClassDelegate
         } else {
             throw new ActivitiIllegalArgumentException(
                 delegateInstance.getClass().getName() +
-                " doesn't implement " +
-                JavaDelegate.class.getName() +
-                " nor " +
-                ActivityBehavior.class.getName()
+                    " doesn't implement " +
+                    JavaDelegate.class.getName() +
+                    " nor " +
+                    ActivityBehavior.class.getName()
             );
         }
     }
@@ -428,9 +429,9 @@ public class ClassDelegate
             } catch (IllegalAccessException e) {
                 throw new ActivitiException(
                     "Illegal acces when calling '" +
-                    declaration.getName() +
-                    "' on class " +
-                    target.getClass().getName(),
+                        declaration.getName() +
+                        "' on class " +
+                        target.getClass().getName(),
                     e
                 );
             } catch (InvocationTargetException e) {
@@ -445,9 +446,9 @@ public class ClassDelegate
                 if (throwExceptionOnMissingField) {
                     throw new ActivitiIllegalArgumentException(
                         "Field definition uses unexisting field '" +
-                        declaration.getName() +
-                        "' on class " +
-                        target.getClass().getName()
+                            declaration.getName() +
+                            "' on class " +
+                            target.getClass().getName()
                     );
                 } else {
                     return;
@@ -458,13 +459,13 @@ public class ClassDelegate
             if (!fieldTypeCompatible(declaration, field)) {
                 throw new ActivitiIllegalArgumentException(
                     "Incompatible type set on field declaration '" +
-                    declaration.getName() +
-                    "' for class " +
-                    target.getClass().getName() +
-                    ". Declared value has type " +
-                    declaration.getValue().getClass().getName() +
-                    ", while expecting " +
-                    field.getType().getName()
+                        declaration.getName() +
+                        "' for class " +
+                        target.getClass().getName() +
+                        ". Declared value has type " +
+                        declaration.getValue().getClass().getName() +
+                        ", while expecting " +
+                        field.getType().getName()
                 );
             }
             ReflectUtil.setField(field, target, declaration.getValue());

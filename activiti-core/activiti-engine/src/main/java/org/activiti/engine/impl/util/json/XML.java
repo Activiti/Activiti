@@ -430,14 +430,16 @@ public class XML {
             len = ja.length();
             for (i = 0; i < len; ++i) {
                 v = ja.opt(i);
-                b.append(toString(v, (tagName == null) ? "array" : tagName));
+                b.append(toString(v, tagName == null ? "array" : tagName));
             }
             return b.toString();
         } else {
-            s = (o == null) ? "null" : escape(o.toString());
-            return (tagName == null)
+            s = o == null ? "null" : escape(o.toString());
+            return tagName == null
                 ? "\"" + s + "\""
-                : (s.length() == 0) ? "<" + tagName + "/>" : "<" + tagName + ">" + s + "</" + tagName + ">";
+                : s.length() == 0
+                  ? "<" + tagName + "/>"
+                  : "<" + tagName + ">" + s + "</" + tagName + ">";
         }
     }
 }

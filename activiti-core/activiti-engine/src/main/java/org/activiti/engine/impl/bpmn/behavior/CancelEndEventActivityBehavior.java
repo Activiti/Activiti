@@ -163,7 +163,7 @@ public class CancelEndEventActivityBehavior extends FlowNodeActivityBehavior {
         );
         if (CollectionUtil.isNotEmpty(childExecutions)) {
             for (ExecutionEntity childExecution : childExecutions) {
-                if (!(childExecution.getId().equals(notToDeleteExecution.getId()))) {
+                if (!childExecution.getId().equals(notToDeleteExecution.getId())) {
                     deleteChildExecutions(childExecution, notToDeleteExecution, commandContext, deleteReason);
                 }
             }
