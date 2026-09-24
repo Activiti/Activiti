@@ -39,7 +39,7 @@ class CountingWriterTest {
     @Test
     void getCharacterCount_should_matchSerializedJsonLength() throws Exception {
         CountingWriter writer = new CountingWriter();
-        Map<String, Object> value = Map.of("message", "hé🙂");
+        Map<String, Object> value = Map.of("message", "h\u00e9\ud83d\ude42");
 
         jsonMapper.writeValue(writer, value);
 
