@@ -99,11 +99,11 @@ public class ProcessRuntimeMultiInstanceCallActivityIndexMappingIT {
         List<Map.Entry<Object, Object>> iterationsSeenByChildren = new ArrayList<>();
         for (int completion = 0; completion < COLORS.size(); completion++) {
             findRunningChild(processInstance).ifPresent(child -> {
-                    iterationsSeenByChildren.add(
-                        entry(getVariableValue(child, INDEX_VARIABLE), getVariableValue(child, "color"))
-                    );
-                    completeSingleTaskOf(child);
-                });
+                iterationsSeenByChildren.add(
+                    entry(getVariableValue(child, INDEX_VARIABLE), getVariableValue(child, "color"))
+                );
+                completeSingleTaskOf(child);
+            });
         }
         return iterationsSeenByChildren;
     }

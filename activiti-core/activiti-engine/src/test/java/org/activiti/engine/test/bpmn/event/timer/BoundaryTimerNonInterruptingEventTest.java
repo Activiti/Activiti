@@ -348,7 +348,7 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
         processEngineConfiguration
             .getClock()
             .setCurrentTime(
-                new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + (minutes * 60 * 1000))
+                new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + minutes * 60 * 1000)
             );
     }
 }

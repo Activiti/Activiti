@@ -321,7 +321,8 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
     private boolean isArrayProperty(JsonNode node, String property) {
         return (
             node.isArray() ||
-            (!node.isEmpty() && node.has(property) && node.get(property).isArray()) || property.matches("\\d+")
+            (!node.isEmpty() && node.has(property) && node.get(property).isArray()) ||
+            property.matches("\\d+")
         );
     }
 
