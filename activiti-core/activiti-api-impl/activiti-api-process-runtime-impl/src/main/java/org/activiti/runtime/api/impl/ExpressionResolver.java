@@ -38,9 +38,9 @@ public class ExpressionResolver {
     private static final TypeReference<Map<String, ?>> MAP_STRING_OBJECT_TYPE = new TypeReference<Map<String, ?>>() {};
     private final Logger logger = LoggerFactory.getLogger(ExpressionResolver.class);
 
-    private static final String EXPRESSION_PATTERN_STRING = "([\\$]\\{([^\\}]*)\\})";
+    private static final String EXPRESSION_PATTERN_STRING = "\\$\\{([^}]++)\\}";
     private static final Pattern EXPRESSION_PATTERN = Pattern.compile(EXPRESSION_PATTERN_STRING);
-    private static final int EXPRESSION_KEY_INDEX = 1;
+    private static final int EXPRESSION_KEY_INDEX = 0;
 
     private JsonMapper mapper;
     private final DelegateInterceptor delegateInterceptor;
