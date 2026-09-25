@@ -41,7 +41,7 @@ import org.activiti.spring.process.variable.VariableValidationService;
 
 public class ProcessVariablesPayloadValidator {
 
-    private static final String ERROR_VARIABLE_NAME = "Variable has not a valid name: {0}";
+    private static final String ERROR_VARIABLE_NAME = "Variable name is not valid: {0}";
     private static final String ERROR_VARIABLE_TYPE = "Variables fail type validation: {0}";
     private static final String ERROR_VARIABLE_EXPRESSION_VALUE =
         "Expressions in variable values are only allowed as default value when modeling the process: {0}";
