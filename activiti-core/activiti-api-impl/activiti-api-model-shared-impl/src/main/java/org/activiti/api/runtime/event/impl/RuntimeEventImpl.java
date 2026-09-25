@@ -144,8 +144,8 @@ public abstract class RuntimeEventImpl<
             .append(businessKey)
             .append(", parentProcessInstanceId=")
             .append(parentProcessInstanceId)
-            .append(", entity=")
-            .append(entity)
+            .append(", entityType=")
+            .append(entity != null ? entity.getClass().getSimpleName() : null)
             .append("]");
         return builder.toString();
     }
