@@ -46,15 +46,13 @@ public class VariableCreatedListenerDelegate implements ActivitiEventListener {
         if (event instanceof ActivitiVariableEvent) {
             ActivitiVariableEvent internalEvent = (ActivitiVariableEvent) event;
             if (variableEventFilter.shouldEmmitEvent(internalEvent)) {
-                converter
-                    .from(internalEvent)
-                    .ifPresent(convertedEvent -> {
-                        if (listeners != null) {
-                            for (VariableEventListener<VariableCreatedEvent> listener : listeners) {
-                                listener.onEvent(convertedEvent);
-                            }
+                converter.from(internalEvent).ifPresent(convertedEvent -> {
+                    if (listeners != null) {
+                        for (VariableEventListener<VariableCreatedEvent> listener : listeners) {
+                            listener.onEvent(convertedEvent);
                         }
-                    });
+                    }
+                });
             }
         }
     }

@@ -95,21 +95,21 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
         processDefinition = Optional.ofNullable(
             repositoryService.createProcessDefinitionQuery().processDefinitionId(processDefinitionId).singleResult()
         ).orElseGet(() ->
-                repositoryService
-                    .createProcessDefinitionQuery()
-                    .processDefinitionIdOrKey(processDefinitionId)
-                    .deploymentIds(latestDeploymentIds())
-                    .orderByProcessDefinitionVersion()
-                    .asc()
-                    .list()
-                    .stream()
-                    .findFirst()
-                    .orElseThrow(() ->
-                        new ActivitiObjectNotFoundException(
-                            "Unable to find process definition for the given id or key:'" + processDefinitionId + "'"
-                        )
+            repositoryService
+                .createProcessDefinitionQuery()
+                .processDefinitionIdOrKey(processDefinitionId)
+                .deploymentIds(latestDeploymentIds())
+                .orderByProcessDefinitionVersion()
+                .asc()
+                .list()
+                .stream()
+                .findFirst()
+                .orElseThrow(() ->
+                    new ActivitiObjectNotFoundException(
+                        "Unable to find process definition for the given id or key:'" + processDefinitionId + "'"
                     )
-            );
+                )
+        );
 
         return processDefinitionConverter.from(processDefinition);
     }

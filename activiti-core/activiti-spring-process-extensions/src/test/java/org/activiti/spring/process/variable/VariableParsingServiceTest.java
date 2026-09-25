@@ -134,9 +134,9 @@ public class VariableParsingServiceTest {
             .map(Map.Entry::getKey)
             .toList();
         assertThat(jsonObjectVariableTypes).allSatisfy(type -> {
-                Object obj = new Object();
-                assertThat(variableParsingService.parse(new VariableDefinition(type, obj))).isEqualTo(obj);
-            });
+            Object obj = new Object();
+            assertThat(variableParsingService.parse(new VariableDefinition(type, obj))).isEqualTo(obj);
+        });
     }
 
     @Test

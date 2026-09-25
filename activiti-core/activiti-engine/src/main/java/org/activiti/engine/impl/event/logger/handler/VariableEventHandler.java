@@ -121,7 +121,7 @@ public abstract class VariableEventHandler extends AbstractDatabaseEventLoggerEv
             putInMapIfNotNull(data, Fields.VARIABLE_TYPE, TYPE_UUID);
         } else if (
             variableType instanceof SerializableType ||
-            (variableEvent.getVariableValue() != null && (variableEvent.getVariableValue() instanceof Object))
+            (variableEvent.getVariableValue() != null && variableEvent.getVariableValue() instanceof Object)
         ) {
             // Last try: serialize it to json
             try {

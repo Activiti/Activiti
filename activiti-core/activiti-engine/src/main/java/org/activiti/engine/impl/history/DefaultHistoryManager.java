@@ -285,7 +285,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
             execution.getCurrentFlowElement() instanceof SequenceFlow && execution.getCurrentActivitiListener() == null
         ) {
             // while executing sequence flow listeners, we don't want historic activities
-            activityId = ((SequenceFlow) (execution.getCurrentFlowElement())).getSourceFlowElement().getId();
+            activityId = ((SequenceFlow) execution.getCurrentFlowElement()).getSourceFlowElement().getId();
         }
 
         if (activityId != null) {

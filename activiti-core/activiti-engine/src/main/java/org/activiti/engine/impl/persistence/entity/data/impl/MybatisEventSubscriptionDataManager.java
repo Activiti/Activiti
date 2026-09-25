@@ -48,7 +48,8 @@ import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.Signal
  */
 public class MybatisEventSubscriptionDataManager
     extends AbstractDataManager<EventSubscriptionEntity>
-    implements EventSubscriptionDataManager {
+    implements EventSubscriptionDataManager
+{
 
     private static List<Class<? extends EventSubscriptionEntity>> ENTITY_SUBCLASSES = new ArrayList<
         Class<? extends EventSubscriptionEntity>
@@ -335,9 +336,8 @@ public class MybatisEventSubscriptionDataManager
     protected List<SignalEventSubscriptionEntity> toSignalEventSubscriptionEntityList(
         List<EventSubscriptionEntity> result
     ) {
-        List<SignalEventSubscriptionEntity> signalEventSubscriptionEntities = new ArrayList<
-            SignalEventSubscriptionEntity
-        >(result.size());
+        List<SignalEventSubscriptionEntity> signalEventSubscriptionEntities =
+            new ArrayList<SignalEventSubscriptionEntity>(result.size());
         for (EventSubscriptionEntity eventSubscriptionEntity : result) {
             signalEventSubscriptionEntities.add((SignalEventSubscriptionEntity) eventSubscriptionEntity);
         }
@@ -347,9 +347,8 @@ public class MybatisEventSubscriptionDataManager
     protected List<MessageEventSubscriptionEntity> toMessageEventSubscriptionEntityList(
         List<EventSubscriptionEntity> result
     ) {
-        List<MessageEventSubscriptionEntity> messageEventSubscriptionEntities = new ArrayList<
-            MessageEventSubscriptionEntity
-        >(result.size());
+        List<MessageEventSubscriptionEntity> messageEventSubscriptionEntities =
+            new ArrayList<MessageEventSubscriptionEntity>(result.size());
         for (EventSubscriptionEntity eventSubscriptionEntity : result) {
             messageEventSubscriptionEntities.add((MessageEventSubscriptionEntity) eventSubscriptionEntity);
         }

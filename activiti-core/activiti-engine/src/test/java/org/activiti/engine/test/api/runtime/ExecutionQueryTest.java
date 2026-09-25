@@ -1018,10 +1018,16 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
         assertThat(execution.getId()).isEqualTo(processInstance3.getId());
 
         assertThat(
-            runtimeService.createExecutionQuery().variableValueGreaterThan("shortVar", (short) 5555).count()
+            runtimeService
+                .createExecutionQuery()
+                .variableValueGreaterThan("shortVar", (short) 5555)
+                .count()
         ).isEqualTo(0);
         assertThat(
-            runtimeService.createExecutionQuery().variableValueGreaterThan("shortVar", (short) 1).count()
+            runtimeService
+                .createExecutionQuery()
+                .variableValueGreaterThan("shortVar", (short) 1)
+                .count()
         ).isEqualTo(3);
 
         // Test GREATER_THAN_OR_EQUAL
@@ -1040,11 +1046,17 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
         assertThat(execution.getId()).isEqualTo(processInstance3.getId());
 
         assertThat(
-            runtimeService.createExecutionQuery().variableValueGreaterThanOrEqual("shortVar", (short) 1).count()
+            runtimeService
+                .createExecutionQuery()
+                .variableValueGreaterThanOrEqual("shortVar", (short) 1)
+                .count()
         ).isEqualTo(3);
 
         // Test LESS_THAN
-        executions = runtimeService.createExecutionQuery().variableValueLessThan("shortVar", (short) 5555).list();
+        executions = runtimeService
+            .createExecutionQuery()
+            .variableValueLessThan("shortVar", (short) 5555)
+            .list();
         assertThat(executions).hasSize(2);
 
         List<String> expectedIds = asList(processInstance1.getId(), processInstance2.getId());
@@ -1053,10 +1065,16 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
         assertThat(ids.isEmpty()).isTrue();
 
         assertThat(
-            runtimeService.createExecutionQuery().variableValueLessThan("shortVar", (short) 1234).count()
+            runtimeService
+                .createExecutionQuery()
+                .variableValueLessThan("shortVar", (short) 1234)
+                .count()
         ).isEqualTo(0);
         assertThat(
-            runtimeService.createExecutionQuery().variableValueLessThan("shortVar", (short) 6666).count()
+            runtimeService
+                .createExecutionQuery()
+                .variableValueLessThan("shortVar", (short) 6666)
+                .count()
         ).isEqualTo(3);
 
         // Test LESS_THAN_OR_EQUAL
@@ -1067,22 +1085,34 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
         assertThat(executions).hasSize(3);
 
         assertThat(
-            runtimeService.createExecutionQuery().variableValueLessThanOrEqual("shortVar", (short) 1233).count()
+            runtimeService
+                .createExecutionQuery()
+                .variableValueLessThanOrEqual("shortVar", (short) 1233)
+                .count()
         ).isEqualTo(0);
 
         // Test value-only matching
-        execution = runtimeService.createExecutionQuery().variableValueEquals((short) 5555).singleResult();
+        execution = runtimeService
+            .createExecutionQuery()
+            .variableValueEquals((short) 5555)
+            .singleResult();
         assertThat(execution).isNotNull();
         assertThat(execution.getId()).isEqualTo(processInstance3.getId());
 
-        executions = runtimeService.createExecutionQuery().variableValueEquals((short) 1234).list();
+        executions = runtimeService
+            .createExecutionQuery()
+            .variableValueEquals((short) 1234)
+            .list();
         assertThat(executions).hasSize(2);
         expectedIds = asList(processInstance1.getId(), processInstance2.getId());
         ids = new ArrayList<String>(asList(executions.getFirst().getId(), executions.get(1).getId()));
         ids.removeAll(expectedIds);
         assertThat(ids.isEmpty()).isTrue();
 
-        execution = runtimeService.createExecutionQuery().variableValueEquals((short) 999).singleResult();
+        execution = runtimeService
+            .createExecutionQuery()
+            .variableValueEquals((short) 999)
+            .singleResult();
         assertThat(execution).isNull();
 
         runtimeService.deleteProcessInstance(processInstance1.getId(), "test");

@@ -22,7 +22,8 @@ import org.activiti.api.runtime.model.impl.BPMNSequenceFlowImpl;
 import org.activiti.engine.delegate.event.ActivitiSequenceFlowTakenEvent;
 
 public class ToSequenceFlowTakenConverter
-    implements EventConverter<BPMNSequenceFlowTakenEvent, ActivitiSequenceFlowTakenEvent> {
+    implements EventConverter<BPMNSequenceFlowTakenEvent, ActivitiSequenceFlowTakenEvent>
+{
 
     @Override
     public Optional<BPMNSequenceFlowTakenEvent> from(ActivitiSequenceFlowTakenEvent internalEvent) {

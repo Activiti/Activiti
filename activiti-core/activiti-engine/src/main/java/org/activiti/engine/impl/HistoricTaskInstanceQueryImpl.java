@@ -36,7 +36,8 @@ import tools.jackson.databind.node.ObjectNode;
 
 public class HistoricTaskInstanceQueryImpl
     extends AbstractVariableQueryImpl<HistoricTaskInstanceQuery, HistoricTaskInstance>
-    implements HistoricTaskInstanceQuery {
+    implements HistoricTaskInstanceQuery
+{
 
     private static final long serialVersionUID = 1L;
 

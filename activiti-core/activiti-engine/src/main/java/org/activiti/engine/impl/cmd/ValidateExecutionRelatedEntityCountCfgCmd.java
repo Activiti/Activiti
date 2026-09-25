@@ -71,7 +71,7 @@ public class ValidateExecutionRelatedEntityCountCfgCmd implements Command<Void> 
                 if (logger.isInfoEnabled()) {
                     logger.info(
                         "Configuration change: execution related entity counting feature was enabled before, but now disabled. " +
-                        "Updating all execution entities."
+                            "Updating all execution entities."
                     );
                 }
                 commandContext

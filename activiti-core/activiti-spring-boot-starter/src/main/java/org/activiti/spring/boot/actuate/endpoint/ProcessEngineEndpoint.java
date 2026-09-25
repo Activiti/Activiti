@@ -119,8 +119,9 @@ public class ProcessEngineEndpoint {
         );
 
         // Process definition cache
-        DeploymentCache<ProcessDefinitionCacheEntry> deploymentCache =
-            ((ProcessEngineConfigurationImpl) processEngine.getProcessEngineConfiguration()).getProcessDefinitionCache();
+        DeploymentCache<ProcessDefinitionCacheEntry> deploymentCache = (
+            (ProcessEngineConfigurationImpl) processEngine.getProcessEngineConfiguration()
+        ).getProcessDefinitionCache();
         if (deploymentCache instanceof DefaultDeploymentCache) {
             metrics.put("cachedProcessDefinitionCount", ((DefaultDeploymentCache) deploymentCache).size());
         }

@@ -94,7 +94,7 @@ public class BitMaskUtil {
             throw new IllegalArgumentException("Only bits 1 through 8 are supported");
         }
 
-        return ((value & MASKS[bitNumber - 1]) == MASKS[bitNumber - 1]);
+        return (value & MASKS[bitNumber - 1]) == MASKS[bitNumber - 1];
     }
 
     /**

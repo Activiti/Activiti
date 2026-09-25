@@ -115,8 +115,8 @@ public class TaskRuntimeDeleteTaskTest {
             .isInstanceOf(NotFoundException.class)
             .hasMessage(
                 "Unable to find task for the given id: " +
-                standAloneTask.getId() +
-                " for user: john (with groups: [activitiTeam] & with roles: [ACTIVITI_USER])"
+                    standAloneTask.getId() +
+                    " for user: john (with groups: [activitiTeam] & with roles: [ACTIVITI_USER])"
             );
     }
 

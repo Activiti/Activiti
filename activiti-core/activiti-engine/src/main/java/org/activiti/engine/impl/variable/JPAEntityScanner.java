@@ -52,8 +52,8 @@ public class JPAEntityScanner {
                     } else {
                         throw new ActivitiException(
                             "Cannot find field or method with annotation @Id on class '" +
-                            clazz.getName() +
-                            "', only single-valued primary keys are supported on JPA-entities"
+                                clazz.getName() +
+                                "', only single-valued primary keys are supported on JPA-entities"
                         );
                     }
                 }
@@ -107,6 +107,6 @@ public class JPAEntityScanner {
     }
 
     private boolean isEntityAnnotationPresent(Class<?> clazz) {
-        return (clazz.getAnnotation(Entity.class) != null);
+        return clazz.getAnnotation(Entity.class) != null;
     }
 }

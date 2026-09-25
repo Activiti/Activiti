@@ -31,7 +31,8 @@ import org.slf4j.LoggerFactory;
 
 public class ProcessDefinitionQueryImpl
     extends AbstractQuery<ProcessDefinitionQuery, ProcessDefinition>
-    implements ProcessDefinitionQuery {
+    implements ProcessDefinitionQuery
+{
 
     private static final long serialVersionUID = 1L;
 

@@ -24,7 +24,8 @@ import org.activiti.engine.repository.ProcessDefinition;
 
 public class NativeProcessDefinitionQueryImpl
     extends AbstractNativeQuery<NativeProcessDefinitionQuery, ProcessDefinition>
-    implements NativeProcessDefinitionQuery {
+    implements NativeProcessDefinitionQuery
+{
 
     private static final long serialVersionUID = 1L;
 

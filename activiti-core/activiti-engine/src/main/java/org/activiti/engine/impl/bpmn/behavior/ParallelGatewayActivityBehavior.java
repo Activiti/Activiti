@@ -65,8 +65,8 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
         } else {
             throw new ActivitiException(
                 "Programmatic error: parallel gateway behaviour can only be applied" +
-                " to a ParallelGateway instance, but got an instance of " +
-                flowElement
+                    " to a ParallelGateway instance, but got an instance of " +
+                    flowElement
             );
         }
 
@@ -93,7 +93,9 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
         // Fork
 
         // Is needed to set the endTime for all historic activity joins
-        Context.getCommandContext().getHistoryManager().recordActivityEnd((ExecutionEntity) execution, null);
+        Context.getCommandContext()
+            .getHistoryManager()
+            .recordActivityEnd((ExecutionEntity) execution, null);
 
         if (nbrOfExecutionsCurrentlyJoined == nbrOfExecutionsToJoin) {
             // Fork

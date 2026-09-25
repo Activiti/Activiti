@@ -78,10 +78,10 @@ public class FailedJobListener implements CommandContextCloseListener {
 
         log.trace(
             "Using FailedJobCommandFactory '" +
-            failedJobCommandFactory.getClass() +
-            "' and command of type '" +
-            cmd.getClass() +
-            "'"
+                failedJobCommandFactory.getClass() +
+                "' and command of type '" +
+                cmd.getClass() +
+                "'"
         );
         commandExecutor.execute(commandConfig, cmd);
     }

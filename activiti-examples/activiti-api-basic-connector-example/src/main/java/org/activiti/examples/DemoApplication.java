@@ -91,29 +91,27 @@ public class DemoApplication {
         variableCreatedEvents.forEach(variableCreatedEvent ->
             logger.info(
                 "\t> name:`" +
-                variableCreatedEvent.getEntity().getName() +
-                "`, value: `" +
-                variableCreatedEvent.getEntity().getValue() +
-                "`, processInstanceId: `" +
-                variableCreatedEvent.getEntity().getProcessInstanceId() +
-                "`, taskId: `" +
-                variableCreatedEvent.getEntity().getTaskId() +
-                "`"
+                    variableCreatedEvent.getEntity().getName() +
+                    "`, value: `" +
+                    variableCreatedEvent.getEntity().getValue() +
+                    "`, processInstanceId: `" +
+                    variableCreatedEvent.getEntity().getProcessInstanceId() +
+                    "`, taskId: `" +
+                    variableCreatedEvent.getEntity().getTaskId() +
+                    "`"
             )
         );
     }
 
     private void completeAvailableTasks() {
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 20));
-        tasks
-            .getContent()
-            .forEach(task -> {
-                logger.info(">>> Performing task -> " + task);
-                listTaskVariables(task);
-                taskRuntime.complete(
-                    TaskPayloadBuilder.complete().withTaskId(task.getId()).withVariable("rating", 5).build()
-                );
-            });
+        tasks.getContent().forEach(task -> {
+            logger.info(">>> Performing task -> " + task);
+            listTaskVariables(task);
+            taskRuntime.complete(
+                TaskPayloadBuilder.complete().withTaskId(task.getId()).withVariable("rating", 5).build()
+            );
+        });
     }
 
     private void listTaskVariables(Task task) {

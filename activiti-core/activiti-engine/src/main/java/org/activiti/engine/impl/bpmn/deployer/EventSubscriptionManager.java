@@ -147,10 +147,10 @@ public class EventSubscriptionManager {
                 // the event subscription has no instance-id, so it's a message start event
                 throw new ActivitiException(
                     "Cannot deploy process definition '" +
-                    processDefinition.getResourceName() +
-                    "': there already is a message event subscription for the message with name '" +
-                    messageEventDefinition.getMessageRef() +
-                    "'."
+                        processDefinition.getResourceName() +
+                        "': there already is a message event subscription for the message with name '" +
+                        messageEventDefinition.getMessageRef() +
+                        "'."
                 );
             }
         }

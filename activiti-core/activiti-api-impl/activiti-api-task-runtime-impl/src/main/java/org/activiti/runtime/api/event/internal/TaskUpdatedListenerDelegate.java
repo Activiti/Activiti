@@ -40,13 +40,11 @@ public class TaskUpdatedListenerDelegate implements ActivitiEventListener {
     @Override
     public void onEvent(ActivitiEvent event) {
         if (event instanceof ActivitiEntityEvent) {
-            taskUpdatedEventConverter
-                .from((ActivitiEntityEvent) event)
-                .ifPresent(convertedEvent -> {
-                    for (TaskRuntimeEventListener<TaskUpdatedEvent> listener : taskUpdatedListeners) {
-                        listener.onEvent(convertedEvent);
-                    }
-                });
+            taskUpdatedEventConverter.from((ActivitiEntityEvent) event).ifPresent(convertedEvent -> {
+                for (TaskRuntimeEventListener<TaskUpdatedEvent> listener : taskUpdatedListeners) {
+                    listener.onEvent(convertedEvent);
+                }
+            });
         }
     }
 

@@ -259,7 +259,7 @@ public class Scanner {
     }
 
     protected boolean isEval() {
-        return (token != null && token.getSymbol() != Symbol.TEXT && token.getSymbol() != Symbol.END_EVAL);
+        return token != null && token.getSymbol() != Symbol.TEXT && token.getSymbol() != Symbol.END_EVAL;
     }
 
     /**
@@ -506,9 +506,9 @@ public class Scanner {
         }
 
         if (position == length) {
-            return token = fixed(Symbol.EOF);
+            return (token = fixed(Symbol.EOF));
         }
 
-        return token = nextToken();
+        return (token = nextToken());
     }
 }

@@ -460,7 +460,7 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
         assertThat(managementService.createSuspendedJobQuery().count()).isEqualTo(1);
 
         // The jobs should not be executed now
-        processEngineConfiguration.getClock().setCurrentTime(new Date(now.getTime() + (60 * 60 * 1000))); // Timer is set to fire on 5 minutes
+        processEngineConfiguration.getClock().setCurrentTime(new Date(now.getTime() + 60 * 60 * 1000)); // Timer is set to fire on 5 minutes
         Job job = managementService.createTimerJobQuery().executable().singleResult();
         assertThat(job).isNull();
 

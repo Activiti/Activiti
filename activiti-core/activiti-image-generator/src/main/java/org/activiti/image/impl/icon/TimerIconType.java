@@ -43,7 +43,7 @@ public class TimerIconType extends IconType {
         final ProcessDiagramSVGGraphics2D svgGenerator
     ) {
         Element gTag = svgGenerator.getDOMFactory().createElementNS(null, SVGGraphics2D.SVG_G_TAG);
-        gTag.setAttributeNS(null, "transform", "translate(" + (imageX) + "," + (imageYo) + ")");
+        gTag.setAttributeNS(null, "transform", "translate(" + imageX + "," + imageYo + ")");
 
         Element pathTag = svgGenerator.getDOMFactory().createElementNS(null, SVGGraphics2D.SVG_PATH_TAG);
         pathTag.setAttributeNS(null, "d", this.getDValue());

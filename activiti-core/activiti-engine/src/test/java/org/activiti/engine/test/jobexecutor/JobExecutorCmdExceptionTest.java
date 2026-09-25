@@ -58,18 +58,18 @@ public class JobExecutorCmdExceptionTest extends PluggableActivitiTestCase {
         );
 
         assertThatExceptionOfType(Exception.class).isThrownBy(() -> {
-                Job job = managementService.createJobQuery().singleResult();
-                assertThat(job.getRetries()).isEqualTo(3);
-                managementService.executeJob(job.getId());
-            });
+            Job job = managementService.createJobQuery().singleResult();
+            assertThat(job.getRetries()).isEqualTo(3);
+            managementService.executeJob(job.getId());
+        });
 
         assertThatExceptionOfType(Exception.class).isThrownBy(() -> {
-                Job job = managementService.createTimerJobQuery().singleResult();
-                assertThat(job.getRetries()).isEqualTo(2);
+            Job job = managementService.createTimerJobQuery().singleResult();
+            assertThat(job.getRetries()).isEqualTo(2);
 
-                managementService.moveTimerToExecutableJob(job.getId());
-                managementService.executeJob(job.getId());
-            });
+            managementService.moveTimerToExecutableJob(job.getId());
+            managementService.executeJob(job.getId());
+        });
 
         Job job = managementService.createTimerJobQuery().singleResult();
         assertThat(job.getRetries()).isEqualTo(1);
@@ -92,24 +92,24 @@ public class JobExecutorCmdExceptionTest extends PluggableActivitiTestCase {
         );
 
         assertThatExceptionOfType(Exception.class).isThrownBy(() -> {
-                Job job = managementService.createJobQuery().singleResult();
-                assertThat(job.getRetries()).isEqualTo(3);
-                managementService.executeJob(job.getId());
-            });
+            Job job = managementService.createJobQuery().singleResult();
+            assertThat(job.getRetries()).isEqualTo(3);
+            managementService.executeJob(job.getId());
+        });
 
         assertThatExceptionOfType(Exception.class).isThrownBy(() -> {
-                Job job = managementService.createTimerJobQuery().singleResult();
-                assertThat(job.getRetries()).isEqualTo(2);
-                managementService.moveTimerToExecutableJob(job.getId());
-                managementService.executeJob(job.getId());
-            });
+            Job job = managementService.createTimerJobQuery().singleResult();
+            assertThat(job.getRetries()).isEqualTo(2);
+            managementService.moveTimerToExecutableJob(job.getId());
+            managementService.executeJob(job.getId());
+        });
 
         assertThatExceptionOfType(Exception.class).isThrownBy(() -> {
-                Job job = managementService.createTimerJobQuery().singleResult();
-                assertThat(job.getRetries()).isEqualTo(1);
-                managementService.moveTimerToExecutableJob(job.getId());
-                managementService.executeJob(job.getId());
-            });
+            Job job = managementService.createTimerJobQuery().singleResult();
+            assertThat(job.getRetries()).isEqualTo(1);
+            managementService.moveTimerToExecutableJob(job.getId());
+            managementService.executeJob(job.getId());
+        });
 
         Job job = managementService.createDeadLetterJobQuery().singleResult();
         assertThat(job).isNotNull();

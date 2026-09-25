@@ -40,23 +40,23 @@ public class UelExpressionCondition implements Condition {
         if (result == null) {
             throw new ActivitiException(
                 "condition expression returns null (sequenceFlowId: " +
-                sequenceFlowId +
-                " execution: " +
-                execution +
-                ")"
+                    sequenceFlowId +
+                    " execution: " +
+                    execution +
+                    ")"
             );
         }
         if (!(result instanceof Boolean)) {
             throw new ActivitiException(
                 "condition expression returns non-Boolean (sequenceFlowId: " +
-                sequenceFlowId +
-                " execution: " +
-                execution +
-                "): " +
-                result +
-                " (" +
-                result.getClass().getName() +
-                ")"
+                    sequenceFlowId +
+                    " execution: " +
+                    execution +
+                    "): " +
+                    result +
+                    " (" +
+                    result.getClass().getName() +
+                    ")"
             );
         }
         return (Boolean) result;

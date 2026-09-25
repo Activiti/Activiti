@@ -37,7 +37,7 @@ public class ShellTaskTest extends PluggableActivitiTestCase {
         String osName = System.getProperty("os.name").toLowerCase();
         if (osName.contains("win")) return OsType.WINDOWS;
         else if (osName.contains("mac")) return OsType.MAC;
-        else if ((osName.contains("nix")) || (osName.contains("nux"))) return OsType.LINUX;
+        else if (osName.contains("nix") || osName.contains("nux")) return OsType.LINUX;
         else if (osName.contains("sunos")) return OsType.SOLARIS;
         else return OsType.UNKOWN;
     }

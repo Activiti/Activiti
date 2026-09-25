@@ -37,8 +37,8 @@ public class JtaProcessEngineConfiguration extends ProcessEngineConfigurationImp
         if (transactionManager == null) {
             throw new ActivitiException(
                 "transactionManager is required property for JtaProcessEngineConfiguration, use " +
-                StandaloneProcessEngineConfiguration.class.getName() +
-                " otherwise"
+                    StandaloneProcessEngineConfiguration.class.getName() +
+                    " otherwise"
             );
         }
 

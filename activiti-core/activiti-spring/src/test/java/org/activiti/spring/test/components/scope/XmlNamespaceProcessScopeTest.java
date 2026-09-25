@@ -45,7 +45,8 @@ public class XmlNamespaceProcessScopeTest {
 
     @BeforeEach
     public void before() throws Throwable {
-        this.processEngine.getRepositoryService()
+        this.processEngine
+            .getRepositoryService()
             .createDeployment()
             .addClasspathResource("org/activiti/spring/test/components/spring-component-waiter.bpmn20.xml")
             .deploy();

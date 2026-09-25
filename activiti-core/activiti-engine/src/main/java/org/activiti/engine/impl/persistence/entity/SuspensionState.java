@@ -81,12 +81,12 @@ public interface SuspensionState {
             if (processDefinitionEntity.getSuspensionState() == state.getStateCode()) {
                 throw new ActivitiException(
                     "Cannot set suspension state '" +
-                    state +
-                    "' for " +
-                    processDefinitionEntity +
-                    "': already in state '" +
-                    state +
-                    "'."
+                        state +
+                        "' for " +
+                        processDefinitionEntity +
+                        "': already in state '" +
+                        state +
+                        "'."
                 );
             }
             processDefinitionEntity.setSuspensionState(state.getStateCode());
@@ -97,12 +97,12 @@ public interface SuspensionState {
             if (executionEntity.getSuspensionState() == state.getStateCode()) {
                 throw new ActivitiException(
                     "Cannot set suspension state '" +
-                    state +
-                    "' for " +
-                    executionEntity +
-                    "': already in state '" +
-                    state +
-                    "'."
+                        state +
+                        "' for " +
+                        executionEntity +
+                        "': already in state '" +
+                        state +
+                        "'."
                 );
             }
             executionEntity.setSuspensionState(state.getStateCode());
@@ -113,12 +113,12 @@ public interface SuspensionState {
             if (taskEntity.getSuspensionState() == state.getStateCode()) {
                 throw new ActivitiException(
                     "Cannot set suspension state '" +
-                    state +
-                    "' for " +
-                    taskEntity +
-                    "': already in state '" +
-                    state +
-                    "'."
+                        state +
+                        "' for " +
+                        taskEntity +
+                        "': already in state '" +
+                        state +
+                        "'."
                 );
             }
             taskEntity.setSuspensionState(state.getStateCode());

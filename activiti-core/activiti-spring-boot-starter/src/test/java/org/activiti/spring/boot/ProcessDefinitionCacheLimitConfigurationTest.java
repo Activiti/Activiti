@@ -55,9 +55,8 @@ public class ProcessDefinitionCacheLimitConfigurationTest {
 
     @Test
     public void shouldApplyProcessDefinitionCacheLimit() {
-        var processDefinitionCache = (DefaultDeploymentCache<
-            ProcessDefinitionCacheEntry
-        >) processEngineConfiguration.getProcessDefinitionCache();
+        var processDefinitionCache =
+            (DefaultDeploymentCache<ProcessDefinitionCacheEntry>) processEngineConfiguration.getProcessDefinitionCache();
 
         assertThat(processDefinitionCache.size()).isEqualTo(100);
     }

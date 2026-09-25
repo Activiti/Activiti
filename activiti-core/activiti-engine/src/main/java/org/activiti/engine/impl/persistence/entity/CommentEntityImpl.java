@@ -49,11 +49,11 @@ public class CommentEntityImpl extends AbstractEntityNoRevision implements Comme
     }
 
     public byte[] getFullMessageBytes() {
-        return (fullMessage != null ? fullMessage.getBytes() : null);
+        return fullMessage != null ? fullMessage.getBytes() : null;
     }
 
     public void setFullMessageBytes(byte[] fullMessageBytes) {
-        fullMessage = (fullMessageBytes != null ? new String(fullMessageBytes) : null);
+        fullMessage = fullMessageBytes != null ? new String(fullMessageBytes) : null;
     }
 
     public static String MESSAGE_PARTS_MARKER = "_|_";

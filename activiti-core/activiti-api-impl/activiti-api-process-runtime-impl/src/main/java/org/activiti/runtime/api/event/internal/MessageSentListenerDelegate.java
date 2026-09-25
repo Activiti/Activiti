@@ -40,13 +40,11 @@ public class MessageSentListenerDelegate implements ActivitiEventListener {
     @Override
     public void onEvent(ActivitiEvent event) {
         if (event instanceof ActivitiMessageEvent) {
-            converter
-                .from((ActivitiMessageEvent) event)
-                .ifPresent(convertedEvent -> {
-                    for (BPMNElementEventListener<BPMNMessageSentEvent> listener : processRuntimeEventListeners) {
-                        listener.onEvent(convertedEvent);
-                    }
-                });
+            converter.from((ActivitiMessageEvent) event).ifPresent(convertedEvent -> {
+                for (BPMNElementEventListener<BPMNMessageSentEvent> listener : processRuntimeEventListeners) {
+                    listener.onEvent(convertedEvent);
+                }
+            });
         }
     }
 

@@ -203,7 +203,7 @@ public final class TreeValueExpression extends ValueExpression {
             if (type != other.type) {
                 return false;
             }
-            return (getStructuralId().equals(other.getStructuralId()) && bindings.equals(other.bindings));
+            return getStructuralId().equals(other.getStructuralId()) && bindings.equals(other.bindings);
         }
         return false;
     }

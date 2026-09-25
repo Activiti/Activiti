@@ -22,7 +22,8 @@ import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntit
 
  */
 public class HistoricVariableInstanceByProcInstMatcher
-    extends CachedEntityMatcherAdapter<HistoricVariableInstanceEntity> {
+    extends CachedEntityMatcherAdapter<HistoricVariableInstanceEntity>
+{
 
     @Override
     public boolean isRetained(HistoricVariableInstanceEntity historicVariableInstanceEntity, Object parameter) {

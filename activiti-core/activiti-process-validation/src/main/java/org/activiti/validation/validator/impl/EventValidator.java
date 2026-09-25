@@ -128,8 +128,8 @@ public class EventValidator extends ProcessLevelValidator {
 
         // Check activityRef
         if (
-            (StringUtils.isNotEmpty(compensateEventDefinition.getActivityRef()) &&
-                process.getFlowElement(compensateEventDefinition.getActivityRef(), true) == null)
+            StringUtils.isNotEmpty(compensateEventDefinition.getActivityRef()) &&
+            process.getFlowElement(compensateEventDefinition.getActivityRef(), true) == null
         ) {
             addError(errors, Problems.COMPENSATE_EVENT_INVALID_ACTIVITY_REF, process, event);
         }

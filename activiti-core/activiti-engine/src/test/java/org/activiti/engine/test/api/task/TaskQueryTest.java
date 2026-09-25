@@ -1440,7 +1440,12 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
 
         // Test query matches
         assertThat(taskService.createTaskQuery().taskVariableValueEquals("longVar", 928374L).count()).isEqualTo(1);
-        assertThat(taskService.createTaskQuery().taskVariableValueEquals("shortVar", (short) 123).count()).isEqualTo(1);
+        assertThat(
+            taskService
+                .createTaskQuery()
+                .taskVariableValueEquals("shortVar", (short) 123)
+                .count()
+        ).isEqualTo(1);
         assertThat(taskService.createTaskQuery().taskVariableValueEquals("integerVar", 1234).count()).isEqualTo(1);
         assertThat(taskService.createTaskQuery().taskVariableValueEquals("stringVar", "stringValue").count()).isEqualTo(
             1
@@ -1451,7 +1456,12 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
 
         // Test query for other values on existing variables
         assertThat(taskService.createTaskQuery().taskVariableValueEquals("longVar", 999L).count()).isEqualTo(0);
-        assertThat(taskService.createTaskQuery().taskVariableValueEquals("shortVar", (short) 999).count()).isEqualTo(0);
+        assertThat(
+            taskService
+                .createTaskQuery()
+                .taskVariableValueEquals("shortVar", (short) 999)
+                .count()
+        ).isEqualTo(0);
         assertThat(taskService.createTaskQuery().taskVariableValueEquals("integerVar", 999).count()).isEqualTo(0);
         assertThat(taskService.createTaskQuery().taskVariableValueEquals("stringVar", "999").count()).isEqualTo(0);
         assertThat(taskService.createTaskQuery().taskVariableValueEquals("booleanVar", false).count()).isEqualTo(0);
@@ -1464,16 +1474,24 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
 
         // Test query for not equals
         assertThat(taskService.createTaskQuery().taskVariableValueNotEquals("longVar", 999L).count()).isEqualTo(1);
-        assertThat(taskService.createTaskQuery().taskVariableValueNotEquals("shortVar", (short) 999).count()).isEqualTo(
-            1
-        );
+        assertThat(
+            taskService
+                .createTaskQuery()
+                .taskVariableValueNotEquals("shortVar", (short) 999)
+                .count()
+        ).isEqualTo(1);
         assertThat(taskService.createTaskQuery().taskVariableValueNotEquals("integerVar", 999).count()).isEqualTo(1);
         assertThat(taskService.createTaskQuery().taskVariableValueNotEquals("stringVar", "999").count()).isEqualTo(1);
         assertThat(taskService.createTaskQuery().taskVariableValueNotEquals("booleanVar", false).count()).isEqualTo(1);
 
         // Test value-only variable equals
         assertThat(taskService.createTaskQuery().taskVariableValueEquals(928374L).count()).isEqualTo(1);
-        assertThat(taskService.createTaskQuery().taskVariableValueEquals((short) 123).count()).isEqualTo(1);
+        assertThat(
+            taskService
+                .createTaskQuery()
+                .taskVariableValueEquals((short) 123)
+                .count()
+        ).isEqualTo(1);
         assertThat(taskService.createTaskQuery().taskVariableValueEquals(1234).count()).isEqualTo(1);
         assertThat(taskService.createTaskQuery().taskVariableValueEquals("stringValue").count()).isEqualTo(1);
         assertThat(taskService.createTaskQuery().taskVariableValueEquals(true).count()).isEqualTo(1);
@@ -1481,7 +1499,12 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
         assertThat(taskService.createTaskQuery().taskVariableValueEquals(null).count()).isEqualTo(1);
 
         assertThat(taskService.createTaskQuery().taskVariableValueEquals(999999L).count()).isEqualTo(0);
-        assertThat(taskService.createTaskQuery().taskVariableValueEquals((short) 999).count()).isEqualTo(0);
+        assertThat(
+            taskService
+                .createTaskQuery()
+                .taskVariableValueEquals((short) 999)
+                .count()
+        ).isEqualTo(0);
         assertThat(taskService.createTaskQuery().taskVariableValueEquals(9999).count()).isEqualTo(0);
         assertThat(taskService.createTaskQuery().taskVariableValueEquals("unexistingstringvalue").count()).isEqualTo(0);
         assertThat(taskService.createTaskQuery().taskVariableValueEquals(false).count()).isEqualTo(0);
@@ -1645,7 +1668,12 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
             taskService.createTaskQuery().or().taskId("invalid").taskVariableValueEquals(928374L).count()
         ).isEqualTo(1);
         assertThat(
-            taskService.createTaskQuery().or().taskId("invalid").taskVariableValueEquals((short) 123).count()
+            taskService
+                .createTaskQuery()
+                .or()
+                .taskId("invalid")
+                .taskVariableValueEquals((short) 123)
+                .count()
         ).isEqualTo(1);
         assertThat(
             taskService.createTaskQuery().or().taskId("invalid").taskVariableValueEquals(1234).count()
@@ -1667,7 +1695,12 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
             taskService.createTaskQuery().or().taskId("invalid").taskVariableValueEquals(999999L).count()
         ).isEqualTo(0);
         assertThat(
-            taskService.createTaskQuery().or().taskId("invalid").taskVariableValueEquals((short) 999).count()
+            taskService
+                .createTaskQuery()
+                .or()
+                .taskId("invalid")
+                .taskVariableValueEquals((short) 999)
+                .count()
         ).isEqualTo(0);
         assertThat(
             taskService.createTaskQuery().or().taskId("invalid").taskVariableValueEquals(9999).count()
@@ -1800,9 +1833,12 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
 
         // Test query matches
         assertThat(taskService.createTaskQuery().processVariableValueEquals("longVar", 928374L).count()).isEqualTo(1);
-        assertThat(taskService.createTaskQuery().processVariableValueEquals("shortVar", (short) 123).count()).isEqualTo(
-            1
-        );
+        assertThat(
+            taskService
+                .createTaskQuery()
+                .processVariableValueEquals("shortVar", (short) 123)
+                .count()
+        ).isEqualTo(1);
         assertThat(taskService.createTaskQuery().processVariableValueEquals("integerVar", 1234).count()).isEqualTo(1);
         assertThat(
             taskService.createTaskQuery().processVariableValueEquals("stringVar", "stringValue").count()
@@ -1813,9 +1849,12 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
 
         // Test query for other values on existing variables
         assertThat(taskService.createTaskQuery().processVariableValueEquals("longVar", 999L).count()).isEqualTo(0);
-        assertThat(taskService.createTaskQuery().processVariableValueEquals("shortVar", (short) 999).count()).isEqualTo(
-            0
-        );
+        assertThat(
+            taskService
+                .createTaskQuery()
+                .processVariableValueEquals("shortVar", (short) 999)
+                .count()
+        ).isEqualTo(0);
         assertThat(taskService.createTaskQuery().processVariableValueEquals("integerVar", 999).count()).isEqualTo(0);
         assertThat(taskService.createTaskQuery().processVariableValueEquals("stringVar", "999").count()).isEqualTo(0);
         assertThat(taskService.createTaskQuery().processVariableValueEquals("booleanVar", false).count()).isEqualTo(0);
@@ -1828,7 +1867,12 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
 
         // Test querying for task variables don't match the process-variables
         assertThat(taskService.createTaskQuery().taskVariableValueEquals("longVar", 928374L).count()).isEqualTo(0);
-        assertThat(taskService.createTaskQuery().taskVariableValueEquals("shortVar", (short) 123).count()).isEqualTo(0);
+        assertThat(
+            taskService
+                .createTaskQuery()
+                .taskVariableValueEquals("shortVar", (short) 123)
+                .count()
+        ).isEqualTo(0);
         assertThat(taskService.createTaskQuery().taskVariableValueEquals("integerVar", 1234).count()).isEqualTo(0);
         assertThat(taskService.createTaskQuery().taskVariableValueEquals("stringVar", "stringValue").count()).isEqualTo(
             0
@@ -1840,7 +1884,10 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
         // Test querying for task variables not equals
         assertThat(taskService.createTaskQuery().processVariableValueNotEquals("longVar", 999L).count()).isEqualTo(1);
         assertThat(
-            taskService.createTaskQuery().processVariableValueNotEquals("shortVar", (short) 999).count()
+            taskService
+                .createTaskQuery()
+                .processVariableValueNotEquals("shortVar", (short) 999)
+                .count()
         ).isEqualTo(1);
         assertThat(taskService.createTaskQuery().processVariableValueNotEquals("integerVar", 999).count()).isEqualTo(1);
         assertThat(taskService.createTaskQuery().processVariableValueNotEquals("stringVar", "999").count()).isEqualTo(
@@ -1858,7 +1905,12 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
 
         // Test value-only variable equals
         assertThat(taskService.createTaskQuery().processVariableValueEquals(928374L).count()).isEqualTo(1);
-        assertThat(taskService.createTaskQuery().processVariableValueEquals((short) 123).count()).isEqualTo(1);
+        assertThat(
+            taskService
+                .createTaskQuery()
+                .processVariableValueEquals((short) 123)
+                .count()
+        ).isEqualTo(1);
         assertThat(taskService.createTaskQuery().processVariableValueEquals(1234).count()).isEqualTo(1);
         assertThat(taskService.createTaskQuery().processVariableValueEquals("stringValue").count()).isEqualTo(1);
         assertThat(taskService.createTaskQuery().processVariableValueEquals(true).count()).isEqualTo(1);
@@ -1866,7 +1918,12 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
         assertThat(taskService.createTaskQuery().processVariableValueEquals(null).count()).isEqualTo(1);
 
         assertThat(taskService.createTaskQuery().processVariableValueEquals(999999L).count()).isEqualTo(0);
-        assertThat(taskService.createTaskQuery().processVariableValueEquals((short) 999).count()).isEqualTo(0);
+        assertThat(
+            taskService
+                .createTaskQuery()
+                .processVariableValueEquals((short) 999)
+                .count()
+        ).isEqualTo(0);
         assertThat(taskService.createTaskQuery().processVariableValueEquals(9999).count()).isEqualTo(0);
         assertThat(taskService.createTaskQuery().processVariableValueEquals("unexistingstringvalue").count()).isEqualTo(
             0
@@ -2074,7 +2131,12 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
             taskService.createTaskQuery().or().taskId("invalid").processVariableValueEquals(928374L).count()
         ).isEqualTo(1);
         assertThat(
-            taskService.createTaskQuery().or().taskId("invalid").processVariableValueEquals((short) 123).count()
+            taskService
+                .createTaskQuery()
+                .or()
+                .taskId("invalid")
+                .processVariableValueEquals((short) 123)
+                .count()
         ).isEqualTo(1);
         assertThat(
             taskService.createTaskQuery().or().taskId("invalid").processVariableValueEquals(1234).count()
@@ -2096,7 +2158,12 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
             taskService.createTaskQuery().or().taskId("invalid").processVariableValueEquals(999999L).count()
         ).isEqualTo(0);
         assertThat(
-            taskService.createTaskQuery().or().taskId("invalid").processVariableValueEquals((short) 999).count()
+            taskService
+                .createTaskQuery()
+                .or()
+                .taskId("invalid")
+                .processVariableValueEquals((short) 999)
+                .count()
         ).isEqualTo(0);
         assertThat(
             taskService.createTaskQuery().or().taskId("invalid").processVariableValueEquals(9999).count()
@@ -3174,10 +3241,10 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
                 .createNativeTaskQuery()
                 .sql(
                     "SELECT count(*) FROM " +
-                    managementService.getTableName(Task.class) +
-                    " T1, " +
-                    managementService.getTableName(VariableInstanceEntity.class) +
-                    " V1 WHERE V1.TASK_ID_ = T1.ID_"
+                        managementService.getTableName(Task.class) +
+                        " T1, " +
+                        managementService.getTableName(VariableInstanceEntity.class) +
+                        " V1 WHERE V1.TASK_ID_ = T1.ID_"
                 )
                 .count()
         ).isEqualTo(1);
@@ -3185,10 +3252,10 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
             .createNativeTaskQuery()
             .sql(
                 "SELECT * FROM " +
-                managementService.getTableName(Task.class) +
-                " T1, " +
-                managementService.getTableName(VariableInstanceEntity.class) +
-                " V1 WHERE V1.TASK_ID_ = T1.ID_"
+                    managementService.getTableName(Task.class) +
+                    " T1, " +
+                    managementService.getTableName(VariableInstanceEntity.class) +
+                    " V1 WHERE V1.TASK_ID_ = T1.ID_"
             )
             .list();
         assertThat(tasks).hasSize(1);
@@ -3204,8 +3271,8 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
                 .createNativeTaskQuery()
                 .sql(
                     "SELECT count(*) FROM " +
-                    managementService.getTableName(Task.class) +
-                    " T WHERE T.NAME_ = 'gonzoTask'"
+                        managementService.getTableName(Task.class) +
+                        " T WHERE T.NAME_ = 'gonzoTask'"
                 )
                 .count()
         ).isEqualTo(1);
@@ -3222,8 +3289,8 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
                 .createNativeTaskQuery()
                 .sql(
                     "SELECT count(*) FROM " +
-                    managementService.getTableName(Task.class) +
-                    " T WHERE T.NAME_ = #{taskName}"
+                        managementService.getTableName(Task.class) +
+                        " T WHERE T.NAME_ = #{taskName}"
                 )
                 .parameter("taskName", "gonzoTask")
                 .count()

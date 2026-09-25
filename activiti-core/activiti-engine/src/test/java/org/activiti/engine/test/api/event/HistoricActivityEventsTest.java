@@ -76,99 +76,99 @@ public class HistoricActivityEventsTest extends PluggableActivitiTestCase {
             // main start
             assertThat(events.get(1).getType()).isEqualTo(ActivitiEventType.HISTORIC_ACTIVITY_INSTANCE_CREATED);
             assertThat(
-                (((HistoricActivityInstance) ((ActivitiEntityEvent) events.get(1)).getEntity()).getActivityId())
+                ((HistoricActivityInstance) ((ActivitiEntityEvent) events.get(1)).getEntity()).getActivityId()
             ).isEqualTo("mainStart");
 
             assertThat(events.get(2).getType()).isEqualTo(ActivitiEventType.HISTORIC_ACTIVITY_INSTANCE_ENDED);
             assertThat(
-                (((HistoricActivityInstance) ((ActivitiEntityEvent) events.get(2)).getEntity()).getActivityId())
+                ((HistoricActivityInstance) ((ActivitiEntityEvent) events.get(2)).getEntity()).getActivityId()
             ).isEqualTo("mainStart");
-            assertThat((((HistoricActivityInstance) ((ActivitiEntityEvent) events.get(2)).getEntity()).getEndTime()))
+            assertThat(((HistoricActivityInstance) ((ActivitiEntityEvent) events.get(2)).getEntity()).getEndTime())
                 .as("mainStart")
                 .isNotNull();
 
             // Subprocess start
             assertThat(events.get(3).getType()).isEqualTo(ActivitiEventType.HISTORIC_ACTIVITY_INSTANCE_CREATED);
             assertThat(
-                (((HistoricActivityInstance) ((ActivitiEntityEvent) events.get(3)).getEntity()).getActivityId())
+                ((HistoricActivityInstance) ((ActivitiEntityEvent) events.get(3)).getEntity()).getActivityId()
             ).isEqualTo("subProcess");
 
             // subProcessStart
             assertThat(events.get(4).getType()).isEqualTo(ActivitiEventType.HISTORIC_ACTIVITY_INSTANCE_CREATED);
             assertThat(
-                (((HistoricActivityInstance) ((ActivitiEntityEvent) events.get(4)).getEntity()).getActivityId())
+                ((HistoricActivityInstance) ((ActivitiEntityEvent) events.get(4)).getEntity()).getActivityId()
             ).isEqualTo("subProcessStart");
 
             assertThat(events.get(5).getType()).isEqualTo(ActivitiEventType.HISTORIC_ACTIVITY_INSTANCE_ENDED);
             assertThat(
-                (((HistoricActivityInstance) ((ActivitiEntityEvent) events.get(5)).getEntity()).getActivityId())
+                ((HistoricActivityInstance) ((ActivitiEntityEvent) events.get(5)).getEntity()).getActivityId()
             ).isEqualTo("subProcessStart");
-            assertThat((((HistoricActivityInstance) ((ActivitiEntityEvent) events.get(5)).getEntity()).getEndTime()))
+            assertThat(((HistoricActivityInstance) ((ActivitiEntityEvent) events.get(5)).getEntity()).getEndTime())
                 .as("subProcessStart")
                 .isNotNull();
 
             // Task a
             assertThat(events.get(6).getType()).isEqualTo(ActivitiEventType.HISTORIC_ACTIVITY_INSTANCE_CREATED);
             assertThat(
-                (((HistoricActivityInstance) ((ActivitiEntityEvent) events.get(6)).getEntity()).getActivityId())
+                ((HistoricActivityInstance) ((ActivitiEntityEvent) events.get(6)).getEntity()).getActivityId()
             ).isEqualTo("a");
 
             assertThat(events.get(7).getType()).isEqualTo(ActivitiEventType.HISTORIC_ACTIVITY_INSTANCE_ENDED);
             assertThat(
-                (((HistoricActivityInstance) ((ActivitiEntityEvent) events.get(7)).getEntity()).getActivityId())
+                ((HistoricActivityInstance) ((ActivitiEntityEvent) events.get(7)).getEntity()).getActivityId()
             ).isEqualTo("a");
-            assertThat((((HistoricActivityInstance) ((ActivitiEntityEvent) events.get(7)).getEntity()).getEndTime()))
+            assertThat(((HistoricActivityInstance) ((ActivitiEntityEvent) events.get(7)).getEntity()).getEndTime())
                 .as("a")
                 .isNotNull();
 
             // Task b
             assertThat(events.get(8).getType()).isEqualTo(ActivitiEventType.HISTORIC_ACTIVITY_INSTANCE_CREATED);
             assertThat(
-                (((HistoricActivityInstance) ((ActivitiEntityEvent) events.get(8)).getEntity()).getActivityId())
+                ((HistoricActivityInstance) ((ActivitiEntityEvent) events.get(8)).getEntity()).getActivityId()
             ).isEqualTo("b");
 
             assertThat(events.get(9).getType()).isEqualTo(ActivitiEventType.HISTORIC_ACTIVITY_INSTANCE_ENDED);
             assertThat(
-                (((HistoricActivityInstance) ((ActivitiEntityEvent) events.get(9)).getEntity()).getActivityId())
+                ((HistoricActivityInstance) ((ActivitiEntityEvent) events.get(9)).getEntity()).getActivityId()
             ).isEqualTo("b");
-            assertThat((((HistoricActivityInstance) ((ActivitiEntityEvent) events.get(9)).getEntity()).getEndTime()))
+            assertThat(((HistoricActivityInstance) ((ActivitiEntityEvent) events.get(9)).getEntity()).getEndTime())
                 .as("b")
                 .isNotNull();
 
             // subProcessEnd
             assertThat(events.get(10).getType()).isEqualTo(ActivitiEventType.HISTORIC_ACTIVITY_INSTANCE_CREATED);
             assertThat(
-                (((HistoricActivityInstance) ((ActivitiEntityEvent) events.get(10)).getEntity()).getActivityId())
+                ((HistoricActivityInstance) ((ActivitiEntityEvent) events.get(10)).getEntity()).getActivityId()
             ).isEqualTo("subprocessEnd");
 
             assertThat(events.get(11).getType()).isEqualTo(ActivitiEventType.HISTORIC_ACTIVITY_INSTANCE_ENDED);
             assertThat(
-                (((HistoricActivityInstance) ((ActivitiEntityEvent) events.get(11)).getEntity()).getActivityId())
+                ((HistoricActivityInstance) ((ActivitiEntityEvent) events.get(11)).getEntity()).getActivityId()
             ).isEqualTo("subprocessEnd");
-            assertThat((((HistoricActivityInstance) ((ActivitiEntityEvent) events.get(11)).getEntity()).getEndTime()))
+            assertThat(((HistoricActivityInstance) ((ActivitiEntityEvent) events.get(11)).getEntity()).getEndTime())
                 .as("subprocessEnd")
                 .isNotNull();
 
             // subProcess end
             assertThat(events.get(12).getType()).isEqualTo(ActivitiEventType.HISTORIC_ACTIVITY_INSTANCE_ENDED);
             assertThat(
-                (((HistoricActivityInstance) ((ActivitiEntityEvent) events.get(12)).getEntity()).getActivityId())
+                ((HistoricActivityInstance) ((ActivitiEntityEvent) events.get(12)).getEntity()).getActivityId()
             ).isEqualTo("subProcess");
-            assertThat((((HistoricActivityInstance) ((ActivitiEntityEvent) events.get(12)).getEntity()).getEndTime()))
+            assertThat(((HistoricActivityInstance) ((ActivitiEntityEvent) events.get(12)).getEntity()).getEndTime())
                 .as("subProcess")
                 .isNotNull();
 
             // main end
             assertThat(events.get(13).getType()).isEqualTo(ActivitiEventType.HISTORIC_ACTIVITY_INSTANCE_CREATED);
             assertThat(
-                (((HistoricActivityInstance) ((ActivitiEntityEvent) events.get(13)).getEntity()).getActivityId())
+                ((HistoricActivityInstance) ((ActivitiEntityEvent) events.get(13)).getEntity()).getActivityId()
             ).isEqualTo("mainEnd");
 
             assertThat(events.get(14).getType()).isEqualTo(ActivitiEventType.HISTORIC_ACTIVITY_INSTANCE_ENDED);
             assertThat(
-                (((HistoricActivityInstance) ((ActivitiEntityEvent) events.get(14)).getEntity()).getActivityId())
+                ((HistoricActivityInstance) ((ActivitiEntityEvent) events.get(14)).getEntity()).getActivityId()
             ).isEqualTo("mainEnd");
-            assertThat((((HistoricActivityInstance) ((ActivitiEntityEvent) events.get(14)).getEntity()).getEndTime()))
+            assertThat(((HistoricActivityInstance) ((ActivitiEntityEvent) events.get(14)).getEntity()).getEndTime())
                 .as("mainEnd")
                 .isNotNull();
 

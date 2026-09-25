@@ -70,7 +70,8 @@ public class AbstractActviti6Test {
             // Boot up H2 webapp
             if (cachedProcessEngine instanceof ProcessEngineImpl) {
                 if (
-                    ((ProcessEngineImpl) cachedProcessEngine).getProcessEngineConfiguration()
+                    ((ProcessEngineImpl) cachedProcessEngine)
+                        .getProcessEngineConfiguration()
                         .getJdbcUrl()
                         .equals(H2_TEST_JDBC_URL)
                 ) {
@@ -96,8 +97,9 @@ public class AbstractActviti6Test {
     @After
     public void logCommandInvokerDebugInfo() {
         ProcessExecutionLoggerConfigurator loggerConfigurator = null;
-        List<ProcessEngineConfigurator> configurators =
-            ((ProcessEngineImpl) cachedProcessEngine).getProcessEngineConfiguration().getConfigurators();
+        List<ProcessEngineConfigurator> configurators = ((ProcessEngineImpl) cachedProcessEngine)
+            .getProcessEngineConfiguration()
+            .getConfigurators();
         if (configurators != null && configurators.size() > 0) {
             for (ProcessEngineConfigurator configurator : configurators) {
                 if (configurator instanceof ProcessExecutionLoggerConfigurator) {
@@ -117,8 +119,9 @@ public class AbstractActviti6Test {
             final Server server = Server.createWebServer("-web");
 
             // Shutdown hook
-            final ProcessEngineConfiguration processEngineConfiguration =
-                ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration();
+            final ProcessEngineConfiguration processEngineConfiguration = (
+                (ProcessEngineImpl) processEngine
+            ).getProcessEngineConfiguration();
             final ProcessEngineLifecycleListener originalLifecycleListener =
                 processEngineConfiguration.getProcessEngineLifecycleListener();
             processEngineConfiguration.setProcessEngineLifecycleListener(

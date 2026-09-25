@@ -20,7 +20,8 @@ import org.activiti.api.runtime.model.impl.DeploymentImpl;
 
 public class APIDeploymentConverter
     extends ListConverter<org.activiti.engine.repository.Deployment, Deployment>
-    implements ModelConverter<org.activiti.engine.repository.Deployment, Deployment> {
+    implements ModelConverter<org.activiti.engine.repository.Deployment, Deployment>
+{
 
     @Override
     public Deployment from(org.activiti.engine.repository.Deployment internalDeployment) {

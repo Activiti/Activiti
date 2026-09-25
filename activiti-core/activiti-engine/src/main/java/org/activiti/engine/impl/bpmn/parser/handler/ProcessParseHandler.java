@@ -46,8 +46,8 @@ public class ProcessParseHandler extends AbstractBpmnParseHandler<Process> {
         if (process.isExecutable() == false) {
             LOGGER.info(
                 "Ignoring non-executable process with id='" +
-                process.getId() +
-                "'. Set the attribute isExecutable=\"true\" to deploy this process."
+                    process.getId() +
+                    "'. Set the attribute isExecutable=\"true\" to deploy this process."
             );
         } else {
             bpmnParse.getProcessDefinitions().add(transformProcess(bpmnParse, process));
@@ -126,9 +126,9 @@ public class ProcessParseHandler extends AbstractBpmnParseHandler<Process> {
                 } else {
                     LOGGER.warn(
                         "Unsupported implementation type for EventListener: " +
-                        eventListener.getImplementationType() +
-                        " for element " +
-                        bpmnParse.getCurrentFlowElement().getId()
+                            eventListener.getImplementationType() +
+                            " for element " +
+                            bpmnParse.getCurrentFlowElement().getId()
                     );
                 }
             }

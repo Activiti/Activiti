@@ -28,7 +28,8 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class HistoricVariableInstanceEntityImpl
     extends AbstractEntity
-    implements HistoricVariableInstanceEntity, BulkDeleteable, Serializable {
+    implements HistoricVariableInstanceEntity, BulkDeleteable, Serializable
+{
 
     private static final long serialVersionUID = 1L;
 
@@ -98,7 +99,7 @@ public class HistoricVariableInstanceEntityImpl
     // getters and setters //////////////////////////////////////////////////////
 
     public String getVariableTypeName() {
-        return (variableType != null ? variableType.getTypeName() : null);
+        return variableType != null ? variableType.getTypeName() : null;
     }
 
     public String getVariableName() {

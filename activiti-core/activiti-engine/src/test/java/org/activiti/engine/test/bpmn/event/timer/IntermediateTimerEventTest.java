@@ -43,7 +43,7 @@ public class IntermediateTimerEventTest extends PluggableActivitiTestCase {
         assertThat(jobQuery.count()).isEqualTo(1);
 
         // After setting the clock to time '50minutes and 5 seconds', the second timer should fire
-        processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((50 * 60 * 1000) + 5000)));
+        processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + (50 * 60 * 1000 + 5000)));
         waitForJobExecutorToProcessAllJobs(5000L, 25L);
 
         assertThat(jobQuery.count()).isEqualTo(0);

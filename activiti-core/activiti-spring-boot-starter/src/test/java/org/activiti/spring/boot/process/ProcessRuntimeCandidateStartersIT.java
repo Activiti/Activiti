@@ -63,9 +63,9 @@ public class ProcessRuntimeCandidateStartersIT {
         Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0, 200));
         assertThat(processDefinitionPage.getContent()).isNotNull();
         assertThat(processDefinitionPage.getContent()).hasSize(
-                // All processes except UnstartableProcess
-                (int) repositoryService.createProcessDefinitionQuery().count() - 1
-            );
+            // All processes except UnstartableProcess
+            (int) repositoryService.createProcessDefinitionQuery().count() - 1
+        );
     }
 
     @Test
@@ -75,9 +75,9 @@ public class ProcessRuntimeCandidateStartersIT {
         Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0, 200));
         assertThat(processDefinitionPage.getContent()).isNotNull();
         assertThat(processDefinitionPage.getContent()).hasSize(
-                // All processes except UnstartableProcess
-                (int) repositoryService.createProcessDefinitionQuery().count() - 1
-            );
+            // All processes except UnstartableProcess
+            (int) repositoryService.createProcessDefinitionQuery().count() - 1
+        );
     }
 
     @Test

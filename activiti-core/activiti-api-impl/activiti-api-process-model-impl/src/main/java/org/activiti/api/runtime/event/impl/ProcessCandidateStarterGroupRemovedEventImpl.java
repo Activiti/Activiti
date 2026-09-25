@@ -24,7 +24,8 @@ public class ProcessCandidateStarterGroupRemovedEventImpl
         ProcessCandidateStarterGroup,
         ProcessCandidateStarterGroupEvent.ProcessCandidateStarterGroupEvents
     >
-    implements ProcessCandidateStarterGroupRemovedEvent {
+    implements ProcessCandidateStarterGroupRemovedEvent
+{
 
     public ProcessCandidateStarterGroupRemovedEventImpl() {}
 

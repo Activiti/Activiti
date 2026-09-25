@@ -33,7 +33,8 @@ import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.Variab
  */
 public class MybatisVariableInstanceDataManager
     extends AbstractDataManager<VariableInstanceEntity>
-    implements VariableInstanceDataManager {
+    implements VariableInstanceDataManager
+{
 
     protected CachedEntityMatcher<VariableInstanceEntity> variableInstanceEntity = new VariableByExecutionIdMatcher();
 

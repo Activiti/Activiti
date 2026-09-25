@@ -28,9 +28,8 @@ public class DebugInfoExecutionCreated extends AbstractDebugInfo {
 
     public DebugInfoExecutionCreated(ExecutionEntity executionEntity) {
         this.executionEntity = executionEntity;
-        this.flowElementId = executionEntity.getCurrentFlowElement() != null
-            ? executionEntity.getCurrentFlowElement().getId()
-            : null;
+        this.flowElementId =
+            executionEntity.getCurrentFlowElement() != null ? executionEntity.getCurrentFlowElement().getId() : null;
     }
 
     @Override

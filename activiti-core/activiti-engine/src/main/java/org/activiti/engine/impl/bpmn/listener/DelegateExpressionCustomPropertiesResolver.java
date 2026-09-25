@@ -44,9 +44,9 @@ public class DelegateExpressionCustomPropertiesResolver implements CustomPropert
         } else {
             throw new ActivitiIllegalArgumentException(
                 "Custom properties resolver delegate expression " +
-                expression +
-                " did not resolve to an implementation of " +
-                CustomPropertiesResolver.class
+                    expression +
+                    " did not resolve to an implementation of " +
+                    CustomPropertiesResolver.class
             );
         }
     }

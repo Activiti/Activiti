@@ -42,7 +42,7 @@ public class SignalEventSubscriptionByEventNameMatcher extends CachedEntityMatch
                 (eventSubscriptionEntity.getExecutionId() != null &&
                     eventSubscriptionEntity.getExecution() != null &&
                     eventSubscriptionEntity.getExecution().getSuspensionState() ==
-                    SuspensionState.ACTIVE.getStateCode())) &&
+                        SuspensionState.ACTIVE.getStateCode())) &&
             ((params.containsKey("tenantId") && tenantId.equals(eventSubscriptionEntity.getTenantId())) ||
                 (!params.containsKey("tenantId") && StringUtils.isEmpty(eventSubscriptionEntity.getTenantId())))
         );

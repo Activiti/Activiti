@@ -26,7 +26,8 @@ import org.activiti.engine.runtime.ProcessInstance;
  */
 public class ActivitiProcessCancelledEventImpl
     extends ActivitiEntityEventImpl
-    implements ActivitiProcessCancelledEvent {
+    implements ActivitiProcessCancelledEvent
+{
 
     protected Object cause;
 

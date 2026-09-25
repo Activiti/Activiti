@@ -364,7 +364,7 @@ public class ActivitiEventBuilder {
     protected static String parseActivityBehavior(FlowNode flowNode) {
         Object behaviour = flowNode.getBehavior();
         if (behaviour != null) {
-            return (behaviour.getClass().getCanonicalName());
+            return behaviour.getClass().getCanonicalName();
         }
         return null;
     }

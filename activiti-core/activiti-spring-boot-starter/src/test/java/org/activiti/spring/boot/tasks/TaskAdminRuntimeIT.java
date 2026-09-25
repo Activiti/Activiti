@@ -121,10 +121,10 @@ class TaskAdminRuntimeIT {
                 taskDefinitionKey
             );
             assertThat(task2).satisfies(t -> {
-                    assertThat(t.getId()).isNotEqualTo(task1.getId());
-                    assertThat(t.getProcessInstanceId()).isEqualTo(processInstance.getId());
-                    assertThat(t.getTaskDefinitionKey()).isEqualTo(taskDefinitionKey);
-                });
+                assertThat(t.getId()).isNotEqualTo(task1.getId());
+                assertThat(t.getProcessInstanceId()).isEqualTo(processInstance.getId());
+                assertThat(t.getTaskDefinitionKey()).isEqualTo(taskDefinitionKey);
+            });
         }
     }
 
@@ -156,12 +156,12 @@ class TaskAdminRuntimeIT {
         when(processEngineConfiguration.getHistoryManager()).thenReturn(historyManager);
         when(taskEntityManager.findById(any())).thenReturn(task);
         when(interceptor.execute(any(), any())).thenAnswer(
-                (Answer<Void>) invocation -> {
-                    Command<Void> command = invocation.getArgument(1);
-                    command.execute(commandContext);
-                    return null;
-                }
-            );
+            (Answer<Void>) invocation -> {
+                Command<Void> command = invocation.getArgument(1);
+                command.execute(commandContext);
+                return null;
+            }
+        );
 
         taskService.setCommandExecutor(new CommandExecutorImpl(mock(), interceptor));
         TaskAdminRuntime taskAdminRuntime = new TaskAdminRuntimeImpl(taskService, mock(), mock(), mock(), mock());

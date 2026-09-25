@@ -21,7 +21,8 @@ import org.activiti.api.process.model.events.BPMNTimerRetriesDecrementedEvent;
 
 public class BPMNTimerRetriesDecrementedEventImpl
     extends RuntimeEventImpl<BPMNTimer, BPMNTimerEvent.TimerEvents>
-    implements BPMNTimerRetriesDecrementedEvent {
+    implements BPMNTimerRetriesDecrementedEvent
+{
 
     public BPMNTimerRetriesDecrementedEventImpl() {}
 

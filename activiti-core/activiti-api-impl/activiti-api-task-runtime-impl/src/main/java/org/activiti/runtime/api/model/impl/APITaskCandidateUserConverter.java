@@ -21,7 +21,8 @@ import org.activiti.engine.task.IdentityLink;
 
 public class APITaskCandidateUserConverter
     extends ListConverter<IdentityLink, TaskCandidateUser>
-    implements ModelConverter<IdentityLink, TaskCandidateUser> {
+    implements ModelConverter<IdentityLink, TaskCandidateUser>
+{
 
     @Override
     public TaskCandidateUser from(IdentityLink identityLink) {

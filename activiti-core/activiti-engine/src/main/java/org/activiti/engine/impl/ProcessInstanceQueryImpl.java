@@ -43,7 +43,8 @@ import tools.jackson.databind.node.ObjectNode;
  */
 public class ProcessInstanceQueryImpl
     extends AbstractVariableQueryImpl<ProcessInstanceQuery, ProcessInstance>
-    implements ProcessInstanceQuery, Serializable {
+    implements ProcessInstanceQuery, Serializable
+{
 
     private static final long serialVersionUID = 1L;
     protected String executionId;

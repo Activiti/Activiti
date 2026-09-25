@@ -53,10 +53,10 @@ public class DeleteProcessInstanceTest extends PluggableActivitiTestCase {
         assertThat(instanceUser).isNotNull();
         log.info(
             "Process instance (of process model " +
-            instanceUser.getProcessDefinitionId() +
-            ") started with id: " +
-            instanceUser.getId() +
-            "."
+                instanceUser.getProcessDefinitionId() +
+                ") started with id: " +
+                instanceUser.getId() +
+                "."
         );
 
         // Assert that the process instance is active.
@@ -87,8 +87,8 @@ public class DeleteProcessInstanceTest extends PluggableActivitiTestCase {
             assertThat(hInstanceUser.getEndTime()).isNotNull();
             log.info(
                 "End time for the deleted instance of \"Demo Partial Deletion\" that was started with a Task Type of \"user\": " +
-                hInstanceUser.getEndTime() +
-                "."
+                    hInstanceUser.getEndTime() +
+                    "."
             );
             log.info(
                 "Successfully deleted the instance of \"Demo Partial Deletion\" that was started with a Task Type of \"user\"."
@@ -108,10 +108,10 @@ public class DeleteProcessInstanceTest extends PluggableActivitiTestCase {
         assertThat(instanceJava).isNotNull();
         log.info(
             "Process instance (of process model " +
-            instanceJava.getProcessDefinitionId() +
-            ") started with id: " +
-            instanceJava.getId() +
-            "."
+                instanceJava.getProcessDefinitionId() +
+                ") started with id: " +
+                instanceJava.getId() +
+                "."
         );
 
         // Assert that the process instance is active.
@@ -134,14 +134,14 @@ public class DeleteProcessInstanceTest extends PluggableActivitiTestCase {
         );
 
         assertThatExceptionOfType(Exception.class).isThrownBy(() -> {
-                managementService.moveTimerToExecutableJob(jobJavaForException.getId());
-                managementService.executeJob(jobJavaForException.getId());
-            });
+            managementService.moveTimerToExecutableJob(jobJavaForException.getId());
+            managementService.executeJob(jobJavaForException.getId());
+        });
 
         assertThatExceptionOfType(Exception.class).isThrownBy(() -> {
-                managementService.moveTimerToExecutableJob(jobJavaForException.getId());
-                managementService.executeJob(jobJavaForException.getId());
-            });
+            managementService.moveTimerToExecutableJob(jobJavaForException.getId());
+            managementService.executeJob(jobJavaForException.getId());
+        });
 
         // Assert that there is a failed job.
         assertThat(managementService.createTimerJobQuery().processInstanceId(instanceJava.getId()).count()).isEqualTo(

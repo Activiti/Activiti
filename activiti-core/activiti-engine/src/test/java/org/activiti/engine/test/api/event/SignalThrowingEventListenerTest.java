@@ -181,9 +181,9 @@ public class SignalThrowingEventListenerTest extends PluggableActivitiTestCase {
             assertThat(taskService.createTaskQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(1);
 
             assertThatExceptionOfType(ActivitiException.class).isThrownBy(() -> {
-                    managementService.moveTimerToExecutableJob(failedJob.getId());
-                    managementService.executeJob(failedJob.getId());
-                });
+                managementService.moveTimerToExecutableJob(failedJob.getId());
+                managementService.executeJob(failedJob.getId());
+            });
 
             assertThat(taskService.createTaskQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(2);
         } finally {
@@ -235,9 +235,9 @@ public class SignalThrowingEventListenerTest extends PluggableActivitiTestCase {
             assertThat(taskService.createTaskQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(0);
 
             assertThatExceptionOfType(ActivitiException.class).isThrownBy(() -> {
-                    managementService.moveTimerToExecutableJob(failedJob.getId());
-                    managementService.executeJob(failedJob.getId());
-                });
+                managementService.moveTimerToExecutableJob(failedJob.getId());
+                managementService.executeJob(failedJob.getId());
+            });
 
             assertThat(taskService.createTaskQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(0);
         } finally {

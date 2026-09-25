@@ -72,12 +72,12 @@ public class NumberOperations {
             if (o1 instanceof BigInteger || o2 instanceof BigInteger) {
                 return converter.convert(o1, BigDecimal.class).add(converter.convert(o2, BigDecimal.class));
             }
-            return (converter.convert(o1, Double.class) + converter.convert(o2, Double.class));
+            return converter.convert(o1, Double.class) + converter.convert(o2, Double.class);
         }
         if (o1 instanceof BigInteger || o2 instanceof BigInteger) {
             return converter.convert(o1, BigInteger.class).add(converter.convert(o2, BigInteger.class));
         }
-        return (converter.convert(o1, Long.class) + converter.convert(o2, Long.class));
+        return converter.convert(o1, Long.class) + converter.convert(o2, Long.class);
     }
 
     public static final Number sub(TypeConverter converter, Object o1, Object o2) {
@@ -91,12 +91,12 @@ public class NumberOperations {
             if (o1 instanceof BigInteger || o2 instanceof BigInteger) {
                 return converter.convert(o1, BigDecimal.class).subtract(converter.convert(o2, BigDecimal.class));
             }
-            return (converter.convert(o1, Double.class) - converter.convert(o2, Double.class));
+            return converter.convert(o1, Double.class) - converter.convert(o2, Double.class);
         }
         if (o1 instanceof BigInteger || o2 instanceof BigInteger) {
             return converter.convert(o1, BigInteger.class).subtract(converter.convert(o2, BigInteger.class));
         }
-        return (converter.convert(o1, Long.class) - converter.convert(o2, Long.class));
+        return converter.convert(o1, Long.class) - converter.convert(o2, Long.class);
     }
 
     public static final Number mul(TypeConverter converter, Object o1, Object o2) {
@@ -110,12 +110,12 @@ public class NumberOperations {
             if (o1 instanceof BigInteger || o2 instanceof BigInteger) {
                 return converter.convert(o1, BigDecimal.class).multiply(converter.convert(o2, BigDecimal.class));
             }
-            return (converter.convert(o1, Double.class) * converter.convert(o2, Double.class));
+            return converter.convert(o1, Double.class) * converter.convert(o2, Double.class);
         }
         if (o1 instanceof BigInteger || o2 instanceof BigInteger) {
             return converter.convert(o1, BigInteger.class).multiply(converter.convert(o2, BigInteger.class));
         }
-        return (converter.convert(o1, Long.class) * converter.convert(o2, Long.class));
+        return converter.convert(o1, Long.class) * converter.convert(o2, Long.class);
     }
 
     public static final Number div(TypeConverter converter, Object o1, Object o2) {
@@ -127,7 +127,7 @@ public class NumberOperations {
                 .convert(o1, BigDecimal.class)
                 .divide(converter.convert(o2, BigDecimal.class), BigDecimal.ROUND_HALF_UP);
         }
-        return (converter.convert(o1, Double.class) / converter.convert(o2, Double.class));
+        return converter.convert(o1, Double.class) / converter.convert(o2, Double.class);
     }
 
     public static final Number mod(TypeConverter converter, Object o1, Object o2) {
@@ -135,12 +135,12 @@ public class NumberOperations {
             return LONG_ZERO;
         }
         if (isBigDecimalOrFloatOrDoubleOrDotEe(o1) || isBigDecimalOrFloatOrDoubleOrDotEe(o2)) {
-            return (converter.convert(o1, Double.class) % converter.convert(o2, Double.class));
+            return converter.convert(o1, Double.class) % converter.convert(o2, Double.class);
         }
         if (o1 instanceof BigInteger || o2 instanceof BigInteger) {
             return converter.convert(o1, BigInteger.class).remainder(converter.convert(o2, BigInteger.class));
         }
-        return (converter.convert(o1, Long.class) % converter.convert(o2, Long.class));
+        return converter.convert(o1, Long.class) % converter.convert(o2, Long.class);
     }
 
     public static final Number neg(TypeConverter converter, Object value) {

@@ -184,8 +184,7 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
                     } finally {
                         removeSubscription(key);
                     }
-                })
-                    .start();
+                }).start();
             }
         }
     }
@@ -236,9 +235,9 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
     @Test
     public void testMyThrowMessageDelegateFactory() {
         assertThat(
-            StandaloneProcessEngineConfiguration.class.cast(
-                processEngine.getProcessEngineConfiguration()
-            ).getActivityBehaviorFactory()
+            StandaloneProcessEngineConfiguration.class
+                .cast(processEngine.getProcessEngineConfiguration())
+                .getActivityBehaviorFactory()
         )
             .as("should provide custom throw message delegate factory")
             .extracting("throwMessageDelegateFactory")
@@ -1087,8 +1086,7 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
                     } catch (InterruptedException e) {
                         log.error(e.getMessage(), e);
                     }
-                })
-                    .start();
+                }).start();
             });
     }
 
@@ -1149,14 +1147,14 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
         @Override
         public void onEvent(ActivitiEvent event) {
             Context.getTransactionContext().addTransactionListener(
-                    TransactionState.COMMITTED,
-                    new TransactionListener() {
-                        @Override
-                        public void execute(CommandContext commandContext) {
-                            countDownLatch.countDown();
-                        }
+                TransactionState.COMMITTED,
+                new TransactionListener() {
+                    @Override
+                    public void execute(CommandContext commandContext) {
+                        countDownLatch.countDown();
                     }
-                );
+                }
+            );
         }
 
         @Override

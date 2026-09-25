@@ -100,20 +100,18 @@ class SetVariablesTaskTest {
 
         List<VariableInstance> variables = processBaseRuntime.getProcessVariablesByProcessId(processInstance.getId());
 
-        assertThat(variables)
-            .extracting(VariableInstance::getName, VariableInstance::getValue)
-            .containsOnly(
-                // initial process properties (used as input sources)
-                tuple("firstName", "John"),
-                tuple("lastName", "Doe"),
-                tuple("age", 21),
-                // set by the setVariablesTask from its input mappings
-                tuple("copiedName", "John"), // type variable -> value of firstName
-                tuple("literalGreeting", "hello"), // type value -> literal
-                tuple("fullName", "John Doe"), // expression: "${firstName} ${lastName}"
-                tuple("greetingMsg", "Hello John!"), // expression with surrounding text
-                tuple("doubledAge", 42L) // arithmetic expression "${age * 2}" -> Long (no type coercion)
-            );
+        assertThat(variables).extracting(VariableInstance::getName, VariableInstance::getValue).containsOnly(
+            // initial process properties (used as input sources)
+            tuple("firstName", "John"),
+            tuple("lastName", "Doe"),
+            tuple("age", 21),
+            // set by the setVariablesTask from its input mappings
+            tuple("copiedName", "John"), // type variable -> value of firstName
+            tuple("literalGreeting", "hello"), // type value -> literal
+            tuple("fullName", "John Doe"), // expression: "${firstName} ${lastName}"
+            tuple("greetingMsg", "Hello John!"), // expression with surrounding text
+            tuple("doubledAge", 42L) // arithmetic expression "${age * 2}" -> Long (no type coercion)
+        );
     }
 
     private Map<String, Object> runAndGetVariables() {

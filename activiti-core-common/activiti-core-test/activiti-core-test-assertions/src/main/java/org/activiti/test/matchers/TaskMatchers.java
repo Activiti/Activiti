@@ -42,9 +42,9 @@ public class TaskMatchers {
                 .extracting(event -> event.getEntity().getId())
                 .as(
                     "Unable to find event " +
-                    TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED +
-                    " for task " +
-                    operationScope.getTaskId()
+                        TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED +
+                        " for task " +
+                        operationScope.getTaskId()
                 )
                 .contains(operationScope.getTaskId());
         };
@@ -61,9 +61,9 @@ public class TaskMatchers {
                 .extracting(event -> event.getEntity().getId())
                 .as(
                     "Unable to find event " +
-                    TaskRuntimeEvent.TaskEvents.TASK_COMPLETED +
-                    " for task " +
-                    operationScope.getTaskId()
+                        TaskRuntimeEvent.TaskEvents.TASK_COMPLETED +
+                        " for task " +
+                        operationScope.getTaskId()
                 )
                 .contains(operationScope.getTaskId());
         };

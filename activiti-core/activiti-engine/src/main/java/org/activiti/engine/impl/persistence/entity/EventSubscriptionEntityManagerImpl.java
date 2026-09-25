@@ -34,7 +34,8 @@ import org.activiti.engine.impl.persistence.entity.data.EventSubscriptionDataMan
  */
 public class EventSubscriptionEntityManagerImpl
     extends AbstractEntityManager<EventSubscriptionEntity>
-    implements EventSubscriptionEntityManager {
+    implements EventSubscriptionEntityManager
+{
 
     protected EventSubscriptionDataManager eventSubscriptionDataManager;
 
@@ -369,9 +370,8 @@ public class EventSubscriptionEntityManagerImpl
     protected List<SignalEventSubscriptionEntity> toSignalEventSubscriptionEntityList(
         List<EventSubscriptionEntity> result
     ) {
-        List<SignalEventSubscriptionEntity> signalEventSubscriptionEntities = new ArrayList<
-            SignalEventSubscriptionEntity
-        >(result.size());
+        List<SignalEventSubscriptionEntity> signalEventSubscriptionEntities =
+            new ArrayList<SignalEventSubscriptionEntity>(result.size());
         for (EventSubscriptionEntity eventSubscriptionEntity : result) {
             signalEventSubscriptionEntities.add((SignalEventSubscriptionEntity) eventSubscriptionEntity);
         }
@@ -381,9 +381,8 @@ public class EventSubscriptionEntityManagerImpl
     protected List<MessageEventSubscriptionEntity> toMessageEventSubscriptionEntityList(
         List<EventSubscriptionEntity> result
     ) {
-        List<MessageEventSubscriptionEntity> messageEventSubscriptionEntities = new ArrayList<
-            MessageEventSubscriptionEntity
-        >(result.size());
+        List<MessageEventSubscriptionEntity> messageEventSubscriptionEntities =
+            new ArrayList<MessageEventSubscriptionEntity>(result.size());
         for (EventSubscriptionEntity eventSubscriptionEntity : result) {
             messageEventSubscriptionEntities.add((MessageEventSubscriptionEntity) eventSubscriptionEntity);
         }

@@ -52,19 +52,16 @@ public class SerializePOJOJsonTest extends ResourceActivitiTestCase {
         String taskId = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult().getId();
         taskService.complete(taskId);
         taskId = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult().getId();
-        taskService
-            .getIdentityLinksForTask(taskId)
-            .stream()
-            .forEach(
-                new Consumer<IdentityLink>() {
-                    @Override
-                    public void accept(IdentityLink i) {
-                        if ("candidate".equals(i.getType())) {
-                            assertThat(i.getUserId()).isEqualTo("bob");
-                        }
+        taskService.getIdentityLinksForTask(taskId).stream().forEach(
+            new Consumer<IdentityLink>() {
+                @Override
+                public void accept(IdentityLink i) {
+                    if ("candidate".equals(i.getType())) {
+                        assertThat(i.getUserId()).isEqualTo("bob");
                     }
                 }
-            );
+            }
+        );
         taskService.complete(taskId);
         HistoricTaskInstance task = historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult();
         assertThat(task.getAssignee()).isEqualTo("bob");

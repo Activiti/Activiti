@@ -30,7 +30,8 @@ import org.activiti.engine.impl.persistence.entity.data.EventLogEntryDataManager
  */
 public class MybatisEventLogEntryDataManager
     extends AbstractDataManager<EventLogEntryEntity>
-    implements EventLogEntryDataManager {
+    implements EventLogEntryDataManager
+{
 
     public MybatisEventLogEntryDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
         super(processEngineConfiguration);

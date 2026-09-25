@@ -21,7 +21,8 @@ import org.activiti.engine.delegate.event.ActivitiVariableUpdatedEvent;
 
 public class ActivitiVariableUpdatedEventImpl
     extends ActivitiVariableEventImpl
-    implements ActivitiVariableUpdatedEvent {
+    implements ActivitiVariableUpdatedEvent
+{
 
     private Object variablePreviousValue;
 

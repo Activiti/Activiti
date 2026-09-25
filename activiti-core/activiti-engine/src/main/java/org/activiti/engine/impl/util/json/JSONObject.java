@@ -264,7 +264,7 @@ public class JSONObject {
      * @param names
      *          An array of strings, the names of the fields to be obtained from the object.
      */
-    public JSONObject(Object object, String names[]) {
+    public JSONObject(Object object, String[] names) {
         this();
         Class c = object.getClass();
         for (int i = 0; i < names.length; i += 1) {
@@ -837,7 +837,7 @@ public class JSONObject {
 
         boolean includeSuperClass = klass.getClassLoader() != null;
 
-        Method[] methods = (includeSuperClass) ? klass.getMethods() : klass.getDeclaredMethods();
+        Method[] methods = includeSuperClass ? klass.getMethods() : klass.getDeclaredMethods();
         for (int i = 0; i < methods.length; i += 1) {
             try {
                 Method method = methods[i];
@@ -1444,7 +1444,7 @@ public class JSONObject {
                 return new JSONObject((Map) object);
             }
             Package objectPackage = object.getClass().getPackage();
-            String objectPackageName = (objectPackage != null ? objectPackage.getName() : "");
+            String objectPackageName = objectPackage != null ? objectPackage.getName() : "";
             if (
                 objectPackageName.startsWith("java.") ||
                 objectPackageName.startsWith("javax.") ||

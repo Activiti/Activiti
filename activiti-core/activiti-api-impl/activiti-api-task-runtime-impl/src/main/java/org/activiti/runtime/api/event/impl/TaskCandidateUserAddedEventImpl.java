@@ -22,7 +22,8 @@ import org.activiti.api.task.runtime.events.TaskCandidateUserAddedEvent;
 
 public class TaskCandidateUserAddedEventImpl
     extends RuntimeEventImpl<TaskCandidateUser, TaskCandidateUserEvent.TaskCandidateUserEvents>
-    implements TaskCandidateUserAddedEvent {
+    implements TaskCandidateUserAddedEvent
+{
 
     public TaskCandidateUserAddedEventImpl() {}
 

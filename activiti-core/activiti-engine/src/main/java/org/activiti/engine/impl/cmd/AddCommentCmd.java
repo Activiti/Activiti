@@ -96,7 +96,7 @@ public class AddCommentCmd implements Command<Comment> {
         String userId = Authentication.getAuthenticatedUserId();
         CommentEntity comment = commandContext.getCommentEntityManager().create();
         comment.setUserId(userId);
-        comment.setType((type == null) ? CommentEntity.TYPE_COMMENT : type);
+        comment.setType(type == null ? CommentEntity.TYPE_COMMENT : type);
         comment.setTime(commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
         comment.setTaskId(taskId);
         comment.setProcessInstanceId(processInstanceId);

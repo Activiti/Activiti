@@ -36,9 +36,8 @@ public class DeploymentCacheLimitTest extends ResourceActivitiTestCase {
         int processDefinitionCacheLimit = 3; // This is set in the configuration
         // above
 
-        DefaultDeploymentCache<ProcessDefinitionCacheEntry> processDefinitionCache = (DefaultDeploymentCache<
-            ProcessDefinitionCacheEntry
-        >) processEngineConfiguration.getProcessDefinitionCache();
+        DefaultDeploymentCache<ProcessDefinitionCacheEntry> processDefinitionCache =
+            (DefaultDeploymentCache<ProcessDefinitionCacheEntry>) processEngineConfiguration.getProcessDefinitionCache();
         assertThat(processDefinitionCache.size()).isEqualTo(0);
 
         String processDefinitionTemplate = DeploymentCacheTestUtil.readTemplateFile(

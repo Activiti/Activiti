@@ -34,7 +34,8 @@ import org.activiti.engine.task.Task;
 @Deprecated
 public class AttachmentEntityManagerImpl
     extends AbstractEntityManager<AttachmentEntity>
-    implements AttachmentEntityManager {
+    implements AttachmentEntityManager
+{
 
     protected AttachmentDataManager attachmentDataManager;
 

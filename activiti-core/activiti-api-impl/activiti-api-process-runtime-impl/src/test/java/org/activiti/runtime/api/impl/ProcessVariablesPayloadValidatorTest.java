@@ -228,7 +228,9 @@ public class ProcessVariablesPayloadValidatorTest {
 
         Throwable throwable = catchThrowable(() ->
             processVariablesValidator.checkPayloadVariables(
-                ProcessPayloadBuilder.setVariables().withVariables(map("name", "Alice", "gen-der", "female")).build(),
+                ProcessPayloadBuilder.setVariables()
+                    .withVariables(map("name", "Alice", "gen-der", "female"))
+                    .build(),
                 "10"
             )
         );

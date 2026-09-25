@@ -115,8 +115,8 @@ public class ConnectorDefinitionServiceTest {
             .isInstanceOf(IllegalStateException.class)
             .hasMessage(
                 "More than one connectorDefinition with name '" +
-                connectorDefinition.getName() +
-                "' was found. Names must be unique."
+                    connectorDefinition.getName() +
+                    "' was found. Names must be unique."
             );
     }
 }

@@ -67,8 +67,8 @@ public class ErrorPropagation {
                 throw new BpmnError(
                     errorRef,
                     "No catching boundary event found for error with errorCode '" +
-                    errorRef +
-                    "', neither in same process nor in parent process"
+                        errorRef +
+                        "', neither in same process nor in parent process"
                 );
             }
         }
@@ -238,9 +238,8 @@ public class ErrorPropagation {
         ) {
             BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(parentExecution.getProcessDefinitionId());
             if (bpmnModel != null) {
-                String resolvedErrorCode = error.getErrorCode() != null
-                    ? error.getErrorCode()
-                    : retrieveErrorCode(bpmnModel, error.getId());
+                String resolvedErrorCode =
+                    error.getErrorCode() != null ? error.getErrorCode() : retrieveErrorCode(bpmnModel, error.getId());
 
                 Context.getProcessEngineConfiguration()
                     .getEventDispatcher()
@@ -288,9 +287,8 @@ public class ErrorPropagation {
         Process process = ProcessDefinitionUtil.getProcess(processDefinitionId);
         BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(processDefinitionId);
 
-        String compareErrorCode = error.getErrorCode() != null
-            ? error.getErrorCode()
-            : retrieveErrorCode(bpmnModel, error.getId());
+        String compareErrorCode =
+            error.getErrorCode() != null ? error.getErrorCode() : retrieveErrorCode(bpmnModel, error.getId());
 
         eventMap.putAll(findCatchingEventSubprocesses(process, bpmnModel, compareErrorCode));
 
@@ -311,19 +309,17 @@ public class ErrorPropagation {
         for (EventSubProcess eventSubProcess : subProcesses) {
             for (FlowElement flowElement : eventSubProcess.getFlowElements()) {
                 if (flowElement instanceof StartEvent startEvent) {
-                    startEvent
-                        .getErrorEventDefinition()
-                        .ifPresent(errorEventDef -> {
-                            String eventErrorCode = retrieveErrorCode(bpmnModel, errorEventDef.getErrorRef());
+                    startEvent.getErrorEventDefinition().ifPresent(errorEventDef -> {
+                        String eventErrorCode = retrieveErrorCode(bpmnModel, errorEventDef.getErrorRef());
 
-                            if (isErrorCodeMatching(eventErrorCode, compareErrorCode)) {
-                                if (eventErrorCode == null) {
-                                    eventSubprocessesWithoutErrorCode.add(eventSubProcess);
-                                } else {
-                                    addEventSubprocessToMap(eventMap, eventSubProcess, startEvent);
-                                }
+                        if (isErrorCodeMatching(eventErrorCode, compareErrorCode)) {
+                            if (eventErrorCode == null) {
+                                eventSubprocessesWithoutErrorCode.add(eventSubProcess);
+                            } else {
+                                addEventSubprocessToMap(eventMap, eventSubProcess, startEvent);
                             }
-                        });
+                        }
+                    });
                 }
             }
         }
@@ -331,11 +327,9 @@ public class ErrorPropagation {
         for (EventSubProcess eventSubProcess : eventSubprocessesWithoutErrorCode) {
             for (FlowElement flowElement : eventSubProcess.getFlowElements()) {
                 if (flowElement instanceof StartEvent startEvent) {
-                    startEvent
-                        .getErrorEventDefinition()
-                        .ifPresent(errorEventDef -> {
-                            addEventSubprocessToMap(eventMap, eventSubProcess, startEvent);
-                        });
+                    startEvent.getErrorEventDefinition().ifPresent(errorEventDef -> {
+                        addEventSubprocessToMap(eventMap, eventSubProcess, startEvent);
+                    });
                 }
             }
         }
@@ -362,19 +356,17 @@ public class ErrorPropagation {
 
         for (BoundaryEvent boundaryEvent : boundaryEvents) {
             if (boundaryEvent.getAttachedToRefId() != null) {
-                boundaryEvent
-                    .getErrorEventDefinition()
-                    .ifPresent(errorEventDef -> {
-                        String eventErrorCode = retrieveErrorCode(bpmnModel, errorEventDef.getErrorRef());
+                boundaryEvent.getErrorEventDefinition().ifPresent(errorEventDef -> {
+                    String eventErrorCode = retrieveErrorCode(bpmnModel, errorEventDef.getErrorRef());
 
-                        if (isErrorCodeMatching(eventErrorCode, compareErrorCode)) {
-                            if (eventErrorCode == null) {
-                                boundaryEventsWithoutErrorCode.add(boundaryEvent);
-                            } else {
-                                addBoundaryEventToMap(eventMap, boundaryEvent);
-                            }
+                    if (isErrorCodeMatching(eventErrorCode, compareErrorCode)) {
+                        if (eventErrorCode == null) {
+                            boundaryEventsWithoutErrorCode.add(boundaryEvent);
+                        } else {
+                            addBoundaryEventToMap(eventMap, boundaryEvent);
                         }
-                    });
+                    }
+                });
             }
         }
 

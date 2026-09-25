@@ -18,5 +18,5 @@ package org.activiti.api.process.runtime.events.listener;
 import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.process.model.BPMNElement;
 
-public interface BPMNElementEventListener<E extends RuntimeEvent<? extends BPMNElement, ?>>
-    extends ProcessRuntimeEventListener<E> {}
+public interface BPMNElementEventListener<E extends RuntimeEvent<? extends BPMNElement, ?>> extends
+    ProcessRuntimeEventListener<E> {}

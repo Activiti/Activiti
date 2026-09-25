@@ -58,7 +58,8 @@ import org.slf4j.LoggerFactory;
  */
 public class ExecutionEntityManagerImpl
     extends AbstractEntityManager<ExecutionEntity>
-    implements ExecutionEntityManager {
+    implements ExecutionEntityManager
+{
 
     private static final Logger logger = LoggerFactory.getLogger(ExecutionEntityManagerImpl.class);
     public static final String ACTOR = "actor";

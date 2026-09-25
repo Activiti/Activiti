@@ -154,7 +154,7 @@ public abstract class AbstractAutoDeploymentStrategy implements AutoDeploymentSt
             deploymentBuilder.setEnforcedAppVersion(applicationUpgradeContextService.getEnforcedAppVersion());
             LOGGER.warn(
                 "Enforced application version set to " +
-                applicationUpgradeContextService.getEnforcedAppVersion().toString()
+                    applicationUpgradeContextService.getEnforcedAppVersion().toString()
             );
         } else {
             LOGGER.warn("Enforced application version not set.");

@@ -87,8 +87,8 @@ public abstract class PluggableActivitiTestCase extends AbstractActivitiTestCase
 
             while (commandInterceptor != null) {
                 boolean matches = debug
-                    ? (commandInterceptor instanceof CommandInvoker)
-                    : (commandInterceptor instanceof DebugCommandInvoker);
+                    ? commandInterceptor instanceof CommandInvoker
+                    : commandInterceptor instanceof DebugCommandInvoker;
                 if (matches) {
                     CommandInterceptor commandInvoker = debug ? new DebugCommandInvoker() : new CommandInvoker();
                     if (previousCommandInterceptor != null) {
@@ -105,10 +105,10 @@ public abstract class PluggableActivitiTestCase extends AbstractActivitiTestCase
         } else {
             pluggableActivitiTestCaseLogger.warn(
                 "Not using " +
-                CommandExecutorImpl.class +
-                ", ignoring the " +
-                EnableVerboseExecutionTreeLogging.class +
-                " annotation"
+                    CommandExecutorImpl.class +
+                    ", ignoring the " +
+                    EnableVerboseExecutionTreeLogging.class +
+                    " annotation"
             );
         }
     }

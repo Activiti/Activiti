@@ -550,7 +550,7 @@ public class BPMNLayout extends mxGraphLayout {
 
         if (lower != null) {
             Polyline b = bridge(p1.upperTail, 0, 0, lower, x, y);
-            p1.upperTail = (b.next != null) ? p2.upperTail : b;
+            p1.upperTail = b.next != null ? p2.upperTail : b;
             p1.lowerTail = p2.lowerTail;
         } else {
             Polyline b = bridge(p2.lowerTail, x, y, upper, 0, 0);

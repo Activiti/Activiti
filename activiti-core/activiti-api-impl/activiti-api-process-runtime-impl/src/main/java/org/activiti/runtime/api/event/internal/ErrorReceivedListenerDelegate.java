@@ -40,13 +40,11 @@ public class ErrorReceivedListenerDelegate implements ActivitiEventListener {
     @Override
     public void onEvent(ActivitiEvent event) {
         if (event instanceof ActivitiErrorEvent) {
-            converter
-                .from((ActivitiErrorEvent) event)
-                .ifPresent(convertedEvent -> {
-                    for (BPMNElementEventListener<BPMNErrorReceivedEvent> listener : processRuntimeEventListeners) {
-                        listener.onEvent(convertedEvent);
-                    }
-                });
+            converter.from((ActivitiErrorEvent) event).ifPresent(convertedEvent -> {
+                for (BPMNElementEventListener<BPMNErrorReceivedEvent> listener : processRuntimeEventListeners) {
+                    listener.onEvent(convertedEvent);
+                }
+            });
         }
     }
 

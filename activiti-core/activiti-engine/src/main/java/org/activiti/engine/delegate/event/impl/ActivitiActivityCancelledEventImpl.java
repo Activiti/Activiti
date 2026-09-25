@@ -25,7 +25,8 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
  */
 public class ActivitiActivityCancelledEventImpl
     extends ActivitiActivityEventImpl
-    implements ActivitiActivityCancelledEvent {
+    implements ActivitiActivityCancelledEvent
+{
 
     protected Object cause;
 

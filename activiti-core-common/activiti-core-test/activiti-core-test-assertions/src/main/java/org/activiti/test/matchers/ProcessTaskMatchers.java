@@ -85,9 +85,9 @@ public class ProcessTaskMatchers {
                 .extracting(event -> event.getEntity().getActivityName(), event -> event.getEntity().getActivityType())
                 .as(
                     "Unable to find event " +
-                    BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED +
-                    " for user task " +
-                    taskName
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED +
+                        " for user task " +
+                        taskName
                 )
                 .contains(tuple(taskName, "userTask"));
         };

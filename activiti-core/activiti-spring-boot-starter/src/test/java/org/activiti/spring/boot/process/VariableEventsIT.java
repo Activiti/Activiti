@@ -61,10 +61,8 @@ public class VariableEventsIT {
         //when
         assertThat(variableCreatedListener.getEvents())
             .filteredOn(event -> processInstance.getId().equals(event.getProcessInstanceId()))
-            .extracting(
-                event -> event.getEntity().getName(),
-                VariableCreatedEvent::isEphemeralVariable,
-                event -> event.getEntity().isTaskVariable()
+            .extracting(event -> event.getEntity().getName(), VariableCreatedEvent::isEphemeralVariable, event ->
+                event.getEntity().isTaskVariable()
             )
             .contains(
                 tuple("ephemeralVar", true, false),
