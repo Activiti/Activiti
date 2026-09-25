@@ -1,0 +1,32 @@
+{
+  "id": "startOutputMapping",
+  "extensions": {
+    "Process_startOutputMapping": {
+      "properties": {
+        "approval-outcome-id": {
+          "id": "approval-outcome-id",
+          "name": "approvalOutcome",
+          "type": "string",
+          "required": false
+        },
+        "unmapped-outcome-id": {
+          "id": "unmapped-outcome-id",
+          "name": "unmappedOutcome",
+          "type": "string",
+          "required": false
+        }
+      },
+      "mappings": {
+        "startEvent": {
+          "inputs": {},
+          "outputs": {
+            "approvalOutcome": {
+              "type": "value",
+              "value": "${approvalOutcome.name}"
+            }
+          }
+        }
+      }
+    }
+  }
+}

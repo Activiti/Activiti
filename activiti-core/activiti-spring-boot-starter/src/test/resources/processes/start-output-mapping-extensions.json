@@ -1,0 +1,26 @@
+{
+  "id": "startOutputMappingModel",
+  "name": "startOutputMapping.bpmn",
+  "extensions": {
+    "startOutputMapping": {
+      "properties": {
+        "approval-outcome-id": {
+          "id": "approval-outcome-id",
+          "name": "approvalOutcome",
+          "type": "string",
+          "required": false
+        }
+      },
+      "mappings": {
+        "startEvent": {
+          "outputs": {
+            "approvalOutcome": {
+              "type": "value",
+              "value": "${approvalOutcome.name}"
+            }
+          }
+        }
+      }
+    }
+  }
+}

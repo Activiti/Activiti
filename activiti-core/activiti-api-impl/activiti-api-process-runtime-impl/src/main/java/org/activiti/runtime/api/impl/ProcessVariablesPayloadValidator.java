@@ -28,8 +28,12 @@ import org.activiti.api.process.model.payloads.SetProcessVariablesPayload;
 import org.activiti.api.process.model.payloads.SignalPayload;
 import org.activiti.api.process.model.payloads.StartMessagePayload;
 import org.activiti.api.process.model.payloads.StartProcessPayload;
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.Process;
 import org.activiti.common.util.DateFormatterProvider;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.spring.process.ProcessExtensionService;
 import org.activiti.spring.process.model.Extension;
 import org.activiti.spring.process.model.VariableDefinition;
@@ -37,24 +41,32 @@ import org.activiti.spring.process.variable.VariableValidationService;
 
 public class ProcessVariablesPayloadValidator {
 
+    private static final String ERROR_VARIABLE_NAME = "Variable name is not valid: {0}";
+    private static final String ERROR_VARIABLE_TYPE = "Variables fail type validation: {0}";
+    private static final String ERROR_VARIABLE_EXPRESSION_VALUE =
+        "Expressions in variable values are only allowed as default value when modeling the process: {0}";
+
     private final VariableValidationService variableValidationService;
     private final DateFormatterProvider dateFormatterProvider;
     private final ProcessExtensionService processExtensionService;
     private final VariableNameValidator variableNameValidator;
     private final ExpressionResolver expressionResolver;
+    private final RepositoryService repositoryService;
 
     public ProcessVariablesPayloadValidator(
         DateFormatterProvider dateFormatterProvider,
         ProcessExtensionService processExtensionService,
         VariableValidationService variableValidationService,
         VariableNameValidator variableNameValidator,
-        ExpressionResolver expressionResolver
+        ExpressionResolver expressionResolver,
+        RepositoryService repositoryService
     ) {
         this.dateFormatterProvider = dateFormatterProvider;
         this.processExtensionService = processExtensionService;
         this.variableValidationService = variableValidationService;
         this.variableNameValidator = variableNameValidator;
         this.expressionResolver = expressionResolver;
+        this.repositoryService = repositoryService;
     }
 
     private Optional<Map<String, VariableDefinition>> getVariableDefinitionMap(String processDefinitionId) {
@@ -67,7 +79,8 @@ public class ProcessVariablesPayloadValidator {
     private boolean validateVariablesAgainstDefinitions(
         Optional<Map<String, VariableDefinition>> variableDefinitionMap,
         Map.Entry<String, Object> payloadVar,
-        Set<String> mismatchedVars
+        Set<String> mismatchedVars,
+        Set<String> variablesExcludedFromTypeValidation
     ) {
         if (variableDefinitionMap.isPresent()) {
             String name = payloadVar.getKey();
@@ -89,6 +102,7 @@ public class ProcessVariablesPayloadValidator {
 
                     //Check type
                     if (
+                        !variablesExcludedFromTypeValidation.contains(name) &&
                         !variableValidationService
                             .validateWithErrors(payloadVar.getValue(), variableDefinitionEntry.getValue())
                             .isEmpty()
@@ -105,14 +119,17 @@ public class ProcessVariablesPayloadValidator {
     }
 
     private void checkPayloadVariables(Map<String, Object> variablePayloadMap, String processDefinitionId) {
+        checkPayloadVariables(variablePayloadMap, processDefinitionId, Set.of());
+    }
+
+    private void checkPayloadVariables(
+        Map<String, Object> variablePayloadMap,
+        String processDefinitionId,
+        Set<String> variablesExcludedFromTypeValidation
+    ) {
         if (variablePayloadMap == null) {
             return;
         }
-
-        final String errorVariableName = "Variable has not a valid name: {0}";
-        final String errorVariableType = "Variables fail type validation: {0}";
-        final String errorVariableExpressionValue =
-            "Expressions in variable values are only allowed as default value when modeling the process: {0}";
 
         final Optional<Map<String, VariableDefinition>> variableDefinitionMap = getVariableDefinitionMap(
             processDefinitionId
@@ -121,38 +138,18 @@ public class ProcessVariablesPayloadValidator {
         Set<String> mismatchedVars = new HashSet<>();
 
         for (Map.Entry<String, Object> payloadVar : variablePayloadMap.entrySet()) {
-            String name = payloadVar.getKey();
-            // Check variable name
-            if (!variableNameValidator.validate(name)) {
-                activitiExceptions.add(
-                    new ActivitiException(MessageFormat.format(errorVariableName, name != null ? name : "null"))
-                );
-            } else if (expressionResolver.containsExpression(payloadVar.getValue())) {
-                activitiExceptions.add(
-                    new ActivitiException(
-                        MessageFormat.format(errorVariableExpressionValue, name != null ? name : "null")
-                    )
-                );
-            } else {
-                boolean found = validateVariablesAgainstDefinitions(variableDefinitionMap, payloadVar, mismatchedVars);
-
-                if (!found) {
-                    //Try to parse a new string variable as date
-                    Object value = payloadVar.getValue();
-                    if (value != null && value instanceof String) {
-                        try {
-                            payloadVar.setValue(dateFormatterProvider.toDate(value));
-                        } catch (Exception e) {
-                            //Do nothing here, keep value as a string
-                        }
-                    }
-                }
-            }
+            validatePayloadVariable(
+                payloadVar,
+                variableDefinitionMap,
+                mismatchedVars,
+                variablesExcludedFromTypeValidation,
+                activitiExceptions
+            );
         }
 
         if (!mismatchedVars.isEmpty()) {
             activitiExceptions.add(
-                new ActivitiException(MessageFormat.format(errorVariableType, String.join(", ", mismatchedVars)))
+                new ActivitiException(MessageFormat.format(ERROR_VARIABLE_TYPE, String.join(", ", mismatchedVars)))
             );
         }
 
@@ -166,6 +163,51 @@ public class ProcessVariablesPayloadValidator {
         }
     }
 
+    private void validatePayloadVariable(
+        Map.Entry<String, Object> payloadVar,
+        Optional<Map<String, VariableDefinition>> variableDefinitionMap,
+        Set<String> mismatchedVars,
+        Set<String> variablesExcludedFromTypeValidation,
+        List<ActivitiException> activitiExceptions
+    ) {
+        String name = payloadVar.getKey();
+        // Check variable name
+        if (!variableNameValidator.validate(name)) {
+            activitiExceptions.add(
+                new ActivitiException(MessageFormat.format(ERROR_VARIABLE_NAME, name != null ? name : "null"))
+            );
+        } else if (expressionResolver.containsExpression(payloadVar.getValue())) {
+            activitiExceptions.add(
+                new ActivitiException(
+                    MessageFormat.format(ERROR_VARIABLE_EXPRESSION_VALUE, name != null ? name : "null")
+                )
+            );
+        } else {
+            boolean found = validateVariablesAgainstDefinitions(
+                variableDefinitionMap,
+                payloadVar,
+                mismatchedVars,
+                variablesExcludedFromTypeValidation
+            );
+
+            if (!found) {
+                parseStringValueAsDate(payloadVar);
+            }
+        }
+    }
+
+    private void parseStringValueAsDate(Map.Entry<String, Object> payloadVar) {
+        //Try to parse a new string variable as date
+        Object value = payloadVar.getValue();
+        if (value != null && value instanceof String) {
+            try {
+                payloadVar.setValue(dateFormatterProvider.toDate(value));
+            } catch (Exception e) {
+                //Do nothing here, keep value as a string
+            }
+        }
+    }
+
     public void checkPayloadVariables(
         SetProcessVariablesPayload setProcessVariablesPayload,
         String processDefinitionId
@@ -174,7 +216,41 @@ public class ProcessVariablesPayloadValidator {
     }
 
     public void checkStartProcessPayloadVariables(StartProcessPayload startProcessPayload, String processDefinitionId) {
-        checkPayloadVariables(startProcessPayload.getVariables(), processDefinitionId);
+        if (startProcessPayload.getVariables() == null || startProcessPayload.getVariables().isEmpty()) {
+            return;
+        }
+
+        checkPayloadVariables(
+            startProcessPayload.getVariables(),
+            processDefinitionId,
+            getStartOutputMappedVariableNames(processDefinitionId)
+        );
+    }
+
+    private Set<String> getStartOutputMappedVariableNames(String processDefinitionId) {
+        if (processDefinitionId == null) {
+            return Set.of();
+        }
+
+        Extension processExtensionModel = processExtensionService.getExtensionsForId(processDefinitionId);
+        if (processExtensionModel.getMappings().isEmpty()) {
+            return Set.of();
+        }
+
+        ProcessDefinition processDefinition = repositoryService.getProcessDefinition(processDefinitionId);
+        BpmnModel bpmnModel = repositoryService.getBpmnModel(processDefinitionId);
+        Process process =
+            processDefinition != null && bpmnModel != null
+                ? bpmnModel.getProcessById(processDefinition.getKey())
+                : null;
+        if (process == null || process.getInitialFlowElement() == null) {
+            return Set.of();
+        }
+
+        return processExtensionModel
+            .getMappingForFlowElement(process.getInitialFlowElement().getId())
+            .getOutputs()
+            .keySet();
     }
 
     public void checkStartMessagePayloadVariables(StartMessagePayload startMessagePayload, String processDefinitionId) {
