@@ -129,7 +129,7 @@ jobs:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
       - name: Get branch name
-        uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@f1bae5a4bdb3b12030a350e52b8f661dbcb2f849 # v18.28.3
+        uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@0fa2704957dfff688af2371cc7a935de53d26610 # v19.1.0
 
       - name: Configure propagation git author
         if: ${{ env.BRANCH_NAME == 'develop' }}
