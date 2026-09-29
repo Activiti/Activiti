@@ -282,14 +282,16 @@ public class ProcessRuntimeAutoConfiguration {
         ProcessExtensionService processExtensionService,
         VariableValidationService variableValidationService,
         VariableNameValidator variableNameValidator,
-        ExpressionResolver expressionResolver
+        ExpressionResolver expressionResolver,
+        RepositoryService repositoryService
     ) {
         return new ProcessVariablesPayloadValidator(
             dateFormatterProvider,
             processExtensionService,
             variableValidationService,
             variableNameValidator,
-            expressionResolver
+            expressionResolver,
+            repositoryService
         );
     }
 
