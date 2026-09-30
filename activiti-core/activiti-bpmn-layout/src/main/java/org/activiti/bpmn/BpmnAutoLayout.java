@@ -442,20 +442,20 @@ public class BpmnAutoLayout {
                 mxCellState gatewayState = graph.getView().getState(gatewayVertex);
 
                 mxPoint northPoint = new mxPoint(
-                    gatewayState.getX() + (gatewayState.getWidth()) / 2,
+                    gatewayState.getX() + gatewayState.getWidth() / 2,
                     gatewayState.getY()
                 );
                 mxPoint southPoint = new mxPoint(
-                    gatewayState.getX() + (gatewayState.getWidth()) / 2,
+                    gatewayState.getX() + gatewayState.getWidth() / 2,
                     gatewayState.getY() + gatewayState.getHeight()
                 );
                 mxPoint eastPoint = new mxPoint(
                     gatewayState.getX() + gatewayState.getWidth(),
-                    gatewayState.getY() + (gatewayState.getHeight()) / 2
+                    gatewayState.getY() + gatewayState.getHeight() / 2
                 );
                 mxPoint westPoint = new mxPoint(
                     gatewayState.getX(),
-                    gatewayState.getY() + (gatewayState.getHeight()) / 2
+                    gatewayState.getY() + gatewayState.getHeight() / 2
                 );
 
                 double closestDistance = Double.MAX_VALUE;
@@ -494,8 +494,8 @@ public class BpmnAutoLayout {
 
     protected double euclidianDistance(mxPoint point1, mxPoint point2) {
         return Math.sqrt(
-            ((point2.getX() - point1.getX()) * (point2.getX() - point1.getX()) +
-                (point2.getY() - point1.getY()) * (point2.getY() - point1.getY()))
+            (point2.getX() - point1.getX()) * (point2.getX() - point1.getX()) +
+                (point2.getY() - point1.getY()) * (point2.getY() - point1.getY())
         );
     }
 

@@ -26,7 +26,8 @@ import org.activiti.engine.impl.persistence.entity.data.ProcessDefinitionInfoDat
  */
 public class MybatisProcessDefinitionInfoDataManager
     extends AbstractDataManager<ProcessDefinitionInfoEntity>
-    implements ProcessDefinitionInfoDataManager {
+    implements ProcessDefinitionInfoDataManager
+{
 
     public MybatisProcessDefinitionInfoDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
         super(processEngineConfiguration);

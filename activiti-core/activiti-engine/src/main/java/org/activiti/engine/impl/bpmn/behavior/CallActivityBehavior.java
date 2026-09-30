@@ -92,10 +92,10 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
         if (subProcess == null) {
             throw new ActivitiException(
                 "Cannot start a sub process instance. Process model " +
-                processDefinition.getName() +
-                " (id = " +
-                processDefinition.getId() +
-                ") could not be found"
+                    processDefinition.getName() +
+                    " (id = " +
+                    processDefinition.getId() +
+                    ") could not be found"
             );
         }
 
@@ -108,10 +108,10 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
         if (ProcessDefinitionUtil.isProcessDefinitionSuspended(processDefinition.getId())) {
             throw new ActivitiException(
                 "Cannot start process instance. Process definition " +
-                processDefinition.getName() +
-                " (id = " +
-                processDefinition.getId() +
-                ") is suspended"
+                    processDefinition.getName() +
+                    " (id = " +
+                    processDefinition.getId() +
+                    ") is suspended"
             );
         }
 

@@ -23,7 +23,8 @@ import org.activiti.engine.task.IdentityLink;
 import org.activiti.runtime.api.model.impl.APIProcessCandidateStarterUserConverter;
 
 public class ToAPIProcessCandidateStarterUserRemovedEventConverter
-    implements EventConverter<ProcessCandidateStarterUserRemovedEvent, ActivitiEntityEvent> {
+    implements EventConverter<ProcessCandidateStarterUserRemovedEvent, ActivitiEntityEvent>
+{
 
     private APIProcessCandidateStarterUserConverter converter;
     private ProcessCandidateStarterEventConverterHelper processCandidateStarterEventConverterHelper =

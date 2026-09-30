@@ -31,7 +31,8 @@ import org.activiti.engine.repository.Deployment;
  */
 public class MybatisDeploymentDataManager
     extends AbstractDataManager<DeploymentEntity>
-    implements DeploymentDataManager {
+    implements DeploymentDataManager
+{
 
     public MybatisDeploymentDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
         super(processEngineConfiguration);

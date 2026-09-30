@@ -22,7 +22,8 @@ import org.activiti.api.task.runtime.events.TaskCandidateGroupRemovedEvent;
 
 public class TaskCandidateGroupRemovedImpl
     extends RuntimeEventImpl<TaskCandidateGroup, TaskCandidateGroupEvent.TaskCandidateGroupEvents>
-    implements TaskCandidateGroupRemovedEvent {
+    implements TaskCandidateGroupRemovedEvent
+{
 
     public TaskCandidateGroupRemovedImpl() {}
 

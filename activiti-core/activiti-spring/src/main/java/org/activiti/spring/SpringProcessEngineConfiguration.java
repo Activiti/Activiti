@@ -40,7 +40,8 @@ import tools.jackson.databind.json.JsonMapper;
 
 public class SpringProcessEngineConfiguration
     extends ProcessEngineConfigurationImpl
-    implements ApplicationContextAware {
+    implements ApplicationContextAware
+{
 
     protected PlatformTransactionManager transactionManager;
     protected String deploymentName = "SpringAutoDeployment";
@@ -102,8 +103,8 @@ public class SpringProcessEngineConfiguration
         if (transactionManager == null) {
             throw new ActivitiException(
                 "transactionManager is required property for SpringProcessEngineConfiguration, use " +
-                StandaloneProcessEngineConfiguration.class.getName() +
-                " otherwise"
+                    StandaloneProcessEngineConfiguration.class.getName() +
+                    " otherwise"
             );
         }
 

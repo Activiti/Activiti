@@ -33,7 +33,8 @@ import org.activiti.engine.impl.persistence.entity.data.HistoricProcessInstanceD
  */
 public class MybatisHistoricProcessInstanceDataManager
     extends AbstractDataManager<HistoricProcessInstanceEntity>
-    implements HistoricProcessInstanceDataManager {
+    implements HistoricProcessInstanceDataManager
+{
 
     public MybatisHistoricProcessInstanceDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
         super(processEngineConfiguration);

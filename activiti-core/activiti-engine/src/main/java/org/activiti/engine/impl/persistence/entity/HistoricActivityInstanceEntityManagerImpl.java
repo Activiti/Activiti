@@ -31,7 +31,8 @@ import org.activiti.engine.impl.persistence.entity.data.HistoricActivityInstance
  */
 public class HistoricActivityInstanceEntityManagerImpl
     extends AbstractEntityManager<HistoricActivityInstanceEntity>
-    implements HistoricActivityInstanceEntityManager {
+    implements HistoricActivityInstanceEntityManager
+{
 
     protected HistoricActivityInstanceDataManager historicActivityInstanceDataManager;
 

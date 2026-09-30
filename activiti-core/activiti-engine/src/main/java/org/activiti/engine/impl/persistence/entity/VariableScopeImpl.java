@@ -749,8 +749,8 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
         if (variableInstances.containsKey(variableName)) {
             throw new ActivitiException(
                 "variable '" +
-                variableName +
-                "' already exists. Use setVariableLocal if you want to overwrite the value"
+                    variableName +
+                    "' already exists. Use setVariableLocal if you want to overwrite the value"
             );
         }
 

@@ -63,7 +63,8 @@ import org.springframework.util.function.ThrowingConsumer;
  */
 public abstract class MultiInstanceActivityBehavior
     extends FlowNodeActivityBehavior
-    implements SubProcessActivityBehavior {
+    implements SubProcessActivityBehavior
+{
 
     private static final long serialVersionUID = 1L;
 
@@ -114,7 +115,9 @@ public abstract class MultiInstanceActivityBehavior
                 super.leave(execution);
             }
         } else {
-            getCommandContext().getHistoryManager().recordActivityStart((ExecutionEntity) execution);
+            getCommandContext()
+                .getHistoryManager()
+                .recordActivityStart((ExecutionEntity) execution);
 
             innerActivityBehavior.execute(execution);
         }
@@ -149,7 +152,7 @@ public abstract class MultiInstanceActivityBehavior
                     childExecutionEntity.setCurrentFlowElement(boundaryEvent);
                     childExecutionEntity.setScope(false);
 
-                    ActivityBehavior boundaryEventBehavior = ((ActivityBehavior) boundaryEvent.getBehavior());
+                    ActivityBehavior boundaryEventBehavior = (ActivityBehavior) boundaryEvent.getBehavior();
                     boundaryEventBehavior.execute(childExecutionEntity);
                 }
             }
@@ -301,8 +304,8 @@ public abstract class MultiInstanceActivityBehavior
         } else {
             throw new ActivitiIllegalArgumentException(
                 "Could not resolve loopCardinality expression '" +
-                loopCardinalityExpression.getExpressionText() +
-                "': not a number nor number String"
+                    loopCardinalityExpression.getExpressionText() +
+                    "': not a number nor number String"
             );
         }
     }
@@ -313,8 +316,8 @@ public abstract class MultiInstanceActivityBehavior
             if (!(value instanceof Boolean)) {
                 throw new ActivitiIllegalArgumentException(
                     "completionCondition '" +
-                    completionConditionExpression.getExpressionText() +
-                    "' does not evaluate to a boolean value"
+                        completionConditionExpression.getExpressionText() +
+                        "' does not evaluate to a boolean value"
                 );
             }
 

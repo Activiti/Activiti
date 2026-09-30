@@ -1222,9 +1222,9 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         taskService.saveTask(task1);
 
         assertThatExceptionOfType(ActivitiOptimisticLockingException.class).isThrownBy(() -> {
-                task2.setDescription("test description two");
-                taskService.saveTask(task2);
-            });
+            task2.setDescription("test description two");
+            taskService.saveTask(task2);
+        });
     }
 
     public void testDeleteTaskWithDeleteReason() {

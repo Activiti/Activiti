@@ -87,9 +87,8 @@ public class ScopeUtil {
                 "compensate"
             );
 
-        List<CompensateEventSubscriptionEntity> compensateEventSubscriptions = new ArrayList<
-            CompensateEventSubscriptionEntity
-        >();
+        List<CompensateEventSubscriptionEntity> compensateEventSubscriptions =
+            new ArrayList<CompensateEventSubscriptionEntity>();
         for (EventSubscriptionEntity event : eventSubscriptions) {
             if (event instanceof CompensateEventSubscriptionEntity) {
                 compensateEventSubscriptions.add((CompensateEventSubscriptionEntity) event);

@@ -60,9 +60,9 @@ public class DelegateExpressionActivitiEventListener extends BaseDelegateEventLi
                 failOnException = true;
                 throw new ActivitiIllegalArgumentException(
                     "Delegate expression " +
-                    expression +
-                    " did not resolve to an implementation of " +
-                    ActivitiEventListener.class.getName()
+                        expression +
+                        " did not resolve to an implementation of " +
+                        ActivitiEventListener.class.getName()
                 );
             }
         }

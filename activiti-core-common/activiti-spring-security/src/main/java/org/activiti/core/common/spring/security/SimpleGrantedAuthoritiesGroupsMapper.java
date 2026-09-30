@@ -21,7 +21,8 @@ import org.springframework.security.core.GrantedAuthority;
 
 public class SimpleGrantedAuthoritiesGroupsMapper
     extends AbstractSimpleGrantedAuthoritiesMapper
-    implements GrantedAuthoritiesGroupsMapper {
+    implements GrantedAuthoritiesGroupsMapper
+{
 
     private final String prefix;
 

@@ -198,12 +198,12 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
         boolean didWriteExtensionStartElement,
         XMLStreamWriter xtw
     ) throws Exception {
-        return didWriteExtensionStartElement = writeExtensionElements(
+        return (didWriteExtensionStartElement = writeExtensionElements(
             baseElement,
             didWriteExtensionStartElement,
             null,
             xtw
-        );
+        ));
     }
 
     public static boolean writeExtensionElements(
@@ -327,7 +327,7 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
                     strb.delete(0, strb.length());
                 }
 
-                if (c != ',' || (insideExpression)) {
+                if (c != ',' || insideExpression) {
                     strb.append(c);
                 }
 

@@ -71,7 +71,7 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
         FlowElement currentFlowElement = getCurrentFlowElement(execution);
 
         // Compensation check
-        if ((currentFlowElement instanceof Activity) && (((Activity) currentFlowElement)).isForCompensation()) {
+        if (currentFlowElement instanceof Activity && ((Activity) currentFlowElement).isForCompensation()) {
             /*
              * If the current flow element is part of a compensation, we don't always
              * want to follow the regular rules of leaving an activity.
@@ -191,8 +191,8 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
             } else {
                 throw new ActivitiException(
                     "No outgoing sequence flow of element '" +
-                    flowNode.getId() +
-                    "' could be selected for continuing the process"
+                        flowNode.getId() +
+                        "' could be selected for continuing the process"
                 );
             }
         } else {

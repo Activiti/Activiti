@@ -117,9 +117,9 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
         if (task == null) {
             throw new NotFoundException(
                 "Unable to find task by given processInstanceId: " +
-                processInstanceId +
-                " and taskDefinitionKey: " +
-                taskDefinitionKey
+                    processInstanceId +
+                    " and taskDefinitionKey: " +
+                    taskDefinitionKey
             );
         }
         return taskConverter.from(task);

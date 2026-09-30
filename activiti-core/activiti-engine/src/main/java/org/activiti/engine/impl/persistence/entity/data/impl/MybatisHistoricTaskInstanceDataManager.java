@@ -34,7 +34,8 @@ import org.activiti.engine.impl.persistence.entity.data.HistoricTaskInstanceData
  */
 public class MybatisHistoricTaskInstanceDataManager
     extends AbstractDataManager<HistoricTaskInstanceEntity>
-    implements HistoricTaskInstanceDataManager {
+    implements HistoricTaskInstanceDataManager
+{
 
     public MybatisHistoricTaskInstanceDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
         super(processEngineConfiguration);

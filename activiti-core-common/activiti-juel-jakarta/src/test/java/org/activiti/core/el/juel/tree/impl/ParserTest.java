@@ -83,7 +83,7 @@ public class ParserTest extends TestCase {
 
     Tree verifyBinary(AstBinary.Operator op, String canonical) {
         Tree tree = verifyEvalExpression(canonical);
-        assertTrue((tree.getRoot()).getChild(0) instanceof AstBinary);
+        assertTrue(tree.getRoot().getChild(0) instanceof AstBinary);
         assertEquals(op, ((AstBinary) tree.getRoot().getChild(0)).getOperator());
         return tree;
     }

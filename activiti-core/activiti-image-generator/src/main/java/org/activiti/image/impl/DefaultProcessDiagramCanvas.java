@@ -350,8 +350,8 @@ public class DefaultProcessDiagramCanvas {
 
         // calculate coordinates to center image
         if (icon != null) {
-            int imageX = (int) Math.round(graphicInfo.getX() + (graphicInfo.getWidth() / 2) - (icon.getWidth() / 2));
-            int imageY = (int) Math.round(graphicInfo.getY() + (graphicInfo.getHeight() / 2) - (icon.getHeight() / 2));
+            int imageX = (int) Math.round(graphicInfo.getX() + graphicInfo.getWidth() / 2 - icon.getWidth() / 2);
+            int imageY = (int) Math.round(graphicInfo.getY() + graphicInfo.getHeight() / 2 - icon.getHeight() / 2);
 
             icon.drawIcon(imageX, imageY, ICON_PADDING, g);
         }
@@ -387,8 +387,8 @@ public class DefaultProcessDiagramCanvas {
     public void drawErrorEndEvent(String id, String name, GraphicInfo graphicInfo) {
         drawNoneEndEvent(id, name, graphicInfo);
 
-        int imageX = (int) (graphicInfo.getX() + (graphicInfo.getWidth() / 4));
-        int imageY = (int) (graphicInfo.getY() + (graphicInfo.getHeight() / 4));
+        int imageX = (int) (graphicInfo.getX() + graphicInfo.getWidth() / 4);
+        int imageY = (int) (graphicInfo.getY() + graphicInfo.getHeight() / 4);
 
         ERROR_THROW_IMAGE.drawIcon(imageX, imageY, ICON_PADDING, g);
     }
@@ -396,8 +396,8 @@ public class DefaultProcessDiagramCanvas {
     public void drawErrorStartEvent(String id, String name, GraphicInfo graphicInfo) {
         drawNoneStartEvent(id, name, graphicInfo);
 
-        int imageX = (int) (graphicInfo.getX() + (graphicInfo.getWidth() / 4));
-        int imageY = (int) (graphicInfo.getY() + (graphicInfo.getHeight() / 4));
+        int imageX = (int) (graphicInfo.getX() + graphicInfo.getWidth() / 4);
+        int imageY = (int) (graphicInfo.getY() + graphicInfo.getHeight() / 4);
 
         ERROR_THROW_IMAGE.drawIcon(imageX, imageY, ICON_PADDING, g);
     }
@@ -419,8 +419,8 @@ public class DefaultProcessDiagramCanvas {
         int innerCircleSize = 4;
         int innerCircleX = (int) graphicInfo.getX() + innerCircleSize;
         int innerCircleY = (int) graphicInfo.getY() + innerCircleSize;
-        int innerCircleWidth = (int) graphicInfo.getWidth() - (2 * innerCircleSize);
-        int innerCircleHeight = (int) graphicInfo.getHeight() - (2 * innerCircleSize);
+        int innerCircleWidth = (int) graphicInfo.getWidth() - 2 * innerCircleSize;
+        int innerCircleHeight = (int) graphicInfo.getHeight() - 2 * innerCircleSize;
         Ellipse2D innerCircle = new Ellipse2D.Double(innerCircleX, innerCircleY, innerCircleWidth, innerCircleHeight);
 
         Paint originalPaint = g.getPaint();
@@ -439,8 +439,8 @@ public class DefaultProcessDiagramCanvas {
 
         if (icon != null) {
             // calculate coordinates to center image
-            int imageX = (int) (graphicInfo.getX() + (graphicInfo.getWidth() / 2) - (icon.getWidth() / 2));
-            int imageY = (int) (graphicInfo.getY() + (graphicInfo.getHeight() / 2) - (icon.getHeight() / 2));
+            int imageX = (int) (graphicInfo.getX() + graphicInfo.getWidth() / 2 - icon.getWidth() / 2);
+            int imageY = (int) (graphicInfo.getY() + graphicInfo.getHeight() / 2 - icon.getHeight() / 2);
             if ("timer".equals(eventType)) {
                 // move image one pixel to center timer image
                 imageX++;
@@ -671,12 +671,12 @@ public class DefaultProcessDiagramCanvas {
         }
         Polygon arrowHead = new Polygon();
         arrowHead.addPoint(0, 0);
-        int arrowHeadPoint = (int) (-ARROW_WIDTH);
+        int arrowHeadPoint = (int) -ARROW_WIDTH;
         if (arrowHeadPoint == 0) {
             arrowHeadPoint = -1;
         }
         arrowHead.addPoint(arrowHeadPoint, -doubleArrowWidth);
-        arrowHeadPoint = (int) (ARROW_WIDTH);
+        arrowHeadPoint = (int) ARROW_WIDTH;
         if (arrowHeadPoint == 0) {
             arrowHeadPoint = 1;
         }
@@ -686,7 +686,7 @@ public class DefaultProcessDiagramCanvas {
         transformation.setToIdentity();
         double angle = Math.atan2(line.y2 - line.y1, line.x2 - line.x1);
         transformation.translate(line.x2, line.y2);
-        transformation.rotate((angle - Math.PI / 2d));
+        transformation.rotate(angle - Math.PI / 2d);
 
         AffineTransform originalTransformation = g.getTransform();
         g.setTransform(transformation);
@@ -709,7 +709,7 @@ public class DefaultProcessDiagramCanvas {
         AffineTransform transformation = new AffineTransform();
         transformation.setToIdentity();
         transformation.translate(x1, y1);
-        transformation.rotate((angle - (3 * Math.PI) / 4));
+        transformation.rotate(angle - (3 * Math.PI) / 4);
 
         AffineTransform originalTransformation = g.getTransform();
         g.setTransform(transformation);
@@ -733,7 +733,7 @@ public class DefaultProcessDiagramCanvas {
         transformation.setToIdentity();
         double angle = Math.atan2(line.y2 - line.y1, line.x2 - line.x1);
         transformation.translate(line.x1, line.y1);
-        transformation.rotate((angle - Math.PI / 2d));
+        transformation.rotate(angle - Math.PI / 2d);
 
         AffineTransform originalTransformation = g.getTransform();
         g.setTransform(transformation);
@@ -825,7 +825,7 @@ public class DefaultProcessDiagramCanvas {
         g.setPaint(originalPaint);
         // text
         if (name != null && name.length() > 0) {
-            int boxWidth = width - (2 * TEXT_PADDING);
+            int boxWidth = width - 2 * TEXT_PADDING;
             int boxHeight = height - 16 - ICON_PADDING - ICON_PADDING - MARKER_WIDTH - 2 - 2;
             int boxX = x + width / 2 - boxWidth / 2;
             int boxY = y + height / 2 - boxHeight / 2 + ICON_PADDING + ICON_PADDING - 2 - 2;
@@ -894,13 +894,13 @@ public class DefaultProcessDiagramCanvas {
             }
         }
 
-        int currentY = y + (centered ? ((boxHeight - currentHeight) / 2) : 0);
+        int currentY = y + (centered ? (boxHeight - currentHeight) / 2 : 0);
         int currentX = 0;
 
         // Actually draw the lines
         for (TextLayout textLayout : layouts) {
             currentY += textLayout.getAscent();
-            currentX = x + (centered ? ((boxWidth - ((Double) textLayout.getBounds().getWidth()).intValue()) / 2) : 0);
+            currentX = x + (centered ? (boxWidth - ((Double) textLayout.getBounds().getWidth()).intValue()) / 2 : 0);
 
             textLayout.draw(g, currentX, currentY);
             currentY += textLayout.getDescent() + textLayout.getLeading();
@@ -1078,10 +1078,10 @@ public class DefaultProcessDiagramCanvas {
         int width = (int) graphicInfo.getWidth();
         int height = (int) graphicInfo.getHeight();
 
-        rhombus.addPoint(x, y + (height / 2));
-        rhombus.addPoint(x + (width / 2), y + height);
-        rhombus.addPoint(x + width, y + (height / 2));
-        rhombus.addPoint(x + (width / 2), y);
+        rhombus.addPoint(x, y + height / 2);
+        rhombus.addPoint(x + width / 2, y + height);
+        rhombus.addPoint(x + width, y + height / 2);
+        rhombus.addPoint(x + width / 2, y);
         g.draw(rhombus);
     }
 
@@ -1174,8 +1174,8 @@ public class DefaultProcessDiagramCanvas {
         Stroke orginalStroke = g.getStroke();
         g.setStroke(GATEWAY_TYPE_STROKE);
         Ellipse2D.Double circle = new Ellipse2D.Double(
-            ((width - diameter) / 2) + x,
-            ((height - diameter) / 2) + y,
+            (width - diameter) / 2 + x,
+            (height - diameter) / 2 + y,
             diameter,
             diameter
         );
@@ -1213,7 +1213,7 @@ public class DefaultProcessDiagramCanvas {
         int bottomY = (int) (.81 * r);
 
         int[] xPoints = new int[] { 0, topX, bottomX, -bottomX, -topX };
-        int[] yPoints = new int[] { -(int) r, topY, bottomY, bottomY, topY };
+        int[] yPoints = new int[] { -((int) r), topY, bottomY, bottomY, topY };
         Polygon pentagon = new Polygon(xPoints, yPoints, 5);
         pentagon.translate(x + width / 2, y + width / 2);
 
@@ -1348,8 +1348,8 @@ public class DefaultProcessDiagramCanvas {
 
         g.draw(path);
 
-        int boxWidth = width - (2 * ANNOTATION_TEXT_PADDING);
-        int boxHeight = height - (2 * ANNOTATION_TEXT_PADDING);
+        int boxWidth = width - 2 * ANNOTATION_TEXT_PADDING;
+        int boxHeight = height - 2 * ANNOTATION_TEXT_PADDING;
         int boxX = x + width / 2 - boxWidth / 2;
         int boxY = y + height / 2 - boxHeight / 2;
 

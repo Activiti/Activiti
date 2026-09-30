@@ -122,9 +122,9 @@ public class IntermediateCatchEventActivityBehavior extends AbstractBpmnActivity
                 IntermediateCatchEvent intermediateCatchEvent =
                     (IntermediateCatchEvent) execution.getCurrentFlowElement();
                 if (intermediateCatchEvent.getBehavior() instanceof IntermediateCatchEventActivityBehavior) {
-                    ((IntermediateCatchEventActivityBehavior) intermediateCatchEvent.getBehavior()).eventCancelledByEventGateway(
-                        executionEntity
-                    );
+                    (
+                        (IntermediateCatchEventActivityBehavior) intermediateCatchEvent.getBehavior()
+                    ).eventCancelledByEventGateway(executionEntity);
                     eventActivityIds.remove(executionEntity.getActivityId()); // We only need to delete ONE execution at the event.
                 }
             }

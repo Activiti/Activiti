@@ -24,7 +24,8 @@ public class ProcessCandidateStarterUserAddedEventImpl
         ProcessCandidateStarterUser,
         ProcessCandidateStarterUserEvent.ProcessCandidateStarterUserEvents
     >
-    implements ProcessCandidateStarterUserAddedEvent {
+    implements ProcessCandidateStarterUserAddedEvent
+{
 
     public ProcessCandidateStarterUserAddedEventImpl() {}
 

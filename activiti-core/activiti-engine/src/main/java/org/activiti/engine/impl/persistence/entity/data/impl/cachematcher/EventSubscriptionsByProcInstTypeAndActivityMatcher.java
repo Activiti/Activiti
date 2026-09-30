@@ -23,7 +23,8 @@ import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 
  */
 public class EventSubscriptionsByProcInstTypeAndActivityMatcher
-    extends CachedEntityMatcherAdapter<EventSubscriptionEntity> {
+    extends CachedEntityMatcherAdapter<EventSubscriptionEntity>
+{
 
     @Override
     public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity, Object parameter) {

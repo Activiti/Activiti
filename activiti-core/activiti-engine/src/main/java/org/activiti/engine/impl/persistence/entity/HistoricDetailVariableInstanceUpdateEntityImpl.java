@@ -24,7 +24,8 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class HistoricDetailVariableInstanceUpdateEntityImpl
     extends HistoricDetailEntityImpl
-    implements HistoricDetailVariableInstanceUpdateEntity {
+    implements HistoricDetailVariableInstanceUpdateEntity
+{
 
     private static final long serialVersionUID = 1L;
 
@@ -59,7 +60,7 @@ public class HistoricDetailVariableInstanceUpdateEntityImpl
     }
 
     public String getVariableTypeName() {
-        return (variableType != null ? variableType.getTypeName() : null);
+        return variableType != null ? variableType.getTypeName() : null;
     }
 
     public int getRevisionNext() {

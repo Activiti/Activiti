@@ -21,7 +21,8 @@ import org.activiti.api.process.model.events.BPMNTimerEvent;
 
 public class BPMNTimerCancelledEventImpl
     extends RuntimeEventImpl<BPMNTimer, BPMNTimerEvent.TimerEvents>
-    implements BPMNTimerCancelledEvent {
+    implements BPMNTimerCancelledEvent
+{
 
     public BPMNTimerCancelledEventImpl() {}
 

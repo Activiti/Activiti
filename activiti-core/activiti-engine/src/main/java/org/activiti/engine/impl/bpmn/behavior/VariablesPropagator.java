@@ -53,6 +53,7 @@ public class VariablesPropagator {
             .keySet()
             .stream()
             .filter(Predicate.not(outputVariables::containsKey))
+            .filter(Predicate.not(isLoopIndexVariableOf(execution)))
             .forEach(execution::removeVariableLocal);
 
         removeOutputCollectionElementVariableIfNotPresentInOutputs(execution, outputVariables);
@@ -60,17 +61,31 @@ public class VariablesPropagator {
         return outputVariables;
     }
 
+    private Predicate<String> isLoopIndexVariableOf(DelegateExecution execution) {
+        return getMultiInstanceBehavior(execution)
+            .map(MultiInstanceActivityBehavior::getCollectionElementIndexVariable)
+            .<Predicate<String>>map(indexVariable -> indexVariable::equals)
+            .orElse(variableName -> false);
+    }
+
+    private Optional<MultiInstanceActivityBehavior> getMultiInstanceBehavior(DelegateExecution execution) {
+        if (
+            execution.getCurrentFlowElement() instanceof CallActivity callActivity &&
+            callActivity.getBehavior() instanceof MultiInstanceActivityBehavior multiInstanceActivityBehavior
+        ) {
+            return Optional.of(multiInstanceActivityBehavior);
+        }
+        return Optional.empty();
+    }
+
     private void removeOutputCollectionElementVariableIfNotPresentInOutputs(
         DelegateExecution execution,
         Map<String, Object> outputVariables
     ) {
-        if (execution.getCurrentFlowElement() instanceof CallActivity callActivity) {
-            if (callActivity.getBehavior() instanceof MultiInstanceActivityBehavior multiInstanceActivityBehavior) {
-                Optional.ofNullable(multiInstanceActivityBehavior.getCollectionElementVariable())
-                    .filter(Predicate.not(outputVariables::containsKey))
-                    .ifPresent(execution::removeVariableLocal);
-            }
-        }
+        getMultiInstanceBehavior(execution)
+            .map(MultiInstanceActivityBehavior::getCollectionElementVariable)
+            .filter(Predicate.not(outputVariables::containsKey))
+            .ifPresent(execution::removeVariableLocal);
     }
 
     public void propagate(DelegateExecution execution, DelegateExecution subProcessInstance) {

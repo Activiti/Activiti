@@ -126,7 +126,7 @@ public class Bindings implements TypeConverter {
      * @return <code>true</code> if the given index is bound to a variable
      */
     public boolean isVariableBound(int index) {
-        return (index >= 0 && index < variables.length && variables[index] != null);
+        return index >= 0 && index < variables.length && variables[index] != null;
     }
 
     /**
@@ -155,7 +155,7 @@ public class Bindings implements TypeConverter {
 
     @Override
     public int hashCode() {
-        return (Arrays.hashCode(functions) ^ Arrays.hashCode(variables) ^ converter.hashCode());
+        return Arrays.hashCode(functions) ^ Arrays.hashCode(variables) ^ converter.hashCode();
     }
 
     private void writeObject(ObjectOutputStream out) throws IOException, ClassNotFoundException {

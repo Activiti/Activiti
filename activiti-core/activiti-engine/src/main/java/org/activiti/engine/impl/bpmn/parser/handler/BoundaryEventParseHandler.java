@@ -44,8 +44,8 @@ public class BoundaryEventParseHandler extends AbstractFlowNodeBpmnParseHandler<
         if (boundaryEvent.getAttachedToRef() == null) {
             logger.warn(
                 "Invalid reference in boundary event. Make sure that the referenced activity " +
-                "is defined in the same scope as the boundary event " +
-                boundaryEvent.getId()
+                    "is defined in the same scope as the boundary event " +
+                    boundaryEvent.getId()
             );
             return;
         }

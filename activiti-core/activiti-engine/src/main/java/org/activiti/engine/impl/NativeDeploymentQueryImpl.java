@@ -24,7 +24,8 @@ import org.activiti.engine.repository.NativeDeploymentQuery;
 
 public class NativeDeploymentQueryImpl
     extends AbstractNativeQuery<NativeDeploymentQuery, Deployment>
-    implements NativeDeploymentQuery {
+    implements NativeDeploymentQuery
+{
 
     private static final long serialVersionUID = 1L;
 

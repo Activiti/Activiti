@@ -85,7 +85,7 @@ public class ExclusiveGatewayTest extends PluggableActivitiTestCase {
             )
             .withMessageContaining(
                 "No outgoing sequence flow of the exclusive gateway " +
-                "'exclusiveGw' could be selected for continuing the process"
+                    "'exclusiveGw' could be selected for continuing the process"
             );
     }
 

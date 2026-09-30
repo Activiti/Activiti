@@ -105,7 +105,9 @@ public class ExclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
         }
 
         // We have to record the end here, or else we're already past it
-        Context.getCommandContext().getHistoryManager().recordActivityEnd((ExecutionEntity) execution, null);
+        Context.getCommandContext()
+            .getHistoryManager()
+            .recordActivityEnd((ExecutionEntity) execution, null);
 
         // Leave the gateway
         if (outgoingSequenceFlow != null) {
@@ -117,8 +119,8 @@ public class ExclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
                 // No sequence flow could be found, not even a default one
                 throw new ActivitiException(
                     "No outgoing sequence flow of the exclusive gateway '" +
-                    exclusiveGateway.getId() +
-                    "' could be selected for continuing the process"
+                        exclusiveGateway.getId() +
+                        "' could be selected for continuing the process"
                 );
             }
         }

@@ -28,7 +28,7 @@ public class CommaSplitter {
         boolean inExpression = false;
         for (int i = 0; i < st.length(); i++) {
             if (!inExpression && st.charAt(i) == ',') {
-                if ((i - offset) > 1) {
+                if (i - offset > 1) {
                     result.add(st.substring(offset, i));
                 }
                 offset = i + 1;
@@ -39,7 +39,7 @@ public class CommaSplitter {
             }
         }
 
-        if ((st.length() - offset) > 1) {
+        if (st.length() - offset > 1) {
             result.add(st.substring(offset));
         }
         return result;

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definition"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:activiti="http://activiti.org/bpmn"
+             targetNamespace="Examples">
+
+    <process id="miIndexMappingChild" isExecutable="true">
+
+        <startEvent id="childStart"/>
+        <sequenceFlow id="childFlow1" sourceRef="childStart" targetRef="childTask"/>
+
+        <userTask id="childTask" name="Child task" activiti:assignee="user"/>
+
+        <sequenceFlow id="childFlow2" sourceRef="childTask" targetRef="childEnd"/>
+        <endEvent id="childEnd"/>
+
+    </process>
+
+</definitions>

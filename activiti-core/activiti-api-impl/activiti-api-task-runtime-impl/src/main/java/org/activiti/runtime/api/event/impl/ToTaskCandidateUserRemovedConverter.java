@@ -24,7 +24,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ToTaskCandidateUserRemovedConverter
-    implements EventConverter<TaskCandidateUserRemovedEvent, ActivitiEntityEvent> {
+    implements EventConverter<TaskCandidateUserRemovedEvent, ActivitiEntityEvent>
+{
 
     private static final Logger logger = LoggerFactory.getLogger(ToTaskCandidateUserRemovedConverter.class);
 

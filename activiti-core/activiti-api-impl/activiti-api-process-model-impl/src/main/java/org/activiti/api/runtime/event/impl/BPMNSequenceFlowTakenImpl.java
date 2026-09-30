@@ -21,7 +21,8 @@ import org.activiti.api.process.model.events.SequenceFlowEvent;
 
 public class BPMNSequenceFlowTakenImpl
     extends RuntimeEventImpl<BPMNSequenceFlow, SequenceFlowEvent.SequenceFlowEvents>
-    implements BPMNSequenceFlowTakenEvent {
+    implements BPMNSequenceFlowTakenEvent
+{
 
     public BPMNSequenceFlowTakenImpl() {}
 

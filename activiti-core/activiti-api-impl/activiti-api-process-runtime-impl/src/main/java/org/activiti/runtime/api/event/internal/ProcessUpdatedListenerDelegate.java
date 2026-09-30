@@ -40,13 +40,11 @@ public class ProcessUpdatedListenerDelegate implements ActivitiEventListener {
     @Override
     public void onEvent(ActivitiEvent event) {
         if (event instanceof ActivitiEntityEvent) {
-            processUpdatedConverter
-                .from((ActivitiEntityEvent) event)
-                .ifPresent(convertedEvent -> {
-                    for (ProcessRuntimeEventListener<ProcessUpdatedEvent> listener : processRuntimeEventListeners) {
-                        listener.onEvent(convertedEvent);
-                    }
-                });
+            processUpdatedConverter.from((ActivitiEntityEvent) event).ifPresent(convertedEvent -> {
+                for (ProcessRuntimeEventListener<ProcessUpdatedEvent> listener : processRuntimeEventListeners) {
+                    listener.onEvent(convertedEvent);
+                }
+            });
         }
     }
 

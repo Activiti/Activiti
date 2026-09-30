@@ -21,7 +21,8 @@ import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.model.payloads.GetProcessInstancesPayload;
 
 public class SecurityPoliciesProcessInstanceRestrictionApplier
-    implements SecurityPoliciesRestrictionApplier<GetProcessInstancesPayload> {
+    implements SecurityPoliciesRestrictionApplier<GetProcessInstancesPayload>
+{
 
     @Override
     public GetProcessInstancesPayload restrictToKeys(Set<String> keys) {

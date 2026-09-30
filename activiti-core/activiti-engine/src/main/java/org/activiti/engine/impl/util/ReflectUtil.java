@@ -256,14 +256,14 @@ public abstract class ReflectUtil {
     }
 
     private static boolean matches(Class<?>[] parameterTypes, Object[] args) {
-        if ((parameterTypes == null) || (parameterTypes.length == 0)) {
-            return ((args == null) || (args.length == 0));
+        if (parameterTypes == null || parameterTypes.length == 0) {
+            return args == null || args.length == 0;
         }
-        if ((args == null) || (parameterTypes.length != args.length)) {
+        if (args == null || parameterTypes.length != args.length) {
             return false;
         }
         for (int i = 0; i < parameterTypes.length; i++) {
-            if ((args[i] != null) && (!parameterTypes[i].isAssignableFrom(args[i].getClass()))) {
+            if (args[i] != null && !parameterTypes[i].isAssignableFrom(args[i].getClass())) {
                 return false;
             }
         }

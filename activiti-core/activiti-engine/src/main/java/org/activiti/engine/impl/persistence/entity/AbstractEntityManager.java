@@ -28,7 +28,8 @@ import org.activiti.engine.impl.persistence.entity.data.DataManager;
  */
 public abstract class AbstractEntityManager<EntityImpl extends Entity>
     extends AbstractManager
-    implements EntityManager<EntityImpl> {
+    implements EntityManager<EntityImpl>
+{
 
     public AbstractEntityManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
         super(processEngineConfiguration);

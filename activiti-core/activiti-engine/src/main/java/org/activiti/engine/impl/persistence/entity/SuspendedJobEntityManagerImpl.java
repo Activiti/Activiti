@@ -29,7 +29,8 @@ import org.slf4j.LoggerFactory;
 
 public class SuspendedJobEntityManagerImpl
     extends AbstractEntityManager<SuspendedJobEntity>
-    implements SuspendedJobEntityManager {
+    implements SuspendedJobEntityManager
+{
 
     protected SuspendedJobDataManager jobDataManager;
 

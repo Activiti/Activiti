@@ -30,7 +30,8 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class VariableInstanceEntityImpl
     extends AbstractEntity
-    implements VariableInstanceEntity, ValueFields, BulkDeleteable, Serializable {
+    implements VariableInstanceEntity, ValueFields, BulkDeleteable, Serializable
+{
 
     private static final long serialVersionUID = 1L;
 

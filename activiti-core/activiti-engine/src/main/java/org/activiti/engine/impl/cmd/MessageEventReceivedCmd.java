@@ -79,10 +79,10 @@ public class MessageEventReceivedCmd extends NeedsActiveExecutionCmd<Void> {
         if (eventSubscriptions.isEmpty()) {
             throw new ActivitiException(
                 "Execution with id '" +
-                executionId +
-                "' does not have a subscription to a message event with name '" +
-                messageName +
-                "'"
+                    executionId +
+                    "' does not have a subscription to a message event with name '" +
+                    messageName +
+                    "'"
             );
         }
 

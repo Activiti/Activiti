@@ -29,7 +29,8 @@ import org.activiti.engine.impl.history.HistoryLevel;
 
  */
 public class MyTransactionalOperationTransactionDependentExecutionListener
-    extends CurrentActivityTransactionDependentExecutionListener {
+    extends CurrentActivityTransactionDependentExecutionListener
+{
 
     @Override
     public void notify(

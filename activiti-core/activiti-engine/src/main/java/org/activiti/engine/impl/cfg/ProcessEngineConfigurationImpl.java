@@ -1059,7 +1059,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
                     );
                 }
             } else if (jdbcUrl != null) {
-                if ((jdbcDriver == null) || (jdbcUsername == null)) {
+                if (jdbcDriver == null || jdbcUsername == null) {
                     throw new ActivitiException(
                         "DataSource or JDBC properties have to be specified in a process engine configuration"
                     );
@@ -1224,7 +1224,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
                 Properties properties = new Properties();
                 properties.put("prefix", databaseTablePrefix);
                 String wildcardEscapeClause = "";
-                if ((databaseWildcardEscapeCharacter != null) && (databaseWildcardEscapeCharacter.length() != 0)) {
+                if (databaseWildcardEscapeCharacter != null && databaseWildcardEscapeCharacter.length() != 0) {
                     wildcardEscapeClause = " escape '" + databaseWildcardEscapeCharacter + "'";
                 }
                 properties.put("wildcardEscapeClause", wildcardEscapeClause);
@@ -1772,7 +1772,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
             defaultListenerFactory.setExpressionManager(expressionManager);
             listenerFactory = defaultListenerFactory;
         } else if (
-            (listenerFactory instanceof AbstractBehaviorFactory) &&
+            listenerFactory instanceof AbstractBehaviorFactory &&
             ((AbstractBehaviorFactory) listenerFactory).getExpressionManager() == null
         ) {
             ((AbstractBehaviorFactory) listenerFactory).setExpressionManager(expressionManager);
@@ -1785,7 +1785,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
             defaultActivityBehaviorFactory.setExpressionManager(expressionManager);
             activityBehaviorFactory = defaultActivityBehaviorFactory;
         } else if (
-            (activityBehaviorFactory instanceof AbstractBehaviorFactory) &&
+            activityBehaviorFactory instanceof AbstractBehaviorFactory &&
             ((AbstractBehaviorFactory) activityBehaviorFactory).getExpressionManager() == null
         ) {
             ((AbstractBehaviorFactory) activityBehaviorFactory).setExpressionManager(expressionManager);
@@ -1873,10 +1873,10 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
                     }
                     throw new ActivitiException(
                         "The default BPMN parse handlers should only support one type, but " +
-                        defaultBpmnParseHandler.getClass() +
-                        " supports " +
-                        supportedTypes.toString() +
-                        ". This is likely a programmatic error"
+                            defaultBpmnParseHandler.getClass() +
+                            " supports " +
+                            supportedTypes.toString() +
+                            ". This is likely a programmatic error"
                     );
                 } else {
                     Class<?> handledType = defaultBpmnParseHandler.getHandledTypes().iterator().next();
@@ -1884,9 +1884,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
                         BpmnParseHandler newBpmnParseHandler = customParseHandlerMap.get(handledType);
                         log.info(
                             "Replacing default BpmnParseHandler " +
-                            defaultBpmnParseHandler.getClass().getName() +
-                            " with " +
-                            newBpmnParseHandler.getClass().getName()
+                                defaultBpmnParseHandler.getClass().getName() +
+                                " with " +
+                                newBpmnParseHandler.getClass().getName()
                         );
                         bpmnParserHandlers.set(i, newBpmnParseHandler);
                     }

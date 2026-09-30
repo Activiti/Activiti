@@ -79,9 +79,10 @@ public class DurationHelper {
         }
         if (expression.getFirst().startsWith("R")) {
             isRepeat = true;
-            times = expression.getFirst().length() == 1
-                ? Integer.MAX_VALUE - 1
-                : Integer.parseInt(expression.getFirst().substring(1));
+            times =
+                expression.getFirst().length() == 1
+                    ? Integer.MAX_VALUE - 1
+                    : Integer.parseInt(expression.getFirst().substring(1));
 
             if (expression.getFirst().equals("R")) {
                 // R without params

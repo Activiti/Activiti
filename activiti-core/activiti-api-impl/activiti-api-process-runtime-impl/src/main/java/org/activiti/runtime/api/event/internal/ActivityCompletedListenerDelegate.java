@@ -40,13 +40,11 @@ public class ActivityCompletedListenerDelegate implements ActivitiEventListener 
     @Override
     public void onEvent(ActivitiEvent event) {
         if (event instanceof ActivitiActivityEvent) {
-            converter
-                .from((ActivitiActivityEvent) event)
-                .ifPresent(convertedEvent -> {
-                    for (BPMNElementEventListener<BPMNActivityCompletedEvent> listener : processRuntimeEventListeners) {
-                        listener.onEvent(convertedEvent);
-                    }
-                });
+            converter.from((ActivitiActivityEvent) event).ifPresent(convertedEvent -> {
+                for (BPMNElementEventListener<BPMNActivityCompletedEvent> listener : processRuntimeEventListeners) {
+                    listener.onEvent(convertedEvent);
+                }
+            });
         }
     }
 

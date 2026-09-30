@@ -22,7 +22,8 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
  */
 public class SubProcessInstanceExecutionBySuperExecutionIdMatcher
-    implements SingleCachedEntityMatcher<ExecutionEntity> {
+    implements SingleCachedEntityMatcher<ExecutionEntity>
+{
 
     @Override
     public boolean isRetained(ExecutionEntity executionEntity, Object parameter) {

@@ -40,7 +40,7 @@ public class VariableElResolver implements VariableScopeItemELResolver {
     public Object resolve(String property, VariableScope variableScope) {
         VariableInstance variableInstance = variableScope.getVariableInstance(property);
         Object value = variableInstance.getValue();
-        if (hasJsonType(variableInstance) && (value instanceof JsonNode) && ((JsonNode) value).isArray()) {
+        if (hasJsonType(variableInstance) && value instanceof JsonNode && ((JsonNode) value).isArray()) {
             return jsonMapper.convertValue(value, List.class);
         } else {
             return value;

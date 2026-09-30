@@ -53,11 +53,11 @@ public class DelegateExpressionExecutionListener implements ExecutionListener {
         } else {
             throw new ActivitiIllegalArgumentException(
                 "Delegate expression " +
-                expression +
-                " did not resolve to an implementation of " +
-                ExecutionListener.class +
-                " nor " +
-                JavaDelegate.class
+                    expression +
+                    " did not resolve to an implementation of " +
+                    ExecutionListener.class +
+                    " nor " +
+                    JavaDelegate.class
             );
         }
     }

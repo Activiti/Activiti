@@ -81,8 +81,8 @@ public class ContinueProcessOperation extends AbstractOperation {
         } else {
             throw new ActivitiException(
                 "Programmatic error: no current flow element found or invalid type: " +
-                currentFlowElement +
-                ". Halting."
+                    currentFlowElement +
+                    ". Halting."
             );
         }
     }
@@ -281,7 +281,7 @@ public class ContinueProcessOperation extends AbstractOperation {
         for (BoundaryEvent boundaryEvent : boundaryEvents) {
             if (
                 CollectionUtil.isEmpty(boundaryEvent.getEventDefinitions()) ||
-                (boundaryEvent.getEventDefinitions().getFirst() instanceof CompensateEventDefinition)
+                boundaryEvent.getEventDefinitions().getFirst() instanceof CompensateEventDefinition
             ) {
                 continue;
             }
@@ -294,7 +294,7 @@ public class ContinueProcessOperation extends AbstractOperation {
             childExecutionEntity.setCurrentFlowElement(boundaryEvent);
             childExecutionEntity.setScope(false);
 
-            ActivityBehavior boundaryEventBehavior = ((ActivityBehavior) boundaryEvent.getBehavior());
+            ActivityBehavior boundaryEventBehavior = (ActivityBehavior) boundaryEvent.getBehavior();
             logger.debug(
                 "Executing boundary event activityBehavior {} with execution {}",
                 boundaryEventBehavior.getClass(),

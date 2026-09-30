@@ -199,7 +199,7 @@ public class RuntimeTestConfiguration {
 
             boolean expectedValue = (Boolean) inBoundVariables.get("expectedKey");
             integrationContext.addOutBoundVariable("approved", expectedValue);
-            assertThat(((String) inBoundVariables.get("input_variable_name_1"))).isEqualTo("input-variable-name-1");
+            assertThat((String) inBoundVariables.get("input_variable_name_1")).isEqualTo("input-variable-name-1");
             return integrationContext;
         };
     }
@@ -221,7 +221,7 @@ public class RuntimeTestConfiguration {
 
             boolean expectedValue = (Boolean) inBoundVariables.get("expectedKey");
             integrationContext.addOutBoundVariable("approved", expectedValue);
-            assertThat(((String) inBoundVariables.get("input_variable_name_2"))).isEqualTo("input-variable-name-2");
+            assertThat((String) inBoundVariables.get("input_variable_name_2")).isEqualTo("input-variable-name-2");
             return integrationContext;
         };
     }
@@ -393,11 +393,11 @@ public class RuntimeTestConfiguration {
     public Connector outputMappingValueExpressionActionName() throws Exception {
         JsonNode value = new JsonMapper().readTree(
             "{\n" +
-            "  \"city\": {\n" +
-            "    \"name\": \"London\",\n" +
-            "    \"place\": \"Tower of London\"\n" +
-            "  }\n" +
-            "}"
+                "  \"city\": {\n" +
+                "    \"name\": \"London\",\n" +
+                "    \"place\": \"Tower of London\"\n" +
+                "  }\n" +
+                "}"
         );
         return integrationContext -> {
             integrationContext.addOutBoundVariable("outVariable1Name", "value-set-in-connector");

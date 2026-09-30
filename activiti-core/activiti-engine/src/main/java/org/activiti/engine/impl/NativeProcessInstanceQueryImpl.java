@@ -24,7 +24,8 @@ import org.activiti.engine.runtime.ProcessInstance;
 
 public class NativeProcessInstanceQueryImpl
     extends AbstractNativeQuery<NativeProcessInstanceQuery, ProcessInstance>
-    implements NativeProcessInstanceQuery {
+    implements NativeProcessInstanceQuery
+{
 
     private static final long serialVersionUID = 1L;
 
@@ -50,9 +51,11 @@ public class NativeProcessInstanceQueryImpl
     }
 
     public long executeCount(CommandContext commandContext, Map<String, Object> parameterMap) {
-        return commandContext
-            .getExecutionEntityManager()
-            // can use execution count, since the result type doesn't matter
-            .findExecutionCountByNativeQuery(parameterMap);
+        return (
+            commandContext
+                .getExecutionEntityManager()
+                // can use execution count, since the result type doesn't matter
+                .findExecutionCountByNativeQuery(parameterMap)
+        );
     }
 }

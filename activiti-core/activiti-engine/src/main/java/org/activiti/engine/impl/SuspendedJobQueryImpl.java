@@ -31,7 +31,8 @@ import org.activiti.engine.runtime.SuspendedJobQuery;
  */
 public class SuspendedJobQueryImpl
     extends AbstractQuery<SuspendedJobQuery, Job>
-    implements SuspendedJobQuery, Serializable {
+    implements SuspendedJobQuery, Serializable
+{
 
     private static final long serialVersionUID = 1L;
     protected String id;

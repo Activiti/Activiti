@@ -56,8 +56,8 @@ public class SetProcessInstanceNameCmd implements Command<Void>, Serializable {
         if (!execution.isProcessInstanceType()) {
             throw new ActivitiObjectNotFoundException(
                 "process instance " +
-                processInstanceId +
-                " doesn't exist, the given ID references an execution, though",
+                    processInstanceId +
+                    " doesn't exist, the given ID references an execution, though",
                 ProcessInstance.class
             );
         }

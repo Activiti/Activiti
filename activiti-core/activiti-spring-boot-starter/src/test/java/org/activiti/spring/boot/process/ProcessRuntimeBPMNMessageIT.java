@@ -91,7 +91,8 @@ public class ProcessRuntimeBPMNMessageIT {
 
     @Component
     public static class TestStartMessageDeployedRuntimeEventListener
-        implements ProcessRuntimeEventListener<StartMessageDeployedEvent> {
+        implements ProcessRuntimeEventListener<StartMessageDeployedEvent>
+    {
 
         private List<StartMessageDeployedEvent> startMessageDeployedEvents = new ArrayList<>();
 

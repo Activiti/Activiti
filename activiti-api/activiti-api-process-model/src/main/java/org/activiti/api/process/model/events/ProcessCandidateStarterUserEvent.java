@@ -20,7 +20,8 @@ import org.activiti.api.process.model.ProcessCandidateStarterUser;
 
 public interface ProcessCandidateStarterUserEvent
     extends
-        RuntimeEvent<ProcessCandidateStarterUser, ProcessCandidateStarterUserEvent.ProcessCandidateStarterUserEvents> {
+        RuntimeEvent<ProcessCandidateStarterUser, ProcessCandidateStarterUserEvent.ProcessCandidateStarterUserEvents>
+{
     enum ProcessCandidateStarterUserEvents {
         PROCESS_CANDIDATE_STARTER_USER_ADDED,
 

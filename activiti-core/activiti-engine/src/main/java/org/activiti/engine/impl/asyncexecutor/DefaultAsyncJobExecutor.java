@@ -132,16 +132,14 @@ public class DefaultAsyncJobExecutor implements AsyncExecutor {
                 if (commandContext != null) {
                     commandContext.getJobManager().unacquire(job);
                 } else {
-                    processEngineConfiguration
-                        .getCommandExecutor()
-                        .execute(
-                            new Command<Void>() {
-                                public Void execute(CommandContext commandContext) {
-                                    commandContext.getJobManager().unacquire(job);
-                                    return null;
-                                }
+                    processEngineConfiguration.getCommandExecutor().execute(
+                        new Command<Void>() {
+                            public Void execute(CommandContext commandContext) {
+                                commandContext.getJobManager().unacquire(job);
+                                return null;
                             }
-                        );
+                        }
+                    );
                 }
 
                 // Job queue full, returning true so (if wanted) the acquiring can be throttled
@@ -269,9 +267,9 @@ public class DefaultAsyncJobExecutor implements AsyncExecutor {
                 if (!executorService.awaitTermination(secondsToWaitOnShutdown, TimeUnit.SECONDS)) {
                     log.warn(
                         "Timeout during shutdown of async job executor. " +
-                        "The current running jobs could not end within " +
-                        secondsToWaitOnShutdown +
-                        " seconds after shutdown operation."
+                            "The current running jobs could not end within " +
+                            secondsToWaitOnShutdown +
+                            " seconds after shutdown operation."
                     );
                 }
             } catch (InterruptedException e) {

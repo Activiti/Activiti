@@ -169,7 +169,7 @@ public class MultiTenantProcessEngineTest {
     }
 
     private void moveClockToGetTimerFired() {
-        config.getClock().setCurrentTime(new Date(config.getClock().getCurrentTime().getTime() + (2 * 60 * 60 * 1000)));
+        config.getClock().setCurrentTime(new Date(config.getClock().getCurrentTime().getTime() + 2 * 60 * 60 * 1000));
     }
 
     private void deployProcesses(String userId) {

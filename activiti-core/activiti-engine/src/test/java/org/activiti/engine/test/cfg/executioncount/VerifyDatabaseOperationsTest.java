@@ -67,7 +67,7 @@ public class VerifyDatabaseOperationsTest extends PluggableActivitiTestCase {
         ((DefaultHistoryManager) processEngineConfiguration.getHistoryManager()).setHistoryLevel(HistoryLevel.AUDIT);
 
         // The time interceptor should be first
-        CommandExecutorImpl commandExecutor = ((CommandExecutorImpl) processEngineConfiguration.getCommandExecutor());
+        CommandExecutorImpl commandExecutor = (CommandExecutorImpl) processEngineConfiguration.getCommandExecutor();
         this.oldFirstCommandInterceptor = commandExecutor.getFirst();
 
         TotalExecutionTimeCommandInterceptor timeCommandInterceptor = new TotalExecutionTimeCommandInterceptor();
@@ -381,7 +381,9 @@ public class VerifyDatabaseOperationsTest extends PluggableActivitiTestCase {
         assertThat(allStats).hasSize(commands.length);
 
         for (String command : commands) {
-            assertThat(getStatsForCommand(command, allStats)).as("Could not get stats for " + command).isNotNull();
+            assertThat(getStatsForCommand(command, allStats))
+                .as("Could not get stats for " + command)
+                .isNotNull();
         }
     }
 
@@ -393,7 +395,9 @@ public class VerifyDatabaseOperationsTest extends PluggableActivitiTestCase {
             String dbSelect = (String) expectedSelects[i];
             Long count = (Long) expectedSelects[i + 1];
 
-            assertThat(stats.getDbSelects().get(dbSelect)).as("Wrong select count for " + dbSelect).isEqualTo(count);
+            assertThat(stats.getDbSelects().get(dbSelect))
+                .as("Wrong select count for " + dbSelect)
+                .isEqualTo(count);
         }
     }
 
@@ -403,9 +407,9 @@ public class VerifyDatabaseOperationsTest extends PluggableActivitiTestCase {
         if (expectedInserts.length / 2 != stats.getDbInserts().size()) {
             fail(
                 "Unexpected number of database inserts : " +
-                stats.getDbInserts().size() +
-                ", but expected " +
-                expectedInserts.length / 2
+                    stats.getDbInserts().size() +
+                    ", but expected " +
+                    expectedInserts.length / 2
             );
         }
 

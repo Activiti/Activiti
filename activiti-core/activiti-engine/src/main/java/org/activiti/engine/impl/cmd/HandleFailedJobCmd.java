@@ -78,10 +78,10 @@ public class HandleFailedJobCmd implements Command<Object>, Serializable {
 
         log.trace(
             "Using FailedJobCommandFactory '" +
-            failedJobCommandFactory.getClass() +
-            "' and command of type '" +
-            cmd.getClass() +
-            "'"
+                failedJobCommandFactory.getClass() +
+                "' and command of type '" +
+                cmd.getClass() +
+                "'"
         );
         processEngineConfiguration.getCommandExecutor().execute(commandConfig, cmd);
 

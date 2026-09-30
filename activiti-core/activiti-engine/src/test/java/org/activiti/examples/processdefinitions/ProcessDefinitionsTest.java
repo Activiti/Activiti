@@ -39,57 +39,57 @@ public class ProcessDefinitionsTest extends PluggableActivitiTestCase {
         List<String> deploymentIds = new ArrayList<String>();
         deploymentIds.add(
             deployProcessString(
-                ("<definitions " +
+                "<definitions " +
                     NAMESPACE +
                     " " +
                     TARGET_NAMESPACE +
                     ">" +
                     "  <process id='IDR' name='Insurance Damage Report 1' />" +
-                    "</definitions>")
+                    "</definitions>"
             )
         );
         deploymentIds.add(
             deployProcessString(
-                ("<definitions " +
+                "<definitions " +
                     NAMESPACE +
                     " " +
                     TARGET_NAMESPACE +
                     ">" +
                     "  <process id='IDR' name='Insurance Damage Report 2' />" +
-                    "</definitions>")
+                    "</definitions>"
             )
         );
         deploymentIds.add(
             deployProcessString(
-                ("<definitions " +
+                "<definitions " +
                     NAMESPACE +
                     " " +
                     TARGET_NAMESPACE +
                     ">" +
                     "  <process id='IDR' name='Insurance Damage Report 3' />" +
-                    "</definitions>")
+                    "</definitions>"
             )
         );
         deploymentIds.add(
             deployProcessString(
-                ("<definitions " +
+                "<definitions " +
                     NAMESPACE +
                     " " +
                     TARGET_NAMESPACE +
                     ">" +
                     "  <process id='EN' name='Expense Note 1' />" +
-                    "</definitions>")
+                    "</definitions>"
             )
         );
         deploymentIds.add(
             deployProcessString(
-                ("<definitions " +
+                "<definitions " +
                     NAMESPACE +
                     " " +
                     TARGET_NAMESPACE +
                     ">" +
                     "  <process id='EN' name='Expense Note 2' />" +
-                    "</definitions>")
+                    "</definitions>"
             )
         );
 
@@ -185,24 +185,24 @@ public class ProcessDefinitionsTest extends PluggableActivitiTestCase {
         List<String> deploymentIds = new ArrayList<String>();
         deploymentIds.add(
             deployProcessString(
-                ("<definitions " +
+                "<definitions " +
                     NAMESPACE +
                     " " +
                     TARGET_NAMESPACE +
                     ">" +
                     "  <process id='IDR' name='Insurance Damage Report' />" +
-                    "</definitions>")
+                    "</definitions>"
             )
         );
         deploymentIds.add(
             deployProcessString(
-                ("<definitions " +
+                "<definitions " +
                     NAMESPACE +
                     " " +
                     TARGET_NAMESPACE +
                     ">" +
                     "  <process id='IDR' name='Insurance Damage Report' />" +
-                    "</definitions>")
+                    "</definitions>"
             )
         );
 
@@ -234,12 +234,12 @@ public class ProcessDefinitionsTest extends PluggableActivitiTestCase {
 
     public void testProcessDefinitionDescription() {
         String deploymentId = deployProcessString(
-            ("<definitions " +
+            "<definitions " +
                 NAMESPACE +
                 " " +
                 TARGET_NAMESPACE +
                 ">" +
-                "  <process id='test' name='test'><documentation>This is a test</documentation></process></definitions>")
+                "  <process id='test' name='test'><documentation>This is a test</documentation></process></definitions>"
         );
         ProcessDefinition processDefinition = repositoryService
             .createProcessDefinitionQuery()

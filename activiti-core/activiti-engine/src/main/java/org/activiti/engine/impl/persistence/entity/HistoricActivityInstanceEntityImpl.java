@@ -26,7 +26,8 @@ import org.activiti.engine.ProcessEngineConfiguration;
  */
 public class HistoricActivityInstanceEntityImpl
     extends HistoricScopeInstanceEntityImpl
-    implements HistoricActivityInstanceEntity {
+    implements HistoricActivityInstanceEntity
+{
 
     private static final long serialVersionUID = 1L;
 

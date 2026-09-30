@@ -27,7 +27,8 @@ import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
  */
 public class EventSubscriptionQueryImpl
     extends AbstractQuery<EventSubscriptionQueryImpl, EventSubscriptionEntity>
-    implements Serializable {
+    implements Serializable
+{
 
     private static final long serialVersionUID = 1L;
 

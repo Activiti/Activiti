@@ -24,7 +24,8 @@ import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity
 
  */
 public class SignalEventSubscriptionByProcInstAndEventNameMatcher
-    extends CachedEntityMatcherAdapter<EventSubscriptionEntity> {
+    extends CachedEntityMatcherAdapter<EventSubscriptionEntity>
+{
 
     @Override
     public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity, Object parameter) {

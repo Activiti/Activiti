@@ -22,7 +22,8 @@ import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 
 public class ToTimerRetriesDecrementedConverter
-    implements EventConverter<BPMNTimerRetriesDecrementedEvent, ActivitiEvent> {
+    implements EventConverter<BPMNTimerRetriesDecrementedEvent, ActivitiEvent>
+{
 
     private BPMNTimerConverter bpmnTimerConverter;
 

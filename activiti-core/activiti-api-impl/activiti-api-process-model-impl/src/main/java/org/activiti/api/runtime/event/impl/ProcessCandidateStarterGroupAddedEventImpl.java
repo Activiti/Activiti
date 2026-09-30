@@ -24,7 +24,8 @@ public class ProcessCandidateStarterGroupAddedEventImpl
         ProcessCandidateStarterGroup,
         ProcessCandidateStarterGroupEvent.ProcessCandidateStarterGroupEvents
     >
-    implements ProcessCandidateStarterGroupAddedEvent {
+    implements ProcessCandidateStarterGroupAddedEvent
+{
 
     public ProcessCandidateStarterGroupAddedEventImpl() {}
 

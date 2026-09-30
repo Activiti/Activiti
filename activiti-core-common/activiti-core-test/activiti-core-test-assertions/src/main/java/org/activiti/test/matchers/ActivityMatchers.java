@@ -66,9 +66,9 @@ public abstract class ActivityMatchers {
                 .extracting(event -> event.getEntity().getActivityType(), event -> event.getEntity().getElementId())
                 .as(
                     "Unable to find event " +
-                    BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED +
-                    " for element " +
-                    definitionKey
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED +
+                        " for element " +
+                        definitionKey
                 )
                 .contains(tuple(getActivityType(), definitionKey));
         };

@@ -36,12 +36,9 @@ public class BpmnParseTest extends PluggableActivitiTestCase {
 
     public void testInvalidProcessDefinition() {
         assertThatExceptionOfType(XMLException.class).isThrownBy(() -> {
-                String resource = TestHelper.getBpmnProcessDefinitionResource(
-                    getClass(),
-                    "testInvalidProcessDefinition"
-                );
-                repositoryService.createDeployment().name(resource).addClasspathResource(resource).deploy();
-            });
+            String resource = TestHelper.getBpmnProcessDefinitionResource(getClass(), "testInvalidProcessDefinition");
+            repositoryService.createDeployment().name(resource).addClasspathResource(resource).deploy();
+        });
     }
 
     public void testParseWithBpmnNamespacePrefix() {

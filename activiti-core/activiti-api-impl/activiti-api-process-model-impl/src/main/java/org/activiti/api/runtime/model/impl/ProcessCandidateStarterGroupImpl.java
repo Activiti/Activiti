@@ -20,7 +20,8 @@ import org.activiti.api.process.model.ProcessCandidateStarterGroup;
 
 public class ProcessCandidateStarterGroupImpl
     extends ProcessCandidateStarterImpl
-    implements ProcessCandidateStarterGroup {
+    implements ProcessCandidateStarterGroup
+{
 
     private String groupId;
 

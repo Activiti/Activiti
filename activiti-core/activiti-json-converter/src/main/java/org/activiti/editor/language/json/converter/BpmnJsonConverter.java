@@ -202,11 +202,11 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
         double maxX = 0.0;
         double maxY = 0.0;
         for (GraphicInfo flowInfo : model.getLocationMap().values()) {
-            if ((flowInfo.getX() + flowInfo.getWidth()) > maxX) {
+            if (flowInfo.getX() + flowInfo.getWidth() > maxX) {
                 maxX = flowInfo.getX() + flowInfo.getWidth();
             }
 
-            if ((flowInfo.getY() + flowInfo.getHeight()) > maxY) {
+            if (flowInfo.getY() + flowInfo.getHeight() > maxY) {
                 maxY = flowInfo.getY() + flowInfo.getHeight();
             }
         }
@@ -600,7 +600,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
                         signal.setId(signalId);
                         signal.setName(signalName);
                         signal.setScope(
-                            (signalScope.toLowerCase().equals("processinstance"))
+                            signalScope.toLowerCase().equals("processinstance")
                                 ? Signal.SCOPE_PROCESS_INSTANCE
                                 : Signal.SCOPE_GLOBAL
                         );
@@ -1093,11 +1093,23 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
                     graphicInfoList.add(createGraphicInfo(x, y));
                 }
 
-                double startLastLineX = dockersNode.get(dockersNode.size() - 2).get(EDITOR_BOUNDS_X).asDouble();
-                double startLastLineY = dockersNode.get(dockersNode.size() - 2).get(EDITOR_BOUNDS_Y).asDouble();
+                double startLastLineX = dockersNode
+                    .get(dockersNode.size() - 2)
+                    .get(EDITOR_BOUNDS_X)
+                    .asDouble();
+                double startLastLineY = dockersNode
+                    .get(dockersNode.size() - 2)
+                    .get(EDITOR_BOUNDS_Y)
+                    .asDouble();
 
-                double endLastLineX = dockersNode.get(dockersNode.size() - 1).get(EDITOR_BOUNDS_X).asDouble();
-                double endLastLineY = dockersNode.get(dockersNode.size() - 1).get(EDITOR_BOUNDS_Y).asDouble();
+                double endLastLineX = dockersNode
+                    .get(dockersNode.size() - 1)
+                    .get(EDITOR_BOUNDS_X)
+                    .asDouble();
+                double endLastLineY = dockersNode
+                    .get(dockersNode.size() - 1)
+                    .get(EDITOR_BOUNDS_Y)
+                    .asDouble();
 
                 endLastLineX += targetInfo.getX();
                 endLastLineY += targetInfo.getY();
@@ -1111,8 +1123,14 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
             if (DI_RECTANGLES.contains(targetRefStencilId)) {
                 target2D = createRectangle(targetInfo);
             } else if (DI_CIRCLES.contains(targetRefStencilId)) {
-                double targetDockersX = dockersNode.get(dockersNode.size() - 1).get(EDITOR_BOUNDS_X).asDouble();
-                double targetDockersY = dockersNode.get(dockersNode.size() - 1).get(EDITOR_BOUNDS_Y).asDouble();
+                double targetDockersX = dockersNode
+                    .get(dockersNode.size() - 1)
+                    .get(EDITOR_BOUNDS_X)
+                    .asDouble();
+                double targetDockersY = dockersNode
+                    .get(dockersNode.size() - 1)
+                    .get(EDITOR_BOUNDS_Y)
+                    .asDouble();
 
                 target2D = new Circle2D(
                     targetInfo.getX() + targetDockersX,
@@ -1149,8 +1167,8 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
     }
 
     private Polyline2D createGateway(GraphicInfo graphicInfo) {
-        double middleX = graphicInfo.getX() + (graphicInfo.getWidth() / 2);
-        double middleY = graphicInfo.getY() + (graphicInfo.getHeight() / 2);
+        double middleX = graphicInfo.getX() + graphicInfo.getWidth() / 2;
+        double middleY = graphicInfo.getY() + graphicInfo.getHeight() / 2;
 
         Polyline2D gatewayRectangle = new Polyline2D(
             new Point2D(graphicInfo.getX(), middleY),

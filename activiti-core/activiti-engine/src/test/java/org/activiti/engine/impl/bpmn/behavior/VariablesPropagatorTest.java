@@ -15,16 +15,22 @@
  */
 package org.activiti.engine.impl.bpmn.behavior;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import org.activiti.bpmn.model.Activity;
+import org.activiti.bpmn.model.CallActivity;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
@@ -94,6 +100,39 @@ public class VariablesPropagatorTest {
         when(execution.getParent()).thenReturn(parentExecution);
         when(parentExecution.isMultiInstanceRoot()).thenReturn(multiInstanceRoot);
         return execution;
+    }
+
+    @Test
+    public void should_keepCollectionElementIndexVariable_when_multiInstanceCallActivityOutputsDoNotContainIt() {
+        //given
+        final String indexVariable = "level1Index";
+        final DelegateExecution execution = buildExecution(UUID.randomUUID().toString(), true);
+
+        final SequentialMultiInstanceBehavior multiInstanceBehavior = new SequentialMultiInstanceBehavior(
+            mock(Activity.class),
+            mock(AbstractBpmnActivityBehavior.class)
+        );
+        multiInstanceBehavior.setCollectionElementIndexVariable(indexVariable);
+        final CallActivity callActivity = new CallActivity();
+        callActivity.setBehavior(multiInstanceBehavior);
+        when(execution.getCurrentFlowElement()).thenReturn(callActivity);
+
+        final Map<String, Object> availableVariables = new HashMap<>();
+        availableVariables.put(indexVariable, 1);
+        availableVariables.put("childResult", "value");
+        final DelegateExecution subProcessInstance = mock(DelegateExecution.class);
+        when(subProcessInstance.getVariables()).thenReturn(availableVariables);
+
+        final Map<String, Object> outboundVariables = Collections.singletonMap("parentResult", "value");
+        given(
+            variablesCalculator.calculateOutPutVariables(any(MappingExecutionContext.class), eq(availableVariables))
+        ).willReturn(outboundVariables);
+
+        //when
+        variablesPropagator.propagate(execution, subProcessInstance);
+
+        //then
+        verify(execution, never()).removeVariableLocal(indexVariable);
     }
 
     @Test

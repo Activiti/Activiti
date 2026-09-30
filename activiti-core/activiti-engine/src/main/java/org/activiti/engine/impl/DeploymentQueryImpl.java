@@ -29,7 +29,8 @@ import org.activiti.engine.repository.DeploymentQuery;
  */
 public class DeploymentQueryImpl
     extends AbstractQuery<DeploymentQuery, Deployment>
-    implements DeploymentQuery, Serializable {
+    implements DeploymentQuery, Serializable
+{
 
     private static final long serialVersionUID = 1L;
     protected String deploymentId;

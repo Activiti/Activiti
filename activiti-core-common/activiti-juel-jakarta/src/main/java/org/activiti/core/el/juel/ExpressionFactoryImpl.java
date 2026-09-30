@@ -258,7 +258,7 @@ public class ExpressionFactoryImpl extends ExpressionFactory {
                 Properties properties = new Properties();
                 InputStream input = null;
                 try {
-                    properties.load(input = new FileInputStream(file));
+                    properties.load((input = new FileInputStream(file)));
                 } catch (IOException e) {
                     throw new ELException("Cannot read default EL properties", e);
                 } finally {

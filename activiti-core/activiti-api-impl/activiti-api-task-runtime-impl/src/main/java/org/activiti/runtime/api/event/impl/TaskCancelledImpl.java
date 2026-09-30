@@ -22,7 +22,8 @@ import org.activiti.api.task.runtime.events.TaskCancelledEvent;
 
 public class TaskCancelledImpl
     extends RuntimeEventImpl<Task, TaskRuntimeEvent.TaskEvents>
-    implements TaskCancelledEvent {
+    implements TaskCancelledEvent
+{
 
     private final String reason;
 

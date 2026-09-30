@@ -52,8 +52,8 @@ public class AdhocSubProcessActivityBehavior extends AbstractBpmnActivityBehavio
         } else {
             throw new ActivitiException(
                 "Programmatic error: sub process behaviour can only be applied" +
-                " to a SubProcess instance, but got an instance of " +
-                flowElement
+                    " to a SubProcess instance, but got an instance of " +
+                    flowElement
             );
         }
         return subProcess;

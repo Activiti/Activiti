@@ -24,7 +24,8 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 
 public class NativeHistoricVariableInstanceQueryImpl
     extends AbstractNativeQuery<NativeHistoricVariableInstanceQuery, HistoricVariableInstance>
-    implements NativeHistoricVariableInstanceQuery {
+    implements NativeHistoricVariableInstanceQuery
+{
 
     private static final long serialVersionUID = 1L;
 

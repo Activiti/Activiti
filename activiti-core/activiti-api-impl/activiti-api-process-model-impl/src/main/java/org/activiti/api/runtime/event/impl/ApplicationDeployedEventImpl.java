@@ -21,7 +21,8 @@ import org.activiti.api.process.model.events.ApplicationEvent;
 
 public class ApplicationDeployedEventImpl
     extends RuntimeEventImpl<Deployment, ApplicationEvent.ApplicationEvents>
-    implements ApplicationDeployedEvent {
+    implements ApplicationDeployedEvent
+{
 
     private final ApplicationEvents eventType;
 

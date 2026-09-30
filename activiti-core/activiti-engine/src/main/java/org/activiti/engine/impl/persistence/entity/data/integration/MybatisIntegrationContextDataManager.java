@@ -25,7 +25,8 @@ import org.activiti.engine.impl.persistence.entity.integration.IntegrationContex
 
 public class MybatisIntegrationContextDataManager
     extends AbstractDataManager<IntegrationContextEntity>
-    implements IntegrationContextDataManager {
+    implements IntegrationContextDataManager
+{
 
     public MybatisIntegrationContextDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
         super(processEngineConfiguration);

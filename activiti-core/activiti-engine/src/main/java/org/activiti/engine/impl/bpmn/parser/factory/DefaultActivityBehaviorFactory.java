@@ -340,9 +340,9 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
             } catch (Exception e) {
                 throw new ActivitiException(
                     "Could not instantiate businessRuleTask (id:" +
-                    businessRuleTask.getId() +
-                    ") class: " +
-                    businessRuleTask.getClassName(),
+                        businessRuleTask.getId() +
+                        ") class: " +
+                        businessRuleTask.getClassName(),
                     e
                 );
             }
@@ -582,9 +582,9 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
             endEvent.getEventDefinitions().getFirst() instanceof TerminateEventDefinition
         ) {
             terminateAll = ((TerminateEventDefinition) endEvent.getEventDefinitions().getFirst()).isTerminateAll();
-            terminateMultiInstance = ((TerminateEventDefinition) endEvent
-                    .getEventDefinitions()
-                    .getFirst()).isTerminateMultiInstance();
+            terminateMultiInstance = (
+                (TerminateEventDefinition) endEvent.getEventDefinitions().getFirst()
+            ).isTerminateMultiInstance();
         }
 
         TerminateEndEventActivityBehavior terminateEndEventActivityBehavior = new TerminateEndEventActivityBehavior();

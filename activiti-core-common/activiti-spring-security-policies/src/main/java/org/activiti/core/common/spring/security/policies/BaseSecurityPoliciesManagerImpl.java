@@ -79,7 +79,7 @@ public abstract class BaseSecurityPoliciesManagerImpl implements SecurityPolicie
     }
 
     private boolean isUserInPolicy(SecurityPolicy ssp, String userId) {
-        return (ssp.getUsers() != null && !ssp.getUsers().isEmpty() && ssp.getUsers().contains(userId));
+        return ssp.getUsers() != null && !ssp.getUsers().isEmpty() && ssp.getUsers().contains(userId);
     }
 
     private boolean isGroupInPolicy(SecurityPolicy ssp, List<String> groups) {

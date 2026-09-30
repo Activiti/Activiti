@@ -87,7 +87,7 @@ public class VariablesTest extends PluggableActivitiTestCase {
 
         // 10 booleans
         for (int i = 0; i < 10; i++) {
-            vars.put("booleanValue" + i, (i % 2 == 0));
+            vars.put("booleanValue" + i, i % 2 == 0);
         }
 
         // 10 Serializables

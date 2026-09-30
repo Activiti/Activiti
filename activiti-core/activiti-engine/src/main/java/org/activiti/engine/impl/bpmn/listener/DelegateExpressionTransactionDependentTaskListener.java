@@ -56,9 +56,9 @@ public class DelegateExpressionTransactionDependentTaskListener implements Trans
         } else {
             throw new ActivitiIllegalArgumentException(
                 "Delegate expression " +
-                expression +
-                " did not resolve to an implementation of " +
-                TransactionDependentTaskListener.class
+                    expression +
+                    " did not resolve to an implementation of " +
+                    TransactionDependentTaskListener.class
             );
         }
     }

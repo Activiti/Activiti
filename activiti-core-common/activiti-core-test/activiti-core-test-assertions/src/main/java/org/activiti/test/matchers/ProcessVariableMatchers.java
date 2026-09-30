@@ -50,11 +50,11 @@ public class ProcessVariableMatchers {
                 .extracting(event -> event.getEntity().getName(), event -> event.getEntity().getValue())
                 .as(
                     "Unable to find event " +
-                    VariableEvent.VariableEvents.VARIABLE_CREATED +
-                    " for variable " +
-                    variableName +
-                    " in process instance " +
-                    operationScope.getProcessInstanceId()
+                        VariableEvent.VariableEvents.VARIABLE_CREATED +
+                        " for variable " +
+                        variableName +
+                        " in process instance " +
+                        operationScope.getProcessInstanceId()
                 )
                 .contains(tuple(variableName, value));
         };

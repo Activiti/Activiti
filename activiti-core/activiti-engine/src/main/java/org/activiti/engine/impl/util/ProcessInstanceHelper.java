@@ -55,10 +55,10 @@ public class ProcessInstanceHelper {
         if (ProcessDefinitionUtil.isProcessDefinitionSuspended(processDefinition.getId())) {
             throw new ActivitiException(
                 "Cannot start process instance. Process definition " +
-                processDefinition.getName() +
-                " (id = " +
-                processDefinition.getId() +
-                ") is suspended"
+                    processDefinition.getName() +
+                    " (id = " +
+                    processDefinition.getId() +
+                    ") is suspended"
             );
         }
 
@@ -66,10 +66,10 @@ public class ProcessInstanceHelper {
         if (process == null) {
             throw new ActivitiException(
                 "Cannot start process instance. Process model " +
-                processDefinition.getName() +
-                " (id = " +
-                processDefinition.getId() +
-                ") could not be found"
+                    processDefinition.getName() +
+                    " (id = " +
+                    processDefinition.getId() +
+                    ") could not be found"
             );
         }
         return process;
@@ -188,9 +188,9 @@ public class ProcessInstanceHelper {
         if (initialFlowElement == null) {
             throw new ActivitiException(
                 "No message start event found for process definition " +
-                processDefinition.getId() +
-                " and message name " +
-                messageName
+                    processDefinition.getId() +
+                    " and message name " +
+                    messageName
             );
         }
         return initialFlowElement;
@@ -388,10 +388,10 @@ public class ProcessInstanceHelper {
         ExpressionManager expressionManager = commandContext.getProcessEngineConfiguration().getExpressionManager();
 
         return Optional.ofNullable(messageEventDefinition.getCorrelationKey()).map(correlationKey -> {
-                Expression expression = expressionManager.createExpression(messageEventDefinition.getCorrelationKey());
+            Expression expression = expressionManager.createExpression(messageEventDefinition.getCorrelationKey());
 
-                return expression.getValue(execution).toString();
-            });
+            return expression.getValue(execution).toString();
+        });
     }
 
     protected String getMessageName(

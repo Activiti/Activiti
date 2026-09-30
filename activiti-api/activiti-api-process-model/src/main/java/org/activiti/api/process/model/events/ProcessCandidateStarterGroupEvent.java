@@ -20,10 +20,8 @@ import org.activiti.api.process.model.ProcessCandidateStarterGroup;
 
 public interface ProcessCandidateStarterGroupEvent
     extends
-        RuntimeEvent<
-            ProcessCandidateStarterGroup,
-            ProcessCandidateStarterGroupEvent.ProcessCandidateStarterGroupEvents
-        > {
+        RuntimeEvent<ProcessCandidateStarterGroup, ProcessCandidateStarterGroupEvent.ProcessCandidateStarterGroupEvents>
+{
     enum ProcessCandidateStarterGroupEvents {
         PROCESS_CANDIDATE_STARTER_GROUP_ADDED,
 

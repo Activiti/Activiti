@@ -35,9 +35,9 @@ public abstract class AbstractEventHandler implements EventHandler {
         if (currentFlowElement == null) {
             throw new ActivitiException(
                 "Error while sending signal for event subscription '" +
-                eventSubscription.getId() +
-                "': " +
-                "no activity associated with event subscription"
+                    eventSubscription.getId() +
+                    "': " +
+                    "no activity associated with event subscription"
             );
         }
 

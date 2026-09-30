@@ -21,7 +21,8 @@ package org.activiti.engine.impl.persistence.entity;
  */
 public class CompensateEventSubscriptionEntityImpl
     extends EventSubscriptionEntityImpl
-    implements CompensateEventSubscriptionEntity {
+    implements CompensateEventSubscriptionEntity
+{
 
     private static final long serialVersionUID = 1L;
 

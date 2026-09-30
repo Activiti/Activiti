@@ -40,13 +40,11 @@ public class ProcessCreatedListenerDelegate implements ActivitiEventListener {
     @Override
     public void onEvent(ActivitiEvent event) {
         if (event instanceof ActivitiEntityEvent) {
-            entityCreatedEventConverter
-                .from((ActivitiEntityEvent) event)
-                .ifPresent(convertedEvent -> {
-                    for (ProcessRuntimeEventListener<ProcessCreatedEvent> listener : listeners) {
-                        listener.onEvent(convertedEvent);
-                    }
-                });
+            entityCreatedEventConverter.from((ActivitiEntityEvent) event).ifPresent(convertedEvent -> {
+                for (ProcessRuntimeEventListener<ProcessCreatedEvent> listener : listeners) {
+                    listener.onEvent(convertedEvent);
+                }
+            });
         }
     }
 

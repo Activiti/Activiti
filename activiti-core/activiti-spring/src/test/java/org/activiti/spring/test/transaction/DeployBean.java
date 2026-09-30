@@ -31,7 +31,7 @@ public class DeployBean {
             .addString(
                 "process01.bpmn20.xml",
                 "<definitions xmlns='http://www.omg.org/spec/BPMN/20100524/MODEL' targetNamespace='http://activiti.org/BPMN20'>" +
-                "<process id='process01' name='Insurance Damage Report' /></definitions>"
+                    "<process id='process01' name='Insurance Damage Report' /></definitions>"
             )
             .deploy();
 
@@ -40,7 +40,7 @@ public class DeployBean {
             .addString(
                 "process01.bpmn20.xml",
                 "<definitions xmlns='http://www.omg.org/spec/BPMN/20100524/MODEL' targetNamespace='http://activiti.org/BPMN20'>" +
-                "<process id='process01' name='Insurance Damage Report' this_should='fail' /></definitions>"
+                    "<process id='process01' name='Insurance Damage Report' this_should='fail' /></definitions>"
             )
             .deploy();
     }

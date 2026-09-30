@@ -31,7 +31,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class APITaskConverter
     extends ListConverter<org.activiti.engine.task.Task, Task>
-    implements ModelConverter<org.activiti.engine.task.Task, Task> {
+    implements ModelConverter<org.activiti.engine.task.Task, Task>
+{
 
     private final TaskService taskService;
 

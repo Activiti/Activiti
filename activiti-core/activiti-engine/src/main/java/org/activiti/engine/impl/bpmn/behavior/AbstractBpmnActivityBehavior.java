@@ -81,7 +81,7 @@ public class AbstractBpmnActivityBehavior extends FlowNodeActivityBehavior {
             childExecutionEntity.setCurrentFlowElement(boundaryEvent);
             childExecutionEntity.setScope(false);
 
-            ActivityBehavior boundaryEventBehavior = ((ActivityBehavior) boundaryEvent.getBehavior());
+            ActivityBehavior boundaryEventBehavior = (ActivityBehavior) boundaryEvent.getBehavior();
             boundaryEventBehavior.execute(childExecutionEntity);
         }
     }

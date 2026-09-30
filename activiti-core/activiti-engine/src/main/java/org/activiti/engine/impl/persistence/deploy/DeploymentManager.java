@@ -110,10 +110,10 @@ public class DeploymentManager {
         if (processDefinition == null) {
             throw new ActivitiObjectNotFoundException(
                 "no processes deployed with key '" +
-                processDefinitionKey +
-                "' for tenant identifier '" +
-                tenantId +
-                "'",
+                    processDefinitionKey +
+                    "' for tenant identifier '" +
+                    tenantId +
+                    "'",
                 ProcessDefinition.class
             );
         }
@@ -135,10 +135,10 @@ public class DeploymentManager {
         if (processDefinition == null) {
             throw new ActivitiObjectNotFoundException(
                 "no processes deployed with key = '" +
-                processDefinitionKey +
-                "' and version = '" +
-                processDefinitionVersion +
-                "'",
+                    processDefinitionKey +
+                    "' and version = '" +
+                    processDefinitionVersion +
+                    "'",
                 ProcessDefinition.class
             );
         }
@@ -193,10 +193,10 @@ public class DeploymentManager {
             .orElseThrow(() ->
                 new ActivitiException(
                     "deployment '" +
-                    deploymentId +
-                    "' didn't put process definition '" +
-                    processDefinitionId +
-                    "' in the cache"
+                        deploymentId +
+                        "' didn't put process definition '" +
+                        processDefinitionId +
+                        "' in the cache"
                 )
             );
     }

@@ -102,9 +102,9 @@ public class MessageThrowEventTest extends ResourceActivitiTestCase {
     @Test
     public void testMyThrowMessageDelegateFactory() {
         assertThat(
-            StandaloneProcessEngineConfiguration.class.cast(
-                processEngine.getProcessEngineConfiguration()
-            ).getActivityBehaviorFactory()
+            StandaloneProcessEngineConfiguration.class
+                .cast(processEngine.getProcessEngineConfiguration())
+                .getActivityBehaviorFactory()
         )
             .as("should provide custom throw message delegate factory")
             .extracting("throwMessageDelegateFactory")

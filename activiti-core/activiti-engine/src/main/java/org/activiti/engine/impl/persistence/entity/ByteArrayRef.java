@@ -51,7 +51,7 @@ public class ByteArrayRef implements Serializable {
 
     public byte[] getBytes() {
         ensureInitialized();
-        return (entity != null ? entity.getBytes() : null);
+        return entity != null ? entity.getBytes() : null;
     }
 
     public void setValue(String name, byte[] bytes) {

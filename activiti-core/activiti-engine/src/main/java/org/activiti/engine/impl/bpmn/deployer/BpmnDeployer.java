@@ -254,12 +254,12 @@ public class BpmnDeployer implements Deployer {
         for (ProcessDefinitionEntity processDefinitionEntity : parsedDeployment.getAllProcessDefinitions()) {
             log.info(
                 "Process deployed: {id: " +
-                processDefinitionEntity.getId() +
-                ", key: " +
-                processDefinitionEntity.getKey() +
-                ", name: " +
-                processDefinitionEntity.getName() +
-                " }"
+                    processDefinitionEntity.getId() +
+                    ", key: " +
+                    processDefinitionEntity.getKey() +
+                    ", name: " +
+                    processDefinitionEntity.getName() +
+                    " }"
             );
             if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
                 commandContext
@@ -417,8 +417,7 @@ public class BpmnDeployer implements Deployer {
                                     "description",
                                     documentation,
                                     infoNode
-                                ) ==
-                                false
+                                ) == false
                             ) {
                                 dynamicBpmnService.changeLocalizationDescription(
                                     locale,
@@ -514,8 +513,7 @@ public class BpmnDeployer implements Deployer {
                                 DynamicBpmnConstants.LOCALIZATION_NAME,
                                 name,
                                 infoNode
-                            ) ==
-                            false
+                            ) == false
                         ) {
                             dynamicBpmnService.changeLocalizationName(locale, dataObject.getId(), name, infoNode);
                             localizationValuesChanged = true;
@@ -529,8 +527,7 @@ public class BpmnDeployer implements Deployer {
                                 DynamicBpmnConstants.LOCALIZATION_DESCRIPTION,
                                 documentation,
                                 infoNode
-                            ) ==
-                            false
+                            ) == false
                         ) {
                             dynamicBpmnService.changeLocalizationDescription(
                                 locale,

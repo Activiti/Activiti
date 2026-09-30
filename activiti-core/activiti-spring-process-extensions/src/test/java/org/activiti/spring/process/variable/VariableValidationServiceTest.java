@@ -61,14 +61,12 @@ class VariableValidationServiceTest {
     void should_returnEmptyErrors_when_validatingNullValueThroughServiceForEveryRegisteredType() {
         assertThat(variableTypeMap).hasSizeGreaterThanOrEqualTo(11);
 
-        variableTypeMap
-            .keySet()
-            .forEach(typeKey -> {
-                VariableDefinition definition = definitionOfType("var-" + typeKey, typeKey);
-                assertThat(variableValidationService.validateWithErrors(null, definition))
-                    .as("null validation through service for type '%s'", typeKey)
-                    .isEmpty();
-            });
+        variableTypeMap.keySet().forEach(typeKey -> {
+            VariableDefinition definition = definitionOfType("var-" + typeKey, typeKey);
+            assertThat(variableValidationService.validateWithErrors(null, definition))
+                .as("null validation through service for type '%s'", typeKey)
+                .isEmpty();
+        });
     }
 
     @Test

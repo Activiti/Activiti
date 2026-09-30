@@ -172,7 +172,7 @@ public class JuelExpression implements Expression {
 
         private static Optional<FlowElement> extractFlowElement(VariableScope variableScope) {
             return Optional.ofNullable(
-                (variableScope instanceof DelegateExecution execution) ? execution.getCurrentFlowElement() : null
+                variableScope instanceof DelegateExecution execution ? execution.getCurrentFlowElement() : null
             );
         }
 
@@ -197,16 +197,14 @@ public class JuelExpression implements Expression {
             VariableScope variableScope,
             String expressionText
         ) {
-            return (
-                sequenceFlow -> {
-                    var activeCondition = getActiveConditionExpression(
-                        sequenceFlow.getConditionExpression(),
-                        sequenceFlow,
-                        variableScope
-                    );
-                    return Objects.equals(activeCondition, expressionText);
-                }
-            );
+            return sequenceFlow -> {
+                var activeCondition = getActiveConditionExpression(
+                    sequenceFlow.getConditionExpression(),
+                    sequenceFlow,
+                    variableScope
+                );
+                return Objects.equals(activeCondition, expressionText);
+            };
         }
 
         private static String getActiveConditionExpression(

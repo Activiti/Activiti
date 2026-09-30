@@ -87,8 +87,8 @@ public class TimerUtil {
         if (expression == null) {
             throw new ActivitiException(
                 "Timer needs configuration (either timeDate, timeCycle or timeDuration is needed) (" +
-                timerEventDefinition.getId() +
-                ")"
+                    timerEventDefinition.getId() +
+                    ")"
             );
         }
 
@@ -110,8 +110,8 @@ public class TimerUtil {
         } else if (dueDateValue != null) {
             throw new ActivitiException(
                 "Timer '" +
-                executionEntity.getActivityId() +
-                "' was not configured with a valid duration/time, either hand in a java.util.Date or a String in format 'yyyy-MM-dd'T'hh:mm:ss'"
+                    executionEntity.getActivityId() +
+                    "' was not configured with a valid duration/time, either hand in a java.util.Date or a String in format 'yyyy-MM-dd'T'hh:mm:ss'"
             );
         }
 

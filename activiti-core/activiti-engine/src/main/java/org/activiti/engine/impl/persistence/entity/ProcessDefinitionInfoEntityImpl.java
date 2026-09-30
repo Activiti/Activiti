@@ -24,7 +24,8 @@ import java.util.Map;
  */
 public class ProcessDefinitionInfoEntityImpl
     extends AbstractEntity
-    implements ProcessDefinitionInfoEntity, Serializable {
+    implements ProcessDefinitionInfoEntity, Serializable
+{
 
     private static final long serialVersionUID = 1L;
 

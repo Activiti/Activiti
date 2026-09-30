@@ -26,7 +26,8 @@ import org.springframework.beans.factory.annotation.Value;
 
 public class ProcessSecurityPoliciesManagerImpl
     extends BaseSecurityPoliciesManagerImpl
-    implements ProcessSecurityPoliciesManager {
+    implements ProcessSecurityPoliciesManager
+{
 
     private final SecurityPoliciesRestrictionApplier<GetProcessDefinitionsPayload> processDefinitionRestrictionApplier;
 

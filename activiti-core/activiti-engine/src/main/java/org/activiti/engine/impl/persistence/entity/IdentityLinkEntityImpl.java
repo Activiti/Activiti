@@ -27,7 +27,8 @@ import org.activiti.engine.impl.db.BulkDeleteable;
  */
 public class IdentityLinkEntityImpl
     extends AbstractEntityNoRevision
-    implements IdentityLinkEntity, Serializable, BulkDeleteable {
+    implements IdentityLinkEntity, Serializable, BulkDeleteable
+{
 
     private static final long serialVersionUID = 1L;
 
@@ -139,7 +140,7 @@ public class IdentityLinkEntityImpl
     }
 
     public TaskEntity getTask() {
-        if ((task == null) && (taskId != null)) {
+        if (task == null && taskId != null) {
             this.task = Context.getCommandContext().getTaskEntityManager().findById(taskId);
         }
         return task;
@@ -151,7 +152,7 @@ public class IdentityLinkEntityImpl
     }
 
     public ExecutionEntity getProcessInstance() {
-        if ((processInstance == null) && (processInstanceId != null)) {
+        if (processInstance == null && processInstanceId != null) {
             this.processInstance = Context.getCommandContext().getExecutionEntityManager().findById(processInstanceId);
         }
         return processInstance;
@@ -163,7 +164,7 @@ public class IdentityLinkEntityImpl
     }
 
     public ProcessDefinitionEntity getProcessDef() {
-        if ((processDef == null) && (processDefId != null)) {
+        if (processDef == null && processDefId != null) {
             this.processDef = Context.getCommandContext().getProcessDefinitionEntityManager().findById(processDefId);
         }
         return processDef;

@@ -91,7 +91,8 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
 
     @Deployment(
         resources = {
-            "org/activiti/engine/test/db/processOne.bpmn20.xml", "org/activiti/engine/test/db/processTwo.bpmn20.xml",
+            "org/activiti/engine/test/db/processOne.bpmn20.xml",
+            "org/activiti/engine/test/db/processTwo.bpmn20.xml",
         }
     )
     public void testQueryForActiveDefinitions() {
@@ -109,7 +110,8 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
 
     @Deployment(
         resources = {
-            "org/activiti/engine/test/db/processOne.bpmn20.xml", "org/activiti/engine/test/db/processTwo.bpmn20.xml",
+            "org/activiti/engine/test/db/processOne.bpmn20.xml",
+            "org/activiti/engine/test/db/processTwo.bpmn20.xml",
         }
     )
     public void testQueryForSuspendedDefinitions() {
@@ -219,7 +221,7 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
         assertThat(managementService.createTimerJobQuery().count()).isEqualTo(1);
 
         // The jobs should simply be executed
-        processEngineConfiguration.getClock().setCurrentTime(new Date(now.getTime() + (60 * 60 * 1000))); // Timer is set to fire on 5 minutes
+        processEngineConfiguration.getClock().setCurrentTime(new Date(now.getTime() + 60 * 60 * 1000)); // Timer is set to fire on 5 minutes
         waitForJobExecutorToProcessAllJobs(2000L, 100L);
         assertThat(managementService.createJobQuery().count()).isEqualTo(0);
         assertThat(managementService.createTimerJobQuery().count()).isEqualTo(0);
@@ -232,7 +234,7 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
         processEngineConfiguration.getClock().setCurrentTime(startTime);
 
         // Suspend process definition in one week from now
-        long oneWeekFromStartTime = startTime.getTime() + (7 * 24 * 60 * 60 * 1000);
+        long oneWeekFromStartTime = startTime.getTime() + 7 * 24 * 60 * 60 * 1000;
         repositoryService.suspendProcessDefinitionById(
             processDefinition.getId(),
             false,
@@ -251,7 +253,7 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
         ).isEqualTo(1);
 
         // Move clock 8 days further and let job executor run
-        long eightDaysSinceStartTime = oneWeekFromStartTime + (24 * 60 * 60 * 1000);
+        long eightDaysSinceStartTime = oneWeekFromStartTime + 24 * 60 * 60 * 1000;
         processEngineConfiguration.getClock().setCurrentTime(new Date(eightDaysSinceStartTime));
         waitForJobExecutorToProcessAllJobs(5000L, 50L);
 
@@ -300,7 +302,7 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
         assertThat(repositoryService.createProcessDefinitionQuery().suspended().count()).isEqualTo(0);
 
         // Suspend process definition in one week from now
-        long oneWeekFromStartTime = startTime.getTime() + (7 * 24 * 60 * 60 * 1000);
+        long oneWeekFromStartTime = startTime.getTime() + 7 * 24 * 60 * 60 * 1000;
         repositoryService.suspendProcessDefinitionById(processDefinition.getId(), true, new Date(oneWeekFromStartTime));
 
         // Verify we can start process instances
@@ -314,7 +316,7 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
         ).isEqualTo(1);
 
         // Move clock 9 days further and let job executor run
-        long eightDaysSinceStartTime = oneWeekFromStartTime + (2 * 24 * 60 * 60 * 1000);
+        long eightDaysSinceStartTime = oneWeekFromStartTime + 2 * 24 * 60 * 60 * 1000;
         processEngineConfiguration.getClock().setCurrentTime(new Date(eightDaysSinceStartTime));
         waitForJobExecutorToProcessAllJobs(30000L, 50L);
 
@@ -366,11 +368,11 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
         assertThat(repositoryService.createProcessDefinitionQuery().suspended().count()).isEqualTo(1);
 
         // Activate in a day from now
-        long oneDayFromStart = startTime.getTime() + (24 * 60 * 60 * 1000);
+        long oneDayFromStart = startTime.getTime() + 24 * 60 * 60 * 1000;
         repositoryService.activateProcessDefinitionById(processDefinition.getId(), false, new Date(oneDayFromStart));
 
         // Move clock two days and let job executor run
-        long twoDaysFromStart = startTime.getTime() + (2 * 24 * 60 * 60 * 1000);
+        long twoDaysFromStart = startTime.getTime() + 2 * 24 * 60 * 60 * 1000;
         processEngineConfiguration.getClock().setCurrentTime(new Date(twoDaysFromStart));
         waitForJobExecutorToProcessAllJobs(5000L, 50L);
 
@@ -452,7 +454,7 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
         repositoryService.suspendProcessDefinitionByKey(
             "oneTaskProcess",
             true,
-            new Date(startTime.getTime() + (2 * hourInMs))
+            new Date(startTime.getTime() + 2 * hourInMs)
         );
         assertThat(repositoryService.createProcessDefinitionQuery().count()).isEqualTo(nrOfProcessDefinitions);
         assertThat(repositoryService.createProcessDefinitionQuery().active().count()).isEqualTo(nrOfProcessDefinitions);
@@ -468,7 +470,7 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
         }
 
         // Move time 3 hours and run job executor
-        processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + (3 * hourInMs)));
+        processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + 3 * hourInMs));
         waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(30000L, 100L);
         assertThat(repositoryService.createProcessDefinitionQuery().count()).isEqualTo(nrOfProcessDefinitions);
         assertThat(repositoryService.createProcessDefinitionQuery().active().count()).isEqualTo(0);
@@ -481,7 +483,7 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
         repositoryService.activateProcessDefinitionByKey(
             "oneTaskProcess",
             true,
-            new Date(startTime.getTime() + (5 * hourInMs))
+            new Date(startTime.getTime() + 5 * hourInMs)
         );
         assertThat(repositoryService.createProcessDefinitionQuery().count()).isEqualTo(nrOfProcessDefinitions);
         assertThat(repositoryService.createProcessDefinitionQuery().active().count()).isEqualTo(0);
@@ -491,7 +493,7 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
         assertThat(runtimeService.createProcessInstanceQuery().suspended().count()).isEqualTo(1);
 
         // Move time 6 hours and run job executor
-        processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + (6 * hourInMs)));
+        processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + 6 * hourInMs));
         waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(60000L, 100L);
         assertThat(repositoryService.createProcessDefinitionQuery().count()).isEqualTo(nrOfProcessDefinitions);
         assertThat(repositoryService.createProcessDefinitionQuery().active().count()).isEqualTo(nrOfProcessDefinitions);

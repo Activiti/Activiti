@@ -1,0 +1,12 @@
+apiVersion: updatebot.jenkins-x.io/v1alpha1
+kind: UpdateConfig
+spec:
+  rules:
+    - urls:
+        - https://github.com/Activiti/activiti-cloud
+      reusePullRequest: true
+      changes:
+        - regex:
+            pattern: "<activiti.version>(.*)</activiti.version>"
+            files:
+              - "**/pom.xml"

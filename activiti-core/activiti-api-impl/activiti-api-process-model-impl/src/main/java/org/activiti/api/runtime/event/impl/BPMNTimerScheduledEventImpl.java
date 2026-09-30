@@ -21,7 +21,8 @@ import org.activiti.api.process.model.events.BPMNTimerScheduledEvent;
 
 public class BPMNTimerScheduledEventImpl
     extends RuntimeEventImpl<BPMNTimer, BPMNTimerEvent.TimerEvents>
-    implements BPMNTimerScheduledEvent {
+    implements BPMNTimerScheduledEvent
+{
 
     public BPMNTimerScheduledEventImpl() {}
 

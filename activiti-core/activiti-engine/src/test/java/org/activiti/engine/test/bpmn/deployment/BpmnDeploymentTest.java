@@ -58,8 +58,9 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
         assertThat(processDefinition.getDiagramResourceName()).isNull();
         assertThat(processDefinition.hasStartFormKey()).isFalse();
 
-        ProcessDefinition readOnlyProcessDefinition =
-            ((RepositoryServiceImpl) repositoryService).getDeployedProcessDefinition(processDefinition.getId());
+        ProcessDefinition readOnlyProcessDefinition = (
+            (RepositoryServiceImpl) repositoryService
+        ).getDeployedProcessDefinition(processDefinition.getId());
         assertThat(readOnlyProcessDefinition.getDiagramResourceName()).isNull();
 
         // verify content
@@ -180,14 +181,14 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
         String bpmnResourceName2 =
             "org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testGetBpmnXmlFileThroughService2.bpmn20.xml";
         assertThatExceptionOfType(Exception.class).isThrownBy(() -> {
-                repositoryService
-                    .createDeployment()
-                    .enableDuplicateFiltering()
-                    .addClasspathResource(bpmnResourceName)
-                    .addClasspathResource(bpmnResourceName2)
-                    .name("duplicateAtTheSameTime")
-                    .deploy();
-            });
+            repositoryService
+                .createDeployment()
+                .enableDuplicateFiltering()
+                .addClasspathResource(bpmnResourceName)
+                .addClasspathResource(bpmnResourceName2)
+                .name("duplicateAtTheSameTime")
+                .deploy();
+        });
 
         // Verify that nothing is deployed
         assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(0);

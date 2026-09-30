@@ -43,7 +43,10 @@ public class TablePageQueryTest extends PluggableActivitiTestCase {
         assertThat(tablePage.getRows()).hasSize(5);
         assertThat(tablePage.getTotal()).isEqualTo(20);
 
-        tablePage = managementService.createTablePageQuery().tableName(tablePrefix + "ACT_RU_TASK").listPage(14, 10);
+        tablePage = managementService
+            .createTablePageQuery()
+            .tableName(tablePrefix + "ACT_RU_TASK")
+            .listPage(14, 10);
 
         assertThat(tablePage.getFirstResult()).isEqualTo(14);
         assertThat(tablePage.getSize()).isEqualTo(6);
@@ -97,7 +100,7 @@ public class TablePageQueryTest extends PluggableActivitiTestCase {
         ArrayList<String> taskIds = new ArrayList<String>();
         for (int i = 0; i < nrOfTasks; i++) {
             Task task = taskService.newTask();
-            task.setName(((char) ('A' + i)) + "");
+            task.setName((char) ('A' + i) + "");
             taskService.saveTask(task);
             taskIds.add(task.getId());
         }

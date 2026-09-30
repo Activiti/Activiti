@@ -40,13 +40,11 @@ public class SignalReceivedListenerDelegate implements ActivitiEventListener {
     @Override
     public void onEvent(ActivitiEvent event) {
         if (event instanceof ActivitiSignalEvent) {
-            converter
-                .from((ActivitiSignalEvent) event)
-                .ifPresent(convertedEvent -> {
-                    for (BPMNElementEventListener<BPMNSignalReceivedEvent> listener : processRuntimeEventListeners) {
-                        listener.onEvent(convertedEvent);
-                    }
-                });
+            converter.from((ActivitiSignalEvent) event).ifPresent(convertedEvent -> {
+                for (BPMNElementEventListener<BPMNSignalReceivedEvent> listener : processRuntimeEventListeners) {
+                    listener.onEvent(convertedEvent);
+                }
+            });
         }
     }
 

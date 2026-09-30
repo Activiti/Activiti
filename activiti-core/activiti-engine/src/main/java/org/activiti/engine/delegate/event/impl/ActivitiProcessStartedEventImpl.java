@@ -27,7 +27,8 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
  */
 public class ActivitiProcessStartedEventImpl
     extends ActivitiEntityWithVariablesEventImpl
-    implements ActivitiProcessStartedEvent {
+    implements ActivitiProcessStartedEvent
+{
 
     protected final String nestedProcessInstanceId;
 

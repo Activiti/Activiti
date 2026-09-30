@@ -27,7 +27,8 @@ import org.activiti.engine.impl.persistence.entity.data.HistoricDetailDataManage
 
 public class HistoricDetailEntityManagerImpl
     extends AbstractEntityManager<HistoricDetailEntity>
-    implements HistoricDetailEntityManager {
+    implements HistoricDetailEntityManager
+{
 
     protected HistoricDetailDataManager historicDetailDataManager;
 
@@ -76,7 +77,7 @@ public class HistoricDetailEntityManagerImpl
 
         if (entity instanceof HistoricDetailVariableInstanceUpdateEntity) {
             HistoricDetailVariableInstanceUpdateEntity historicDetailVariableInstanceUpdateEntity =
-                ((HistoricDetailVariableInstanceUpdateEntity) entity);
+                (HistoricDetailVariableInstanceUpdateEntity) entity;
             if (historicDetailVariableInstanceUpdateEntity.getByteArrayRef() != null) {
                 historicDetailVariableInstanceUpdateEntity.getByteArrayRef().delete();
             }

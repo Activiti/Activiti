@@ -194,7 +194,7 @@ public class SequenceFlowJsonConverter extends BaseBpmnJsonConverter {
                             setOutcomeConditionExpression(flow, expressionNode);
                         }
                     } else if (
-                        expressionNode.get("staticValue") != null && !(expressionNode.get("staticValue").isNull())
+                        expressionNode.get("staticValue") != null && !expressionNode.get("staticValue").isNull()
                     ) {
                         flow.setConditionExpression(expressionNode.get("staticValue").asString());
                     }
@@ -207,17 +207,17 @@ public class SequenceFlowJsonConverter extends BaseBpmnJsonConverter {
 
     protected void setFieldConditionExpression(SequenceFlow flow, JsonNode expressionNode) {
         String fieldId = null;
-        if (expressionNode.get("fieldId") != null && !(expressionNode.get("fieldId").isNull())) {
+        if (expressionNode.get("fieldId") != null && !expressionNode.get("fieldId").isNull()) {
             fieldId = expressionNode.get("fieldId").asString();
         }
 
         String operator = null;
-        if (expressionNode.get("operator") != null && !(expressionNode.get("operator").isNull())) {
+        if (expressionNode.get("operator") != null && !expressionNode.get("operator").isNull()) {
             operator = expressionNode.get("operator").asString();
         }
 
         String value = null;
-        if (expressionNode.get("value") != null && !(expressionNode.get("value").isNull())) {
+        if (expressionNode.get("value") != null && !expressionNode.get("value").isNull()) {
             value = expressionNode.get("value").asString();
         }
 
@@ -231,7 +231,7 @@ public class SequenceFlowJsonConverter extends BaseBpmnJsonConverter {
 
     protected void setOutcomeConditionExpression(SequenceFlow flow, JsonNode expressionNode) {
         Long formId = null;
-        if (expressionNode.get("outcomeFormId") != null && !(expressionNode.get("outcomeFormId").isNull())) {
+        if (expressionNode.get("outcomeFormId") != null && !expressionNode.get("outcomeFormId").isNull()) {
             formId = expressionNode.get("outcomeFormId").asLong();
         }
 
@@ -241,7 +241,7 @@ public class SequenceFlowJsonConverter extends BaseBpmnJsonConverter {
         }
 
         String outcomeName = null;
-        if (expressionNode.get("outcomeName") != null && !(expressionNode.get("outcomeName").isNull())) {
+        if (expressionNode.get("outcomeName") != null && !expressionNode.get("outcomeName").isNull()) {
             outcomeName = expressionNode.get("outcomeName").asString();
         }
 

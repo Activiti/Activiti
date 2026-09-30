@@ -26,7 +26,8 @@ import org.activiti.engine.impl.db.BulkDeleteable;
  */
 public class HistoricIdentityLinkEntityImpl
     extends AbstractEntityNoRevision
-    implements HistoricIdentityLinkEntity, Serializable, BulkDeleteable {
+    implements HistoricIdentityLinkEntity, Serializable, BulkDeleteable
+{
 
     private static final long serialVersionUID = 1L;
 

@@ -71,8 +71,8 @@ public class SetProcessDefinitionVersionCmd implements Command<Void>, Serializab
         if (processDefinitionVersion < 1) {
             throw new ActivitiIllegalArgumentException(
                 "The process definition version must be positive, but '" +
-                processDefinitionVersion +
-                "' has been provided."
+                    processDefinitionVersion +
+                    "' has been provided."
             );
         }
         this.processInstanceId = processInstanceId;
@@ -92,16 +92,16 @@ public class SetProcessDefinitionVersionCmd implements Command<Void>, Serializab
         } else if (!processInstance.isProcessInstanceType()) {
             throw new ActivitiIllegalArgumentException(
                 "A process instance id is required, but the provided id " +
-                "'" +
-                processInstanceId +
-                "' " +
-                "points to a child execution of process instance " +
-                "'" +
-                processInstance.getProcessInstanceId() +
-                "'. " +
-                "Please invoke the " +
-                getClass().getSimpleName() +
-                " with a root execution id."
+                    "'" +
+                    processInstanceId +
+                    "' " +
+                    "points to a child execution of process instance " +
+                    "'" +
+                    processInstance.getProcessInstanceId() +
+                    "'. " +
+                    "Please invoke the " +
+                    getClass().getSimpleName() +
+                    " with a root execution id."
             );
         }
 
@@ -145,17 +145,17 @@ public class SetProcessDefinitionVersionCmd implements Command<Void>, Serializab
         if (execution.getActivityId() != null && process.getFlowElement(execution.getActivityId(), true) == null) {
             throw new ActivitiException(
                 "The new process definition " +
-                "(key = '" +
-                newProcessDefinition.getKey() +
-                "') " +
-                "does not contain the current activity " +
-                "(id = '" +
-                execution.getActivityId() +
-                "') " +
-                "of the process instance " +
-                "(id = '" +
-                processInstanceId +
-                "')."
+                    "(key = '" +
+                    newProcessDefinition.getKey() +
+                    "') " +
+                    "does not contain the current activity " +
+                    "(id = '" +
+                    execution.getActivityId() +
+                    "') " +
+                    "of the process instance " +
+                    "(id = '" +
+                    processInstanceId +
+                    "')."
             );
         }
 

@@ -24,7 +24,8 @@ import org.activiti.engine.runtime.NativeExecutionQuery;
 
 public class NativeExecutionQueryImpl
     extends AbstractNativeQuery<NativeExecutionQuery, Execution>
-    implements NativeExecutionQuery {
+    implements NativeExecutionQuery
+{
 
     private static final long serialVersionUID = 1L;
 

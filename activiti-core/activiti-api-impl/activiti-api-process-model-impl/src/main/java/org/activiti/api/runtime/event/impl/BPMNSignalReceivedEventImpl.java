@@ -21,7 +21,8 @@ import org.activiti.api.process.model.events.BPMNSignalReceivedEvent;
 
 public class BPMNSignalReceivedEventImpl
     extends RuntimeEventImpl<BPMNSignal, BPMNSignalEvent.SignalEvents>
-    implements BPMNSignalReceivedEvent {
+    implements BPMNSignalReceivedEvent
+{
 
     public BPMNSignalReceivedEventImpl() {}
 

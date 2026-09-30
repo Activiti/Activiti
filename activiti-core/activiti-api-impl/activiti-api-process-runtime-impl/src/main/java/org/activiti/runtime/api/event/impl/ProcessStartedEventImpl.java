@@ -22,7 +22,8 @@ import org.activiti.api.runtime.event.impl.RuntimeEventImpl;
 
 public class ProcessStartedEventImpl
     extends RuntimeEventImpl<ProcessInstance, ProcessRuntimeEvent.ProcessEvents>
-    implements ProcessStartedEvent {
+    implements ProcessStartedEvent
+{
 
     private String nestedProcessDefinitionId;
     private String nestedProcessInstanceId;

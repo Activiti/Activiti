@@ -121,19 +121,19 @@ public class JobRetryCmd implements Command<Object> {
                     // is it the first exception
                     log.debug(
                         "Applying JobRetryStrategy '" +
-                        failedJobRetryTimeCycleValue +
-                        "' the first time for job " +
-                        job.getId() +
-                        " with " +
-                        durationHelper.getTimes() +
-                        " retries"
+                            failedJobRetryTimeCycleValue +
+                            "' the first time for job " +
+                            job.getId() +
+                            " with " +
+                            durationHelper.getTimes() +
+                            " retries"
                     );
                 } else {
                     log.debug(
                         "Decrementing retries of JobRetryStrategy '" +
-                        failedJobRetryTimeCycleValue +
-                        "' for job " +
-                        job.getId()
+                            failedJobRetryTimeCycleValue +
+                            "' for job " +
+                            job.getId()
                     );
                 }
 

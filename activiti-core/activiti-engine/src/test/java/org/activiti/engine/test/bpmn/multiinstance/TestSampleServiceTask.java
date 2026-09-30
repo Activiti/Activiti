@@ -29,11 +29,11 @@ public class TestSampleServiceTask extends AbstractBpmnActivityBehavior {
     public void execute(DelegateExecution execution) {
         IO.println(
             "###: execution: " +
-            execution.getId() +
-            "; " +
-            execution.getVariable("value") +
-            "; " +
-            getMultiInstanceActivityBehavior()
+                execution.getId() +
+                "; " +
+                execution.getVariable("value") +
+                "; " +
+                getMultiInstanceActivityBehavior()
         );
         leave(execution);
     }

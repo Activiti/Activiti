@@ -43,9 +43,9 @@ public class DbSchemaExport {
         if (!propertiesFile.exists()) {
             System.err.println(
                 "File '" +
-                args[0] +
-                "' doesn't exist \n" +
-                "Syntax: java -cp ... org.activiti.engine.impl.db.DbSchemaExport <path-to-properties-file> <path-to-export-file>\n"
+                    args[0] +
+                    "' doesn't exist \n" +
+                    "Syntax: java -cp ... org.activiti.engine.impl.db.DbSchemaExport <path-to-properties-file> <path-to-export-file>\n"
             );
             return;
         }

@@ -42,10 +42,10 @@ public class MapBusinessCalendarManager implements BusinessCalendarManager {
         if (businessCalendar == null) {
             throw new ActivitiException(
                 "Requested business calendar " +
-                businessCalendarRef +
-                " does not exist. Allowed calendars are " +
-                this.businessCalendars.keySet() +
-                "."
+                    businessCalendarRef +
+                    " does not exist. Allowed calendars are " +
+                    this.businessCalendars.keySet() +
+                    "."
             );
         }
         return businessCalendar;

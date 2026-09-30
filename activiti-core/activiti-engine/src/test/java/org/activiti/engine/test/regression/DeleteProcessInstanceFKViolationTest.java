@@ -123,7 +123,7 @@ class DeleteProcessInstanceFKViolationTest {
         try (
             PreparedStatement ps = conn.prepareStatement(
                 "INSERT INTO ACT_RU_VARIABLE (ID_, REV_, TYPE_, NAME_, EXECUTION_ID_, PROC_INST_ID_, TEXT_) " +
-                "VALUES (?, 1, 'string', ?, ?, ?, ?)"
+                    "VALUES (?, 1, 'string', ?, ?, ?, ?)"
             )
         ) {
             ps.setString(1, UUID.randomUUID().toString());
@@ -140,7 +140,7 @@ class DeleteProcessInstanceFKViolationTest {
         try (
             PreparedStatement ps = conn.prepareStatement(
                 "INSERT INTO ACT_RU_VARIABLE (ID_, REV_, TYPE_, NAME_, EXECUTION_ID_, PROC_INST_ID_, BYTEARRAY_ID_) " +
-                "VALUES (?, 1, ?, ?, ?, ?, ?)"
+                    "VALUES (?, 1, ?, ?, ?, ?, ?)"
             )
         ) {
             ps.setString(1, UUID.randomUUID().toString());

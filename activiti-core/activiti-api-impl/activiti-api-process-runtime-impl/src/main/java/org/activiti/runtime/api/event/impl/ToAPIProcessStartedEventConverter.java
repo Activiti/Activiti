@@ -22,7 +22,8 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
 
 public class ToAPIProcessStartedEventConverter
-    implements EventConverter<ProcessStartedEvent, ActivitiProcessStartedEvent> {
+    implements EventConverter<ProcessStartedEvent, ActivitiProcessStartedEvent>
+{
 
     private final APIProcessInstanceConverter processInstanceConverter;
 

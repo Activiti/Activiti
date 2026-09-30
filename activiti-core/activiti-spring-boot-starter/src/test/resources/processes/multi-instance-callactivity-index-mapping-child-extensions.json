@@ -1,0 +1,24 @@
+{
+  "id": "miIndexMappingChild-model-id",
+  "name": "miIndexMappingChild-model",
+  "extensions": {
+    "miIndexMappingChild": {
+      "properties": {
+        "same-name-as-target-child-process-variable-id": {
+          "id": "same-name-as-target-child-process-variable-id",
+          "name": "sameNameAsTargetChildProcessVariable",
+          "type": "integer",
+          "category": "local",
+          "ephemeral": false
+        },
+        "color-id": {
+          "id": "color-id",
+          "name": "color",
+          "type": "string",
+          "category": "input/output",
+          "ephemeral": false
+        }
+      }
+    }
+  }
+}

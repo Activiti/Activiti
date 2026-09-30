@@ -29,7 +29,8 @@ import org.slf4j.LoggerFactory;
 
 public class DeadLetterJobEntityManagerImpl
     extends AbstractEntityManager<DeadLetterJobEntity>
-    implements DeadLetterJobEntityManager {
+    implements DeadLetterJobEntityManager
+{
 
     protected DeadLetterJobDataManager jobDataManager;
 

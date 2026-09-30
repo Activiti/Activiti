@@ -190,7 +190,7 @@ public class DefaultListenerFactory extends AbstractBehaviorFactory implements L
         if (result == null) {
             throw new ActivitiIllegalArgumentException(
                 "Cannot create an event-throwing event-listener, unknown implementation type: " +
-                eventListener.getImplementationType()
+                    eventListener.getImplementationType()
             );
         }
 

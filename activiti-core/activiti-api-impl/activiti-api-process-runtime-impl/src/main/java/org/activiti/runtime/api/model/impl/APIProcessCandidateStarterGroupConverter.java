@@ -21,7 +21,8 @@ import org.activiti.engine.task.IdentityLink;
 
 public class APIProcessCandidateStarterGroupConverter
     extends ListConverter<IdentityLink, ProcessCandidateStarterGroup>
-    implements ModelConverter<IdentityLink, ProcessCandidateStarterGroup> {
+    implements ModelConverter<IdentityLink, ProcessCandidateStarterGroup>
+{
 
     @Override
     public ProcessCandidateStarterGroup from(IdentityLink identityLink) {

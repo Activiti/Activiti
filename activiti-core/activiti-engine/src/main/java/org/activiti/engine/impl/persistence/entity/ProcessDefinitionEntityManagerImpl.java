@@ -33,7 +33,8 @@ import org.activiti.engine.repository.ProcessDefinition;
  */
 public class ProcessDefinitionEntityManagerImpl
     extends AbstractEntityManager<ProcessDefinitionEntity>
-    implements ProcessDefinitionEntityManager {
+    implements ProcessDefinitionEntityManager
+{
 
     protected ProcessDefinitionDataManager processDefinitionDataManager;
 

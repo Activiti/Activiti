@@ -236,7 +236,7 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
     // execution //////////////////////////////////////////////////////////////////
 
     public ExecutionEntity getExecution() {
-        if ((execution == null) && (executionId != null)) {
+        if (execution == null && executionId != null) {
             this.execution = Context.getCommandContext().getExecutionEntityManager().findById(executionId);
         }
         return execution;
@@ -566,13 +566,14 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
 
     public String getDelegationStateString() {
         //Needed for Activiti 5 compatibility, not exposed in terface
-        return (delegationState != null ? delegationState.toString() : null);
+        return delegationState != null ? delegationState.toString() : null;
     }
 
     public void setDelegationStateString(String delegationStateString) {
-        this.delegationState = (delegationStateString != null
+        this.delegationState =
+            delegationStateString != null
                 ? DelegationState.valueOf(DelegationState.class, delegationStateString)
-                : null);
+                : null;
     }
 
     public boolean isDeleted() {

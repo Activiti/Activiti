@@ -38,15 +38,11 @@ public class TimerRetriesDecrementedListenerDelegate implements ActivitiEventLis
 
     @Override
     public void onEvent(ActivitiEvent event) {
-        converter
-            .from(event)
-            .ifPresent(convertedEvent -> {
-                for (BPMNElementEventListener<
-                    BPMNTimerRetriesDecrementedEvent
-                > listener : processRuntimeEventListeners) {
-                    listener.onEvent(convertedEvent);
-                }
-            });
+        converter.from(event).ifPresent(convertedEvent -> {
+            for (BPMNElementEventListener<BPMNTimerRetriesDecrementedEvent> listener : processRuntimeEventListeners) {
+                listener.onEvent(convertedEvent);
+            }
+        });
     }
 
     @Override

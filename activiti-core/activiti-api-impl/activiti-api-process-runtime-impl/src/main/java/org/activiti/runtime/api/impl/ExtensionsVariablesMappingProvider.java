@@ -321,7 +321,8 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
     private boolean isArrayProperty(JsonNode node, String property) {
         return (
             node.isArray() ||
-            ((!node.isEmpty() && (node.has(property) && node.get(property).isArray())) || property.matches("\\d+"))
+            (!node.isEmpty() && node.has(property) && node.get(property).isArray()) ||
+            property.matches("\\d+")
         );
     }
 
@@ -373,7 +374,7 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
             throw new ActivitiIllegalArgumentException(
                 String.format(
                     "Expressions are not allowed as variable values in the output mapping for activity '%s'. " +
-                    "The following variables contain expressions: %s",
+                        "The following variables contain expressions: %s",
                     mappingExecutionContext.getActivityId(),
                     variableNamesWithExpressions
                 )
@@ -381,7 +382,7 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
         }
 
         if (extensions.shouldMapAllOutputs(mappingExecutionContext.getActivityId())) {
-            return (availableVariables != null ? new HashMap<>(availableVariables) : emptyMap());
+            return availableVariables != null ? new HashMap<>(availableVariables) : emptyMap();
         }
 
         return calculateOutPutVariables(mappingExecutionContext, extensions, availableVariables);
@@ -439,21 +440,21 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
 
             if (isTargetProcessVariableDefined(extensions, execution, name) || isMultiInstanceCallActivity(execution)) {
                 calculateOutPutMappedValue(mappingEntry, availableVariables, execution, extensions).ifPresent(value -> {
-                        extensions
-                            .getProperties()
-                            .values()
-                            .stream()
-                            .filter(v -> v.getName().equals(name))
-                            .findAny()
-                            .ifPresentOrElse(
-                                v ->
-                                    outboundVariables.put(
-                                        name,
-                                        variableParsingService.parse(new VariableDefinition(v.getType(), value))
-                                    ),
-                                () -> outboundVariables.put(name, value)
-                            );
-                    });
+                    extensions
+                        .getProperties()
+                        .values()
+                        .stream()
+                        .filter(v -> v.getName().equals(name))
+                        .findAny()
+                        .ifPresentOrElse(
+                            v ->
+                                outboundVariables.put(
+                                    name,
+                                    variableParsingService.parse(new VariableDefinition(v.getType(), value))
+                                ),
+                            () -> outboundVariables.put(name, value)
+                        );
+                });
             }
         }
 

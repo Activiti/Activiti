@@ -1,0 +1,49 @@
+{
+  "id": "miIndexMappingCallerExplicitOutputs-model-id",
+  "name": "miIndexMappingCallerExplicitOutputs-model",
+  "extensions": {
+    "miIndexMappingCallerExplicitOutputs": {
+      "properties": {
+        "colors-id": {
+          "id": "colors-id",
+          "name": "colors",
+          "type": "array",
+          "category": "local",
+          "value": ["red", "green", "blue"]
+        },
+        "parent-results-id": {
+          "id": "parent-results-id",
+          "name": "parentResults",
+          "type": "array",
+          "category": "input/output"
+        },
+        "parent-index-id": {
+          "id": "parent-index-id",
+          "name": "parentIndex",
+          "type": "integer",
+          "category": "input/output"
+        }
+      },
+      "mappings": {
+        "miCallActivity": {
+          "inputs": {
+            "sameNameAsTargetChildProcessVariable": {
+              "type": "variable",
+              "value": "sameNameAsTargetChildProcessVariable"
+            },
+            "color": {
+              "type": "variable",
+              "value": "color"
+            }
+          },
+          "outputs": {
+            "parentIndex": {
+              "type": "variable",
+              "value": "sameNameAsTargetChildProcessVariable"
+            }
+          }
+        }
+      }
+    }
+  }
+}

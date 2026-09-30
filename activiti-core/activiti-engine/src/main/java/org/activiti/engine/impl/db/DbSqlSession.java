@@ -991,7 +991,7 @@ public class DbSqlSession implements Session {
                 }
             }
 
-            isUpgradeNeeded = (matchingVersionIndex != (ACTIVITI_VERSIONS.size() - 1));
+            isUpgradeNeeded = matchingVersionIndex != ACTIVITI_VERSIONS.size() - 1;
 
             if (isUpgradeNeeded) {
                 dbVersionProperty.setValue(ProcessEngine.VERSION);
@@ -1223,9 +1223,9 @@ public class DbSqlSession implements Session {
                     } catch (ActivitiException e) {
                         throw new ActivitiException(
                             "database update java class '" +
-                            upgradestepClassName +
-                            "' can't be instantiated: " +
-                            e.getMessage(),
+                                upgradestepClassName +
+                                "' can't be instantiated: " +
+                                e.getMessage(),
                             e
                         );
                     }
@@ -1235,9 +1235,9 @@ public class DbSqlSession implements Session {
                     } catch (Exception e) {
                         throw new ActivitiException(
                             "error while executing database update java class '" +
-                            upgradestepClassName +
-                            "': " +
-                            e.getMessage(),
+                                upgradestepClassName +
+                                "': " +
+                                e.getMessage(),
                             e
                         );
                     }
@@ -1328,22 +1328,22 @@ public class DbSqlSession implements Session {
         String exceptionMessage = e.getMessage();
         if (e.getMessage() != null) {
             // Matches message returned from H2
-            if ((exceptionMessage.indexOf("Table") != -1) && (exceptionMessage.indexOf("not found") != -1)) {
+            if (exceptionMessage.indexOf("Table") != -1 && exceptionMessage.indexOf("not found") != -1) {
                 return true;
             }
 
             // Message returned from MySQL and Oracle
             if (
-                ((exceptionMessage.indexOf("Table") != -1 || exceptionMessage.indexOf("table") != -1)) &&
-                (exceptionMessage.indexOf("doesn't exist") != -1)
+                (exceptionMessage.indexOf("Table") != -1 || exceptionMessage.indexOf("table") != -1) &&
+                exceptionMessage.indexOf("doesn't exist") != -1
             ) {
                 return true;
             }
 
             // Message returned from Postgres
             if (
-                ((exceptionMessage.indexOf("relation") != -1 || exceptionMessage.indexOf("table") != -1)) &&
-                (exceptionMessage.indexOf("does not exist") != -1)
+                (exceptionMessage.indexOf("relation") != -1 || exceptionMessage.indexOf("table") != -1) &&
+                exceptionMessage.indexOf("does not exist") != -1
             ) {
                 return true;
             }

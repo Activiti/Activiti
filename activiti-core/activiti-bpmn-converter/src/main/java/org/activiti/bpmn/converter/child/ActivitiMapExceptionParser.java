@@ -50,11 +50,11 @@ public class ActivitiMapExceptionParser extends BaseChildElementParser {
         } else {
             throw new XMLException(
                 "'" +
-                andChildren +
-                "' is not valid boolean in mapException with errorCode=" +
-                errorCode +
-                " and class=" +
-                exceptionClass
+                    andChildren +
+                    "' is not valid boolean in mapException with errorCode=" +
+                    errorCode +
+                    " and class=" +
+                    exceptionClass
             );
         }
 
@@ -64,8 +64,8 @@ public class ActivitiMapExceptionParser extends BaseChildElementParser {
             );
         }
 
-        ((Activity) parentElement).getMapExceptions().add(
-            new MapExceptionEntry(errorCode, exceptionClass, hasChildrenBool)
-        );
+        ((Activity) parentElement)
+            .getMapExceptions()
+            .add(new MapExceptionEntry(errorCode, exceptionClass, hasChildrenBool));
     }
 }

@@ -44,7 +44,8 @@ import org.activiti.engine.repository.ProcessDefinition;
  */
 public class DeploymentEntityManagerImpl
     extends AbstractEntityManager<DeploymentEntity>
-    implements DeploymentEntityManager {
+    implements DeploymentEntityManager
+{
 
     protected DeploymentDataManager deploymentDataManager;
 

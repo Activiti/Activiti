@@ -32,7 +32,8 @@ import org.activiti.engine.impl.persistence.entity.data.HistoricVariableInstance
  */
 public class HistoricVariableInstanceEntityManagerImpl
     extends AbstractEntityManager<HistoricVariableInstanceEntity>
-    implements HistoricVariableInstanceEntityManager {
+    implements HistoricVariableInstanceEntityManager
+{
 
     protected HistoricVariableInstanceDataManager historicVariableInstanceDataManager;
 

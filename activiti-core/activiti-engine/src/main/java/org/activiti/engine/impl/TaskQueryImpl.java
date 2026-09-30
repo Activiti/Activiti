@@ -1454,7 +1454,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     }
 
     public String getDelegationStateString() {
-        return (delegationState != null ? delegationState.toString() : null);
+        return delegationState != null ? delegationState.toString() : null;
     }
 
     public String getCandidateUser() {

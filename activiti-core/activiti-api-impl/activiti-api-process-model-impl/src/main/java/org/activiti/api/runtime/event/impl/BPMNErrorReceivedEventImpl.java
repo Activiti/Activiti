@@ -20,7 +20,8 @@ import org.activiti.api.process.model.events.BPMNErrorReceivedEvent;
 
 public class BPMNErrorReceivedEventImpl
     extends RuntimeEventImpl<BPMNError, BPMNErrorReceivedEvent.ErrorEvents>
-    implements BPMNErrorReceivedEvent {
+    implements BPMNErrorReceivedEvent
+{
 
     public BPMNErrorReceivedEventImpl() {}
 

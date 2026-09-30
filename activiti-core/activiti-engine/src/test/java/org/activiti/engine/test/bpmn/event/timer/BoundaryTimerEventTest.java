@@ -79,7 +79,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
 
         // After setting the clock to time '1 hour and 5 seconds', the second
         // timer should fire
-        processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
+        processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + (60 * 60 * 1000 + 5000)));
         waitForJobExecutorToProcessAllJobs(5000L, 25L);
         assertThat(jobQuery.count()).isEqualTo(0L);
 
@@ -101,7 +101,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
         // Timer will fire in 2 hours
         processEngineConfiguration
             .getClock()
-            .setCurrentTime(new Date(testStartTime.getTime() + ((2 * 60 * 60 * 1000) + 5000)));
+            .setCurrentTime(new Date(testStartTime.getTime() + (2 * 60 * 60 * 1000 + 5000)));
         Job timer = managementService.createTimerJobQuery().singleResult();
         managementService.moveTimerToExecutableJob(timer.getId());
         managementService.executeJob(timer.getId());
@@ -137,7 +137,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
 
         // After setting the clock to time '1 hour and 5 seconds', the second
         // timer should fire
-        processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
+        processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + (60 * 60 * 1000 + 5000)));
         waitForJobExecutorToProcessAllJobs(5000L, 25L);
         assertThat(jobQuery.count()).isEqualTo(0L);
 
@@ -173,7 +173,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
 
         // After setting the clock to time '1 hour and 5 seconds', the second
         // timer should fire
-        processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
+        processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + (60 * 60 * 1000 + 5000)));
         waitForJobExecutorToProcessAllJobs(5000L, 25L);
         assertThat(jobQuery.count()).isEqualTo(0L);
 
@@ -202,7 +202,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
 
         // After setting the clock to time '1 hour and 5 seconds', the second
         // timer should fire
-        processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
+        processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + (60 * 60 * 1000 + 5000)));
         waitForJobExecutorToProcessAllJobs(5000L, 25L);
         assertThat(jobQuery.count()).isEqualTo(0L);
 
@@ -287,7 +287,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
             }
             previousDueDate = job.getDuedate();
 
-            currentTime = new Date(currentTime.getTime() + twentyFourHours + (60 * 1000));
+            currentTime = new Date(currentTime.getTime() + twentyFourHours + 60 * 1000);
             processEngineConfiguration.getClock().setCurrentTime(currentTime);
             String jobId = managementService.createTimerJobQuery().singleResult().getId();
             managementService.moveTimerToExecutableJob(jobId);
@@ -317,7 +317,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
             }
             previousDueDate = job.getDuedate();
 
-            currentTime = new Date(currentTime.getTime() + twentyFourHours + (60 * 1000));
+            currentTime = new Date(currentTime.getTime() + twentyFourHours + 60 * 1000);
             processEngineConfiguration.getClock().setCurrentTime(currentTime);
             managementService.moveTimerToExecutableJob(job.getId());
             managementService.executeJob(job.getId());

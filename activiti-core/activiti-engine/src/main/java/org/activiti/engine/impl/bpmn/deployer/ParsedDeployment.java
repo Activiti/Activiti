@@ -71,12 +71,12 @@ public class ParsedDeployment {
     public BpmnModel getBpmnModelForProcessDefinition(ProcessDefinitionEntity processDefinition) {
         BpmnParse parse = getBpmnParseForProcessDefinition(processDefinition);
 
-        return (parse == null ? null : parse.getBpmnModel());
+        return parse == null ? null : parse.getBpmnModel();
     }
 
     public Process getProcessModelForProcessDefinition(ProcessDefinitionEntity processDefinition) {
         BpmnModel model = getBpmnModelForProcessDefinition(processDefinition);
 
-        return (model == null ? null : model.getProcessById(processDefinition.getKey()));
+        return model == null ? null : model.getProcessById(processDefinition.getKey());
     }
 }

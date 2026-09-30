@@ -37,7 +37,8 @@ import tools.jackson.databind.node.ObjectNode;
  */
 public class StartEventJsonConverter
     extends BaseBpmnJsonConverter
-    implements FormAwareConverter, FormKeyAwareConverter {
+    implements FormAwareConverter, FormKeyAwareConverter
+{
 
     public StartEventJsonConverter(JsonMapper jsonMapper) {
         super(jsonMapper);

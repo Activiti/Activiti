@@ -33,7 +33,8 @@ import org.activiti.engine.repository.ProcessDefinition;
  */
 public class MybatisProcessDefinitionDataManager
     extends AbstractDataManager<ProcessDefinitionEntity>
-    implements ProcessDefinitionDataManager {
+    implements ProcessDefinitionDataManager
+{
 
     public MybatisProcessDefinitionDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
         super(processEngineConfiguration);
@@ -160,12 +161,12 @@ public class MybatisProcessDefinitionDataManager
         } else if (results.size() > 1) {
             throw new ActivitiException(
                 "There are " +
-                results.size() +
-                " process definitions with key = '" +
-                processDefinitionKey +
-                "' and version = '" +
-                processDefinitionVersion +
-                "'."
+                    results.size() +
+                    " process definitions with key = '" +
+                    processDefinitionKey +
+                    "' and version = '" +
+                    processDefinitionVersion +
+                    "'."
             );
         }
         return null;
@@ -191,12 +192,12 @@ public class MybatisProcessDefinitionDataManager
         } else if (results.size() > 1) {
             throw new ActivitiException(
                 "There are " +
-                results.size() +
-                " process definitions with key = '" +
-                processDefinitionKey +
-                "' and version = '" +
-                processDefinitionVersion +
-                "'."
+                    results.size() +
+                    " process definitions with key = '" +
+                    processDefinitionKey +
+                    "' and version = '" +
+                    processDefinitionVersion +
+                    "'."
             );
         }
         return null;

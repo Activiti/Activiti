@@ -29,7 +29,8 @@ import org.activiti.engine.impl.db.BulkDeleteable;
  */
 public class HistoricTaskInstanceEntityImpl
     extends HistoricScopeInstanceEntityImpl
-    implements HistoricTaskInstanceEntity, BulkDeleteable {
+    implements HistoricTaskInstanceEntity, BulkDeleteable
+{
 
     private static final long serialVersionUID = 1L;
 

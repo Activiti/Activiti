@@ -419,7 +419,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
         assertThat(taskService.createTaskQuery().processInstanceId(pi.getId()).count()).isEqualTo(3);
 
         // Set clock time to '1 hour and 5 seconds' ahead to fire timer
-        processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
+        processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + (60 * 60 * 1000 + 5000)));
         waitForJobExecutorToProcessAllJobs(5000L, 25L);
 
         // timer has fired
@@ -783,10 +783,14 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 
             if (i != 8) {
                 aTasks = taskService.createTaskQuery().taskName("A").list();
-                assertThat(aTasks).as("Expected task for i=" + i).hasSize(1);
+                assertThat(aTasks)
+                    .as("Expected task for i=" + i)
+                    .hasSize(1);
 
                 bTasks = taskService.createTaskQuery().taskName("B").list();
-                assertThat(bTasks).as("Expected task for i=" + i).hasSize(1);
+                assertThat(bTasks)
+                    .as("Expected task for i=" + i)
+                    .hasSize(1);
             }
         }
 
@@ -973,7 +977,9 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
                 .processInstanceId(processInstance.getId())
                 .taskName("C")
                 .singleResult();
-            assertThat(task).as("Task was null for i = " + i).isNotNull();
+            assertThat(task)
+                .as("Task was null for i = " + i)
+                .isNotNull();
             taskService.complete(task.getId());
         }
 
@@ -1099,7 +1105,9 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
         // Multi instance call activity is sequential, so expecting 5 more times the same task
         for (int i = 0; i < 6; i++) {
             task = taskService.createTaskQuery().taskName("subprocess1_task").singleResult();
-            assertThat(task).as("Task is null for index " + i).isNotNull();
+            assertThat(task)
+                .as("Task is null for index " + i)
+                .isNotNull();
             taskService.complete(task.getId());
         }
 
@@ -1174,7 +1182,8 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
             .createProcessDefinitionQuery()
             .deploymentId(deployment.getId())
             .singleResult();
-        BpmnModel bpmnModel = this.processEngineConfiguration.getProcessDefinitionCache()
+        BpmnModel bpmnModel = this.processEngineConfiguration
+            .getProcessDefinitionCache()
             .get(processDefinitionQuery.getId())
             .getBpmnModel();
 

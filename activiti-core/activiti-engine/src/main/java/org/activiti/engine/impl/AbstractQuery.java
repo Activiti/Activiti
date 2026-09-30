@@ -36,7 +36,8 @@ import org.activiti.engine.query.QueryProperty;
  */
 public abstract class AbstractQuery<T extends Query<?, ?>, U>
     extends ListQueryParameterObject
-    implements Command<Object>, Query<T, U>, Serializable {
+    implements Command<Object>, Query<T, U>, Serializable
+{
 
     private static final long serialVersionUID = 1L;
 

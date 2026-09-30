@@ -35,8 +35,7 @@ public class ExecutionTreeStringBuilder {
     @Override
     public String toString() {
         StringBuilder strb = new StringBuilder();
-        strb
-            .append(executionEntity.getId())
+        strb.append(executionEntity.getId())
             .append(" : ")
             .append(executionEntity.getActivityId())
             .append(", parent id ")
@@ -53,8 +52,7 @@ public class ExecutionTreeStringBuilder {
     }
 
     protected void internalToString(ExecutionEntity execution, StringBuilder strb, String prefix, boolean isTail) {
-        strb
-            .append(prefix)
+        strb.append(prefix)
             .append(isTail ? "└── " : "├── ")
             .append(execution.getId())
             .append(" : ")

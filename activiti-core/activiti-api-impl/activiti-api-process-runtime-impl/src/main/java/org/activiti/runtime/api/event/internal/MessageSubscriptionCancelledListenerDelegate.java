@@ -42,11 +42,9 @@ public class MessageSubscriptionCancelledListenerDelegate implements ActivitiEve
     @Override
     public void onEvent(ActivitiEvent event) {
         if (isValidEvent(event)) {
-            converter
-                .from((ActivitiEntityEvent) event)
-                .ifPresent(convertedEvent -> {
-                    processRuntimeEventListeners.forEach(listener -> listener.onEvent(convertedEvent));
-                });
+            converter.from((ActivitiEntityEvent) event).ifPresent(convertedEvent -> {
+                processRuntimeEventListeners.forEach(listener -> listener.onEvent(convertedEvent));
+            });
         }
     }
 

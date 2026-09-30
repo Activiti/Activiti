@@ -31,9 +31,8 @@ import org.springframework.context.annotation.Configuration;
 public class MessageTestConfiguration {
 
     public static List<BPMNMessageEvent> messageEvents = new ArrayList<BPMNMessageEvent>();
-    public static List<MessageSubscriptionCancelledEvent> messageSubscriptionCancelledEvents = new ArrayList<
-        MessageSubscriptionCancelledEvent
-    >();
+    public static List<MessageSubscriptionCancelledEvent> messageSubscriptionCancelledEvents =
+        new ArrayList<MessageSubscriptionCancelledEvent>();
 
     @Bean
     public BPMNElementEventListener<BPMNMessageSentEvent> messageSentEventListener() {

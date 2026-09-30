@@ -21,7 +21,8 @@ import org.activiti.api.process.model.events.BPMNMessageReceivedEvent;
 
 public class BPMNMessageReceivedEventImpl
     extends RuntimeEventImpl<BPMNMessage, BPMNMessageEvent.MessageEvents>
-    implements BPMNMessageReceivedEvent {
+    implements BPMNMessageReceivedEvent
+{
 
     public BPMNMessageReceivedEventImpl() {}
 

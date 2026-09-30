@@ -21,7 +21,8 @@ import org.activiti.api.process.model.events.BPMNMessageWaitingEvent;
 
 public class BPMNMessageWaitingEventImpl
     extends RuntimeEventImpl<BPMNMessage, BPMNMessageEvent.MessageEvents>
-    implements BPMNMessageWaitingEvent {
+    implements BPMNMessageWaitingEvent
+{
 
     public BPMNMessageWaitingEventImpl() {}
 

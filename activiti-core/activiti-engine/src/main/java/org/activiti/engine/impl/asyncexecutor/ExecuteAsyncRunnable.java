@@ -54,16 +54,14 @@ public class ExecuteAsyncRunnable implements Runnable {
 
     public void run() {
         if (job == null) {
-            job = processEngineConfiguration
-                .getCommandExecutor()
-                .execute(
-                    new Command<JobEntity>() {
-                        @Override
-                        public JobEntity execute(CommandContext commandContext) {
-                            return commandContext.getJobEntityManager().findById(jobId);
-                        }
+            job = processEngineConfiguration.getCommandExecutor().execute(
+                new Command<JobEntity>() {
+                    @Override
+                    public JobEntity execute(CommandContext commandContext) {
+                        return commandContext.getJobEntityManager().findById(jobId);
                     }
-                );
+                }
+            );
         }
         runInternal();
     }
@@ -86,10 +84,10 @@ public class ExecuteAsyncRunnable implements Runnable {
             if (log.isDebugEnabled()) {
                 log.debug(
                     "Optimistic locking exception during job execution. If you have multiple async executors running against the same database, " +
-                    "this exception means that this thread tried to acquire an exclusive job, which already was changed by another async executor thread." +
-                    "This is expected behavior in a clustered environment. " +
-                    "You can ignore this message if you indeed have multiple job executor threads running against the same database. " +
-                    "Exception message: {}",
+                        "this exception means that this thread tried to acquire an exclusive job, which already was changed by another async executor thread." +
+                        "This is expected behavior in a clustered environment. " +
+                        "You can ignore this message if you indeed have multiple job executor threads running against the same database. " +
+                        "Exception message: {}",
                     e.getMessage()
                 );
             }
@@ -111,10 +109,10 @@ public class ExecuteAsyncRunnable implements Runnable {
             if (log.isDebugEnabled()) {
                 log.debug(
                     "Optimistic locking exception while unlocking the job. If you have multiple async executors running against the same database, " +
-                    "this exception means that this thread tried to acquire an exclusive job, which already was changed by another async executor thread." +
-                    "This is expected behavior in a clustered environment. " +
-                    "You can ignore this message if you indeed have multiple job executor acquisition threads running against the same database. " +
-                    "Exception message: {}",
+                        "this exception means that this thread tried to acquire an exclusive job, which already was changed by another async executor thread." +
+                        "This is expected behavior in a clustered environment. " +
+                        "You can ignore this message if you indeed have multiple job executor acquisition threads running against the same database. " +
+                        "Exception message: {}",
                     optimisticLockingException.getMessage()
                 );
             }
@@ -136,7 +134,7 @@ public class ExecuteAsyncRunnable implements Runnable {
             if (log.isDebugEnabled()) {
                 log.debug(
                     "Could not lock exclusive job. Unlocking job so it can be acquired again. Catched exception: " +
-                    lockException.getMessage()
+                        lockException.getMessage()
                 );
             }
 
@@ -154,16 +152,14 @@ public class ExecuteAsyncRunnable implements Runnable {
         if (commandContext != null) {
             commandContext.getJobManager().unacquire(job);
         } else {
-            processEngineConfiguration
-                .getCommandExecutor()
-                .execute(
-                    new Command<Void>() {
-                        public Void execute(CommandContext commandContext) {
-                            commandContext.getJobManager().unacquire(job);
-                            return null;
-                        }
+            processEngineConfiguration.getCommandExecutor().execute(
+                new Command<Void>() {
+                    public Void execute(CommandContext commandContext) {
+                        commandContext.getJobManager().unacquire(job);
+                        return null;
                     }
-                );
+                }
+            );
         }
     }
 

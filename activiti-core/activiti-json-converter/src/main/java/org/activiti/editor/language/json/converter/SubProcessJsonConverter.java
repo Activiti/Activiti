@@ -34,7 +34,8 @@ import tools.jackson.databind.node.ObjectNode;
  */
 public class SubProcessJsonConverter
     extends BaseBpmnJsonConverter
-    implements FormAwareConverter, FormKeyAwareConverter, DecisionTableAwareConverter, DecisionTableKeyAwareConverter {
+    implements FormAwareConverter, FormKeyAwareConverter, DecisionTableAwareConverter, DecisionTableKeyAwareConverter
+{
 
     public SubProcessJsonConverter(JsonMapper jsonMapper) {
         super(jsonMapper);

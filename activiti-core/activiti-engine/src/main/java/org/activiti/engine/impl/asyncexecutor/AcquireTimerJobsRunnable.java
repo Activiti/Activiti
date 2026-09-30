@@ -81,10 +81,10 @@ public class AcquireTimerJobsRunnable implements Runnable {
                 if (log.isDebugEnabled()) {
                     log.debug(
                         "Optimistic locking exception during timer job acquisition. If you have multiple timer executors running against the same database, " +
-                        "this exception means that this thread tried to acquire a timer job, which already was acquired by another timer executor acquisition thread." +
-                        "This is expected behavior in a clustered environment. " +
-                        "You can ignore this message if you indeed have multiple timer executor acquisition threads running against the same database. " +
-                        "Exception message: {}",
+                            "this exception means that this thread tried to acquire a timer job, which already was acquired by another timer executor acquisition thread." +
+                            "This is expected behavior in a clustered environment. " +
+                            "You can ignore this message if you indeed have multiple timer executor acquisition threads running against the same database. " +
+                            "Exception message: {}",
                         optimisticLockingException.getMessage()
                     );
                 }

@@ -32,7 +32,7 @@ public class UndoService implements JavaDelegate {
         if (variable == null) {
             execution.setVariable(variableName, 1);
         } else {
-            execution.setVariable(variableName, ((Integer) variable) + 1);
+            execution.setVariable(variableName, (Integer) variable + 1);
         }
     }
 }

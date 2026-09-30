@@ -55,8 +55,9 @@ public class LongJsonType extends SerializableType {
         }
 
         if (JsonNode.class.isAssignableFrom(value.getClass()) || serializePOJOsInVariablesToJson) {
-            try {
-                return jsonMapper.writeValueAsString(value).length() >= minLength;
+            try (var writer = new CountingWriter()) {
+                jsonMapper.writeValue(writer, value);
+                return writer.getCharacterCount() >= minLength;
             } catch (JacksonException e) {
                 logger.error("Error writing json variable of type " + value.getClass(), e);
             }

@@ -22,7 +22,8 @@ import org.activiti.api.process.model.events.StartMessageDeployedEvent;
 
 public class StartMessageDeployedEventImpl
     extends RuntimeEventImpl<StartMessageDeploymentDefinition, MessageDefinitionEvent.MessageDefinitionEvents>
-    implements StartMessageDeployedEvent {
+    implements StartMessageDeployedEvent
+{
 
     private StartMessageDeployedEventImpl(Builder builder) {
         this(builder.entity);

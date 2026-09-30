@@ -22,7 +22,8 @@ import org.activiti.api.task.runtime.events.TaskCandidateGroupAddedEvent;
 
 public class TaskCandidateGroupAddedEventImpl
     extends RuntimeEventImpl<TaskCandidateGroup, TaskCandidateGroupEvent.TaskCandidateGroupEvents>
-    implements TaskCandidateGroupAddedEvent {
+    implements TaskCandidateGroupAddedEvent
+{
 
     public TaskCandidateGroupAddedEventImpl() {}
 

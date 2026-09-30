@@ -32,7 +32,7 @@ public class FormPropertyParser extends BaseChildElementParser {
     }
 
     public boolean accepts(BaseElement element) {
-        return ((element instanceof UserTask) || (element instanceof StartEvent));
+        return element instanceof UserTask || element instanceof StartEvent;
     }
 
     public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {

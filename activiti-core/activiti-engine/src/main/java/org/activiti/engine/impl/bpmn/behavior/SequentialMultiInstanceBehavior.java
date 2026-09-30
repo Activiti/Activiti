@@ -90,7 +90,9 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
 
         updateResultCollection(childExecution, multiInstanceRootExecution);
 
-        Context.getCommandContext().getHistoryManager().recordActivityEnd((ExecutionEntity) childExecution, null);
+        Context.getCommandContext()
+            .getHistoryManager()
+            .recordActivityEnd((ExecutionEntity) childExecution, null);
         callActivityEndListeners(childExecution);
 
         if (loopCounter >= nrOfInstances || completionConditionSatisfied(multiInstanceRootExecution)) {

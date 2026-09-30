@@ -128,13 +128,13 @@ public class ServiceTaskDelegateExpressionActivityBehavior extends TaskActivityB
                     }
                     case null, default -> throw new ActivitiIllegalArgumentException(
                         "The resolved delegate expression " +
-                        expression +
-                        " should be an implementation of one of " +
-                        ActivityBehavior.class +
-                        ", " +
-                        JavaDelegate.class +
-                        " or " +
-                        DelegateExecutionFunction.class
+                            expression +
+                            " should be an implementation of one of " +
+                            ActivityBehavior.class +
+                            ", " +
+                            JavaDelegate.class +
+                            " or " +
+                            DelegateExecutionFunction.class
                     );
                 }
             } else {

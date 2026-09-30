@@ -99,9 +99,9 @@ public class DemoApplication implements CommandLineRunner {
         return taskAssigned ->
             logger.info(
                 ">>> Task Assigned: '" +
-                taskAssigned.getEntity().getName() +
-                "' We can send a notification to the assginee: " +
-                taskAssigned.getEntity().getAssignee()
+                    taskAssigned.getEntity().getName() +
+                    "' We can send a notification to the assginee: " +
+                    taskAssigned.getEntity().getAssignee()
             );
     }
 
@@ -110,9 +110,9 @@ public class DemoApplication implements CommandLineRunner {
         return taskCompleted ->
             logger.info(
                 ">>> Task Completed: '" +
-                taskCompleted.getEntity().getName() +
-                "' We can send a notification to the owner: " +
-                taskCompleted.getEntity().getOwner()
+                    taskCompleted.getEntity().getName() +
+                    "' We can send a notification to the owner: " +
+                    taskCompleted.getEntity().getOwner()
             );
     }
 }

@@ -117,7 +117,9 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
         int nrOfCompletedInstances = getLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES) + 1;
         int nrOfActiveInstances = getLoopVariable(execution, NUMBER_OF_ACTIVE_INSTANCES) - 1;
 
-        Context.getCommandContext().getHistoryManager().recordActivityEnd((ExecutionEntity) execution, null);
+        Context.getCommandContext()
+            .getHistoryManager()
+            .recordActivityEnd((ExecutionEntity) execution, null);
         callActivityEndListeners(execution);
 
         DelegateExecution miRootExecution = getMultiInstanceRootExecution(execution);
@@ -169,7 +171,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
                                     if (
                                         CollectionUtil.isNotEmpty(boundaryEvent.getEventDefinitions()) &&
                                         boundaryEvent.getEventDefinitions().getFirst() instanceof
-                                        CompensateEventDefinition
+                                            CompensateEventDefinition
                                     ) {
                                         hasCompensation = true;
                                         break;

@@ -23,8 +23,10 @@ import org.activiti.engine.delegate.DelegateExecution;
  * ({@code <serviceTask implementation="set-variables.EXECUTE"/>}).
  *
  * <p>It resolves the task's input mappings and writes each resolved value to the process variable
- * named by the mapping key (an already declared process variable), then leaves the task. It runs
- * synchronously in the engine - there is no connector invocation and no messaging round-trip.</p>
+ * named by the mapping key (an already declared process variable), then leaves the task. The engine
+ * configures the task as asynchronous during parsing to create a transaction boundary before the
+ * variable update, while still performing the same in-memory variable calculation and assignment
+ * logic.</p>
  */
 public class SetVariablesTaskActivityBehavior extends AbstractBpmnActivityBehavior {
 

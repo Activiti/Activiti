@@ -31,11 +31,11 @@ public class ErrorValidator extends ValidatorImpl {
     @Override
     public void validate(BpmnModel bpmnModel, List<ValidationError> errors) {
         Optional.ofNullable(bpmnModel.getErrors()).ifPresent(errorMap ->
-                errorMap
-                    .values()
-                    .stream()
-                    .filter(error -> StringUtils.isBlank(error.getErrorCode()))
-                    .forEach(error -> addError(errors, Problems.ERROR_MISSING_ERROR_CODE, null, error.getId()))
-            );
+            errorMap
+                .values()
+                .stream()
+                .filter(error -> StringUtils.isBlank(error.getErrorCode()))
+                .forEach(error -> addError(errors, Problems.ERROR_MISSING_ERROR_CODE, null, error.getId()))
+        );
     }
 }

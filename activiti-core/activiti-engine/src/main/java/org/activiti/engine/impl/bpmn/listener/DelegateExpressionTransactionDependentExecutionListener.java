@@ -56,9 +56,9 @@ public class DelegateExpressionTransactionDependentExecutionListener implements 
         } else {
             throw new ActivitiIllegalArgumentException(
                 "Delegate expression " +
-                expression +
-                " did not resolve to an implementation of " +
-                TransactionDependentExecutionListener.class
+                    expression +
+                    " did not resolve to an implementation of " +
+                    TransactionDependentExecutionListener.class
             );
         }
     }

@@ -201,10 +201,11 @@ public class JuelScriptEngine extends AbstractScriptEngine implements Compilable
 
     private static Method getImportMethod() {
         try {
-            return JuelScriptEngine.class.getMethod(
-                "importFunctions",
-                new Class[] { ScriptContext.class, String.class, Object.class }
-            );
+            return JuelScriptEngine.class.getMethod("importFunctions", new Class[] {
+                ScriptContext.class,
+                String.class,
+                Object.class,
+            });
         } catch (Exception exp) {
             // Will never occur
             return null;

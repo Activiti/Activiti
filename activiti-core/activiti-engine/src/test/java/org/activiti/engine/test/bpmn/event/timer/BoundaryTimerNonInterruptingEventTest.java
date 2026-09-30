@@ -49,7 +49,7 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
         assertThat(jobs).hasSize(2);
 
         // After setting the clock to time '1 hour and 5 seconds', the first timer should fire
-        processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
+        processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + (60 * 60 * 1000 + 5000)));
         Job job = managementService.createTimerJobQuery().executable().singleResult();
         assertThat(job).isNotNull();
         managementService.moveTimerToExecutableJob(job.getId());
@@ -74,7 +74,7 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
         // After setting the clock to time '2 hour and 5 seconds', the second timer should fire
         processEngineConfiguration
             .getClock()
-            .setCurrentTime(new Date(startTime.getTime() + ((2 * 60 * 60 * 1000) + 5000)));
+            .setCurrentTime(new Date(startTime.getTime() + (2 * 60 * 60 * 1000 + 5000)));
         waitForJobExecutorToProcessAllJobs(5000L, 25L);
 
         // no more timers to fire
@@ -115,7 +115,7 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
         assertThat(jobs).hasSize(1);
 
         // After setting the clock to time '1 hour and 5 seconds', the first timer should fire
-        processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
+        processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + (60 * 60 * 1000 + 5000)));
         waitForJobExecutorToProcessAllJobs(5000L, 25L);
 
         // timer has fired
@@ -348,7 +348,7 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
         processEngineConfiguration
             .getClock()
             .setCurrentTime(
-                new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + ((minutes * 60 * 1000)))
+                new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + minutes * 60 * 1000)
             );
     }
 }

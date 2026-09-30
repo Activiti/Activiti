@@ -37,10 +37,10 @@ public class FieldExtensionParser extends BaseChildElementParser {
 
     public boolean accepts(BaseElement element) {
         return (
-            (element instanceof ActivitiListener) ||
-            (element instanceof ServiceTask) ||
-            (element instanceof SendTask) ||
-            (element instanceof MessageEventDefinition)
+            element instanceof ActivitiListener ||
+            element instanceof ServiceTask ||
+            element instanceof SendTask ||
+            element instanceof MessageEventDefinition
         );
     }
 

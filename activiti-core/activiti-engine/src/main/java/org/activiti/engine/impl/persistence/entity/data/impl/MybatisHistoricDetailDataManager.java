@@ -34,7 +34,8 @@ import org.activiti.engine.impl.persistence.entity.data.HistoricDetailDataManage
 
 public class MybatisHistoricDetailDataManager
     extends AbstractDataManager<HistoricDetailEntity>
-    implements HistoricDetailDataManager {
+    implements HistoricDetailDataManager
+{
 
     public MybatisHistoricDetailDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
         super(processEngineConfiguration);

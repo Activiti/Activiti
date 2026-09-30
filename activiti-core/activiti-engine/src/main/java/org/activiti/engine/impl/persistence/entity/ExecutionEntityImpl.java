@@ -366,7 +366,7 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
     }
 
     protected void ensureProcessInstanceInitialized() {
-        if ((processInstance == null) && (processInstanceId != null)) {
+        if (processInstance == null && processInstanceId != null) {
             processInstance = (ExecutionEntityImpl) Context.getCommandContext()
                 .getExecutionEntityManager()
                 .findById(processInstanceId);

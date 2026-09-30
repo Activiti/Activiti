@@ -72,7 +72,7 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
         String jobId = commandExecutor.execute(
             new Command<String>() {
                 public String execute(CommandContext commandContext) {
-                    TimerJobEntity timer = createTweetTimer("i'm coding a test", new Date(SOME_TIME + (10 * SECOND)));
+                    TimerJobEntity timer = createTweetTimer("i'm coding a test", new Date(SOME_TIME + 10 * SECOND));
                     commandContext.getJobManager().scheduleTimerJob(timer);
                     return timer.getId();
                 }
@@ -82,7 +82,7 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
         AcquiredTimerJobEntities acquiredJobs = commandExecutor.execute(new AcquireTimerJobsCmd(asyncExecutor));
         assertThat(acquiredJobs.size()).isEqualTo(0);
 
-        processEngineConfiguration.getClock().setCurrentTime(new Date(SOME_TIME + (20 * SECOND)));
+        processEngineConfiguration.getClock().setCurrentTime(new Date(SOME_TIME + 20 * SECOND));
 
         acquiredJobs = commandExecutor.execute(new AcquireTimerJobsCmd(asyncExecutor));
         assertThat(acquiredJobs.size()).isEqualTo(1);

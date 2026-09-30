@@ -24,7 +24,8 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 
 public class NativeHistoricActivityInstanceQueryImpl
     extends AbstractNativeQuery<NativeHistoricActivityInstanceQuery, HistoricActivityInstance>
-    implements NativeHistoricActivityInstanceQuery {
+    implements NativeHistoricActivityInstanceQuery
+{
 
     private static final long serialVersionUID = 1L;
 

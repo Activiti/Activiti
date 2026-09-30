@@ -34,9 +34,8 @@ public class RecorderExecutionListener implements ExecutionListener {
 
     private FixedValue parameter;
 
-    private static List<RecorderExecutionListener.RecordedEvent> recordedEvents = new ArrayList<
-        RecorderExecutionListener.RecordedEvent
-    >();
+    private static List<RecorderExecutionListener.RecordedEvent> recordedEvents =
+        new ArrayList<RecorderExecutionListener.RecordedEvent>();
 
     public static class RecordedEvent {
 
@@ -70,7 +69,7 @@ public class RecorderExecutionListener implements ExecutionListener {
     }
 
     public void notify(DelegateExecution execution) {
-        ExecutionEntity executionCasted = ((ExecutionEntity) execution);
+        ExecutionEntity executionCasted = (ExecutionEntity) execution;
 
         org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(execution.getProcessDefinitionId());
         String activityId = execution.getCurrentActivityId();
@@ -79,7 +78,7 @@ public class RecorderExecutionListener implements ExecutionListener {
         recordedEvents.add(
             new RecordedEvent(
                 executionCasted.getActivityId(),
-                (currentFlowElement != null) ? currentFlowElement.getName() : null,
+                currentFlowElement != null ? currentFlowElement.getName() : null,
                 execution.getEventName(),
                 (String) parameter.getValue(execution)
             )

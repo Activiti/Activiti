@@ -20,7 +20,8 @@ import org.activiti.api.process.model.ProcessCandidateStarterUser;
 
 public class ProcessCandidateStarterUserImpl
     extends ProcessCandidateStarterImpl
-    implements ProcessCandidateStarterUser {
+    implements ProcessCandidateStarterUser
+{
 
     private String userId;
 

@@ -188,7 +188,7 @@ public final class TreeMethodExpression extends MethodExpression {
             if (!Arrays.equals(types, other.types)) {
                 return false;
             }
-            return (getStructuralId().equals(other.getStructuralId()) && bindings.equals(other.bindings));
+            return getStructuralId().equals(other.getStructuralId()) && bindings.equals(other.bindings);
         }
         return false;
     }

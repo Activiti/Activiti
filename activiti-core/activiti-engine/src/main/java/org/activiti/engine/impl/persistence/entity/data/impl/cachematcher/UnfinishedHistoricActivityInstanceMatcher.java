@@ -23,7 +23,8 @@ import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntit
 
  */
 public class UnfinishedHistoricActivityInstanceMatcher
-    extends CachedEntityMatcherAdapter<HistoricActivityInstanceEntity> {
+    extends CachedEntityMatcherAdapter<HistoricActivityInstanceEntity>
+{
 
     @Override
     public boolean isRetained(HistoricActivityInstanceEntity entity, Object parameter) {

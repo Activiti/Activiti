@@ -31,7 +31,8 @@ import org.activiti.engine.runtime.Job;
  */
 public class DeadLetterJobQueryImpl
     extends AbstractQuery<DeadLetterJobQuery, Job>
-    implements DeadLetterJobQuery, Serializable {
+    implements DeadLetterJobQuery, Serializable
+{
 
     private static final long serialVersionUID = 1L;
     protected String id;

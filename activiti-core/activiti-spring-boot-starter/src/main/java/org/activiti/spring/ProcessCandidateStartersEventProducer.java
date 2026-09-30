@@ -93,9 +93,7 @@ public class ProcessCandidateStartersEventProducer extends AbstractActivitiSmart
     private void notifyCandidateStarterUserAddedListeners(
         ProcessCandidateStarterUserAddedEvent processCandidateStarterUserAddedEvent
     ) {
-        for (ProcessRuntimeEventListener<
-            ProcessCandidateStarterUserAddedEvent
-        > listener : candidateStarterUserListeners) {
+        for (ProcessRuntimeEventListener<ProcessCandidateStarterUserAddedEvent> listener : candidateStarterUserListeners) {
             listener.onEvent(processCandidateStarterUserAddedEvent);
         }
     }
@@ -103,9 +101,7 @@ public class ProcessCandidateStartersEventProducer extends AbstractActivitiSmart
     private void notifyCandidateStarterGroupAddedListeners(
         ProcessCandidateStarterGroupAddedEvent processCandidateStarterGroupAddedEvent
     ) {
-        for (ProcessRuntimeEventListener<
-            ProcessCandidateStarterGroupAddedEvent
-        > listener : candidateStarterGroupListeners) {
+        for (ProcessRuntimeEventListener<ProcessCandidateStarterGroupAddedEvent> listener : candidateStarterGroupListeners) {
             listener.onEvent(processCandidateStarterGroupAddedEvent);
         }
     }

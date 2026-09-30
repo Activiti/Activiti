@@ -129,9 +129,9 @@ public class DemoApplication implements CommandLineRunner {
         return processCompleted ->
             logger.info(
                 ">>> Process Completed: '" +
-                processCompleted.getEntity().getName() +
-                "' We can send a notification to the initiator: " +
-                processCompleted.getEntity().getInitiator()
+                    processCompleted.getEntity().getName() +
+                    "' We can send a notification to the initiator: " +
+                    processCompleted.getEntity().getInitiator()
             );
     }
 

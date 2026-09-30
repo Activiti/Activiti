@@ -51,13 +51,11 @@ public class TaskCandidateUserAddedListenerDelegate implements ActivitiEventList
             event.getProcessDefinitionId()
         );
         if (event instanceof ActivitiEntityEvent) {
-            converter
-                .from((ActivitiEntityEvent) event)
-                .ifPresent(convertedEvent -> {
-                    for (TaskRuntimeEventListener<TaskCandidateUserAddedEvent> listener : listeners) {
-                        listener.onEvent(convertedEvent);
-                    }
-                });
+            converter.from((ActivitiEntityEvent) event).ifPresent(convertedEvent -> {
+                for (TaskRuntimeEventListener<TaskCandidateUserAddedEvent> listener : listeners) {
+                    listener.onEvent(convertedEvent);
+                }
+            });
         }
     }
 

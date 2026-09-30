@@ -60,8 +60,8 @@ public class DefaultMessageExecutionContext implements MessageExecutionContext {
 
     public Optional<String> getCorrelationKey(DelegateExecution execution) {
         return Optional.ofNullable(messageEventDefinition.getCorrelationKey()).map(correlationKey -> {
-                return evaluateExpression(messageEventDefinition.getCorrelationKey(), execution);
-            });
+            return evaluateExpression(messageEventDefinition.getCorrelationKey(), execution);
+        });
     }
 
     public Optional<Map<String, Object>> getMessagePayload(DelegateExecution execution) {
@@ -131,10 +131,10 @@ public class DefaultMessageExecutionContext implements MessageExecutionContext {
             .ifPresent(subscription -> {
                 throw new ActivitiIllegalArgumentException(
                     "Duplicate message subscription '" +
-                    subscription.getEventName() +
-                    "' with correlation key '" +
-                    subscription.getConfiguration() +
-                    "'"
+                        subscription.getEventName() +
+                        "' with correlation key '" +
+                        subscription.getConfiguration() +
+                        "'"
                 );
             });
     }

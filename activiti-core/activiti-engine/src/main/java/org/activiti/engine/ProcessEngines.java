@@ -85,7 +85,7 @@ public abstract class ProcessEngines {
             } catch (IOException e) {
                 throw new ActivitiIllegalArgumentException(
                     "problem retrieving activiti.cfg.xml resources on the classpath: " +
-                    System.getProperty("java.class.path"),
+                        System.getProperty("java.class.path"),
                     e
                 );
             }
@@ -108,7 +108,7 @@ public abstract class ProcessEngines {
             } catch (IOException e) {
                 throw new ActivitiIllegalArgumentException(
                     "problem retrieving activiti-context.xml resources on the classpath: " +
-                    System.getProperty("java.class.path"),
+                        System.getProperty("java.class.path"),
                     e
                 );
             }
@@ -129,10 +129,9 @@ public abstract class ProcessEngines {
             Class<?> springConfigurationHelperClass = ReflectUtil.loadClass(
                 "org.activiti.spring.SpringConfigurationHelper"
             );
-            Method method = springConfigurationHelperClass.getDeclaredMethod(
-                "buildProcessEngine",
-                new Class<?>[] { URL.class }
-            );
+            Method method = springConfigurationHelperClass.getDeclaredMethod("buildProcessEngine", new Class<?>[] {
+                URL.class,
+            });
             ProcessEngine processEngine = (ProcessEngine) method.invoke(null, new Object[] { resource });
 
             String processEngineName = processEngine.getName();
@@ -146,9 +145,9 @@ public abstract class ProcessEngines {
         } catch (Exception e) {
             throw new ActivitiException(
                 "couldn't initialize process engine from spring configuration resource " +
-                resource.toString() +
-                ": " +
-                e.getMessage(),
+                    resource.toString() +
+                    ": " +
+                    e.getMessage(),
                 e
             );
         }
@@ -286,9 +285,9 @@ public abstract class ProcessEngines {
                 } catch (Exception e) {
                     log.error(
                         "exception while closing {}",
-                        (processEngineName == null
-                                ? "the default process engine"
-                                : "process engine " + processEngineName),
+                        processEngineName == null
+                            ? "the default process engine"
+                            : "process engine " + processEngineName,
                         e
                     );
                 }

@@ -22,7 +22,8 @@ import org.activiti.api.task.runtime.events.TaskCandidateUserRemovedEvent;
 
 public class TaskCandidateUserRemovedImpl
     extends RuntimeEventImpl<TaskCandidateUser, TaskCandidateUserEvent.TaskCandidateUserEvents>
-    implements TaskCandidateUserRemovedEvent {
+    implements TaskCandidateUserRemovedEvent
+{
 
     public TaskCandidateUserRemovedImpl() {}
 
