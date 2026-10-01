@@ -118,7 +118,7 @@ public class ExpressionResolver {
         final String sourceString
     ) {
         final Matcher matcher = EXPRESSION_PATTERN.matcher(sourceString);
-        final StringBuffer sb = new StringBuffer();
+        final StringBuffer sb = new StringBuffer(sourceString.length());
         while (matcher.find()) {
             final String expressionKey = matcher.group(EXPRESSION_KEY_INDEX);
             final Expression expression = expressionManager.createExpression(expressionKey);
