@@ -147,6 +147,7 @@ jobs:
         env:
           BUILD_RUN_ID: ${{ github.run_id }}
         with:
+          pull-request-title: "Preview snapshot PR: activiti ${{ env.VERSION }} from ${{ github.server_url }}/${{ github.repository }}/pull/${{ github.event.pull_request.number }}"
           version: ${{ env.VERSION }}
           auto-merge: 'false'
           labels: 'do-not-merge,preview-source-pr-${{ github.event.pull_request.number }}'
@@ -172,7 +173,7 @@ jobs:
 
       - name: Close preview PRs if source PR closed while propagating
         if: ${{ steps.source-pr-state.outputs.state != 'OPEN' }}
-        uses: ./.github/actions/close-orphaned-preview-prs
+        uses: Alfresco/alfresco-build-tools/.github/actions/close-orphaned-preview-prs@055f68ab14b013554765bb4bdc14e3b6dc7f416b # AAE-51778 unreleased, repoint to a tag once build-tools is released
         with:
           source-pr-number: ${{ github.event.pull_request.number }}
           source-pr-state: ${{ steps.source-pr-state.outputs.state }}

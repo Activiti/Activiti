@@ -23,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Close downstream preview PRs for this source PR only
-        uses: ./.github/actions/close-orphaned-preview-prs
+        uses: Alfresco/alfresco-build-tools/.github/actions/close-orphaned-preview-prs@055f68ab14b013554765bb4bdc14e3b6dc7f416b # AAE-51778 unreleased, repoint to a tag once build-tools is released
         with:
           source-pr-number: ${{ github.event.pull_request.number }}
           source-pr-state: ${{ github.event.pull_request.merged == true && 'MERGED' || 'CLOSED' }}
