@@ -96,6 +96,18 @@ public class ExpressionResolverTest {
     }
 
     @Test
+    public void containsExpression_should_returnTrue_when_largeStringContainsExpressionPattern() {
+        //given
+        String source = "a".repeat(1_000_000) + "${this is an expression}";
+
+        //when
+        boolean containsExpression = expressionResolver.containsExpression(source);
+
+        //then
+        assertThat(containsExpression).isTrue();
+    }
+
+    @Test
     public void containsExpression_should_returnFalse_when_ObjectNodeDoesNotContainExpressionPattern()
         throws Exception {
         //given
@@ -241,6 +253,26 @@ public class ExpressionResolverTest {
         );
         //then
         assertThat(result).containsEntry("welcomeMessage", "Welcome to London, John!");
+    }
+
+    @Test
+    public void resolveExpressionsMap_should_replaceExpressionByValue_when_largeStringContainsAnExpression() {
+        //given
+        Expression nameExpression = buildExpression("${name}");
+        given(expressionEvaluator.evaluate(nameExpression, expressionManager, delegateInterceptor)).willReturn("John");
+
+        Expression placeExpression = buildExpression("${place}");
+        given(expressionEvaluator.evaluate(placeExpression, expressionManager, delegateInterceptor)).willReturn(
+            "London"
+        );
+
+        //when
+        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
+            expressionEvaluator,
+            singletonMap("welcomeMessage", "a".repeat(1_000_000) + " Welcome to ${place}, ${name}!")
+        );
+        //then
+        assertThat(result).containsEntry("welcomeMessage", "a".repeat(1_000_000) + " Welcome to London, John!");
     }
 
     @Test
