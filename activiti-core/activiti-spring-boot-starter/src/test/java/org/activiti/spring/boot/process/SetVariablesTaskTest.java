@@ -34,7 +34,8 @@ import org.springframework.test.context.TestPropertySource;
  * Verifies the built-in "set variables" service task: a
  * {@code <serviceTask implementation="set-variables.EXECUTE"/>} resolves its input mappings and writes
  * each resolved value to the process variable named by the mapping key (an already declared process
- * variable), synchronously - no connector and no messaging round-trip.
+ * variable). The behavior is async by default to create a transaction boundary before variable
+ * assignment.
  *
  * <p>The fixture (set-variables-task-extensions.json) declares source variables
  * {@code firstName="John"}, {@code lastName="Doe"}, {@code age=21} and target variables set from
