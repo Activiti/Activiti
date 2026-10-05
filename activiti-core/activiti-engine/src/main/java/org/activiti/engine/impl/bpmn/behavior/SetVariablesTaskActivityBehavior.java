@@ -65,7 +65,11 @@ public class SetVariablesTaskActivityBehavior extends TaskActivityBehavior {
         try {
             variables = variablesCalculator.calculateInputVariables(execution);
         } catch (ActivitiException e) {
-            LOGGER.warn("Exception while executing set-variables task {}: {}", execution.getCurrentFlowElement().getId(), e.getMessage());
+            LOGGER.warn(
+                "Exception while executing set-variables task {}: {}",
+                execution.getCurrentFlowElement().getId(),
+                e.getMessage()
+            );
 
             noErrors = false;
             Throwable rootCause = ExceptionUtils.getRootCause(e);
