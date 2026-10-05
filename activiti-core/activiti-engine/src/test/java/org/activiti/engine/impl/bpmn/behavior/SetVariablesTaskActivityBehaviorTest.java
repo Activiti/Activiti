@@ -17,7 +17,9 @@ package org.activiti.engine.impl.bpmn.behavior;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import java.util.HashMap;
@@ -48,7 +50,8 @@ class SetVariablesTaskActivityBehaviorTest {
 
     @BeforeEach
     void setUp() {
-        behavior = new SetVariablesTaskActivityBehavior(variablesCalculator);
+        behavior = spy(new SetVariablesTaskActivityBehavior(variablesCalculator));
+        doNothing().when(behavior).leave(execution);
     }
 
     /**
@@ -72,11 +75,8 @@ class SetVariablesTaskActivityBehaviorTest {
 
         given(variablesCalculator.calculateInputVariables(execution)).willReturn(variables);
 
-        // When - simulate the logic from execute()
-        Map<String, Object> result = variablesCalculator.calculateInputVariables(execution);
-        if (result != null && !result.isEmpty()) {
-            execution.setVariables(result);
-        }
+        // When
+        behavior.execute(execution);
 
         // Then
         verify(execution).setVariables(variables);
@@ -91,10 +91,7 @@ class SetVariablesTaskActivityBehaviorTest {
         given(variablesCalculator.calculateInputVariables(execution)).willReturn(new HashMap<>());
 
         // When
-        Map<String, Object> result = variablesCalculator.calculateInputVariables(execution);
-        if (result != null && !result.isEmpty()) {
-            execution.setVariables(result);
-        }
+        behavior.execute(execution);
 
         // Then
         verify(execution, never()).setVariables(new HashMap<>());
@@ -109,10 +106,7 @@ class SetVariablesTaskActivityBehaviorTest {
         given(variablesCalculator.calculateInputVariables(execution)).willReturn(null);
 
         // When
-        Map<String, Object> result = variablesCalculator.calculateInputVariables(execution);
-        if (result != null && !result.isEmpty()) {
-            execution.setVariables(result);
-        }
+        behavior.execute(execution);
 
         // Then
         verify(execution, never()).setVariables(null);
@@ -133,10 +127,7 @@ class SetVariablesTaskActivityBehaviorTest {
         given(variablesCalculator.calculateInputVariables(execution)).willReturn(variables);
 
         // When
-        Map<String, Object> result = variablesCalculator.calculateInputVariables(execution);
-        if (result != null && !result.isEmpty()) {
-            execution.setVariables(result);
-        }
+        behavior.execute(execution);
 
         // Then
         verify(execution).setVariables(variables);
