@@ -61,11 +61,9 @@ public class SetVariablesTaskActivityBehavior extends TaskActivityBehavior {
     @Override
     public void execute(DelegateExecution execution) {
         boolean noErrors = true;
+        Map<String, Object> variables = null;
         try {
-            Map<String, Object> variables = variablesCalculator.calculateInputVariables(execution);
-            if (variables != null && !variables.isEmpty()) {
-                execution.setVariables(variables);
-            }
+            variables = variablesCalculator.calculateInputVariables(execution);
         } catch (ActivitiException e) {
             LOGGER.warn("Exception while executing set-variables task {}: {}", execution.getCurrentFlowElement().getId(), e.getMessage());
 
@@ -79,6 +77,9 @@ public class SetVariablesTaskActivityBehavior extends TaskActivityBehavior {
             }
         }
         if (noErrors) {
+            if (variables != null && !variables.isEmpty()) {
+                execution.setVariables(variables);
+            }
             leave(execution);
         }
     }
