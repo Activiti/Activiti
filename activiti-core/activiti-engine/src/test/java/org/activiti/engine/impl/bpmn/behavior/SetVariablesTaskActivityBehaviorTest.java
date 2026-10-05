@@ -18,6 +18,7 @@ package org.activiti.engine.impl.bpmn.behavior;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -51,7 +52,7 @@ class SetVariablesTaskActivityBehaviorTest {
     @BeforeEach
     void setUp() {
         behavior = spy(new SetVariablesTaskActivityBehavior(variablesCalculator));
-        doNothing().when(behavior).leave(execution);
+        lenient().doNothing().when(behavior).leave(execution);
     }
 
     /**
