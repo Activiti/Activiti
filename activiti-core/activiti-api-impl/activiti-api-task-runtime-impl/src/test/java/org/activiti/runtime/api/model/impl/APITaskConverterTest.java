@@ -34,6 +34,9 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntityImpl;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
+import org.activiti.spring.process.ProcessExtensionService;
+import org.activiti.spring.process.model.AssignmentDefinition;
+import org.activiti.spring.process.model.Extension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -48,6 +51,9 @@ public class APITaskConverterTest {
 
     @Mock
     private TaskService taskService;
+
+    @Mock
+    private ProcessExtensionService processExtensionService;
 
     @Test
     public void should_convertTask_when_allFieldsAreSet() {
@@ -119,6 +125,38 @@ public class APITaskConverterTest {
     public void should_convertTask_when_appVersionNull() {
         Task convertedTask = taskConverter.from(taskBuilder().withAppVersion(null).build());
         assertThat(convertedTask).isNotNull().extracting(Task::getAppVersion).isNull();
+    }
+
+    @Test
+    public void should_convertAllowSelfServiceFromAssignmentDefinition() {
+        AssignmentDefinition assignment = new AssignmentDefinition(null, null, null, null);
+        assignment.setAllowSelfService(true);
+        Extension extension = new Extension();
+        extension.getAssignments().put("taskDefinitionKey", assignment);
+        given(processExtensionService.getExtensionsForId("testProcessDefinitionId")).willReturn(extension);
+
+        Task convertedTask = taskConverter.from(
+            taskBuilder()
+                .withProcessDefinitionId("testProcessDefinitionId")
+                .withTaskDefinitionKey("taskDefinitionKey")
+                .build()
+        );
+
+        assertThat(convertedTask.isAllowSelfService()).isTrue();
+    }
+
+    @Test
+    public void should_defaultAllowSelfServiceToFalse_whenAssignmentDefinitionIsMissing() {
+        given(processExtensionService.getExtensionsForId("testProcessDefinitionId")).willReturn(new Extension());
+
+        Task convertedTask = taskConverter.from(
+            taskBuilder()
+                .withProcessDefinitionId("testProcessDefinitionId")
+                .withTaskDefinitionKey("taskDefinitionKey")
+                .build()
+        );
+
+        assertThat(convertedTask.isAllowSelfService()).isFalse();
     }
 
     @Test

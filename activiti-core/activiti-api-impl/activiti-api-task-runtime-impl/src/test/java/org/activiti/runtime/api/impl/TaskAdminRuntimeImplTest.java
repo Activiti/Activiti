@@ -15,6 +15,7 @@
  */
 package org.activiti.runtime.api.impl;
 
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -27,12 +28,12 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.persistence.entity.TaskEntityImpl;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
 import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
+import org.activiti.spring.process.ProcessExtensionService;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -50,11 +51,24 @@ class TaskAdminRuntimeImplTest {
     @Mock
     private SecurityManager securityManager;
 
-    @Spy
-    private APITaskConverter taskConverter = new APITaskConverter(taskService);
+    @Mock
+    private ProcessExtensionService processExtensionService;
 
-    @InjectMocks
+    private APITaskConverter taskConverter;
+
     private TaskAdminRuntimeImpl taskAdminRuntime;
+
+    @BeforeEach
+    void setUp() {
+        taskConverter = spy(new APITaskConverter(taskService, processExtensionService));
+        taskAdminRuntime = new TaskAdminRuntimeImpl(
+            taskService,
+            taskConverter,
+            variableInstanceConverter,
+            taskRuntimeHelper,
+            securityManager
+        );
+    }
 
     @Test
     void should_assignOneTask() {
