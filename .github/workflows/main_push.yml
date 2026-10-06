@@ -31,7 +31,7 @@ jobs:
           actor: "dependabot[bot]"
           label: github_actions
       - name: pre-commit
-        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@f1bae5a4bdb3b12030a350e52b8f661dbcb2f849 # v18.28.3
+        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@c176315c6b0b3e3bbf022ea444944fb903c47e0e # v19.2.1
         with:
           skip_checkout: true
       - name: Ensure SHA pinned actions
