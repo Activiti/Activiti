@@ -64,7 +64,7 @@ public class SetVariablesTaskActivityBehavior extends TaskActivityBehavior {
         Map<String, Object> variables = null;
         try {
             variables = variablesCalculator.calculateInputVariables(execution);
-        } catch (ActivitiException e) {
+        } catch (Exception e) {
             LOGGER.warn(
                 "Exception while executing set-variables task {}: {}",
                 execution.getCurrentFlowElement().getId(),
@@ -76,7 +76,7 @@ public class SetVariablesTaskActivityBehavior extends TaskActivityBehavior {
             if (rootCause instanceof BpmnError) {
                 ErrorPropagation.propagateError((BpmnError) rootCause, execution);
             } else {
-                // Convert variable mapping/calculation errors to a BPMN error for process-level handling
+                // Convert any variable mapping/calculation errors to a BPMN error for process-level handling
                 ErrorPropagation.propagateError("SET_VARIABLES_MAPPING_ERROR", execution);
             }
         }
