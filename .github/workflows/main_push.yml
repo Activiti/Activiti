@@ -25,7 +25,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: dependabot check
         id: dependabot
-        uses: Alfresco/alfresco-build-tools/.github/actions/github-pr-check-metadata@0fa2704957dfff688af2371cc7a935de53d26610 # v19.1.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/github-pr-check-metadata@c176315c6b0b3e3bbf022ea444944fb903c47e0e # v19.2.1
         with:
           gh-token: ${{ secrets.BOT_GITHUB_TOKEN }}
           actor: "dependabot[bot]"
@@ -131,7 +131,7 @@ jobs:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
       - name: Get branch name
-        uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@0fa2704957dfff688af2371cc7a935de53d26610 # v19.1.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@c176315c6b0b3e3bbf022ea444944fb903c47e0e # v19.2.1
 
       - name: Configure propagation git author
         if: ${{ env.BRANCH_NAME == 'develop' }}
@@ -142,7 +142,7 @@ jobs:
           global: "true"
 
       - name: Propagate
-        uses: Alfresco/alfresco-build-tools/.github/actions/jx-updatebot-pr@0fa2704957dfff688af2371cc7a935de53d26610 # v19.1.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/jx-updatebot-pr@c176315c6b0b3e3bbf022ea444944fb903c47e0e # v19.2.1
         if: ${{ env.BRANCH_NAME == 'develop' }}
         env:
           DEVELOPMENT_BRANCH: ${{ github.ref_name }}
