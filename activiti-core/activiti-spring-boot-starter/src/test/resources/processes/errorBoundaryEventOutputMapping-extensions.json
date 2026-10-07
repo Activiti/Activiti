@@ -1,0 +1,36 @@
+{
+  "id": "errorBoundaryEventOutputMapping",
+  "name": "testErrorBoundaryEventOutputMapping.bpmn20.xml",
+  "extensions": {
+    "errorBoundaryEventOutputMapping": {
+      "properties": {
+        "boundaryErrorCode": {
+          "id": "boundaryErrorCode",
+          "name": "boundaryErrorCode",
+          "type": "string",
+          "value": ""
+        },
+        "boundaryErrorName": {
+          "id": "boundaryErrorName",
+          "name": "boundaryErrorName",
+          "type": "string",
+          "value": ""
+        }
+      },
+      "mappings": {
+        "catchError": {
+          "outputs": {
+            "boundaryErrorCode": {
+              "type": "variable",
+              "value": "errorCode"
+            },
+            "boundaryErrorName": {
+              "type": "variable",
+              "value": "errorName"
+            }
+          }
+        }
+      }
+    }
+  }
+}
