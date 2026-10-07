@@ -15,6 +15,7 @@
  */
 package org.activiti.spring.boot.process;
 
+import static java.util.Map.entry;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Map;
@@ -36,7 +37,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-public class ProcessRuntimeErrorOutputMappingIT {
+class ProcessRuntimeErrorOutputMappingIT {
 
     private static final String ERROR_BOUNDARY_OUTPUT_MAPPING = "errorBoundaryEventOutputMapping";
 
@@ -56,12 +57,12 @@ public class ProcessRuntimeErrorOutputMappingIT {
     private ProcessCleanUpUtil processCleanUpUtil;
 
     @AfterEach
-    public void cleanUp() {
+    void cleanUp() {
         processCleanUpUtil.cleanUpWithAdmin();
     }
 
     @Test
-    public void should_MapErrorCodeAndName_When_ErrorBoundaryEventCatches() {
+    void should_MapErrorCodeAndName_When_ErrorBoundaryEventCatches() {
         securityUtil.logInAs("user");
 
         ProcessInstance processInstance = processRuntime.start(
@@ -75,12 +76,10 @@ public class ProcessRuntimeErrorOutputMappingIT {
             .withProcessInstanceId(processInstance.getId())
             .build();
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 10), getTasksPayload);
-        assertThat(tasks.getContent()).hasSize(1);
-        assertThat(tasks.getContent().get(0).getName()).isEqualTo("Task");
+        assertThat(tasks.getContent()).hasSize(1).extracting(Task::getName).containsExactly("Task");
 
         // Verify the error output mapping variables were set
         Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
-        assertThat(variables).containsEntry("boundaryErrorCode", "404");
-        assertThat(variables).containsEntry("boundaryErrorName", "NOT_FOUND");
+        assertThat(variables).contains(entry("boundaryErrorCode", "404"), entry("boundaryErrorName", "NOT_FOUND"));
     }
 }
