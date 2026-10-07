@@ -232,15 +232,19 @@ public class ErrorPropagation {
         ExecutionEntity currentExecution,
         Error error
     ) {
+        BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(parentExecution.getProcessDefinitionId());
+        String resolvedErrorCode = null;
+
+        if (bpmnModel != null) {
+            resolvedErrorCode =
+                error.getErrorCode() != null ? error.getErrorCode() : retrieveErrorCode(bpmnModel, error.getId());
+        }
+
         if (
             Context.getProcessEngineConfiguration() != null &&
             Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()
         ) {
-            BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(parentExecution.getProcessDefinitionId());
             if (bpmnModel != null) {
-                String resolvedErrorCode =
-                    error.getErrorCode() != null ? error.getErrorCode() : retrieveErrorCode(bpmnModel, error.getId());
-
                 Context.getProcessEngineConfiguration()
                     .getEventDispatcher()
                     .dispatchEvent(
@@ -256,6 +260,8 @@ public class ErrorPropagation {
                     );
             }
         }
+
+        applyErrorOutputMappings(event, parentExecution, error, bpmnModel, resolvedErrorCode);
 
         if (event instanceof StartEvent) {
             ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
@@ -454,6 +460,53 @@ public class ErrorPropagation {
         }
 
         return defaultExceptionMapping;
+    }
+
+    /**
+     * Applies error output mappings if an {@link ErrorPayloadMappingProvider} is configured.
+     * Only applies to boundary events, not error event subprocesses.
+     * Builds a payload map with the error's code, name, and id, then delegates to the provider
+     * to resolve the output mappings and sets the resulting variables on the parent execution.
+     */
+    private static void applyErrorOutputMappings(
+        Event event,
+        ExecutionEntity parentExecution,
+        Error error,
+        BpmnModel bpmnModel,
+        String resolvedErrorCode
+    ) {
+        if (!(event instanceof BoundaryEvent)) {
+            return;
+        }
+
+        if (Context.getProcessEngineConfiguration() == null) {
+            return;
+        }
+
+        ErrorPayloadMappingProvider provider = Context.getProcessEngineConfiguration().getErrorPayloadMappingProvider();
+
+        if (provider == null) {
+            return;
+        }
+
+        Map<String, Object> errorPayload = new HashMap<>();
+        errorPayload.put("errorCode", resolvedErrorCode);
+        errorPayload.put("errorId", error.getId());
+
+        if (bpmnModel != null) {
+            Error fullError = bpmnModel.getErrors().get(error.getId());
+            errorPayload.put("errorName", fullError != null ? fullError.getName() : null);
+        }
+
+        Map<String, Object> mappedVariables = provider.apply(
+            errorPayload,
+            parentExecution.getProcessDefinitionId(),
+            event.getId()
+        );
+
+        if (mappedVariables != null && !mappedVariables.isEmpty()) {
+            parentExecution.setVariables(mappedVariables);
+        }
     }
 
     protected static String retrieveErrorCode(BpmnModel bpmnModel, String errorRef) {
