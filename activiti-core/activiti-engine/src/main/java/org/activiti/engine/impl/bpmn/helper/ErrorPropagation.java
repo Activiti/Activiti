@@ -241,24 +241,23 @@ public class ErrorPropagation {
         }
 
         if (
+            bpmnModel != null &&
             Context.getProcessEngineConfiguration() != null &&
             Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()
         ) {
-            if (bpmnModel != null) {
-                Context.getProcessEngineConfiguration()
-                    .getEventDispatcher()
-                    .dispatchEvent(
-                        ActivitiEventBuilder.createErrorEvent(
-                            ActivitiEventType.ACTIVITY_ERROR_RECEIVED,
-                            event.getId(),
-                            error.getId(),
-                            resolvedErrorCode,
-                            parentExecution.getId(),
-                            parentExecution.getProcessInstanceId(),
-                            parentExecution.getProcessDefinitionId()
-                        )
-                    );
-            }
+            Context.getProcessEngineConfiguration()
+                .getEventDispatcher()
+                .dispatchEvent(
+                    ActivitiEventBuilder.createErrorEvent(
+                        ActivitiEventType.ACTIVITY_ERROR_RECEIVED,
+                        event.getId(),
+                        error.getId(),
+                        resolvedErrorCode,
+                        parentExecution.getId(),
+                        parentExecution.getProcessInstanceId(),
+                        parentExecution.getProcessDefinitionId()
+                    )
+                );
         }
 
         applyErrorOutputMappings(event, parentExecution, error, bpmnModel, resolvedErrorCode);
