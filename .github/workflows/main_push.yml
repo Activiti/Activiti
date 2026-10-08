@@ -25,19 +25,19 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: dependabot check
         id: dependabot
-        uses: Alfresco/alfresco-build-tools/.github/actions/github-pr-check-metadata@0fa2704957dfff688af2371cc7a935de53d26610 # v19.1.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/github-pr-check-metadata@c176315c6b0b3e3bbf022ea444944fb903c47e0e # v19.2.1
         with:
           gh-token: ${{ secrets.BOT_GITHUB_TOKEN }}
           actor: "dependabot[bot]"
           label: github_actions
       - name: pre-commit
-        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@f1bae5a4bdb3b12030a350e52b8f661dbcb2f849 # v18.28.3
+        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@c176315c6b0b3e3bbf022ea444944fb903c47e0e # v19.2.1
         with:
           skip_checkout: true
       - name: Ensure SHA pinned actions
         uses: hyland/github-actions-ensure-sha-pinned-actions@7957efb76aba0eec7580a9c0392d3e5bec381359 # v2.0.1
       - name: Ensure all actions are covered by Dependabot
-        uses: Alfresco/alfresco-build-tools/.github/actions/dependabot-missing-actions-check@f1bae5a4bdb3b12030a350e52b8f661dbcb2f849 # v18.28.3
+        uses: Alfresco/alfresco-build-tools/.github/actions/dependabot-missing-actions-check@c176315c6b0b3e3bbf022ea444944fb903c47e0e # v19.2.1
 
   create-tag:
     runs-on: ubuntu-latest
@@ -131,7 +131,7 @@ jobs:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
       - name: Get branch name
-        uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@0fa2704957dfff688af2371cc7a935de53d26610 # v19.1.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@c176315c6b0b3e3bbf022ea444944fb903c47e0e # v19.2.1
 
       - name: Configure propagation git author
         if: ${{ env.BRANCH_NAME == 'develop' }}
@@ -142,7 +142,7 @@ jobs:
           global: "true"
 
       - name: Propagate
-        uses: Alfresco/alfresco-build-tools/.github/actions/jx-updatebot-pr@0fa2704957dfff688af2371cc7a935de53d26610 # v19.1.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/jx-updatebot-pr@c176315c6b0b3e3bbf022ea444944fb903c47e0e # v19.2.1
         if: ${{ env.BRANCH_NAME == 'develop' }}
         env:
           DEVELOPMENT_BRANCH: ${{ github.ref_name }}

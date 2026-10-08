@@ -19,6 +19,7 @@ import static java.util.Collections.emptyList;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.activiti.api.task.model.Task;
@@ -27,6 +28,9 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
+import org.activiti.spring.process.ProcessExtensionService;
+import org.activiti.spring.process.model.AssignmentDefinition;
+import org.activiti.spring.process.model.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class APITaskConverter
@@ -35,10 +39,12 @@ public class APITaskConverter
 {
 
     private final TaskService taskService;
+    private final ProcessExtensionService processExtensionService;
 
     @Autowired
-    public APITaskConverter(TaskService taskService) {
+    public APITaskConverter(TaskService taskService, ProcessExtensionService processExtensionService) {
         this.taskService = taskService;
+        this.processExtensionService = processExtensionService;
     }
 
     @Override
@@ -67,10 +73,20 @@ public class APITaskConverter
         task.setPriority(internalTask.getPriority());
         task.setFormKey(internalTask.getFormKey());
         task.setTaskDefinitionKey(internalTask.getTaskDefinitionKey());
+        task.setAllowSelfService(resolveAllowSelfService(internalTask));
         task.setAppVersion(Objects.toString(internalTask.getAppVersion(), null));
         task.setBusinessKey(internalTask.getBusinessKey());
 
         return task;
+    }
+
+    private boolean resolveAllowSelfService(org.activiti.engine.task.Task internalTask) {
+        return Optional.ofNullable(internalTask.getProcessDefinitionId())
+            .map(processExtensionService::getExtensionsForId)
+            .map(Extension::getAssignments)
+            .map(assignments -> assignments.get(internalTask.getTaskDefinitionKey()))
+            .map(AssignmentDefinition::isAllowSelfService)
+            .orElse(false);
     }
 
     public Task from(org.activiti.engine.task.Task internalTask, Task.TaskStatus status) {
