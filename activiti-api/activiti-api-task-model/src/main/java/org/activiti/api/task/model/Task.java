@@ -71,7 +71,7 @@ public interface Task extends ApplicationElement {
 
     String getTaskDefinitionKey();
 
-    boolean isAllowSelfService();
+    Boolean isAllowSelfService();
 
     List<String> getCandidateUsers();
 

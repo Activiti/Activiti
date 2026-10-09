@@ -146,7 +146,7 @@ public class APITaskConverterTest {
     }
 
     @Test
-    public void should_defaultAllowSelfServiceToFalse_whenAssignmentDefinitionIsMissing() {
+    public void should_defaultAllowSelfServiceToNull_whenAssignmentDefinitionIsMissing() {
         given(processExtensionService.getExtensionsForId("testProcessDefinitionId")).willReturn(new Extension());
 
         Task convertedTask = taskConverter.from(
@@ -156,7 +156,7 @@ public class APITaskConverterTest {
                 .build()
         );
 
-        assertThat(convertedTask.isAllowSelfService()).isFalse();
+        assertThat(convertedTask.isAllowSelfService()).isNull();
     }
 
     @Test
