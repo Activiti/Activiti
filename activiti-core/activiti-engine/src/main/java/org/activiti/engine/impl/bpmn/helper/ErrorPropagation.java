@@ -493,8 +493,22 @@ public class ErrorPropagation {
         errorPayload.put("errorId", error.getId());
 
         if (bpmnModel != null) {
+            String errorName = null;
+            // First try direct lookup by error id
             Error fullError = bpmnModel.getErrors().get(error.getId());
-            errorPayload.put("errorName", fullError != null ? fullError.getName() : null);
+            if (fullError != null) {
+                errorName = fullError.getName();
+            } else {
+                // Fallback: search by matching error code (needed for connector errors
+                // where error.getId() is the error code, not the BPMN error id)
+                for (Error bpmnError : bpmnModel.getErrors().values()) {
+                    if (resolvedErrorCode != null && resolvedErrorCode.equals(bpmnError.getErrorCode())) {
+                        errorName = bpmnError.getName();
+                        break;
+                    }
+                }
+            }
+            errorPayload.put("errorName", errorName);
         }
 
         Map<String, Object> mappedVariables = provider.apply(
