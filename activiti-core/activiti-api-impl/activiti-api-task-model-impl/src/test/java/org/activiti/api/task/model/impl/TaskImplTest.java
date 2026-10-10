@@ -24,6 +24,13 @@ import tools.jackson.databind.json.JsonMapper;
 class TaskImplTest {
 
     @Test
+    void shouldDefaultAllowSelfServiceToNull() {
+        TaskImpl task = new TaskImpl("task-id", "Task", CREATED);
+
+        assertThat(task.isAllowSelfService()).isNull();
+    }
+
+    @Test
     void shouldExposeAllowSelfService() {
         TaskImpl task = new TaskImpl("task-id", "Task", CREATED);
 
@@ -59,5 +66,14 @@ class TaskImplTest {
         String json = JsonMapper.builder().build().writeValueAsString(task);
 
         assertThat(json).contains("\"allowSelfService\":true");
+    }
+
+    @Test
+    void shouldSerializeAllowSelfServiceAsNull_whenNotSet() throws Exception {
+        TaskImpl task = new TaskImpl("task-id", "Task", CREATED);
+
+        String json = JsonMapper.builder().build().writeValueAsString(task);
+
+        assertThat(json).contains("\"allowSelfService\":null");
     }
 }
