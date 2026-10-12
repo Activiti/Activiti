@@ -464,8 +464,6 @@ public class ErrorPropagation {
     /**
      * Applies error output mappings if an {@link ErrorPayloadMappingProvider} is configured.
      * Only applies to boundary events, not error event subprocesses.
-     * Builds a payload map with the error's code, name, and id, then delegates to the provider
-     * to resolve the output mappings and sets the resulting variables on the parent execution.
      */
     private static void applyErrorOutputMappings(
         Event event,
@@ -478,38 +476,12 @@ public class ErrorPropagation {
             return;
         }
 
-        if (Context.getProcessEngineConfiguration() == null) {
-            return;
-        }
-
-        ErrorPayloadMappingProvider provider = Context.getProcessEngineConfiguration().getErrorPayloadMappingProvider();
-
+        ErrorPayloadMappingProvider provider = getErrorPayloadMappingProvider();
         if (provider == null) {
             return;
         }
 
-        Map<String, Object> errorPayload = new HashMap<>();
-        errorPayload.put("errorCode", resolvedErrorCode);
-        errorPayload.put("errorId", error.getId());
-
-        if (bpmnModel != null) {
-            String errorName = null;
-            // First try direct lookup by error id
-            Error fullError = bpmnModel.getErrors().get(error.getId());
-            if (fullError != null) {
-                errorName = fullError.getName();
-            } else {
-                // Fallback: search by matching error code (needed for connector errors
-                // where error.getId() is the error code, not the BPMN error id)
-                for (Error bpmnError : bpmnModel.getErrors().values()) {
-                    if (resolvedErrorCode != null && resolvedErrorCode.equals(bpmnError.getErrorCode())) {
-                        errorName = bpmnError.getName();
-                        break;
-                    }
-                }
-            }
-            errorPayload.put("errorName", errorName);
-        }
+        Map<String, Object> errorPayload = buildErrorPayload(error, bpmnModel, resolvedErrorCode);
 
         Map<String, Object> mappedVariables = provider.apply(
             errorPayload,
@@ -520,6 +492,51 @@ public class ErrorPropagation {
         if (mappedVariables != null && !mappedVariables.isEmpty()) {
             parentExecution.setVariables(mappedVariables);
         }
+    }
+
+    private static ErrorPayloadMappingProvider getErrorPayloadMappingProvider() {
+        if (Context.getProcessEngineConfiguration() == null) {
+            return null;
+        }
+        return Context.getProcessEngineConfiguration().getErrorPayloadMappingProvider();
+    }
+
+    /**
+     * Builds the error payload map containing errorCode, errorId, and errorName.
+     */
+    static Map<String, Object> buildErrorPayload(Error error, BpmnModel bpmnModel, String resolvedErrorCode) {
+        Map<String, Object> errorPayload = new HashMap<>();
+        errorPayload.put("errorCode", resolvedErrorCode);
+        errorPayload.put("errorId", error.getId());
+        if (bpmnModel != null) {
+            errorPayload.put("errorName", resolveErrorName(error, bpmnModel, resolvedErrorCode));
+        }
+        return errorPayload;
+    }
+
+    /**
+     * Resolves the error name from the BPMN model.
+     * First tries direct lookup by error id, then searches by error code.
+     * Falls back to the resolved error code if no BPMN error definition is found.
+     */
+    static String resolveErrorName(Error error, BpmnModel bpmnModel, String resolvedErrorCode) {
+        String errorName = null;
+        // First try direct lookup by error id
+        Error fullError = bpmnModel.getErrors().get(error.getId());
+        if (fullError != null) {
+            errorName = fullError.getName();
+        } else {
+            // Fallback: search by matching error code (needed for connector errors
+            // where error.getId() is the error code, not the BPMN error id)
+            for (Error bpmnError : bpmnModel.getErrors().values()) {
+                if (resolvedErrorCode != null && resolvedErrorCode.equals(bpmnError.getErrorCode())) {
+                    errorName = bpmnError.getName();
+                    break;
+                }
+            }
+        }
+        // Fall back to error code as name if no BPMN error definition was found
+        return errorName != null ? errorName : resolvedErrorCode;
     }
 
     protected static String retrieveErrorCode(BpmnModel bpmnModel, String errorRef) {
