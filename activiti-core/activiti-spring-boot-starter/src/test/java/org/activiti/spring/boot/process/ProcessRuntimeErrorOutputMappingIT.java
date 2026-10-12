@@ -40,6 +40,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 class ProcessRuntimeErrorOutputMappingIT {
 
     private static final String ERROR_BOUNDARY_OUTPUT_MAPPING = "errorBoundaryEventOutputMapping";
+    private static final String ERROR_BOUNDARY_CATCH_ALL_OUTPUT_MAPPING = "errorBoundaryCatchAllOutputMapping";
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -81,5 +82,31 @@ class ProcessRuntimeErrorOutputMappingIT {
         // Verify the error output mapping variables were set
         Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
         assertThat(variables).contains(entry("boundaryErrorCode", "404"), entry("boundaryErrorName", "NOT_FOUND"));
+    }
+
+    @Test
+    void should_MapErrorCodeAndName_When_CatchAllBoundaryEventCatches() {
+        securityUtil.logInAs("user");
+
+        ProcessInstance processInstance = processRuntime.start(
+            ProcessPayloadBuilder.start().withProcessDefinitionKey(ERROR_BOUNDARY_CATCH_ALL_OUTPUT_MAPPING).build()
+        );
+
+        assertThat(processInstance).isNotNull();
+
+        // Verify the process reached the catch-all error task
+        GetTasksPayload getTasksPayload = new GetTasksPayloadBuilder()
+            .withProcessInstanceId(processInstance.getId())
+            .build();
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 10), getTasksPayload);
+        assertThat(tasks.getContent()).hasSize(1).extracting(Task::getName).containsExactly("Catch All Task");
+
+        // Verify the error output mapping variables were set
+        // The error is defined in BPMN with errorCode="KNOWN_ERROR" and name="Known Error"
+        Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
+        assertThat(variables).contains(
+            entry("catchAllErrorCode", "KNOWN_ERROR"),
+            entry("catchAllErrorName", "Known Error")
+        );
     }
 }
