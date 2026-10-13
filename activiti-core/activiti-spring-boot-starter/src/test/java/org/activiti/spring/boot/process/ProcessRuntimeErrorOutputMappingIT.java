@@ -41,6 +41,7 @@ class ProcessRuntimeErrorOutputMappingIT {
 
     private static final String ERROR_BOUNDARY_OUTPUT_MAPPING = "errorBoundaryEventOutputMapping";
     private static final String ERROR_BOUNDARY_CATCH_ALL_OUTPUT_MAPPING = "errorBoundaryCatchAllOutputMapping";
+    private static final String ERROR_EVENT_SUBPROCESS_OUTPUT_MAPPING = "errorEventSubProcessOutputMapping";
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -107,6 +108,32 @@ class ProcessRuntimeErrorOutputMappingIT {
         assertThat(variables).contains(
             entry("catchAllErrorCode", "KNOWN_ERROR"),
             entry("catchAllErrorName", "Known Error")
+        );
+    }
+
+    @Test
+    void should_MapErrorCodeAndName_When_ErrorEventSubProcessCatches() {
+        securityUtil.logInAs("user");
+
+        ProcessInstance processInstance = processRuntime.start(
+            ProcessPayloadBuilder.start().withProcessDefinitionKey(ERROR_EVENT_SUBPROCESS_OUTPUT_MAPPING).build()
+        );
+
+        assertThat(processInstance).isNotNull();
+
+        // Verify the process reached the event subprocess task
+        GetTasksPayload getTasksPayload = new GetTasksPayloadBuilder()
+            .withProcessInstanceId(processInstance.getId())
+            .build();
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 10), getTasksPayload);
+        assertThat(tasks.getContent()).hasSize(1).extracting(Task::getName).containsExactly("Event Subprocess Task");
+
+        // Verify the error output mapping variables were set
+        // The error is defined in BPMN with errorCode="503" and name="SERVICE_UNAVAILABLE"
+        Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
+        assertThat(variables).contains(
+            entry("subProcessErrorCode", "503"),
+            entry("subProcessErrorName", "SERVICE_UNAVAILABLE")
         );
     }
 }

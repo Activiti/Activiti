@@ -463,7 +463,7 @@ public class ErrorPropagation {
 
     /**
      * Applies error output mappings if an {@link ErrorPayloadMappingProvider} is configured.
-     * Only applies to boundary events, not error event subprocesses.
+     * Applies to both error boundary events and error event subprocesses (start events).
      */
     private static void applyErrorOutputMappings(
         Event event,
@@ -472,7 +472,7 @@ public class ErrorPropagation {
         BpmnModel bpmnModel,
         String resolvedErrorCode
     ) {
-        if (!(event instanceof BoundaryEvent)) {
+        if (!(event instanceof BoundaryEvent) && !(event instanceof StartEvent)) {
             return;
         }
 
