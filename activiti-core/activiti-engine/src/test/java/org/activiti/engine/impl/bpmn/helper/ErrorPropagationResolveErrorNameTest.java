@@ -132,8 +132,9 @@ class ErrorPropagationResolveErrorNameTest {
 
             Map<String, Object> payload = ErrorPropagation.buildErrorPayload(error, null, "404");
 
-            assertThat(payload).contains(entry("errorCode", "404"), entry("errorId", "errorId"));
-            assertThat(payload).doesNotContainKey("errorName");
+            assertThat(payload)
+                .contains(entry("errorCode", "404"), entry("errorId", "errorId"))
+                .doesNotContainKey("errorName");
         }
 
         @Test
