@@ -23,6 +23,7 @@ import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
@@ -495,10 +496,11 @@ public class ErrorPropagation {
     }
 
     private static ErrorPayloadMappingProvider getErrorPayloadMappingProvider() {
-        if (Context.getProcessEngineConfiguration() == null) {
+        ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
+        if (processEngineConfiguration == null) {
             return null;
         }
-        return Context.getProcessEngineConfiguration().getErrorPayloadMappingProvider();
+        return processEngineConfiguration.getErrorPayloadMappingProvider();
     }
 
     /**
