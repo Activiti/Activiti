@@ -367,22 +367,11 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
             return emptyMap();
         }
 
-        List<String> variableNamesWithExpressions = expressionResolver.findVariableNamesContainingExpressions(
-            availableVariables
-        );
-        if (!variableNamesWithExpressions.isEmpty()) {
-            throw new ActivitiIllegalArgumentException(
-                String.format(
-                    "Expressions are not allowed as variable values in the output mapping for activity '%s'. " +
-                        "The following variables contain expressions: %s",
-                    mappingExecutionContext.getActivityId(),
-                    variableNamesWithExpressions
-                )
-            );
-        }
-
         if (extensions.shouldMapAllOutputs(mappingExecutionContext.getActivityId())) {
-            return availableVariables != null ? new HashMap<>(availableVariables) : emptyMap();
+            // When mapping all outputs, validate all available variables
+            Map<String, Object> allOutputs = availableVariables != null ? new HashMap<>(availableVariables) : emptyMap();
+            validateOutputVariables(mappingExecutionContext, allOutputs);
+            return allOutputs;
         }
 
         return calculateOutPutVariables(mappingExecutionContext, extensions, availableVariables);
@@ -457,6 +446,9 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
                 });
             }
         }
+
+        // Validate only the variables that are actually being mapped
+        validateOutputVariables(mappingExecutionContext, outboundVariables);
 
         return resolveExpressions(mappingExecutionContext, availableVariables, outboundVariables);
     }
@@ -534,5 +526,24 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
             extensions.getPropertyByName(variableName) != null ||
             (execution != null && execution.getVariable(variableName) != null)
         );
+    }
+
+    private void validateOutputVariables(
+        MappingExecutionContext mappingExecutionContext,
+        Map<String, Object> variablesToValidate
+    ) {
+        List<String> variableNamesWithExpressions = expressionResolver.findVariableNamesContainingExpressions(
+            variablesToValidate
+        );
+        if (!variableNamesWithExpressions.isEmpty()) {
+            throw new ActivitiIllegalArgumentException(
+                String.format(
+                    "Expressions are not allowed as variable values in the output mapping for activity '%s'. " +
+                        "The following variables contain expressions: %s",
+                    mappingExecutionContext.getActivityId(),
+                    variableNamesWithExpressions
+                )
+            );
+        }
     }
 }
