@@ -58,7 +58,7 @@ public class AssignmentDefinition {
     private AssignmentEnum assignment;
     private AssignmentType type;
     private AssignmentMode mode;
-    private boolean allowSelfService;
+    private Boolean allowSelfService;
 
     AssignmentDefinition() {}
 
@@ -101,11 +101,11 @@ public class AssignmentDefinition {
         this.mode = mode;
     }
 
-    public boolean isAllowSelfService() {
+    public Boolean isAllowSelfService() {
         return allowSelfService;
     }
 
-    public void setAllowSelfService(boolean allowSelfService) {
+    public void setAllowSelfService(Boolean allowSelfService) {
         this.allowSelfService = allowSelfService;
     }
 
@@ -115,7 +115,7 @@ public class AssignmentDefinition {
         if (o == null || getClass() != o.getClass()) return false;
         AssignmentDefinition that = (AssignmentDefinition) o;
         return (
-            allowSelfService == that.allowSelfService &&
+            Objects.equals(allowSelfService, that.allowSelfService) &&
             Objects.equals(id, that.id) &&
             assignment == that.assignment &&
             type == that.type &&

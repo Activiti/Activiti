@@ -43,7 +43,7 @@ public class TaskImpl extends ApplicationElementImpl implements Task {
     private Integer processDefinitionVersion;
     private String businessKey;
     private String taskDefinitionKey;
-    private boolean allowSelfService;
+    private Boolean allowSelfService;
     private List<String> candidateUsers;
     private List<String> candidateGroups;
     private String completedBy;
@@ -260,11 +260,11 @@ public class TaskImpl extends ApplicationElementImpl implements Task {
     }
 
     @Override
-    public boolean isAllowSelfService() {
+    public Boolean isAllowSelfService() {
         return allowSelfService;
     }
 
-    public void setAllowSelfService(boolean allowSelfService) {
+    public void setAllowSelfService(Boolean allowSelfService) {
         this.allowSelfService = allowSelfService;
     }
 
@@ -291,7 +291,7 @@ public class TaskImpl extends ApplicationElementImpl implements Task {
         TaskImpl task = (TaskImpl) o;
         return (
             priority == task.priority &&
-            allowSelfService == task.allowSelfService &&
+            Objects.equals(allowSelfService, task.allowSelfService) &&
             Objects.equals(id, task.id) &&
             Objects.equals(name, task.name) &&
             status == task.status &&

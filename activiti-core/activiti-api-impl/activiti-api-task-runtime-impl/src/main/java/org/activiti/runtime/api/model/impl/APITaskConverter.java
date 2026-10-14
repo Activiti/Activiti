@@ -80,13 +80,13 @@ public class APITaskConverter
         return task;
     }
 
-    private boolean resolveAllowSelfService(org.activiti.engine.task.Task internalTask) {
+    private Boolean resolveAllowSelfService(org.activiti.engine.task.Task internalTask) {
         return Optional.ofNullable(internalTask.getProcessDefinitionId())
             .map(processExtensionService::getExtensionsForId)
             .map(Extension::getAssignments)
             .map(assignments -> assignments.get(internalTask.getTaskDefinitionKey()))
             .map(AssignmentDefinition::isAllowSelfService)
-            .orElse(false);
+            .orElse(null);
     }
 
     public Task from(org.activiti.engine.task.Task internalTask, Task.TaskStatus status) {
