@@ -484,15 +484,18 @@ public class ErrorPropagation {
 
         Map<String, Object> errorPayload = buildErrorPayload(error, bpmnModel, resolvedErrorCode);
 
-        Map<String, Object> mappedVariables = provider.apply(
-            errorPayload,
-            parentExecution.getProcessDefinitionId(),
-            event.getId()
-        );
+        // Resolve the target execution: for boundary events write to the
+        // process-instance execution (not the interrupted activity); for event
+        // subprocesses parentExecution is already at the process level.
+        ExecutionEntity targetExecution =
+            event instanceof BoundaryEvent ? parentExecution.getProcessInstance() : parentExecution;
+
+        // Pass the target execution so that JSONPATCH mappings can read
+        // current runtime variable values instead of falling back to
+        // extension defaults.
+        Map<String, Object> mappedVariables = provider.apply(errorPayload, targetExecution, event.getId());
 
         if (mappedVariables != null && !mappedVariables.isEmpty()) {
-            ExecutionEntity targetExecution =
-                event instanceof BoundaryEvent ? parentExecution.getProcessInstance() : parentExecution;
             targetExecution.setVariables(mappedVariables);
         }
     }

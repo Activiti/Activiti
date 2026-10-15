@@ -17,6 +17,7 @@ package org.activiti.engine.impl.bpmn.helper;
 
 import java.util.Collections;
 import java.util.Map;
+import org.activiti.engine.delegate.DelegateExecution;
 
 /**
  * Provider that maps error data (error code, error name) to process variables
@@ -32,11 +33,15 @@ public interface ErrorPayloadMappingProvider {
      * Apply output mappings to the error payload and return the variables to set.
      *
      * @param errorPayload map containing error data keys: "errorCode", "errorName"
-     * @param processDefinitionId the process definition ID of the catching process
+     * @param execution the process-instance execution for variable resolution
      * @param activityId the activity ID of the catching error event (boundary event or start event)
      * @return map of variable names to values to set on the catching execution, or empty map if no mappings
      */
-    default Map<String, Object> apply(Map<String, Object> errorPayload, String processDefinitionId, String activityId) {
+    default Map<String, Object> apply(
+        Map<String, Object> errorPayload,
+        DelegateExecution execution,
+        String activityId
+    ) {
         return Collections.emptyMap();
     }
 }

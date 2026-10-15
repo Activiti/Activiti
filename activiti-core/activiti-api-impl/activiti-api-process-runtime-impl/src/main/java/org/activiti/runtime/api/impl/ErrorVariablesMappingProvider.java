@@ -16,6 +16,7 @@
 package org.activiti.runtime.api.impl;
 
 import java.util.Map;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.behavior.MappingExecutionContext;
 import org.activiti.engine.impl.bpmn.behavior.VariablesCalculator;
 import org.activiti.engine.impl.bpmn.helper.ErrorPayloadMappingProvider;
@@ -37,11 +38,8 @@ public class ErrorVariablesMappingProvider implements ErrorPayloadMappingProvide
     }
 
     @Override
-    public Map<String, Object> apply(Map<String, Object> errorPayload, String processDefinitionId, String activityId) {
-        MappingExecutionContext context = MappingExecutionContext.buildMappingExecutionContext(
-            processDefinitionId,
-            activityId
-        );
+    public Map<String, Object> apply(Map<String, Object> errorPayload, DelegateExecution execution, String activityId) {
+        MappingExecutionContext context = MappingExecutionContext.buildMappingExecutionContext(execution, activityId);
 
         return variablesCalculator.calculateOutPutVariables(context, errorPayload);
     }
