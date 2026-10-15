@@ -31,7 +31,7 @@ public interface ErrorPayloadMappingProvider {
     /**
      * Apply output mappings to the error payload and return the variables to set.
      *
-     * @param errorPayload map containing error data keys: "errorCode", "errorName", "errorId"
+     * @param errorPayload map containing error data keys: "errorCode", "errorName"
      * @param processDefinitionId the process definition ID of the catching process
      * @param activityId the activity ID of the catching error event (boundary event or start event)
      * @return map of variable names to values to set on the catching execution, or empty map if no mappings

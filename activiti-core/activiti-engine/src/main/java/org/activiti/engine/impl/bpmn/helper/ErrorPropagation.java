@@ -466,7 +466,7 @@ public class ErrorPropagation {
      * Applies error output mappings if an {@link ErrorPayloadMappingProvider} is configured.
      * Applies to both error boundary events and error event subprocesses (start events).
      */
-    private static void applyErrorOutputMappings(
+    static void applyErrorOutputMappings(
         Event event,
         ExecutionEntity parentExecution,
         Error error,
@@ -491,7 +491,9 @@ public class ErrorPropagation {
         );
 
         if (mappedVariables != null && !mappedVariables.isEmpty()) {
-            parentExecution.setVariables(mappedVariables);
+            ExecutionEntity targetExecution =
+                event instanceof BoundaryEvent ? parentExecution.getProcessInstance() : parentExecution;
+            targetExecution.setVariables(mappedVariables);
         }
     }
 
@@ -504,12 +506,11 @@ public class ErrorPropagation {
     }
 
     /**
-     * Builds the error payload map containing errorCode, errorId, and errorName.
+     * Builds the error payload map containing errorCode and errorName.
      */
     static Map<String, Object> buildErrorPayload(Error error, BpmnModel bpmnModel, String resolvedErrorCode) {
         Map<String, Object> errorPayload = new HashMap<>();
         errorPayload.put("errorCode", resolvedErrorCode);
-        errorPayload.put("errorId", error.getId());
         if (bpmnModel != null) {
             errorPayload.put("errorName", resolveErrorName(error, bpmnModel, resolvedErrorCode));
         }
