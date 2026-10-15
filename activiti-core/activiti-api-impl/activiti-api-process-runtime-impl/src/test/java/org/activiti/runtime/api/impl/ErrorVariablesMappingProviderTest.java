@@ -18,11 +18,13 @@ package org.activiti.runtime.api.impl;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.behavior.MappingExecutionContext;
 import org.activiti.engine.impl.bpmn.behavior.VariablesCalculator;
 import org.junit.jupiter.api.Test;
@@ -43,17 +45,19 @@ class ErrorVariablesMappingProviderTest {
 
     @Test
     void should_DelegateToVariablesCalculator_WithCorrectContext() {
+        DelegateExecution execution = mock(DelegateExecution.class);
+        when(execution.getProcessDefinitionId()).thenReturn("procDef1");
+
         Map<String, Object> errorPayload = new HashMap<>();
         errorPayload.put("errorCode", "123");
         errorPayload.put("errorName", "myError");
-        errorPayload.put("errorId", "errorId");
 
         Map<String, Object> expectedOutput = Map.of("boundaryErrorCode", "123");
         when(
             variablesCalculator.calculateOutPutVariables(any(MappingExecutionContext.class), eq(errorPayload))
         ).thenReturn(expectedOutput);
 
-        Map<String, Object> result = provider.apply(errorPayload, "procDef1", "catchError");
+        Map<String, Object> result = provider.apply(errorPayload, execution, "catchError");
 
         assertThat(result).isEqualTo(expectedOutput);
 
@@ -63,16 +67,21 @@ class ErrorVariablesMappingProviderTest {
         MappingExecutionContext capturedContext = contextCaptor.getValue();
         assertThat(capturedContext.getProcessDefinitionId()).isEqualTo("procDef1");
         assertThat(capturedContext.getActivityId()).isEqualTo("catchError");
+        assertThat(capturedContext.hasExecution()).isTrue();
+        assertThat(capturedContext.getExecution()).isSameAs(execution);
     }
 
     @Test
     void should_ReturnEmptyMap_When_CalculatorReturnsEmpty() {
+        DelegateExecution execution = mock(DelegateExecution.class);
+        when(execution.getProcessDefinitionId()).thenReturn("procDef1");
+
         Map<String, Object> errorPayload = Map.of("errorCode", "456");
         when(
             variablesCalculator.calculateOutPutVariables(any(MappingExecutionContext.class), eq(errorPayload))
         ).thenReturn(Map.of());
 
-        Map<String, Object> result = provider.apply(errorPayload, "procDef1", "catchError");
+        Map<String, Object> result = provider.apply(errorPayload, execution, "catchError");
 
         assertThat(result).isEmpty();
     }

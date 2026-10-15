@@ -17,6 +17,7 @@ package org.activiti.engine.impl.bpmn.helper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -30,6 +31,7 @@ import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Error;
 import org.activiti.bpmn.model.StartEvent;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -238,10 +240,11 @@ class ErrorPropagationTest {
             Error error = new Error("error1");
 
             Map<String, Object> mappedVars = Map.of("boundaryErrorCode", "404", "boundaryErrorName", "NOT_FOUND");
-            when(provider.apply(anyMap(), eq("proc-def-1"), eq("boundary-1"))).thenReturn(mappedVars);
+            when(provider.apply(anyMap(), any(DelegateExecution.class), eq("boundary-1"))).thenReturn(mappedVars);
 
             ErrorPropagation.applyErrorOutputMappings(boundaryEvent, parentExecution, error, bpmnModel, "404");
 
+            verify(provider).apply(anyMap(), eq(processInstanceExecution), eq("boundary-1"));
             verify(processInstanceExecution).setVariables(mappedVars);
             verify(parentExecution, never()).setVariables(anyMap());
         }
@@ -259,10 +262,11 @@ class ErrorPropagationTest {
             Error error = new Error("error2");
 
             Map<String, Object> mappedVars = Map.of("subProcessErrorCode", "503");
-            when(provider.apply(anyMap(), eq("proc-def-2"), eq("start-1"))).thenReturn(mappedVars);
+            when(provider.apply(anyMap(), any(DelegateExecution.class), eq("start-1"))).thenReturn(mappedVars);
 
             ErrorPropagation.applyErrorOutputMappings(startEvent, parentExecution, error, bpmnModel, "503");
 
+            verify(provider).apply(anyMap(), eq(parentExecution), eq("start-1"));
             verify(parentExecution).setVariables(mappedVars);
         }
 
@@ -271,16 +275,20 @@ class ErrorPropagationTest {
             ExecutionEntity parentExecution = mock(ExecutionEntity.class);
             when(parentExecution.getProcessDefinitionId()).thenReturn("proc-def-3");
 
+            ExecutionEntity processInstanceExecution = mock(ExecutionEntity.class);
+            when(parentExecution.getProcessInstance()).thenReturn(processInstanceExecution);
+
             BoundaryEvent boundaryEvent = new BoundaryEvent();
             boundaryEvent.setId("boundary-2");
 
             BpmnModel bpmnModel = new BpmnModel();
             Error error = new Error("error3");
 
-            when(provider.apply(anyMap(), anyString(), anyString())).thenReturn(Map.of());
+            when(provider.apply(anyMap(), any(DelegateExecution.class), anyString())).thenReturn(Map.of());
 
             ErrorPropagation.applyErrorOutputMappings(boundaryEvent, parentExecution, error, bpmnModel, "500");
 
+            verify(processInstanceExecution, never()).setVariables(anyMap());
             verify(parentExecution, never()).setVariables(anyMap());
         }
     }
