@@ -16,6 +16,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref }}
   cancel-in-progress: true
 
+env:
+  MAVEN_VERSION: "3.10.0"
+
 jobs:
   pre-checks:
     runs-on: ubuntu-latest
@@ -62,6 +65,8 @@ jobs:
           persist-credentials: false
 
       - uses: ./.github/actions/setup-java-maven
+        with:
+          maven-version: ${{ env.MAVEN_VERSION }}
 
       - name: Set preview version
         if: ${{ needs.pre-checks.outputs.preview == 'true' }}
@@ -103,6 +108,8 @@ jobs:
           persist-credentials: false
 
       - uses: ./.github/actions/setup-java-maven
+        with:
+          maven-version: ${{ env.MAVEN_VERSION }}
 
       - name: Set preview version
         run: |
