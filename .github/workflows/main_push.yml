@@ -117,7 +117,7 @@ jobs:
 
       - name: Deploy with Maven
         shell: bash
-        run: mvn deploy -DskipTests ${{ env.MAVEN_CLI_OPTS}}
+        run: mvn deploy -DskipTests -DskipITs ${{ env.MAVEN_CLI_OPTS}}
         env:
           MAVEN_CLI_OPTS: --show-version --no-transfer-progress --settings settings.xml
           MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
