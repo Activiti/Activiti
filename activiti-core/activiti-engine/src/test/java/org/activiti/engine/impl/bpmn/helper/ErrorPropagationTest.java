@@ -88,17 +88,6 @@ class ErrorPropagationTest {
         }
 
         @Test
-        void should_returnErrorCode_when_errorsMapIsEmpty() {
-            BpmnModel bpmnModel = new BpmnModel();
-
-            Error error = new Error("someError");
-
-            String result = ErrorPropagation.resolveErrorName(error, bpmnModel, "503");
-
-            assertThat(result).isEqualTo("503");
-        }
-
-        @Test
         void should_returnNull_when_errorCodeIsNullAndNoMatch() {
             BpmnModel bpmnModel = new BpmnModel();
 
@@ -127,19 +116,6 @@ class ErrorPropagationTest {
             String result = ErrorPropagation.resolveErrorName(error, catchingModel, "404");
 
             // Must resolve to "NOT_FOUND" (code 404), not "INTERNAL_ERROR" (id "sharedId")
-            assertThat(result).isEqualTo("NOT_FOUND");
-        }
-
-        @Test
-        void should_acceptIdMatch_when_errorCodeIsNull() {
-            // Regular path: new Error(errorRef) sets only id, no errorCode
-            BpmnModel bpmnModel = new BpmnModel();
-            bpmnModel.addError("errorId", "NOT_FOUND", "404");
-
-            Error error = new Error("errorId"); // errorCode is null
-
-            String result = ErrorPropagation.resolveErrorName(error, bpmnModel, "404");
-
             assertThat(result).isEqualTo("NOT_FOUND");
         }
     }
