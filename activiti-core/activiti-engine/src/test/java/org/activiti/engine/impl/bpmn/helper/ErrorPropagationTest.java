@@ -106,6 +106,40 @@ class ErrorPropagationTest {
 
             assertThat(result).isNull();
         }
+
+        /**
+         * Cross-model ID reuse: the called process and the catching process both
+         * define an error with id "sharedId" but for different codes. The direct
+         * lookup must reject the ID match and fall back to the code-based search.
+         */
+        @Test
+        void should_resolveByCode_when_idMatchesButErrorCodeDiffers() {
+            // Catching model: id "sharedId" maps to code "500"
+            BpmnModel catchingModel = new BpmnModel();
+            catchingModel.addError("sharedId", "INTERNAL_ERROR", "500");
+            catchingModel.addError("otherErrorId", "NOT_FOUND", "404");
+
+            // Error from called model: same id "sharedId" but code "404"
+            Error error = new Error("sharedId", "404");
+
+            String result = ErrorPropagation.resolveErrorName(error, catchingModel, "404");
+
+            // Must resolve to "NOT_FOUND" (code 404), not "INTERNAL_ERROR" (id "sharedId")
+            assertThat(result).isEqualTo("NOT_FOUND");
+        }
+
+        @Test
+        void should_acceptIdMatch_when_errorCodeIsNull() {
+            // Regular path: new Error(errorRef) sets only id, no errorCode
+            BpmnModel bpmnModel = new BpmnModel();
+            bpmnModel.addError("errorId", "NOT_FOUND", "404");
+
+            Error error = new Error("errorId"); // errorCode is null
+
+            String result = ErrorPropagation.resolveErrorName(error, bpmnModel, "404");
+
+            assertThat(result).isEqualTo("NOT_FOUND");
+        }
     }
 
     @Nested
