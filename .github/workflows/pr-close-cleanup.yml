@@ -11,7 +11,7 @@ jobs:
       actions: write
     runs-on: ubuntu-latest
     steps:
-      - uses: Alfresco/alfresco-build-tools/.github/actions/gh-cache-cleanup-on-merge@c176315c6b0b3e3bbf022ea444944fb903c47e0e # v19.2.1
+      - uses: Alfresco/alfresco-build-tools/.github/actions/gh-cache-cleanup-on-merge@f2ba011b2bd8bee8d7418b046541ce2f75d1fbed # v19.4.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
