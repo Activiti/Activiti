@@ -25,7 +25,7 @@ import org.activiti.engine.impl.bpmn.helper.ErrorPayloadMappingProvider;
  * from the process extensions JSON using the existing {@link VariablesCalculator} infrastructure.
  *
  * <p>When an error boundary event or error event subprocess catches an error, this provider
- * maps the error data (errorCode, errorName, errorId) to process variables according to
+ * maps the error data (errorCode, errorName) to process variables according to
  * the output mappings configured in the extensions JSON for the catching event element.</p>
  */
 public class ErrorVariablesMappingProvider implements ErrorPayloadMappingProvider {
