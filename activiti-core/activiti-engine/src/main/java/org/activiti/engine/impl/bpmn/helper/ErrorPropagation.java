@@ -524,13 +524,17 @@ public class ErrorPropagation {
      */
     static String resolveErrorName(Error error, BpmnModel bpmnModel, String resolvedErrorCode) {
         String errorName = null;
-        // First try direct lookup by error id
+        // Try direct lookup by error id, but only accept it when the error code
+        // also matches.
         Error fullError = bpmnModel.getErrors().get(error.getId());
-        if (fullError != null) {
+        if (
+            fullError != null && (error.getErrorCode() == null || error.getErrorCode().equals(fullError.getErrorCode()))
+        ) {
             errorName = fullError.getName();
         } else {
             // Fallback: search by matching error code (needed for connector errors
-            // where error.getId() is the error code, not the BPMN error id)
+            // where error.getId() is the error code, not the BPMN error id,
+            // and for call-activity errors where the ID doesn't match)
             for (Error bpmnError : bpmnModel.getErrors().values()) {
                 if (resolvedErrorCode != null && resolvedErrorCode.equals(bpmnError.getErrorCode())) {
                     errorName = bpmnError.getName();
