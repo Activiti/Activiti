@@ -23,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Close downstream preview PRs for this source PR only
-        uses: Alfresco/alfresco-build-tools/.github/actions/github-close-orphaned-preview-pr@5d33aec6cf9ffd70982c404ebf5ebadedd7405d9 # 19.5.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/github-close-orphaned-preview-prs@5d33aec6cf9ffd70982c404ebf5ebadedd7405d9 # 19.5.0
         with:
           source-pr-number: ${{ github.event.pull_request.number }}
           source-pr-state: ${{ github.event.pull_request.state }}
