@@ -36,11 +36,6 @@ public class MappingExecutionContext {
         this.activityId = activityId;
     }
 
-    /**
-     * Creates a context that carries a live execution for variable access
-     * while overriding the activity ID (e.g. the catching event's ID rather
-     * than the execution's current activity).
-     */
     public MappingExecutionContext(DelegateExecution delegateExecution, String activityId) {
         this.processDefinitionId = delegateExecution.getProcessDefinitionId();
         this.activityId = activityId;
