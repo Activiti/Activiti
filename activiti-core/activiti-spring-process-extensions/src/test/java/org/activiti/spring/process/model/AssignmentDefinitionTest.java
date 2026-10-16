@@ -25,10 +25,10 @@ import org.junit.jupiter.api.Test;
 class AssignmentDefinitionTest {
 
     @Test
-    void should_defaultAllowSelfServiceToFalse_when_notExplicitlySet() {
+    void should_defaultAllowSelfServiceToNull_when_notExplicitlySet() {
         AssignmentDefinition assignment = new AssignmentDefinition("1", ASSIGNEE, STATIC, MANUAL);
 
-        assertThat(assignment.isAllowSelfService()).isFalse();
+        assertThat(assignment.isAllowSelfService()).isNull();
     }
 
     @Test

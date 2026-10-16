@@ -196,7 +196,7 @@
     <maven.compiler.target>${java.version}</maven.compiler.target>
 
     <!-- versions -->
-    <asm.version>9.10.1</asm.version>
+    <asm.version>9.11</asm.version>
     <build-helper-maven-plugin.version>3.6.2</build-helper-maven-plugin.version>
     <dependency-check-maven.version>13.0.0</dependency-check-maven.version>
     <exec-maven-plugin.version>3.6.4</exec-maven-plugin.version>
@@ -227,7 +227,7 @@
     <sonar-maven-plugin.version>5.8.0.7211</sonar-maven-plugin.version>
     <spring-boot.version>4.0.7</spring-boot.version>
     <!-- AAE-51380 temporary Tomcat version override. Remove when upgrading to Spring Boot 4.1.x -->
-    <tomcat.version>11.0.26</tomcat.version>
+    <tomcat.version>11.0.27</tomcat.version>
     <jakarta.el-api.version>6.0.1</jakarta.el-api.version>
     <!-- AAE-44603 temporary security fix (CVE-2025-7962). -->
     <sun-jakarta-mail.version>2.0.2</sun-jakarta-mail.version>
