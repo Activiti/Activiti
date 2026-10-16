@@ -10,3 +10,10 @@ spec:
             pattern: "<activiti.version>(.*)</activiti.version>"
             files:
               - "**/pom.xml"
+        - command:
+            name: sh
+            args:
+              - -c
+              - |
+                set -eu
+                printf "build.run.id=%s\n" "${BUILD_RUN_ID:?BUILD_RUN_ID must be set}" > preview-build.properties
