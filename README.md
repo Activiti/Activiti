@@ -26,6 +26,8 @@ This repository includes an automated **Preview Propagation** mechanism for test
 3. Test the integration in the downstream PR
 4. When your source PR closes/merges, the test PR automatically closes
 
+Each propagation writes the GitHub Actions run ID (`BUILD_RUN_ID`) to `preview-build.properties` in the downstream repository, ensuring a new commit for each new workflow run even when the preview snapshot version is unchanged.
+
 This eliminates manual version bumping and cleanup while ensuring integration changes are validated before merge.
 
 ## Configuring IntelliJ
