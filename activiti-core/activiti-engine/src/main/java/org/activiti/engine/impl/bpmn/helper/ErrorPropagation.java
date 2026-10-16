@@ -15,6 +15,10 @@
  */
 package org.activiti.engine.impl.bpmn.helper;
 
+import static org.activiti.engine.impl.bpmn.helper.ErrorPayloadMappingProvider.ERROR_CODE;
+import static org.activiti.engine.impl.bpmn.helper.ErrorPayloadMappingProvider.ERROR_ID;
+import static org.activiti.engine.impl.bpmn.helper.ErrorPayloadMappingProvider.ERROR_NAME;
+
 import java.util.*;
 import org.activiti.bpmn.model.*;
 import org.activiti.bpmn.model.Error;
@@ -462,10 +466,6 @@ public class ErrorPropagation {
         return defaultExceptionMapping;
     }
 
-    /**
-     * Applies error output mappings if an {@link ErrorPayloadMappingProvider} is configured.
-     * Applies to both error boundary events and error event subprocesses (start events).
-     */
     static void applyErrorOutputMappings(
         Event event,
         ExecutionEntity parentExecution,
@@ -513,9 +513,10 @@ public class ErrorPropagation {
      */
     static Map<String, Object> buildErrorPayload(Error error, BpmnModel bpmnModel, String resolvedErrorCode) {
         Map<String, Object> errorPayload = new HashMap<>();
-        errorPayload.put("errorCode", resolvedErrorCode);
+        errorPayload.put(ERROR_CODE, resolvedErrorCode);
+        errorPayload.put(ERROR_ID, error.getId());
         if (bpmnModel != null) {
-            errorPayload.put("errorName", resolveErrorName(error, bpmnModel, resolvedErrorCode));
+            errorPayload.put(ERROR_NAME, resolveErrorName(error, bpmnModel, resolvedErrorCode));
         }
         return errorPayload;
     }
@@ -526,27 +527,16 @@ public class ErrorPropagation {
      * Falls back to the resolved error code if no BPMN error definition is found.
      */
     static String resolveErrorName(Error error, BpmnModel bpmnModel, String resolvedErrorCode) {
-        String errorName = null;
-        // Try direct lookup by error id, but only accept it when the error code
-        // also matches.
-        Error fullError = bpmnModel.getErrors().get(error.getId());
-        if (
-            fullError != null && (error.getErrorCode() == null || error.getErrorCode().equals(fullError.getErrorCode()))
-        ) {
-            errorName = fullError.getName();
-        } else {
-            // Fallback: search by matching error code (needed for connector errors
-            // where error.getId() is the error code, not the BPMN error id,
-            // and for call-activity errors where the ID doesn't match)
-            for (Error bpmnError : bpmnModel.getErrors().values()) {
-                if (resolvedErrorCode != null && resolvedErrorCode.equals(bpmnError.getErrorCode())) {
-                    errorName = bpmnError.getName();
-                    break;
-                }
-            }
-        }
-        // Fall back to error code as name if no BPMN error definition was found
-        return errorName != null ? errorName : resolvedErrorCode;
+        return bpmnModel
+            .findErrorById(error.getId())
+            .filter(e -> error.getErrorCode() == null || error.getErrorCode().equals(e.getErrorCode()))
+            .map(Error::getName)
+            .or(() ->
+                Optional.ofNullable(resolvedErrorCode).flatMap(code ->
+                    bpmnModel.findErrorByErrorCode(code).map(Error::getName)
+                )
+            )
+            .orElse(resolvedErrorCode);
     }
 
     protected static String retrieveErrorCode(BpmnModel bpmnModel, String errorRef) {

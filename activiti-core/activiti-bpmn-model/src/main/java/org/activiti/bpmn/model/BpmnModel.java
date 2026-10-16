@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 
 public class BpmnModel {
@@ -585,5 +586,17 @@ public class BpmnModel {
             return startEvent.getFormKey();
         }
         return null;
+    }
+
+    public Optional<Error> findErrorById(String errorId) {
+        return Optional.ofNullable(errorMap.get(errorId));
+    }
+
+    public Optional<Error> findErrorByErrorCode(String errorCode) {
+        return errorMap
+            .values()
+            .stream()
+            .filter(error -> errorCode.equals(error.getErrorCode()))
+            .findFirst();
     }
 }

@@ -15,6 +15,8 @@
  */
 package org.activiti.runtime.api.impl;
 
+import static org.activiti.engine.impl.bpmn.helper.ErrorPayloadMappingProvider.ERROR_CODE;
+import static org.activiti.engine.impl.bpmn.helper.ErrorPayloadMappingProvider.ERROR_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -49,8 +51,8 @@ class ErrorVariablesMappingProviderTest {
         when(execution.getProcessDefinitionId()).thenReturn("procDef1");
 
         Map<String, Object> errorPayload = new HashMap<>();
-        errorPayload.put("errorCode", "123");
-        errorPayload.put("errorName", "myError");
+        errorPayload.put(ERROR_CODE, "123");
+        errorPayload.put(ERROR_NAME, "myError");
 
         Map<String, Object> expectedOutput = Map.of("boundaryErrorCode", "123");
         when(
@@ -76,7 +78,7 @@ class ErrorVariablesMappingProviderTest {
         DelegateExecution execution = mock(DelegateExecution.class);
         when(execution.getProcessDefinitionId()).thenReturn("procDef1");
 
-        Map<String, Object> errorPayload = Map.of("errorCode", "456");
+        Map<String, Object> errorPayload = Map.of(ERROR_CODE, "456");
         when(
             variablesCalculator.calculateOutPutVariables(any(MappingExecutionContext.class), eq(errorPayload))
         ).thenReturn(Map.of());
