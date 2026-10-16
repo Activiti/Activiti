@@ -15,6 +15,9 @@
  */
 package org.activiti.engine.impl.bpmn.helper;
 
+import static org.activiti.engine.impl.bpmn.helper.ErrorPayloadMappingProvider.ERROR_CODE;
+import static org.activiti.engine.impl.bpmn.helper.ErrorPayloadMappingProvider.ERROR_ID;
+import static org.activiti.engine.impl.bpmn.helper.ErrorPayloadMappingProvider.ERROR_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;
 import static org.mockito.ArgumentMatchers.any;
@@ -98,6 +101,18 @@ class ErrorPropagationTest {
             assertThat(result).isNull();
         }
 
+        @Test
+        void should_returnNull_when_errorCodeIsNullAndModelHasErrors() {
+            BpmnModel bpmnModel = new BpmnModel();
+            bpmnModel.addError("someId", "SOME_ERROR", "500");
+
+            Error error = new Error("unknownId");
+
+            String result = ErrorPropagation.resolveErrorName(error, bpmnModel, null);
+
+            assertThat(result).isNull();
+        }
+
         /**
          * Cross-model ID reuse: the called process and the catching process both
          * define an error with id "sharedId" but for different codes. The direct
@@ -132,7 +147,11 @@ class ErrorPropagationTest {
 
             Map<String, Object> payload = ErrorPropagation.buildErrorPayload(error, bpmnModel, "404");
 
-            assertThat(payload).contains(entry("errorCode", "404"), entry("errorName", "NOT_FOUND"));
+            assertThat(payload).contains(
+                entry(ERROR_CODE, "404"),
+                entry(ERROR_ID, "errorId"),
+                entry(ERROR_NAME, "NOT_FOUND")
+            );
         }
 
         @Test
@@ -143,7 +162,11 @@ class ErrorPropagationTest {
 
             Map<String, Object> payload = ErrorPropagation.buildErrorPayload(error, bpmnModel, "REQUEST_TIMEOUT");
 
-            assertThat(payload).contains(entry("errorCode", "REQUEST_TIMEOUT"), entry("errorName", "REQUEST_TIMEOUT"));
+            assertThat(payload).contains(
+                entry(ERROR_CODE, "REQUEST_TIMEOUT"),
+                entry(ERROR_ID, "REQUEST_TIMEOUT"),
+                entry(ERROR_NAME, "REQUEST_TIMEOUT")
+            );
         }
 
         @Test
@@ -152,7 +175,9 @@ class ErrorPropagationTest {
 
             Map<String, Object> payload = ErrorPropagation.buildErrorPayload(error, null, "404");
 
-            assertThat(payload).contains(entry("errorCode", "404")).doesNotContainKey("errorName");
+            assertThat(payload)
+                .contains(entry(ERROR_CODE, "404"), entry(ERROR_ID, "errorId"))
+                .doesNotContainKey(ERROR_NAME);
         }
 
         @Test
@@ -164,7 +189,11 @@ class ErrorPropagationTest {
 
             Map<String, Object> payload = ErrorPropagation.buildErrorPayload(error, bpmnModel, "503");
 
-            assertThat(payload).contains(entry("errorCode", "503"), entry("errorName", "Service Unavailable"));
+            assertThat(payload).contains(
+                entry(ERROR_CODE, "503"),
+                entry(ERROR_ID, "503"),
+                entry(ERROR_NAME, "Service Unavailable")
+            );
         }
     }
 
