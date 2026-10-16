@@ -6,35 +6,22 @@
       <id>alfresco</id>
       <username>${env.MAVEN_USERNAME}</username>
       <password>${env.MAVEN_PASSWORD}</password>
-    </server>
-    <server>
-      <id>central</id>
-      <username>${env.MAVEN_USERNAME}</username>
-      <password>${env.MAVEN_PASSWORD}</password>
+      <repositoryOrigins>
+        <repositoryOrigin>https://artifacts.alfresco.com</repositoryOrigin>
+      </repositoryOrigins>
     </server>
   </servers>
 
    <profiles>
-    <profile>
-      <id>central</id>
-      <activation>
-        <activeByDefault>false</activeByDefault>
-      </activation>
-      <properties>
-        <altDeploymentRepository>central::default::https://artifacts.alfresco.com/nexus/content/repositories/activiti-snapshots/</altDeploymentRepository>
-        <altReleaseDeploymentRepository>central::default::https://oss.sonatype.org/service/local/staging/deploy/maven2/</altReleaseDeploymentRepository>
-        <altSnapshotDeploymentRepository>central::default::https://artifacts.alfresco.com/nexus/content/repositories/activiti-snapshots/</altSnapshotDeploymentRepository>
-      </properties>
-    </profile>
     <profile>
       <id>alfresco</id>
       <activation>
         <activeByDefault>true</activeByDefault>
       </activation>
       <properties>
-        <altDeploymentRepository>alfresco::default::https://artifacts.alfresco.com/nexus/content/repositories/activiti-snapshots/</altDeploymentRepository>
-        <altReleaseDeploymentRepository>alfresco::default::https://artifacts.alfresco.com/nexus/content/repositories/activiti-releases/</altReleaseDeploymentRepository>
-        <altSnapshotDeploymentRepository>alfresco::default::https://artifacts.alfresco.com/nexus/content/repositories/activiti-snapshots/</altSnapshotDeploymentRepository>
+        <altDeploymentRepository>alfresco::https://artifacts.alfresco.com/nexus/content/repositories/activiti-snapshots/</altDeploymentRepository>
+        <altReleaseDeploymentRepository>alfresco::https://artifacts.alfresco.com/nexus/content/repositories/activiti-releases/</altReleaseDeploymentRepository>
+        <altSnapshotDeploymentRepository>alfresco::https://artifacts.alfresco.com/nexus/content/repositories/activiti-snapshots/</altSnapshotDeploymentRepository>
       </properties>
     </profile>
   </profiles>

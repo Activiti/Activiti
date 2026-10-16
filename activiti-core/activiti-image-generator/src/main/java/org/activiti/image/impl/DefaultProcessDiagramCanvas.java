@@ -899,11 +899,11 @@ public class DefaultProcessDiagramCanvas {
 
         // Actually draw the lines
         for (TextLayout textLayout : layouts) {
-            currentY += textLayout.getAscent();
+            currentY = (int) (currentY + textLayout.getAscent());
             currentX = x + (centered ? (boxWidth - ((Double) textLayout.getBounds().getWidth()).intValue()) / 2 : 0);
 
             textLayout.draw(g, currentX, currentY);
-            currentY += textLayout.getDescent() + textLayout.getLeading();
+            currentY = (int) (currentY + (textLayout.getDescent() + textLayout.getLeading()));
         }
     }
 

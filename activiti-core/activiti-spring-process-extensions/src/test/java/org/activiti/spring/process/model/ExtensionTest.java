@@ -256,7 +256,7 @@ class ExtensionTest {
                     new AssignmentDefinition("2", CANDIDATES, IDENTITY, MANUAL),
                     new AssignmentDefinition("3", CANDIDATES, EXPRESSION, SEQUENTIAL)
                 );
-            assertThat(assignments.get("task-1").isAllowSelfService()).isFalse();
+            assertThat(assignments.get("task-1").isAllowSelfService()).isNull();
         }
     }
 

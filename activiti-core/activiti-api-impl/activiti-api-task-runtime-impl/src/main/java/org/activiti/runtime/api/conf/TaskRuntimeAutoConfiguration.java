@@ -71,6 +71,7 @@ import org.activiti.runtime.api.model.impl.APITaskCandidateGroupConverter;
 import org.activiti.runtime.api.model.impl.APITaskCandidateUserConverter;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
 import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
+import org.activiti.spring.process.ProcessExtensionService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -129,8 +130,8 @@ public class TaskRuntimeAutoConfiguration {
     }
 
     @Bean
-    public APITaskConverter apiTaskConverter(TaskService taskService) {
-        return new APITaskConverter(taskService);
+    public APITaskConverter apiTaskConverter(TaskService taskService, ProcessExtensionService processExtensionService) {
+        return new APITaskConverter(taskService, processExtensionService);
     }
 
     @Bean
