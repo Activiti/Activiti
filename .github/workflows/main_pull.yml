@@ -173,7 +173,7 @@ jobs:
 
       - name: Close preview PRs if source PR closed while propagating
         if: ${{ steps.source-pr-state.outputs.state != 'OPEN' }}
-        uses: Alfresco/alfresco-build-tools/.github/actions/github-close-orphaned-preview-pr@5d33aec6cf9ffd70982c404ebf5ebadedd7405d9 # v19.5.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/github-close-orphaned-preview-prs@5d33aec6cf9ffd70982c404ebf5ebadedd7405d9 # v19.5.0
         with:
           source-pr-number: ${{ github.event.pull_request.number }}
           source-pr-state: ${{ steps.source-pr-state.outputs.state }}
