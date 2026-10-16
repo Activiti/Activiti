@@ -241,8 +241,7 @@ public class ErrorPropagation {
         String resolvedErrorCode = null;
 
         if (bpmnModel != null) {
-            resolvedErrorCode =
-                error.getErrorCode() != null ? error.getErrorCode() : retrieveErrorCode(bpmnModel, error.getId());
+            resolvedErrorCode = getResolvedErrorCode(error, bpmnModel);
         }
 
         if (
@@ -292,13 +291,16 @@ public class ErrorPropagation {
         }
     }
 
+    private static String getResolvedErrorCode(Error error, BpmnModel bpmnModel) {
+        return error.getErrorCode() != null ? error.getErrorCode() : retrieveErrorCode(bpmnModel, error.getId());
+    }
+
     protected static Map<String, List<Event>> findCatchingEventsForProcess(String processDefinitionId, Error error) {
         Map<String, List<Event>> eventMap = new LinkedHashMap<>();
         Process process = ProcessDefinitionUtil.getProcess(processDefinitionId);
         BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(processDefinitionId);
 
-        String compareErrorCode =
-            error.getErrorCode() != null ? error.getErrorCode() : retrieveErrorCode(bpmnModel, error.getId());
+        String compareErrorCode = getResolvedErrorCode(error, bpmnModel);
 
         eventMap.putAll(findCatchingEventSubprocesses(process, bpmnModel, compareErrorCode));
 
