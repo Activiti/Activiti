@@ -32,6 +32,7 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -42,6 +43,7 @@ class ProcessRuntimeErrorOutputMappingIT {
     private static final String ERROR_BOUNDARY_OUTPUT_MAPPING = "errorBoundaryEventOutputMapping";
     private static final String ERROR_BOUNDARY_CATCH_ALL_OUTPUT_MAPPING = "errorBoundaryCatchAllOutputMapping";
     private static final String ERROR_EVENT_SUBPROCESS_OUTPUT_MAPPING = "errorEventSubProcessOutputMapping";
+    private static final String PARENT_PROCESS_ERROR_BOUNDARY = "parentProcessErrorBoundary";
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -58,6 +60,11 @@ class ProcessRuntimeErrorOutputMappingIT {
     @Autowired
     private ProcessCleanUpUtil processCleanUpUtil;
 
+    @BeforeEach
+    void setUp() {
+        securityUtil.logInAs("user");
+    }
+
     @AfterEach
     void cleanUp() {
         processCleanUpUtil.cleanUpWithAdmin();
@@ -65,8 +72,6 @@ class ProcessRuntimeErrorOutputMappingIT {
 
     @Test
     void should_MapErrorCodeAndName_When_ErrorBoundaryEventCatches() {
-        securityUtil.logInAs("user");
-
         ProcessInstance processInstance = processRuntime.start(
             ProcessPayloadBuilder.start().withProcessDefinitionKey(ERROR_BOUNDARY_OUTPUT_MAPPING).build()
         );
@@ -78,17 +83,13 @@ class ProcessRuntimeErrorOutputMappingIT {
             .withProcessInstanceId(processInstance.getId())
             .build();
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 10), getTasksPayload);
-        assertThat(tasks.getContent()).hasSize(1).extracting(Task::getName).containsExactly("Task");
-
-        // Verify the error output mapping variables were set
+        assertThat(tasks.getContent()).extracting(Task::getName).containsExactly("Task");
         Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
         assertThat(variables).contains(entry("boundaryErrorCode", "404"), entry("boundaryErrorName", "NOT_FOUND"));
     }
 
     @Test
     void should_MapErrorCodeAndName_When_CatchAllBoundaryEventCatches() {
-        securityUtil.logInAs("user");
-
         ProcessInstance processInstance = processRuntime.start(
             ProcessPayloadBuilder.start().withProcessDefinitionKey(ERROR_BOUNDARY_CATCH_ALL_OUTPUT_MAPPING).build()
         );
@@ -100,7 +101,7 @@ class ProcessRuntimeErrorOutputMappingIT {
             .withProcessInstanceId(processInstance.getId())
             .build();
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 10), getTasksPayload);
-        assertThat(tasks.getContent()).hasSize(1).extracting(Task::getName).containsExactly("Catch All Task");
+        assertThat(tasks.getContent()).extracting(Task::getName).containsExactly("Catch All Task");
 
         // Verify the error output mapping variables were set
         // The error is defined in BPMN with errorCode="KNOWN_ERROR" and name="Known Error"
@@ -113,8 +114,6 @@ class ProcessRuntimeErrorOutputMappingIT {
 
     @Test
     void should_MapErrorCodeAndName_When_ErrorEventSubProcessCatches() {
-        securityUtil.logInAs("user");
-
         ProcessInstance processInstance = processRuntime.start(
             ProcessPayloadBuilder.start().withProcessDefinitionKey(ERROR_EVENT_SUBPROCESS_OUTPUT_MAPPING).build()
         );
@@ -126,7 +125,7 @@ class ProcessRuntimeErrorOutputMappingIT {
             .withProcessInstanceId(processInstance.getId())
             .build();
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 10), getTasksPayload);
-        assertThat(tasks.getContent()).hasSize(1).extracting(Task::getName).containsExactly("Event Subprocess Task");
+        assertThat(tasks.getContent()).extracting(Task::getName).containsExactly("Event Subprocess Task");
 
         // Verify the error output mapping variables were set
         // The error is defined in BPMN with errorCode="503" and name="SERVICE_UNAVAILABLE"
@@ -134,6 +133,31 @@ class ProcessRuntimeErrorOutputMappingIT {
         assertThat(variables).contains(
             entry("subProcessErrorCode", "503"),
             entry("subProcessErrorName", "SERVICE_UNAVAILABLE")
+        );
+    }
+
+    @Test
+    void should_MapErrorOutputs_When_CallActivityChildThrowsError() {
+        ProcessInstance processInstance = processRuntime.start(
+            ProcessPayloadBuilder.start().withProcessDefinitionKey(PARENT_PROCESS_ERROR_BOUNDARY).build()
+        );
+
+        assertThat(processInstance).isNotNull();
+
+        // Verify the process reached the boundary error task
+        GetTasksPayload getTasksPayload = new GetTasksPayloadBuilder()
+            .withProcessInstanceId(processInstance.getId())
+            .build();
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 10), getTasksPayload);
+        assertThat(tasks.getContent()).extracting(Task::getName).containsExactly("Error Handler Task");
+
+        // Verify the error output mapping variables were set on the parent process.
+        // The child process throws error id="childError1", code="CHILD_404", name="Child Not Found".
+        Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
+        assertThat(variables).contains(
+            entry("testErrorCode", "CHILD_404"),
+            entry("testErrorId", "childError1"),
+            entry("testErrorName", "CHILD_404")
         );
     }
 }
