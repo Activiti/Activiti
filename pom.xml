@@ -204,6 +204,7 @@
     <jacoco-maven-plugin.version>0.8.15</jacoco-maven-plugin.version>
     <license-maven-plugin.version>5.1.2</license-maven-plugin.version>
     <third-party-license-maven-plugin.version>2.7.1</third-party-license-maven-plugin.version>
+    <maven-antrun-plugin.version>3.2.0</maven-antrun-plugin.version>
     <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
     <checkstyle.version>14.3.0</checkstyle.version>
     <maven-clean-plugin.version>3.5.0</maven-clean-plugin.version>
@@ -387,7 +388,7 @@ limitations under the License.
                 <failOnMissing>true</failOnMissing>
                 <excludedScopes>provided,test</excludedScopes>
                 <excludedGroups>^(org\.alfresco|com\.alfresco|org\.activiti|org\.gytheio).*</excludedGroups>
-                <failIfWarning>true</failIfWarning>
+                <failOnBlacklist>true</failOnBlacklist>
                 <includedLicenses>https://raw.githubusercontent.com/Alfresco/third-party-license-overrides/master/includedLicensesPlusNashorn.txt</includedLicenses>
                 <licenseMergesUrl>https://raw.githubusercontent.com/Alfresco/third-party-license-overrides/master/licenseMerges.txt</licenseMergesUrl>
                 <overrideUrl>https://raw.githubusercontent.com/Alfresco/third-party-license-overrides/master/override-THIRD-PARTY.properties</overrideUrl>
@@ -417,6 +418,11 @@ limitations under the License.
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>versions-maven-plugin</artifactId>
           <version>${versions-maven-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-antrun-plugin</artifactId>
+          <version>${maven-antrun-plugin.version}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -613,7 +619,6 @@ limitations under the License.
         <configuration>
           <showDeprecation>true</showDeprecation>
           <showWarnings>true</showWarnings>
-          <optimize>true</optimize>
           <compilerArgs>
             <arg>-parameters</arg>
           </compilerArgs>

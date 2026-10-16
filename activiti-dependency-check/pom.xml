@@ -25,7 +25,7 @@
             <configuration>
               <artifacts>
                 <artifact>
-                  <file>${basedir}/dependency-check-suppression.xml</file>
+                  <file>${project.basedir}/dependency-check-suppression.xml</file>
                   <type>xml</type>
                   <classifier>suppression</classifier>
                 </artifact>
