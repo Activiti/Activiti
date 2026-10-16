@@ -82,6 +82,7 @@ import org.activiti.engine.impl.bpmn.deployer.CachingAndArtifactsManager;
 import org.activiti.engine.impl.bpmn.deployer.EventSubscriptionManager;
 import org.activiti.engine.impl.bpmn.deployer.ParsedDeploymentBuilderFactory;
 import org.activiti.engine.impl.bpmn.deployer.TimerManager;
+import org.activiti.engine.impl.bpmn.helper.ErrorPayloadMappingProvider;
 import org.activiti.engine.impl.bpmn.listener.ListenerNotificationHelper;
 import org.activiti.engine.impl.bpmn.parser.BpmnParseHandlers;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
@@ -440,6 +441,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     private IntegrationContextManager integrationContextManager;
     private EventSubscriptionPayloadMappingProvider eventSubscriptionPayloadMappingProvider =
         new EventSubscriptionPayloadMappingProvider() {};
+    private ErrorPayloadMappingProvider errorPayloadMappingProvider = new ErrorPayloadMappingProvider() {};
     // History Manager
 
     protected HistoryManager historyManager;
@@ -3944,6 +3946,14 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         EventSubscriptionPayloadMappingProvider eventSubscriptionPayloadMappingProvider
     ) {
         this.eventSubscriptionPayloadMappingProvider = eventSubscriptionPayloadMappingProvider;
+    }
+
+    public ErrorPayloadMappingProvider getErrorPayloadMappingProvider() {
+        return errorPayloadMappingProvider;
+    }
+
+    public void setErrorPayloadMappingProvider(ErrorPayloadMappingProvider errorPayloadMappingProvider) {
+        this.errorPayloadMappingProvider = errorPayloadMappingProvider;
     }
 
     public ProcessDefinitionHelper getProcessDefinitionHelper() {

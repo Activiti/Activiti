@@ -15,6 +15,10 @@
  */
 package org.activiti.engine.impl.bpmn.helper;
 
+import static org.activiti.engine.impl.bpmn.helper.ErrorPayloadMappingProvider.ERROR_CODE;
+import static org.activiti.engine.impl.bpmn.helper.ErrorPayloadMappingProvider.ERROR_ID;
+import static org.activiti.engine.impl.bpmn.helper.ErrorPayloadMappingProvider.ERROR_NAME;
+
 import java.util.*;
 import org.activiti.bpmn.model.*;
 import org.activiti.bpmn.model.Error;
@@ -23,6 +27,7 @@ import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
@@ -232,30 +237,34 @@ public class ErrorPropagation {
         ExecutionEntity currentExecution,
         Error error
     ) {
+        BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(parentExecution.getProcessDefinitionId());
+        String resolvedErrorCode = null;
+
+        if (bpmnModel != null) {
+            resolvedErrorCode = getResolvedErrorCode(error, bpmnModel);
+        }
+
         if (
+            bpmnModel != null &&
             Context.getProcessEngineConfiguration() != null &&
             Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()
         ) {
-            BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(parentExecution.getProcessDefinitionId());
-            if (bpmnModel != null) {
-                String resolvedErrorCode =
-                    error.getErrorCode() != null ? error.getErrorCode() : retrieveErrorCode(bpmnModel, error.getId());
-
-                Context.getProcessEngineConfiguration()
-                    .getEventDispatcher()
-                    .dispatchEvent(
-                        ActivitiEventBuilder.createErrorEvent(
-                            ActivitiEventType.ACTIVITY_ERROR_RECEIVED,
-                            event.getId(),
-                            error.getId(),
-                            resolvedErrorCode,
-                            parentExecution.getId(),
-                            parentExecution.getProcessInstanceId(),
-                            parentExecution.getProcessDefinitionId()
-                        )
-                    );
-            }
+            Context.getProcessEngineConfiguration()
+                .getEventDispatcher()
+                .dispatchEvent(
+                    ActivitiEventBuilder.createErrorEvent(
+                        ActivitiEventType.ACTIVITY_ERROR_RECEIVED,
+                        event.getId(),
+                        error.getId(),
+                        resolvedErrorCode,
+                        parentExecution.getId(),
+                        parentExecution.getProcessInstanceId(),
+                        parentExecution.getProcessDefinitionId()
+                    )
+                );
         }
+
+        applyErrorOutputMappings(event, parentExecution, error, bpmnModel, resolvedErrorCode);
 
         if (event instanceof StartEvent) {
             ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
@@ -282,13 +291,16 @@ public class ErrorPropagation {
         }
     }
 
+    private static String getResolvedErrorCode(Error error, BpmnModel bpmnModel) {
+        return error.getErrorCode() != null ? error.getErrorCode() : retrieveErrorCode(bpmnModel, error.getId());
+    }
+
     protected static Map<String, List<Event>> findCatchingEventsForProcess(String processDefinitionId, Error error) {
         Map<String, List<Event>> eventMap = new LinkedHashMap<>();
         Process process = ProcessDefinitionUtil.getProcess(processDefinitionId);
         BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(processDefinitionId);
 
-        String compareErrorCode =
-            error.getErrorCode() != null ? error.getErrorCode() : retrieveErrorCode(bpmnModel, error.getId());
+        String compareErrorCode = getResolvedErrorCode(error, bpmnModel);
 
         eventMap.putAll(findCatchingEventSubprocesses(process, bpmnModel, compareErrorCode));
 
@@ -454,6 +466,79 @@ public class ErrorPropagation {
         }
 
         return defaultExceptionMapping;
+    }
+
+    static void applyErrorOutputMappings(
+        Event event,
+        ExecutionEntity parentExecution,
+        Error error,
+        BpmnModel bpmnModel,
+        String resolvedErrorCode
+    ) {
+        if (!(event instanceof BoundaryEvent) && !(event instanceof StartEvent)) {
+            return;
+        }
+
+        ErrorPayloadMappingProvider provider = getErrorPayloadMappingProvider();
+        if (provider == null) {
+            return;
+        }
+
+        Map<String, Object> errorPayload = buildErrorPayload(error, bpmnModel, resolvedErrorCode);
+
+        // Resolve the target execution: for boundary events write to the
+        // process-instance execution (not the interrupted activity); for event
+        // subprocesses parentExecution is already at the process level.
+        ExecutionEntity targetExecution =
+            event instanceof BoundaryEvent ? parentExecution.getProcessInstance() : parentExecution;
+
+        // Pass the target execution so that JSONPATCH mappings can read
+        // current runtime variable values instead of falling back to
+        // extension defaults.
+        Map<String, Object> mappedVariables = provider.apply(errorPayload, targetExecution, event.getId());
+
+        if (mappedVariables != null && !mappedVariables.isEmpty()) {
+            targetExecution.setVariables(mappedVariables);
+        }
+    }
+
+    private static ErrorPayloadMappingProvider getErrorPayloadMappingProvider() {
+        ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
+        if (processEngineConfiguration == null) {
+            return null;
+        }
+        return processEngineConfiguration.getErrorPayloadMappingProvider();
+    }
+
+    /**
+     * Builds the error payload map containing errorCode and errorName.
+     */
+    static Map<String, Object> buildErrorPayload(Error error, BpmnModel bpmnModel, String resolvedErrorCode) {
+        Map<String, Object> errorPayload = new HashMap<>();
+        errorPayload.put(ERROR_CODE, resolvedErrorCode);
+        errorPayload.put(ERROR_ID, error.getId());
+        if (bpmnModel != null) {
+            errorPayload.put(ERROR_NAME, resolveErrorName(error, bpmnModel, resolvedErrorCode));
+        }
+        return errorPayload;
+    }
+
+    /**
+     * Resolves the error name from the BPMN model.
+     * First tries direct lookup by error id, then searches by error code.
+     * Falls back to the resolved error code if no BPMN error definition is found.
+     */
+    static String resolveErrorName(Error error, BpmnModel bpmnModel, String resolvedErrorCode) {
+        return bpmnModel
+            .findErrorById(error.getId())
+            .filter(e -> error.getErrorCode() == null || error.getErrorCode().equals(e.getErrorCode()))
+            .map(Error::getName)
+            .or(() ->
+                Optional.ofNullable(resolvedErrorCode).flatMap(code ->
+                    bpmnModel.findErrorByErrorCode(code).map(Error::getName)
+                )
+            )
+            .orElse(resolvedErrorCode);
     }
 
     protected static String retrieveErrorCode(BpmnModel bpmnModel, String errorRef) {
