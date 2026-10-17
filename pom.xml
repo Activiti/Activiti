@@ -266,9 +266,6 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <!-- AAE-53237 / AAE-53265 / AAE-53442 security fix (CVE-2026-47884, CVE-2026-47890).
-           Pin Spring Framework 7.0.9. Imported before spring-boot-dependencies so it wins the version.
-           Remove when upgrading to Spring Boot >= 4.0.8. -->
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-framework-bom</artifactId>
