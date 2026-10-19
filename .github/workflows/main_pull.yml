@@ -16,6 +16,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref }}
   cancel-in-progress: true
 
+env:
+  MAVEN_VERSION: "3.10.0"
+
 jobs:
   pre-checks:
     runs-on: ubuntu-latest
@@ -62,6 +65,8 @@ jobs:
           persist-credentials: false
 
       - uses: ./.github/actions/setup-java-maven
+        with:
+          maven-version: ${{ env.MAVEN_VERSION }}
 
       - name: Set preview version
         if: ${{ needs.pre-checks.outputs.preview == 'true' }}
@@ -103,6 +108,8 @@ jobs:
           persist-credentials: false
 
       - uses: ./.github/actions/setup-java-maven
+        with:
+          maven-version: ${{ env.MAVEN_VERSION }}
 
       - name: Set preview version
         run: |
@@ -120,7 +127,7 @@ jobs:
 
       - name: Deploy preview with Maven
         shell: bash
-        run: mvn deploy -DskipTests ${{ env.MAVEN_CLI_OPTS}}
+        run: mvn deploy -DskipTests -DskipITs ${{ env.MAVEN_CLI_OPTS}}
         env:
           MAVEN_CLI_OPTS: --show-version --no-transfer-progress --settings settings.xml
           MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
@@ -147,6 +154,7 @@ jobs:
         env:
           BUILD_RUN_ID: ${{ github.run_id }}
         with:
+          pull-request-title: "Preview snapshot PR: activiti ${{ env.VERSION }} from ${{ github.server_url }}/${{ github.repository }}/pull/${{ github.event.pull_request.number }}"
           version: ${{ env.VERSION }}
           auto-merge: 'false'
           labels: 'do-not-merge,preview-source-pr-${{ github.event.pull_request.number }}'
@@ -172,7 +180,7 @@ jobs:
 
       - name: Close preview PRs if source PR closed while propagating
         if: ${{ steps.source-pr-state.outputs.state != 'OPEN' }}
-        uses: ./.github/actions/close-orphaned-preview-prs
+        uses: Alfresco/alfresco-build-tools/.github/actions/github-close-orphaned-preview-prs@5d33aec6cf9ffd70982c404ebf5ebadedd7405d9 # v19.5.0
         with:
           source-pr-number: ${{ github.event.pull_request.number }}
           source-pr-state: ${{ steps.source-pr-state.outputs.state }}
