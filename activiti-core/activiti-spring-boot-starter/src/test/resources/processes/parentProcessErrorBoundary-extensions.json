@@ -10,31 +10,15 @@
           "inputs": {
             "Text0823o4": {
               "type": "variable",
-              "value": "testErrorId"
-            },
-            "Text0h8t45": {
-              "type": "variable",
-              "value": "testErrorCode"
-            },
-            "Text0lqbrc": {
-              "type": "variable",
-              "value": "testErrorName"
+              "value": "testError"
             }
           }
         },
         "Event_032aj1u": {
           "outputs": {
-            "testErrorCode": {
+            "testError": {
               "type": "variable",
-              "value": "errorCode"
-            },
-            "testErrorId": {
-              "type": "variable",
-              "value": "errorId"
-            },
-            "testErrorName": {
-              "type": "variable",
-              "value": "errorName"
+              "value": "error"
             }
           }
         }
@@ -42,36 +26,10 @@
       "properties": {
         "1ffb8b32-d3bb-41a6-abb5-47fc9738ac22": {
           "id": "1ffb8b32-d3bb-41a6-abb5-47fc9738ac22",
-          "name": "testErrorId",
-          "type": "string",
+          "name": "testError",
+          "type": "json",
           "model": {
-            "$ref": "#/$defs/primitive/string"
-          },
-          "required": false,
-          "ephemeral": false,
-          "analytics": false,
-          "description": "",
-          "category": "local"
-        },
-        "27e2f291-903f-44dc-b298-b8892427203c": {
-          "id": "27e2f291-903f-44dc-b298-b8892427203c",
-          "name": "testErrorCode",
-          "type": "string",
-          "model": {
-            "$ref": "#/$defs/primitive/string"
-          },
-          "required": false,
-          "ephemeral": false,
-          "analytics": false,
-          "description": "",
-          "category": "local"
-        },
-        "166206a4-2b59-486b-a84b-129af39cac41": {
-          "id": "166206a4-2b59-486b-a84b-129af39cac41",
-          "name": "testErrorName",
-          "type": "string",
-          "model": {
-            "$ref": "#/$defs/primitive/string"
+            "$ref": "#/$defs/primitive/json"
           },
           "required": false,
           "ephemeral": false,

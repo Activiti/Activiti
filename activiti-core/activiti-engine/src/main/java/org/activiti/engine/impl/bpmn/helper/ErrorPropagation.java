@@ -15,10 +15,6 @@
  */
 package org.activiti.engine.impl.bpmn.helper;
 
-import static org.activiti.engine.impl.bpmn.helper.ErrorPayloadMappingProvider.ERROR_CODE;
-import static org.activiti.engine.impl.bpmn.helper.ErrorPayloadMappingProvider.ERROR_ID;
-import static org.activiti.engine.impl.bpmn.helper.ErrorPayloadMappingProvider.ERROR_NAME;
-
 import java.util.*;
 import org.activiti.bpmn.model.*;
 import org.activiti.bpmn.model.Error;
@@ -479,22 +475,27 @@ public class ErrorPropagation {
             return;
         }
 
-        ErrorPayloadMappingProvider provider = getErrorPayloadMappingProvider();
+        ErrorContextMappingProvider provider = getErrorContextMappingProvider();
         if (provider == null) {
             return;
         }
 
-        Map<String, Object> errorPayload = buildErrorPayload(error, bpmnModel, resolvedErrorCode);
+        ErrorContext errorContext = buildErrorContext(error, bpmnModel, resolvedErrorCode);
 
         // Resolve the target execution: for boundary events write to the
         // process-instance execution (not the interrupted activity); for event
         // subprocesses parentExecution is already at the process level.
-        ExecutionEntity targetExecution =
-            event instanceof BoundaryEvent ? parentExecution.getProcessInstance() : parentExecution;
+        ExecutionEntity targetExecution;
+        if (event instanceof BoundaryEvent) {
+            targetExecution = parentExecution.getProcessInstance();
+            errorContext.setSourceId(((BoundaryEvent) event).getAttachedToRef().getId());
+        } else {
+            targetExecution = parentExecution;
+        }
 
-        // Pass the target execution so that JSONPATCH mappings can read
-        // current runtime variable values instead of falling back to
-        // extension defaults.
+        // Pass the ErrorContext as a single "error" entry so output mappings
+        // can map the entire object to a process variable.
+        Map<String, Object> errorPayload = Map.of("error", errorContext);
         Map<String, Object> mappedVariables = provider.apply(errorPayload, targetExecution, event.getId());
 
         if (mappedVariables != null && !mappedVariables.isEmpty()) {
@@ -502,25 +503,20 @@ public class ErrorPropagation {
         }
     }
 
-    private static ErrorPayloadMappingProvider getErrorPayloadMappingProvider() {
+    private static ErrorContextMappingProvider getErrorContextMappingProvider() {
         ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
         if (processEngineConfiguration == null) {
             return null;
         }
-        return processEngineConfiguration.getErrorPayloadMappingProvider();
+        return processEngineConfiguration.getErrorContextMappingProvider();
     }
 
     /**
-     * Builds the error payload map containing errorCode and errorName.
+     * Builds an {@link ErrorContext} containing errorCode, errorId, and errorName.
      */
-    static Map<String, Object> buildErrorPayload(Error error, BpmnModel bpmnModel, String resolvedErrorCode) {
-        Map<String, Object> errorPayload = new HashMap<>();
-        errorPayload.put(ERROR_CODE, resolvedErrorCode);
-        errorPayload.put(ERROR_ID, error.getId());
-        if (bpmnModel != null) {
-            errorPayload.put(ERROR_NAME, resolveErrorName(error, bpmnModel, resolvedErrorCode));
-        }
-        return errorPayload;
+    static ErrorContext buildErrorContext(Error error, BpmnModel bpmnModel, String resolvedErrorCode) {
+        String errorName = bpmnModel != null ? resolveErrorName(error, bpmnModel, resolvedErrorCode) : null;
+        return new ErrorContext(error.getId(), resolvedErrorCode, errorName);
     }
 
     /**

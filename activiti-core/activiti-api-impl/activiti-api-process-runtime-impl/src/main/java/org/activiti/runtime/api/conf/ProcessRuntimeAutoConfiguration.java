@@ -59,7 +59,7 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.impl.bpmn.helper.ErrorPayloadMappingProvider;
+import org.activiti.engine.impl.bpmn.helper.ErrorContextMappingProvider;
 import org.activiti.engine.impl.event.EventSubscriptionPayloadMappingProvider;
 import org.activiti.runtime.api.conf.impl.ProcessRuntimeConfigurationImpl;
 import org.activiti.runtime.api.event.impl.BPMNErrorConverter;
@@ -188,8 +188,8 @@ public class ProcessRuntimeAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean(ErrorPayloadMappingProvider.class)
-    public ErrorPayloadMappingProvider errorPayloadMappingProvider(
+    @ConditionalOnMissingBean(ErrorContextMappingProvider.class)
+    public ErrorContextMappingProvider errorContextMappingProvider(
         ExtensionsVariablesMappingProvider variablesMappingProvider
     ) {
         return new ErrorVariablesMappingProvider(variablesMappingProvider);

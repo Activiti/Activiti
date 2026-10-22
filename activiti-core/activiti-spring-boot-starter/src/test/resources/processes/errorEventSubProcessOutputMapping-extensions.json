@@ -4,29 +4,19 @@
   "extensions": {
     "errorEventSubProcessOutputMapping": {
       "properties": {
-        "subProcessErrorCode": {
-          "id": "subProcessErrorCode",
-          "name": "subProcessErrorCode",
-          "type": "string",
-          "value": ""
-        },
-        "subProcessErrorName": {
-          "id": "subProcessErrorName",
-          "name": "subProcessErrorName",
-          "type": "string",
+        "subProcessError": {
+          "id": "subProcessError",
+          "name": "subProcessError",
+          "type": "json",
           "value": ""
         }
       },
       "mappings": {
         "errorStartEvent": {
           "outputs": {
-            "subProcessErrorCode": {
+            "subProcessError": {
               "type": "variable",
-              "value": "errorCode"
-            },
-            "subProcessErrorName": {
-              "type": "variable",
-              "value": "errorName"
+              "value": "error"
             }
           }
         }
