@@ -4,29 +4,19 @@
   "extensions": {
     "errorBoundaryEventOutputMapping": {
       "properties": {
-        "boundaryErrorCode": {
-          "id": "boundaryErrorCode",
-          "name": "boundaryErrorCode",
-          "type": "string",
-          "value": ""
-        },
-        "boundaryErrorName": {
-          "id": "boundaryErrorName",
-          "name": "boundaryErrorName",
-          "type": "string",
+        "boundaryError": {
+          "id": "boundaryError",
+          "name": "boundaryError",
+          "type": "json",
           "value": ""
         }
       },
       "mappings": {
         "catchError": {
           "outputs": {
-            "boundaryErrorCode": {
+            "boundaryError": {
               "type": "variable",
-              "value": "errorCode"
-            },
-            "boundaryErrorName": {
-              "type": "variable",
-              "value": "errorName"
+              "value": "error"
             }
           }
         }

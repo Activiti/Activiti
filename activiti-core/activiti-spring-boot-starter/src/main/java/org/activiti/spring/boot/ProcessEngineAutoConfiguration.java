@@ -36,7 +36,7 @@ import org.activiti.engine.ManagementService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.cfg.ProcessEngineConfigurator;
 import org.activiti.engine.impl.bpmn.behavior.VariablesPropagator;
-import org.activiti.engine.impl.bpmn.helper.ErrorPayloadMappingProvider;
+import org.activiti.engine.impl.bpmn.helper.ErrorContextMappingProvider;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.event.EventSubscriptionPayloadMappingProvider;
 import org.activiti.engine.impl.persistence.StrongUuidGenerator;
@@ -304,14 +304,14 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
         ExtensionsVariablesMappingProvider variablesMappingProvider,
         ProcessVariablesInitiator processVariablesInitiator,
         EventSubscriptionPayloadMappingProvider eventSubscriptionPayloadMappingProvider,
-        ErrorPayloadMappingProvider errorPayloadMappingProvider,
+        ErrorContextMappingProvider errorContextMappingProvider,
         VariablesPropagator variablesPropagator
     ) {
         return new DefaultActivityBehaviorFactoryMappingConfigurer(
             variablesMappingProvider,
             processVariablesInitiator,
             eventSubscriptionPayloadMappingProvider,
-            errorPayloadMappingProvider,
+            errorContextMappingProvider,
             variablesPropagator
         );
     }

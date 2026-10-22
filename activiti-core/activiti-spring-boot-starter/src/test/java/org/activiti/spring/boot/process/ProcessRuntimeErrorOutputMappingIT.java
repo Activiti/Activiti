@@ -15,7 +15,6 @@
  */
 package org.activiti.spring.boot.process;
 
-import static java.util.Map.entry;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Map;
@@ -29,6 +28,7 @@ import org.activiti.api.task.model.builders.GetTasksPayloadBuilder;
 import org.activiti.api.task.model.payloads.GetTasksPayload;
 import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.engine.RuntimeService;
+import org.activiti.engine.impl.bpmn.helper.ErrorContext;
 import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
 import org.junit.jupiter.api.AfterEach;
@@ -71,93 +71,97 @@ class ProcessRuntimeErrorOutputMappingIT {
     }
 
     @Test
-    void should_MapErrorCodeAndName_When_ErrorBoundaryEventCatches() {
+    void should_MapErrorObject_When_ErrorBoundaryEventCatches() {
         ProcessInstance processInstance = processRuntime.start(
             ProcessPayloadBuilder.start().withProcessDefinitionKey(ERROR_BOUNDARY_OUTPUT_MAPPING).build()
         );
 
         assertThat(processInstance).isNotNull();
 
-        // Verify the process reached the error task (boundary caught the error)
         GetTasksPayload getTasksPayload = new GetTasksPayloadBuilder()
             .withProcessInstanceId(processInstance.getId())
             .build();
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 10), getTasksPayload);
         assertThat(tasks.getContent()).extracting(Task::getName).containsExactly("Task");
+
         Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
-        assertThat(variables).contains(entry("boundaryErrorCode", "404"), entry("boundaryErrorName", "NOT_FOUND"));
+        assertThat(variables).containsKey("boundaryError");
+
+        ErrorContext errorContext = (ErrorContext) variables.get("boundaryError");
+        assertThat(errorContext.getErrorCode()).isEqualTo("404");
+        assertThat(errorContext.getErrorName()).isEqualTo("NOT_FOUND");
+        assertThat(errorContext.getSourceId()).isEqualTo("subProcess");
     }
 
     @Test
-    void should_MapErrorCodeAndName_When_CatchAllBoundaryEventCatches() {
+    void should_MapErrorObject_When_CatchAllBoundaryEventCatches() {
         ProcessInstance processInstance = processRuntime.start(
             ProcessPayloadBuilder.start().withProcessDefinitionKey(ERROR_BOUNDARY_CATCH_ALL_OUTPUT_MAPPING).build()
         );
 
         assertThat(processInstance).isNotNull();
 
-        // Verify the process reached the catch-all error task
         GetTasksPayload getTasksPayload = new GetTasksPayloadBuilder()
             .withProcessInstanceId(processInstance.getId())
             .build();
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 10), getTasksPayload);
         assertThat(tasks.getContent()).extracting(Task::getName).containsExactly("Catch All Task");
 
-        // Verify the error output mapping variables were set
-        // The error is defined in BPMN with errorCode="KNOWN_ERROR" and name="Known Error"
         Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
-        assertThat(variables).contains(
-            entry("catchAllErrorCode", "KNOWN_ERROR"),
-            entry("catchAllErrorName", "Known Error")
-        );
+        assertThat(variables).containsKey("catchAllError");
+
+        ErrorContext errorContext = (ErrorContext) variables.get("catchAllError");
+        assertThat(errorContext.getErrorCode()).isEqualTo("KNOWN_ERROR");
+        assertThat(errorContext.getErrorName()).isEqualTo("Known Error");
+        assertThat(errorContext.getSourceId()).isEqualTo("subProcess");
     }
 
     @Test
-    void should_MapErrorCodeAndName_When_ErrorEventSubProcessCatches() {
+    void should_MapErrorObject_When_ErrorEventSubProcessCatches() {
         ProcessInstance processInstance = processRuntime.start(
             ProcessPayloadBuilder.start().withProcessDefinitionKey(ERROR_EVENT_SUBPROCESS_OUTPUT_MAPPING).build()
         );
 
         assertThat(processInstance).isNotNull();
 
-        // Verify the process reached the event subprocess task
         GetTasksPayload getTasksPayload = new GetTasksPayloadBuilder()
             .withProcessInstanceId(processInstance.getId())
             .build();
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 10), getTasksPayload);
         assertThat(tasks.getContent()).extracting(Task::getName).containsExactly("Event Subprocess Task");
 
-        // Verify the error output mapping variables were set
-        // The error is defined in BPMN with errorCode="503" and name="SERVICE_UNAVAILABLE"
         Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
-        assertThat(variables).contains(
-            entry("subProcessErrorCode", "503"),
-            entry("subProcessErrorName", "SERVICE_UNAVAILABLE")
-        );
+        assertThat(variables).containsKey("subProcessError");
+
+        ErrorContext errorContext = (ErrorContext) variables.get("subProcessError");
+        assertThat(errorContext.getErrorCode()).isEqualTo("503");
+        assertThat(errorContext.getErrorName()).isEqualTo("SERVICE_UNAVAILABLE");
+        assertThat(errorContext.getSourceId()).isNull();
     }
 
     @Test
-    void should_MapErrorOutputs_When_CallActivityChildThrowsError() {
+    void should_MapErrorObject_When_CallActivityChildThrowsError() {
         ProcessInstance processInstance = processRuntime.start(
             ProcessPayloadBuilder.start().withProcessDefinitionKey(PARENT_PROCESS_ERROR_BOUNDARY).build()
         );
 
         assertThat(processInstance).isNotNull();
 
-        // Verify the process reached the boundary error task
         GetTasksPayload getTasksPayload = new GetTasksPayloadBuilder()
             .withProcessInstanceId(processInstance.getId())
             .build();
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 10), getTasksPayload);
         assertThat(tasks.getContent()).extracting(Task::getName).containsExactly("Error Handler Task");
 
-        // Verify the error output mapping variables were set on the parent process.
         // The child process throws error id="childError1", code="CHILD_404", name="Child Not Found".
+        // The parent model has no error with code CHILD_404, so errorName falls back to the code.
         Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
-        assertThat(variables).contains(
-            entry("testErrorCode", "CHILD_404"),
-            entry("testErrorId", "childError1"),
-            entry("testErrorName", "CHILD_404")
-        );
+        assertThat(variables).containsKey("testError");
+
+        ErrorContext errorContext = (ErrorContext) variables.get("testError");
+        assertThat(errorContext.getErrorCode()).isEqualTo("CHILD_404");
+        assertThat(errorContext.getErrorId()).isEqualTo("childError1");
+        assertThat(errorContext.getErrorName()).isEqualTo("CHILD_404");
+        assertThat(errorContext.getSourceId()).isEqualTo("Activity_1w8vukd");
     }
 }

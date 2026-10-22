@@ -19,17 +19,17 @@ import java.util.Map;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.behavior.MappingExecutionContext;
 import org.activiti.engine.impl.bpmn.behavior.VariablesCalculator;
-import org.activiti.engine.impl.bpmn.helper.ErrorPayloadMappingProvider;
+import org.activiti.engine.impl.bpmn.helper.ErrorContextMappingProvider;
 
 /**
- * Implementation of {@link ErrorPayloadMappingProvider} that resolves output mappings
+ * Implementation of {@link ErrorContextMappingProvider} that resolves output mappings
  * from the process extensions JSON using the existing {@link VariablesCalculator} infrastructure.
  *
  * <p>When an error boundary event or error event subprocess catches an error, this provider
  * maps the error data (errorCode, errorName) to process variables according to
  * the output mappings configured in the extensions JSON for the catching event element.</p>
  */
-public class ErrorVariablesMappingProvider implements ErrorPayloadMappingProvider {
+public class ErrorVariablesMappingProvider implements ErrorContextMappingProvider {
 
     private final VariablesCalculator variablesCalculator;
 

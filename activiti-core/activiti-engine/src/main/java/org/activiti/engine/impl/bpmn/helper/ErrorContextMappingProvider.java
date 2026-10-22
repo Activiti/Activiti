@@ -28,11 +28,7 @@ import org.activiti.engine.delegate.DelegateExecution;
  * is active, it resolves output mappings from the process extensions JSON
  * and returns the mapped variables to be set on the catching execution.</p>
  */
-public interface ErrorPayloadMappingProvider {
-    String ERROR_CODE = "errorCode";
-    String ERROR_NAME = "errorName";
-    String ERROR_ID = "errorId";
-
+public interface ErrorContextMappingProvider {
     /**
      * Apply output mappings to the error payload and return the variables to set.
      *

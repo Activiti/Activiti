@@ -4,29 +4,19 @@
   "extensions": {
     "errorBoundaryCatchAllOutputMapping": {
       "properties": {
-        "catchAllErrorCode": {
-          "id": "catchAllErrorCode",
-          "name": "catchAllErrorCode",
-          "type": "string",
-          "value": ""
-        },
-        "catchAllErrorName": {
-          "id": "catchAllErrorName",
-          "name": "catchAllErrorName",
-          "type": "string",
+        "catchAllError": {
+          "id": "catchAllError",
+          "name": "catchAllError",
+          "type": "json",
           "value": ""
         }
       },
       "mappings": {
         "catchAllError": {
           "outputs": {
-            "catchAllErrorCode": {
+            "catchAllError": {
               "type": "variable",
-              "value": "errorCode"
-            },
-            "catchAllErrorName": {
-              "type": "variable",
-              "value": "errorName"
+              "value": "error"
             }
           }
         }

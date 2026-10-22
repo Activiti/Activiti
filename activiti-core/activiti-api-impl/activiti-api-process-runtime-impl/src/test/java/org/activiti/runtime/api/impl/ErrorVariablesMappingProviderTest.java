@@ -15,8 +15,6 @@
  */
 package org.activiti.runtime.api.impl;
 
-import static org.activiti.engine.impl.bpmn.helper.ErrorPayloadMappingProvider.ERROR_CODE;
-import static org.activiti.engine.impl.bpmn.helper.ErrorPayloadMappingProvider.ERROR_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -24,11 +22,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.HashMap;
 import java.util.Map;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.behavior.MappingExecutionContext;
 import org.activiti.engine.impl.bpmn.behavior.VariablesCalculator;
+import org.activiti.engine.impl.bpmn.helper.ErrorContext;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -50,9 +48,8 @@ class ErrorVariablesMappingProviderTest {
         DelegateExecution execution = mock(DelegateExecution.class);
         when(execution.getProcessDefinitionId()).thenReturn("procDef1");
 
-        Map<String, Object> errorPayload = new HashMap<>();
-        errorPayload.put(ERROR_CODE, "123");
-        errorPayload.put(ERROR_NAME, "myError");
+        ErrorContext errorContext = new ErrorContext("error1", "123", "myError");
+        Map<String, Object> errorPayload = Map.of("error", errorContext);
 
         Map<String, Object> expectedOutput = Map.of("boundaryErrorCode", "123");
         when(
@@ -78,7 +75,8 @@ class ErrorVariablesMappingProviderTest {
         DelegateExecution execution = mock(DelegateExecution.class);
         when(execution.getProcessDefinitionId()).thenReturn("procDef1");
 
-        Map<String, Object> errorPayload = Map.of(ERROR_CODE, "456");
+        ErrorContext errorContext = new ErrorContext("error2", "456", "anotherError");
+        Map<String, Object> errorPayload = Map.of("error", errorContext);
         when(
             variablesCalculator.calculateOutPutVariables(any(MappingExecutionContext.class), eq(errorPayload))
         ).thenReturn(Map.of());
