@@ -88,9 +88,9 @@ class ProcessRuntimeErrorOutputMappingIT {
         assertThat(variables).containsKey("boundaryError");
 
         ErrorContext errorContext = (ErrorContext) variables.get("boundaryError");
-        assertThat(errorContext.getErrorCode()).isEqualTo("404");
-        assertThat(errorContext.getErrorName()).isEqualTo("NOT_FOUND");
-        assertThat(errorContext.getSourceId()).isEqualTo("subProcess");
+        assertThat(errorContext)
+            .extracting(ErrorContext::getErrorCode, ErrorContext::getErrorName, ErrorContext::getSourceId)
+            .containsExactly("404", "NOT_FOUND", "subProcess");
     }
 
     @Test
@@ -111,9 +111,9 @@ class ProcessRuntimeErrorOutputMappingIT {
         assertThat(variables).containsKey("catchAllError");
 
         ErrorContext errorContext = (ErrorContext) variables.get("catchAllError");
-        assertThat(errorContext.getErrorCode()).isEqualTo("KNOWN_ERROR");
-        assertThat(errorContext.getErrorName()).isEqualTo("Known Error");
-        assertThat(errorContext.getSourceId()).isEqualTo("subProcess");
+        assertThat(errorContext)
+            .extracting(ErrorContext::getErrorCode, ErrorContext::getErrorName, ErrorContext::getSourceId)
+            .containsExactly("KNOWN_ERROR", "Known Error", "subProcess");
     }
 
     @Test
@@ -134,9 +134,9 @@ class ProcessRuntimeErrorOutputMappingIT {
         assertThat(variables).containsKey("subProcessError");
 
         ErrorContext errorContext = (ErrorContext) variables.get("subProcessError");
-        assertThat(errorContext.getErrorCode()).isEqualTo("503");
-        assertThat(errorContext.getErrorName()).isEqualTo("SERVICE_UNAVAILABLE");
-        assertThat(errorContext.getSourceId()).isNull();
+        assertThat(errorContext)
+            .extracting(ErrorContext::getErrorCode, ErrorContext::getErrorName, ErrorContext::getSourceId)
+            .containsExactly("503", "SERVICE_UNAVAILABLE", null);
     }
 
     @Test
@@ -159,9 +159,13 @@ class ProcessRuntimeErrorOutputMappingIT {
         assertThat(variables).containsKey("testError");
 
         ErrorContext errorContext = (ErrorContext) variables.get("testError");
-        assertThat(errorContext.getErrorCode()).isEqualTo("CHILD_404");
-        assertThat(errorContext.getErrorId()).isEqualTo("childError1");
-        assertThat(errorContext.getErrorName()).isEqualTo("CHILD_404");
-        assertThat(errorContext.getSourceId()).isEqualTo("Activity_1w8vukd");
+        assertThat(errorContext)
+            .extracting(
+                ErrorContext::getErrorCode,
+                ErrorContext::getErrorId,
+                ErrorContext::getErrorName,
+                ErrorContext::getSourceId
+            )
+            .containsExactly("CHILD_404", "childError1", "CHILD_404", "Activity_1w8vukd");
     }
 }

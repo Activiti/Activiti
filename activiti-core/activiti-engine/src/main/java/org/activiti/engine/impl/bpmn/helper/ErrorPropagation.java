@@ -486,9 +486,9 @@ public class ErrorPropagation {
         // process-instance execution (not the interrupted activity); for event
         // subprocesses parentExecution is already at the process level.
         ExecutionEntity targetExecution;
-        if (event instanceof BoundaryEvent) {
+        if (event instanceof BoundaryEvent boundaryEvent) {
             targetExecution = parentExecution.getProcessInstance();
-            errorContext.setSourceId(((BoundaryEvent) event).getAttachedToRef().getId());
+            errorContext.setSourceId(boundaryEvent.getAttachedToRef().getId());
         } else {
             targetExecution = parentExecution;
         }

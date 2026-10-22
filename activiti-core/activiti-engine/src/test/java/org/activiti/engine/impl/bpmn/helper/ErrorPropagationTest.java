@@ -145,10 +145,14 @@ class ErrorPropagationTest {
 
             ErrorContext payload = ErrorPropagation.buildErrorContext(error, bpmnModel, "404");
 
-            assertThat(payload.getErrorCode()).isEqualTo("404");
-            assertThat(payload.getErrorId()).isEqualTo("errorId");
-            assertThat(payload.getErrorName()).isEqualTo("NOT_FOUND");
-            assertThat(payload.getSourceId()).isNull();
+            assertThat(payload)
+                .extracting(
+                    ErrorContext::getErrorCode,
+                    ErrorContext::getErrorId,
+                    ErrorContext::getErrorName,
+                    ErrorContext::getSourceId
+                )
+                .containsExactly("404", "errorId", "NOT_FOUND", null);
         }
 
         @Test
@@ -159,9 +163,9 @@ class ErrorPropagationTest {
 
             ErrorContext payload = ErrorPropagation.buildErrorContext(error, bpmnModel, "REQUEST_TIMEOUT");
 
-            assertThat(payload.getErrorCode()).isEqualTo("REQUEST_TIMEOUT");
-            assertThat(payload.getErrorId()).isEqualTo("REQUEST_TIMEOUT");
-            assertThat(payload.getErrorName()).isEqualTo("REQUEST_TIMEOUT");
+            assertThat(payload)
+                .extracting(ErrorContext::getErrorCode, ErrorContext::getErrorId, ErrorContext::getErrorName)
+                .containsExactly("REQUEST_TIMEOUT", "REQUEST_TIMEOUT", "REQUEST_TIMEOUT");
         }
 
         @Test
@@ -170,9 +174,9 @@ class ErrorPropagationTest {
 
             ErrorContext payload = ErrorPropagation.buildErrorContext(error, null, "404");
 
-            assertThat(payload.getErrorCode()).isEqualTo("404");
-            assertThat(payload.getErrorId()).isEqualTo("errorId");
-            assertThat(payload.getErrorName()).isNull();
+            assertThat(payload)
+                .extracting(ErrorContext::getErrorCode, ErrorContext::getErrorId, ErrorContext::getErrorName)
+                .containsExactly("404", "errorId", null);
         }
 
         @Test
@@ -184,9 +188,9 @@ class ErrorPropagationTest {
 
             ErrorContext payload = ErrorPropagation.buildErrorContext(error, bpmnModel, "503");
 
-            assertThat(payload.getErrorCode()).isEqualTo("503");
-            assertThat(payload.getErrorId()).isEqualTo("503");
-            assertThat(payload.getErrorName()).isEqualTo("Service Unavailable");
+            assertThat(payload)
+                .extracting(ErrorContext::getErrorCode, ErrorContext::getErrorId, ErrorContext::getErrorName)
+                .containsExactly("503", "503", "Service Unavailable");
         }
 
         @Test
@@ -199,10 +203,14 @@ class ErrorPropagationTest {
             ErrorContext payload = ErrorPropagation.buildErrorContext(error, bpmnModel, "404");
             payload.setSourceId("Activity_1w8vukd");
 
-            assertThat(payload.getErrorCode()).isEqualTo("404");
-            assertThat(payload.getErrorId()).isEqualTo("errorId");
-            assertThat(payload.getErrorName()).isEqualTo("NOT_FOUND");
-            assertThat(payload.getSourceId()).isEqualTo("Activity_1w8vukd");
+            assertThat(payload)
+                .extracting(
+                    ErrorContext::getErrorCode,
+                    ErrorContext::getErrorId,
+                    ErrorContext::getErrorName,
+                    ErrorContext::getSourceId
+                )
+                .containsExactly("404", "errorId", "NOT_FOUND", "Activity_1w8vukd");
         }
     }
 
