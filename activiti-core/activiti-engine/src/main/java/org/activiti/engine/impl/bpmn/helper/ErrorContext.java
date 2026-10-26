@@ -31,7 +31,7 @@ public class ErrorContext implements Serializable {
     private String errorId;
     private String errorCode;
     private String errorName;
-    private String sourceId;
+    private String attachedToRef;
 
     public ErrorContext(String errorId, String errorCode, String errorName) {
         this.errorId = errorId;
@@ -51,11 +51,11 @@ public class ErrorContext implements Serializable {
         return errorName;
     }
 
-    public String getSourceId() {
-        return sourceId;
+    public String getAttachedToRef() {
+        return attachedToRef;
     }
 
-    public void setSourceId(String sourceId) {
-        this.sourceId = sourceId;
+    public void setAttachedToRef(String attachedToRef) {
+        this.attachedToRef = attachedToRef;
     }
 }

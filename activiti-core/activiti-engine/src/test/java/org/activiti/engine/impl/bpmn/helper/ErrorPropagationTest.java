@@ -150,7 +150,7 @@ class ErrorPropagationTest {
                     ErrorContext::getErrorCode,
                     ErrorContext::getErrorId,
                     ErrorContext::getErrorName,
-                    ErrorContext::getSourceId
+                    ErrorContext::getAttachedToRef
                 )
                 .containsExactly("404", "errorId", "NOT_FOUND", null);
         }
@@ -201,14 +201,14 @@ class ErrorPropagationTest {
             Error error = new Error("errorId");
 
             ErrorContext payload = ErrorPropagation.buildErrorContext(error, bpmnModel, "404");
-            payload.setSourceId("Activity_1w8vukd");
+            payload.setAttachedToRef("Activity_1w8vukd");
 
             assertThat(payload)
                 .extracting(
                     ErrorContext::getErrorCode,
                     ErrorContext::getErrorId,
                     ErrorContext::getErrorName,
-                    ErrorContext::getSourceId
+                    ErrorContext::getAttachedToRef
                 )
                 .containsExactly("404", "errorId", "NOT_FOUND", "Activity_1w8vukd");
         }
@@ -275,7 +275,7 @@ class ErrorPropagationTest {
             verify(provider).apply(payloadCaptor.capture(), eq(processInstanceExecution), eq("boundary-1"));
 
             ErrorContext capturedContext = (ErrorContext) payloadCaptor.getValue().get("error");
-            assertThat(capturedContext.getSourceId()).isEqualTo("serviceTask-1");
+            assertThat(capturedContext.getAttachedToRef()).isEqualTo("serviceTask-1");
 
             verify(processInstanceExecution).setVariables(mappedVars);
             verify(parentExecution, never()).setVariables(anyMap());

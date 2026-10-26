@@ -89,7 +89,7 @@ class ProcessRuntimeErrorOutputMappingIT {
 
         ErrorContext errorContext = (ErrorContext) variables.get("boundaryError");
         assertThat(errorContext)
-            .extracting(ErrorContext::getErrorCode, ErrorContext::getErrorName, ErrorContext::getSourceId)
+            .extracting(ErrorContext::getErrorCode, ErrorContext::getErrorName, ErrorContext::getAttachedToRef)
             .containsExactly("404", "NOT_FOUND", "subProcess");
     }
 
@@ -112,7 +112,7 @@ class ProcessRuntimeErrorOutputMappingIT {
 
         ErrorContext errorContext = (ErrorContext) variables.get("catchAllError");
         assertThat(errorContext)
-            .extracting(ErrorContext::getErrorCode, ErrorContext::getErrorName, ErrorContext::getSourceId)
+            .extracting(ErrorContext::getErrorCode, ErrorContext::getErrorName, ErrorContext::getAttachedToRef)
             .containsExactly("KNOWN_ERROR", "Known Error", "subProcess");
     }
 
@@ -135,7 +135,7 @@ class ProcessRuntimeErrorOutputMappingIT {
 
         ErrorContext errorContext = (ErrorContext) variables.get("subProcessError");
         assertThat(errorContext)
-            .extracting(ErrorContext::getErrorCode, ErrorContext::getErrorName, ErrorContext::getSourceId)
+            .extracting(ErrorContext::getErrorCode, ErrorContext::getErrorName, ErrorContext::getAttachedToRef)
             .containsExactly("503", "SERVICE_UNAVAILABLE", null);
     }
 
@@ -164,7 +164,7 @@ class ProcessRuntimeErrorOutputMappingIT {
                 ErrorContext::getErrorCode,
                 ErrorContext::getErrorId,
                 ErrorContext::getErrorName,
-                ErrorContext::getSourceId
+                ErrorContext::getAttachedToRef
             )
             .containsExactly("CHILD_404", "childError1", "CHILD_404", "Activity_1w8vukd");
     }
