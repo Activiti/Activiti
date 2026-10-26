@@ -488,7 +488,7 @@ public class ErrorPropagation {
         ExecutionEntity targetExecution;
         if (event instanceof BoundaryEvent boundaryEvent) {
             targetExecution = parentExecution.getProcessInstance();
-            errorContext.setSourceId(boundaryEvent.getAttachedToRef().getId());
+            errorContext.setAttachedToRef(boundaryEvent.getAttachedToRef().getId());
         } else {
             targetExecution = parentExecution;
         }
