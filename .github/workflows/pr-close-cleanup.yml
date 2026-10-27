@@ -11,7 +11,7 @@ jobs:
       actions: write
     runs-on: ubuntu-latest
     steps:
-      - uses: Alfresco/alfresco-build-tools/.github/actions/gh-cache-cleanup-on-merge@5d33aec6cf9ffd70982c404ebf5ebadedd7405d9 # v19.5.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/gh-cache-cleanup-on-merge@768b583839a22ef7d882da0c5b82af3832197d00 # v19.7.1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -23,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Close downstream preview PRs for this source PR only
-        uses: Alfresco/alfresco-build-tools/.github/actions/github-close-orphaned-preview-prs@5d33aec6cf9ffd70982c404ebf5ebadedd7405d9 # 19.5.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/github-close-orphaned-preview-prs@768b583839a22ef7d882da0c5b82af3832197d00 # 19.7.1
         with:
           source-pr-number: ${{ github.event.pull_request.number }}
           source-pr-state: ${{ github.event.pull_request.state }}

@@ -31,6 +31,6 @@ runs:
         distribution: ${{ inputs.java-distribution }}
 
     - name: Setup Maven ${{ inputs.maven-version }}
-      uses: Alfresco/alfresco-build-tools/.github/actions/setup-maven@5d33aec6cf9ffd70982c404ebf5ebadedd7405d9 # v19.5.0
+      uses: Alfresco/alfresco-build-tools/.github/actions/setup-maven@768b583839a22ef7d882da0c5b82af3832197d00 # v19.7.1
       with:
         version: ${{ inputs.maven-version }}
