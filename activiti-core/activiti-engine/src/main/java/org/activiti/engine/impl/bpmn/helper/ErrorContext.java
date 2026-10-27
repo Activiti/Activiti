@@ -28,9 +28,9 @@ public class ErrorContext implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private String errorId;
-    private String errorCode;
-    private String errorName;
+    private final String errorId;
+    private final String errorCode;
+    private final String errorName;
     private String attachedToRef;
 
     public ErrorContext(String errorId, String errorCode, String errorName) {
