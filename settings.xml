@@ -15,7 +15,7 @@
       <username>${env.CLOUDSMITH_USERNAME}</username>
       <password>${env.CLOUDSMITH_API_KEY}</password>
       <repositoryOrigins>
-        <repositoryOrigin>https://maven.cloudsmith.io</repositoryOrigin>
+        <repositoryOrigin>https://maven.artifacts.hyland.dev</repositoryOrigin>
       </repositoryOrigins>
     </server>
   </servers>
@@ -30,12 +30,6 @@
         <altDeploymentRepository>alfresco::https://artifacts.alfresco.com/nexus/content/repositories/activiti-snapshots/</altDeploymentRepository>
         <altReleaseDeploymentRepository>alfresco::https://artifacts.alfresco.com/nexus/content/repositories/activiti-releases/</altReleaseDeploymentRepository>
         <altSnapshotDeploymentRepository>alfresco::https://artifacts.alfresco.com/nexus/content/repositories/activiti-snapshots/</altSnapshotDeploymentRepository>
-      </properties>
-    </profile>
-    <profile>
-      <id>cloudsmith-preview</id>
-      <properties>
-        <altSnapshotDeploymentRepository>cloudsmith::https://maven.cloudsmith.io/${env.CLOUDSMITH_NAMESPACE}/activiti-snapshots/</altSnapshotDeploymentRepository>
       </properties>
     </profile>
   </profiles>
