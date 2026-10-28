@@ -206,6 +206,33 @@ public class TaskRuntimeTaskAssigneeTest {
     }
 
     @Test
+    public void userCanReassignClaimedTaskToCandidateGroupMember() {
+        securityUtil.logInAs("garth");
+        Task createdTask = taskRuntime.create(
+            TaskPayloadBuilder.create()
+                .withName("group candidate task")
+                .withCandidateUsers("dean")
+                .withCandidateGroup("doctor")
+                .build()
+        );
+        String taskId = createdTask.getId();
+        claimTask(taskId, "dean");
+
+        Throwable thrown = catchThrowable(() -> userAssignTask(taskId, "dean", "john"));
+
+        assertThat(thrown)
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessageStartingWith("You cannot assign a task to john because the user is not a candidate for it");
+        securityUtil.logInAs("dean");
+        assertThat(taskRuntime.task(taskId).getAssignee()).isEqualTo("dean");
+
+        userAssignTask(taskId, "dean", "garth");
+
+        securityUtil.logInAs("garth");
+        assertThat(taskRuntime.task(taskId).getAssignee()).isEqualTo("garth");
+    }
+
+    @Test
     public void shouldReturnIllegalStateExceptionWhenTaskIsNotClaimed() {
         String taskId = createTask("garth");
 

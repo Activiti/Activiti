@@ -19,6 +19,7 @@ import static java.util.Collections.emptyList;
 
 import java.util.List;
 import org.activiti.api.runtime.shared.events.VariableEventListener;
+import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.api.task.runtime.TaskAdminRuntime;
 import org.activiti.api.task.runtime.TaskRuntime;
@@ -90,7 +91,8 @@ public class TaskRuntimeAutoConfiguration {
         APITaskConverter taskConverter,
         APIVariableInstanceConverter variableInstanceConverter,
         TaskRuntimeConfiguration configuration,
-        TaskRuntimeHelper taskRuntimeHelper
+        TaskRuntimeHelper taskRuntimeHelper,
+        UserGroupManager userGroupManager
     ) {
         return new TaskRuntimeImpl(
             taskService,
@@ -98,7 +100,8 @@ public class TaskRuntimeAutoConfiguration {
             taskConverter,
             variableInstanceConverter,
             configuration,
-            taskRuntimeHelper
+            taskRuntimeHelper,
+            userGroupManager
         );
     }
 
