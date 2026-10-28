@@ -144,6 +144,8 @@ jobs:
         shell: bash
         run: mvn --batch-mode deploy '-Pcloudsmith,!alfresco' -Daether.connector.basic.upstreamThreads.cloudsmith=10 -DskipTests -DskipITs ${{ env.MAVEN_CLI_OPTS}}
         env:
+          # Override the runner's -ntp default so batch transfer timings are visible.
+          MAVEN_ARGS: ""
           MAVEN_CLI_OPTS: --show-version --settings settings.xml
           MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
