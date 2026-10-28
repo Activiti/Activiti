@@ -101,6 +101,7 @@ jobs:
     permissions:
       actions: write
       contents: read
+      id-token: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -125,13 +126,38 @@ jobs:
       - name: Update pom files to the new version
         run: mvn -B versions:set -DnewVersion="$VERSION" -DprocessAllModules=true -DgenerateBackupPoms=false
 
-      - name: Deploy preview with Maven
+      - name: Deploy preview to Nexus
         shell: bash
         run: mvn deploy -DskipTests -DskipITs ${{ env.MAVEN_CLI_OPTS}}
         env:
           MAVEN_CLI_OPTS: --show-version --no-transfer-progress --settings settings.xml
           MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+
+      - name: Check Cloudsmith namespace
+        shell: bash
+        env:
+          CLOUDSMITH_NAMESPACE: ${{ vars.CLOUDSMITH_NAMESPACE }}
+        run: |
+          if [[ -z "$CLOUDSMITH_NAMESPACE" ]]; then
+            echo "::error::Set the CLOUDSMITH_NAMESPACE GitHub organization variable before publishing previews to Cloudsmith."
+            exit 1
+          fi
+
+      - name: Authenticate with Cloudsmith
+        uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@768b583839a22ef7d882da0c5b82af3832197d00 # v19.7.1
+        with:
+          oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
+          verify-auth: "true"
+
+      - name: Deploy preview to Cloudsmith
+        shell: bash
+        run: mvn deploy -Pcloudsmith-preview -DskipTests -DskipITs ${{ env.MAVEN_CLI_OPTS}}
+        env:
+          MAVEN_CLI_OPTS: --show-version --no-transfer-progress --settings settings.xml
+          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+          CLOUDSMITH_NAMESPACE: ${{ vars.CLOUDSMITH_NAMESPACE }}
 
   propagate-preview:
     runs-on: ubuntu-latest
