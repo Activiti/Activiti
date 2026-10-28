@@ -917,7 +917,7 @@ limitations under the License.
       <distributionManagement>
         <snapshotRepository>
           <id>cloudsmith</id>
-          <url>https://maven.artifacts.hyland.dev/${env.CLOUDSMITH_NAMESPACE}/activiti-snapshots/</url>
+          <url>https://maven.cloudsmith.io/${env.CLOUDSMITH_NAMESPACE}/activiti-snapshots/</url>
         </snapshotRepository>
       </distributionManagement>
     </profile>

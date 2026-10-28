@@ -36,7 +36,7 @@ Cloudsmith organization. The action exports `CLOUDSMITH_USERNAME` and a short-li
 `CLOUDSMITH_API_KEY` for the credentials in `settings.xml`.
 
 The `cloudsmith-preview` profile in `pom.xml` defines the snapshot destination under
-`distributionManagement`, using `https://maven.artifacts.hyland.dev`. The publishing
+`distributionManagement`, using `https://maven.cloudsmith.io`. The publishing
 job uses `-Pcloudsmith-preview,!alfresco` for its second deployment to disable the
 Nexus destination overrides in `settings.xml`. The first deployment continues to use
 the default `alfresco` settings profile. Snapshot builds in the two registries can

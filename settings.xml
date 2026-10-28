@@ -15,7 +15,7 @@
       <username>${env.CLOUDSMITH_USERNAME}</username>
       <password>${env.CLOUDSMITH_API_KEY}</password>
       <repositoryOrigins>
-        <repositoryOrigin>https://maven.artifacts.hyland.dev</repositoryOrigin>
+        <repositoryOrigin>https://maven.cloudsmith.io</repositoryOrigin>
       </repositoryOrigins>
     </server>
   </servers>
