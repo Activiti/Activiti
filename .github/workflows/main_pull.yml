@@ -88,6 +88,8 @@ jobs:
 
       - uses: ./.github/actions/maven-build-and-analyze
         with:
+          maven-threads: "2"
+          maven-profiles: ci-parallel-engine-tests
           nexus-username: ${{ secrets.NEXUS_USERNAME }}
           nexus-password: ${{ secrets.NEXUS_PASSWORD }}
           sonar-token: ${{ secrets.SONAR_TOKEN }}
