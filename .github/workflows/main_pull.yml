@@ -152,9 +152,9 @@ jobs:
 
       - name: Deploy preview to Cloudsmith
         shell: bash
-        run: mvn deploy '-Pcloudsmith-preview,!alfresco' -DskipTests -DskipITs ${{ env.MAVEN_CLI_OPTS}}
+        run: mvn --batch-mode deploy '-Pcloudsmith,!alfresco' -Daether.connector.basic.upstreamThreads.cloudsmith=10 -DskipTests -DskipITs ${{ env.MAVEN_CLI_OPTS}}
         env:
-          MAVEN_CLI_OPTS: --show-version --no-transfer-progress --settings settings.xml
+          MAVEN_CLI_OPTS: --show-version --settings settings.xml
           MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
           CLOUDSMITH_NAMESPACE: ${{ vars.CLOUDSMITH_NAMESPACE }}

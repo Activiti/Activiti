@@ -913,8 +913,12 @@ limitations under the License.
   </reporting>
   <profiles>
     <profile>
-      <id>cloudsmith-preview</id>
+      <id>cloudsmith</id>
       <distributionManagement>
+        <repository>
+          <id>cloudsmith</id>
+          <url>https://maven.cloudsmith.io/${env.CLOUDSMITH_NAMESPACE}/activiti-releases/</url>
+        </repository>
         <snapshotRepository>
           <id>cloudsmith</id>
           <url>https://maven.cloudsmith.io/${env.CLOUDSMITH_NAMESPACE}/activiti-snapshots/</url>
