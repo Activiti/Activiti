@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 import org.activiti.api.runtime.shared.NotFoundException;
+import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.api.runtime.shared.query.Order;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.runtime.shared.security.SecurityManager;
@@ -72,6 +73,9 @@ public class TaskRuntimeImplTest {
     private SecurityManager securityManager;
 
     @Mock
+    private UserGroupManager userGroupManager;
+
+    @Mock
     private TaskService taskService;
 
     @Test
@@ -101,6 +105,7 @@ public class TaskRuntimeImplTest {
             .build();
         List<String> userCandidates = Collections.emptyList();
         doReturn(userCandidates).when(taskRuntime).userCandidates("taskId");
+        doReturn(Collections.emptyList()).when(taskRuntime).groupCandidates("taskId");
 
         //when
         Throwable thrown = catchThrowable(() -> taskRuntime.assign(assignTaskPayload));
@@ -109,7 +114,9 @@ public class TaskRuntimeImplTest {
         assertThat(thrown)
             .isInstanceOf(IllegalStateException.class)
             .hasMessageStartingWith(
-                "You cannot assign a task to " + assignTaskPayload.getAssignee() + " due it is not a candidate for it"
+                "You cannot assign a task to " +
+                    assignTaskPayload.getAssignee() +
+                    " because the user is not a candidate for it"
             );
     }
 
@@ -134,6 +141,97 @@ public class TaskRuntimeImplTest {
 
         verify(taskService).unclaim(taskId);
         verify(taskService).claim(taskId, newAssignee);
+        verify(userGroupManager, never()).getUserGroups(newAssignee);
+    }
+
+    @ParameterizedTest
+    @MethodSource("currentTaskAssignees")
+    void assign_should_updateTaskAssignee_whenAssigneeBelongsToCandidateGroup(String currentAssignee) {
+        if (currentAssignee != null && !currentAssignee.isEmpty()) {
+            when(securityManager.getAuthenticatedUserId()).thenReturn(AUTHENTICATED_USER);
+        }
+
+        String taskId = "taskId";
+        String newAssignee = "newAssignee";
+        AssignTaskPayload assignTaskPayload = TaskPayloadBuilder.assign()
+            .withTaskId(taskId)
+            .withAssignee(newAssignee)
+            .build();
+        doReturn(Collections.emptyList()).when(taskRuntime).userCandidates(taskId);
+        doReturn(List.of("candidateGroup")).when(taskRuntime).groupCandidates(taskId);
+        given(userGroupManager.getUserGroups(newAssignee)).willReturn(List.of("candidateGroup", "otherGroup"));
+
+        TaskImpl task = mock(TaskImpl.class);
+        given(task.getAssignee()).willReturn(currentAssignee);
+        doReturn(task).when(taskConverter).fromWithCandidates(any());
+
+        taskRuntime.assign(assignTaskPayload);
+
+        if (currentAssignee == null || currentAssignee.isEmpty()) {
+            verify(taskService, never()).unclaim(taskId);
+        } else {
+            verify(taskService).unclaim(taskId);
+        }
+        verify(taskService).claim(taskId, newAssignee);
+    }
+
+    private static Stream<Arguments> currentTaskAssignees() {
+        return Stream.of(Arguments.of((Object) null), Arguments.of(""), Arguments.of(AUTHENTICATED_USER));
+    }
+
+    @Test
+    void assign_should_rejectReassignment_whenTaskIsClaimedByAnotherUser() {
+        String taskId = "taskId";
+        String newAssignee = "newAssignee";
+        AssignTaskPayload assignTaskPayload = TaskPayloadBuilder.assign()
+            .withTaskId(taskId)
+            .withAssignee(newAssignee)
+            .build();
+        doReturn(List.of(newAssignee)).when(taskRuntime).userCandidates(taskId);
+        given(securityManager.getAuthenticatedUserId()).willReturn(AUTHENTICATED_USER);
+        TaskImpl task = new TaskImpl();
+        task.setAssignee("anotherUser");
+        doReturn(task).when(taskRuntime).task(taskId);
+
+        Throwable thrown = catchThrowable(() -> taskRuntime.assign(assignTaskPayload));
+
+        assertThat(thrown)
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessage("You cannot release a task where you are not the assignee");
+        verify(taskService, never()).unclaim(taskId);
+        verify(taskService, never()).claim(taskId, newAssignee);
+    }
+
+    @ParameterizedTest
+    @MethodSource("nonCandidateAssigneeGroups")
+    void assign_should_rejectAssigneeOutsideCandidateGroups(List<String> assigneeGroups) {
+        String taskId = "taskId";
+        String newAssignee = "newAssignee";
+        AssignTaskPayload assignTaskPayload = TaskPayloadBuilder.assign()
+            .withTaskId(taskId)
+            .withAssignee(newAssignee)
+            .build();
+        doReturn(Collections.emptyList()).when(taskRuntime).userCandidates(taskId);
+        doReturn(List.of("candidateGroup")).when(taskRuntime).groupCandidates(taskId);
+        given(userGroupManager.getUserGroups(newAssignee)).willReturn(assigneeGroups);
+
+        Throwable thrown = catchThrowable(() -> taskRuntime.assign(assignTaskPayload));
+
+        assertThat(thrown)
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessageStartingWith(
+                "You cannot assign a task to " + newAssignee + " because the user is not a candidate for it"
+            );
+        verify(taskService, never()).unclaim(taskId);
+        verify(taskService, never()).claim(taskId, newAssignee);
+    }
+
+    private static Stream<Arguments> nonCandidateAssigneeGroups() {
+        return Stream.of(
+            Arguments.of((Object) null),
+            Arguments.of(Collections.emptyList()),
+            Arguments.of(List.of("otherGroup"))
+        );
     }
 
     @Test
