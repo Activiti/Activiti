@@ -41,7 +41,6 @@ import org.activiti.image.impl.DefaultProcessDiagramGenerator;
 import org.apache.batik.anim.dom.SAXSVGDocumentFactory;
 import org.apache.batik.anim.dom.SVGOMDocument;
 import org.apache.batik.util.XMLResourceDescriptor;
-import org.apache.commons.io.IOUtils;
 import org.springframework.util.ResourceUtils;
 import org.springframework.util.StreamUtils;
 import org.xmlunit.assertj3.XmlAssert;
@@ -329,7 +328,7 @@ public class ProcessDiagramGeneratorTest extends PluggableActivitiTestCase {
         ) {
             //THEN
             assertThat(resourceStream).isNotNull();
-            byte[] diagram = IOUtils.toByteArray(resourceStream);
+            byte[] diagram = resourceStream.readAllBytes();
             assertThat(diagram).isNotNull();
 
             try (
@@ -337,7 +336,7 @@ public class ProcessDiagramGeneratorTest extends PluggableActivitiTestCase {
                     imageGenerator.getDefaultDiagramImageFileName()
                 )
             ) {
-                assertThat(diagram).isEqualTo(IOUtils.toByteArray(imageStream));
+                assertThat(diagram).isEqualTo(imageStream.readAllBytes());
             }
         }
 
