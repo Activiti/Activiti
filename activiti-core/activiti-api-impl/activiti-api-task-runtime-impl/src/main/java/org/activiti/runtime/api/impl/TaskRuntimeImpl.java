@@ -24,6 +24,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.runtime.shared.NotFoundException;
+import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.api.runtime.shared.query.Order;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
@@ -70,6 +71,8 @@ public class TaskRuntimeImpl implements TaskRuntime {
 
     private final SecurityManager securityManager;
 
+    private final UserGroupManager userGroupManager;
+
     private final TaskRuntimeHelper taskRuntimeHelper;
 
     private final Map<TaskIdentificationStrategy, Supplier<Task>> nextTaskStrategies = Map.of(
@@ -88,7 +91,8 @@ public class TaskRuntimeImpl implements TaskRuntime {
         APITaskConverter taskConverter,
         APIVariableInstanceConverter variableInstanceConverter,
         TaskRuntimeConfiguration configuration,
-        TaskRuntimeHelper taskRuntimeHelper
+        TaskRuntimeHelper taskRuntimeHelper,
+        UserGroupManager userGroupManager
     ) {
         this.taskService = taskService;
         this.securityManager = securityManager;
@@ -96,6 +100,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
         this.variableInstanceConverter = variableInstanceConverter;
         this.configuration = configuration;
         this.taskRuntimeHelper = taskRuntimeHelper;
+        this.userGroupManager = userGroupManager;
     }
 
     @Override
@@ -507,7 +512,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
         String assignee = assignTaskPayload.getAssignee();
         String taskId = assignTaskPayload.getTaskId();
 
-        assertAssigneeIsACandidateUser(taskId, assignee);
+        assertAssigneeIsACandidate(taskId, assignee);
         reassignTask(taskId, assignee);
         return reassignedTask(taskId);
     }
@@ -540,13 +545,23 @@ public class TaskRuntimeImpl implements TaskRuntime {
         throw new IllegalStateException("There is no authenticated user, we need a user authenticated to find tasks");
     }
 
-    private void assertAssigneeIsACandidateUser(String taskId, String assignee) {
+    private void assertAssigneeIsACandidate(String taskId, String assignee) {
         List<String> userCandidates = userCandidates(taskId);
-        if (!userCandidates.contains(assignee)) {
-            throw new IllegalStateException(
-                "You cannot assign a task to " + assignee + " due it is not a candidate for it"
-            );
+        if (userCandidates.contains(assignee)) {
+            return;
         }
+
+        List<String> groupCandidates = groupCandidates(taskId);
+        if (!groupCandidates.isEmpty()) {
+            List<String> assigneeGroups = userGroupManager.getUserGroups(assignee);
+            if (assigneeGroups != null && groupCandidates.stream().anyMatch(assigneeGroups::contains)) {
+                return;
+            }
+        }
+
+        throw new IllegalStateException(
+            "You cannot assign a task to " + assignee + " because the user is not a candidate for it"
+        );
     }
 
     private void reassignTask(String taskId, String assignee) {
