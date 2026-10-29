@@ -22,6 +22,14 @@ inputs:
     description: Comma-separated Maven profiles to activate for the build.
     required: false
     default: ""
+  skip-tests:
+    description: Skip test execution when tests have already run in separate jobs.
+    required: false
+    default: "false"
+  test-results-artifacts:
+    description: Artifact pattern containing the engine and other test shard results.
+    required: false
+    default: ""
 
 runs:
   using: composite
@@ -33,14 +41,33 @@ runs:
         if [[ -n "$MAVEN_PROFILES" ]]; then
           args+=(--activate-profiles "$MAVEN_PROFILES")
         fi
+        if [[ "$SKIP_TESTS" == "true" ]]; then
+          args+=(-DskipTests -DskipITs)
+        fi
         read -r -a cli_opts <<< "$MAVEN_CLI_OPTS"
         mvn "${args[@]}" "${cli_opts[@]}"
       env:
         MAVEN_THREADS: ${{ inputs.maven-threads }}
         MAVEN_PROFILES: ${{ inputs.maven-profiles }}
+        SKIP_TESTS: ${{ inputs.skip-tests }}
         MAVEN_CLI_OPTS: --show-version --no-transfer-progress --settings settings.xml
         MAVEN_USERNAME: ${{ inputs.nexus-username }}
         MAVEN_PASSWORD: ${{ inputs.nexus-password }}
+
+    - name: Download test shard results
+      if: ${{ inputs.test-results-artifacts != '' }}
+      uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+      with:
+        pattern: ${{ inputs.test-results-artifacts }}
+        merge-multiple: true
+        path: ${{ runner.temp }}/activiti-test-results
+
+    - name: Restore test reports and coverage
+      if: ${{ inputs.test-results-artifacts != '' }}
+      shell: bash
+      run: python3 .github/scripts/ci_test_results.py restore "$TEST_RESULTS_DIRECTORY"
+      env:
+        TEST_RESULTS_DIRECTORY: ${{ runner.temp }}/activiti-test-results
 
     - name: Merge JaCoCo execution files
       shell: bash

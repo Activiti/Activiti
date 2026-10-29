@@ -48,15 +48,92 @@ jobs:
         run: |
           echo "preview=${{ contains(github.event.pull_request.labels.*.name, 'preview') }}" >> "$GITHUB_OUTPUT"
 
-  build:
+  tests:
+    name: tests (${{ matrix.shard }})
     runs-on: ubuntu-latest
     needs: pre-checks
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - shard: engine
+            projects: activiti-core/activiti-engine
+            profiles: ci-engine-tests,ci-parallel-engine-tests
+          - shard: other
+            projects: ""
+            profiles: ci-skip-engine-tests
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: ./.github/actions/setup-java-maven
+        with:
+          maven-version: ${{ env.MAVEN_VERSION }}
+
+      - name: Set preview version
+        if: ${{ needs.pre-checks.outputs.preview == 'true' }}
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          VERSION="0.0.1-PR-${PR_NUMBER}-SNAPSHOT"
+          echo "$VERSION" > VERSION
+          mvn -B versions:set -DnewVersion="$VERSION" -DprocessAllModules=true -DgenerateBackupPoms=false
+
+      - name: Build and test shard
+        shell: bash
+        run: |
+          args=(--batch-mode --threads 2 --activate-profiles "$MAVEN_PROFILES" install)
+          if [[ -n "$MAVEN_PROJECTS" ]]; then
+            args+=(--projects "$MAVEN_PROJECTS" --also-make)
+          fi
+          mvn "${args[@]}" --show-version --no-transfer-progress --settings settings.xml
+        env:
+          MAVEN_PROJECTS: ${{ matrix.projects }}
+          MAVEN_PROFILES: ${{ matrix.profiles }}
+          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+
+      - name: Collect test reports and coverage
+        if: ${{ always() }}
+        run: python3 .github/scripts/ci_test_results.py collect "$TEST_SHARD" "$RESULTS_ARCHIVE"
+        env:
+          TEST_SHARD: ${{ matrix.shard }}
+          RESULTS_ARCHIVE: ${{ runner.temp }}/test-results-${{ matrix.shard }}.tar.gz
+
+      - name: Upload test reports and coverage
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: test-results-${{ matrix.shard }}
+          path: ${{ runner.temp }}/test-results-${{ matrix.shard }}.tar.gz
+          compression-level: 0
+          overwrite: true
+          retention-days: 3
+          if-no-files-found: error
+
+  build:
+    runs-on: ubuntu-latest
+    needs:
+      - pre-checks
+      - tests
+    # Keep the required build check red when a prerequisite fails.
+    if: ${{ always() && !cancelled() }}
     permissions:
       actions: write
       contents: read
     outputs:
       version: ${{ env.VERSION }}
     steps:
+      - name: Require successful checks and test shards
+        if: ${{ needs.pre-checks.result != 'success' || needs.tests.result != 'success' }}
+        run: |
+          echo "Pre-checks and both test shards must pass before analysis."
+          exit 1
+
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -89,7 +166,8 @@ jobs:
       - uses: ./.github/actions/maven-build-and-analyze
         with:
           maven-threads: "2"
-          maven-profiles: ci-parallel-engine-tests
+          skip-tests: "true"
+          test-results-artifacts: test-results-*
           nexus-username: ${{ secrets.NEXUS_USERNAME }}
           nexus-password: ${{ secrets.NEXUS_PASSWORD }}
           sonar-token: ${{ secrets.SONAR_TOKEN }}
