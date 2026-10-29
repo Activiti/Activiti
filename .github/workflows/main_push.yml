@@ -104,6 +104,7 @@ jobs:
     permissions:
       actions: write
       contents: read
+      id-token: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -115,13 +116,29 @@ jobs:
         with:
           maven-version: ${{ env.MAVEN_VERSION }}
 
-      - name: Deploy with Maven
+      - name: Deploy to Nexus
         shell: bash
         run: mvn deploy -DskipTests -DskipITs ${{ env.MAVEN_CLI_OPTS}}
         env:
           MAVEN_CLI_OPTS: --show-version --no-transfer-progress --settings settings.xml
           MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+
+      - name: Authenticate with Cloudsmith
+        uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@768b583839a22ef7d882da0c5b82af3832197d00 # v19.7.1
+        with:
+          oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
+          verify-auth: "true"
+
+      - name: Deploy to Cloudsmith
+        shell: bash
+        run: mvn --batch-mode deploy '-Pcloudsmith,!alfresco' -Daether.connector.basic.upstreamThreads.cloudsmith=10 -DskipTests -DskipITs ${{ env.MAVEN_CLI_OPTS}}
+        env:
+          MAVEN_ARGS: ""
+          MAVEN_CLI_OPTS: --show-version --settings settings.xml
+          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+          CLOUDSMITH_NAMESPACE: ${{ vars.CLOUDSMITH_NAMESPACE }}
 
   propagate:
     runs-on: ubuntu-latest
