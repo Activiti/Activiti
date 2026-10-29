@@ -356,4 +356,13 @@ class ExtensionTest {
 
         assertThat(extension.getServiceTaskType("unknownElement")).isNull();
     }
+
+    @Test
+    void should_returnServiceTaskTypes_when_set() {
+        Extension extension = new Extension();
+        Map<String, String> serviceTaskTypes = Map.of("restConnector_1", "Rest Connector: GET");
+        extension.setServiceTaskTypes(serviceTaskTypes);
+
+        assertThat(extension.getServiceTaskTypes()).isEqualTo(serviceTaskTypes);
+    }
 }
