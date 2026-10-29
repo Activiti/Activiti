@@ -49,7 +49,7 @@ jobs:
         run: |
           echo "preview=${{ contains(github.event.pull_request.labels.*.name, 'preview') }}" >> "$GITHUB_OUTPUT"
 
-  compile:
+  build:
     runs-on: ubuntu-latest
     needs: pre-checks
     permissions:
@@ -199,24 +199,24 @@ jobs:
           retention-days: 3
           if-no-files-found: error
 
-  build:
+  coverage-and-sonar:
     runs-on: ubuntu-latest
     needs:
       - pre-checks
-      - compile
+      - build
       - tests
-    # Keep the required build check red when a prerequisite fails.
+    # Fail analysis explicitly when a prerequisite fails.
     if: ${{ always() && !cancelled() }}
     permissions:
       actions: write
       contents: read
     outputs:
-      version: ${{ needs.compile.outputs.version }}
+      version: ${{ needs.build.outputs.version }}
     steps:
-      - name: Require successful checks, compilation and tests
-        if: ${{ needs.pre-checks.result != 'success' || needs.compile.result != 'success' || needs.tests.result != 'success' }}
+      - name: Require successful checks, build and tests
+        if: ${{ needs.pre-checks.result != 'success' || needs.build.result != 'success' || needs.tests.result != 'success' }}
         run: |
-          echo "Pre-checks, compilation and all test shards must pass before analysis."
+          echo "Pre-checks, build and all test shards must pass before analysis."
           exit 1
 
       - name: Checkout repository
@@ -233,7 +233,7 @@ jobs:
       - name: Set preview version
         if: ${{ needs.pre-checks.outputs.preview == 'true' }}
         env:
-          VERSION: ${{ needs.compile.outputs.version }}
+          VERSION: ${{ needs.build.outputs.version }}
         run: |
           echo "$VERSION" > VERSION
           mvn -B versions:set -DnewVersion="$VERSION" -DprocessAllModules=true -DgenerateBackupPoms=false
@@ -249,7 +249,7 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - pre-checks
-      - compile
+      - build
     if: ${{ needs.pre-checks.outputs.preview == 'true' && github.secret_source != 'None' && success() }}
     permissions:
       actions: write
@@ -266,7 +266,7 @@ jobs:
 
       - name: Set preview version
         env:
-          VERSION: ${{ needs.compile.outputs.version }}
+          VERSION: ${{ needs.build.outputs.version }}
         run: |
           echo "$VERSION" > VERSION
           mvn -B versions:set -DnewVersion="$VERSION" -DprocessAllModules=true -DgenerateBackupPoms=false
@@ -282,11 +282,11 @@ jobs:
   propagate-preview:
     runs-on: ubuntu-latest
     needs:
-      - build
+      - coverage-and-sonar
       - publish
     if: ${{ github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'preview-propagation') && contains(github.event.pull_request.labels.*.name, 'preview') }}
     env:
-      VERSION: ${{ needs.build.outputs.version }}
+      VERSION: ${{ needs.coverage-and-sonar.outputs.version }}
       DEVELOPMENT_BRANCH: ${{ github.base_ref }}
     permissions:
       contents: read
