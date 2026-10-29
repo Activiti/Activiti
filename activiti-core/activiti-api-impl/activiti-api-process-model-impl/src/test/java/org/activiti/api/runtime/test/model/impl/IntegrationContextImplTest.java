@@ -209,6 +209,16 @@ class IntegrationContextImplTest {
     }
 
     @Test
+    void should_preserveServiceTaskType_when_serialized() throws IOException {
+        IntegrationContextImpl source = new IntegrationContextImpl();
+        source.setServiceTaskType("Rest Connector: GET");
+
+        IntegrationContext target = exchangeIntegrationContext(source);
+
+        assertThat(target.getServiceTaskType()).isEqualTo("Rest Connector: GET");
+    }
+
+    @Test
     void assertThatIntegrationContextImplDoesNotAddVariableValuesIntoToStringMethod() {
         //given
         IntegrationContextImpl integrationContext = new IntegrationContextImpl();
@@ -276,6 +286,7 @@ class IntegrationContextImplTest {
         original.setClientType("clientType");
         original.setAppVersion("1.0.0");
         original.setConnectorType("connectorType");
+        original.setServiceTaskType("Rest Connector: GET");
         original.setEphemeralVariables(true);
         original.addInBoundVariable("inKey", "inValue");
         original.addOutBoundVariable("outKey", "outValue");
@@ -296,6 +307,7 @@ class IntegrationContextImplTest {
         assertThat(copy.getClientType()).isEqualTo(original.getClientType());
         assertThat(copy.getAppVersion()).isEqualTo(original.getAppVersion());
         assertThat(copy.getConnectorType()).isEqualTo(original.getConnectorType());
+        assertThat(copy.getServiceTaskType()).isEqualTo(original.getServiceTaskType());
         assertThat(copy.hasEphemeralVariables()).isEqualTo(original.hasEphemeralVariables());
         assertThat(copy.getInBoundVariables()).isEqualTo(original.getInBoundVariables());
         assertThat(copy.getOutBoundVariables()).isEqualTo(original.getOutBoundVariables());
