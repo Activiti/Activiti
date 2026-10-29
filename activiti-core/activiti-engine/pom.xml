@@ -266,4 +266,87 @@
     </plugins>
   </build>
 
+  <profiles>
+    <profile>
+      <id>ci-parallel-engine-tests</id>
+      <properties>
+        <activiti.engine.test.forkCount>2</activiti.engine.test.forkCount>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <forkCount>${activiti.engine.test.forkCount}</forkCount>
+            </configuration>
+            <executions>
+              <execution>
+                <id>default-test</id>
+                <configuration>
+                  <excludes combine.children="append">
+                    <exclude>**/EmailSendTaskTest.java</exclude>
+                    <exclude>**/EmailServiceTaskTest.java</exclude>
+                  </excludes>
+                </configuration>
+              </execution>
+              <execution>
+                <id>mail-tests</id>
+                <phase>test</phase>
+                <goals>
+                  <goal>test</goal>
+                </goals>
+                <configuration>
+                  <!-- Both mail test classes bind to the same SMTP port. -->
+                  <forkCount>1</forkCount>
+                  <includes>
+                    <include>**/EmailSendTaskTest.java</include>
+                    <include>**/EmailServiceTaskTest.java</include>
+                  </includes>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>pre-unit-test</id>
+                <configuration>
+                  <destFile>${project.build.directory}/jacoco-ut-${surefire.forkNumber}.exec</destFile>
+                  <!-- Preserve fork 1 coverage when the serial mail tests run. -->
+                  <append>true</append>
+                </configuration>
+              </execution>
+              <execution>
+                <id>merge-engine-unit-test-coverage</id>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>merge</goal>
+                </goals>
+                <configuration>
+                  <fileSets>
+                    <fileSet>
+                      <directory>${project.build.directory}</directory>
+                      <includes>
+                        <include>jacoco-ut-*.exec</include>
+                      </includes>
+                    </fileSet>
+                  </fileSets>
+                  <destFile>${project.build.directory}/jacoco.exec</destFile>
+                </configuration>
+              </execution>
+              <execution>
+                <id>post-unit-test</id>
+                <!-- Report after the per-fork execution files have been merged. -->
+                <phase>verify</phase>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
 </project>
