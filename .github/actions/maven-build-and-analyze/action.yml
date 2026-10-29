@@ -18,16 +18,8 @@ inputs:
     description: Number of Maven reactor threads used for the build.
     required: false
     default: "1"
-  maven-profiles:
-    description: Comma-separated Maven profiles to activate for the build.
-    required: false
-    default: ""
-  skip-tests:
-    description: Skip test execution when tests have already run in separate jobs.
-    required: false
-    default: "false"
   restore-test-results:
-    description: Restore coverage and test reports from the three PR test groups.
+    description: Use coverage and reports from the PR test groups instead of rerunning tests.
     required: false
     default: "false"
 
@@ -38,18 +30,14 @@ runs:
       shell: bash
       run: |
         args=(--batch-mode --threads "$MAVEN_THREADS" install)
-        if [[ -n "$MAVEN_PROFILES" ]]; then
-          args+=(--activate-profiles "$MAVEN_PROFILES")
-        fi
-        if [[ "$SKIP_TESTS" == "true" ]]; then
+        if [[ "$RESTORE_TEST_RESULTS" == "true" ]]; then
           args+=(-DskipTests -DskipITs)
         fi
         read -r -a cli_opts <<< "$MAVEN_CLI_OPTS"
         mvn "${args[@]}" "${cli_opts[@]}"
       env:
         MAVEN_THREADS: ${{ inputs.maven-threads }}
-        MAVEN_PROFILES: ${{ inputs.maven-profiles }}
-        SKIP_TESTS: ${{ inputs.skip-tests }}
+        RESTORE_TEST_RESULTS: ${{ inputs.restore-test-results }}
         MAVEN_CLI_OPTS: --show-version --no-transfer-progress --settings settings.xml
         MAVEN_USERNAME: ${{ inputs.nexus-username }}
         MAVEN_PASSWORD: ${{ inputs.nexus-password }}

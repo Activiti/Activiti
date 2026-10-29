@@ -279,7 +279,6 @@
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
               <forkCount>${activiti.engine.test.forkCount}</forkCount>
-              <reuseForks>true</reuseForks>
             </configuration>
             <executions>
               <execution>

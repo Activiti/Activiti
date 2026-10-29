@@ -90,13 +90,6 @@ jobs:
           echo "$VERSION" > VERSION
           mvn -B versions:set -DnewVersion="$VERSION" -DprocessAllModules=true -DgenerateBackupPoms=false
 
-      # Install all reactor dependencies first so test groups can run independently.
-      - name: Build test prerequisites
-        run: mvn --batch-mode --threads 2 install -DskipTests -DskipITs --show-version --no-transfer-progress --settings settings.xml
-        env:
-          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-
       - name: Build and test shard
         shell: bash
         run: |
@@ -118,6 +111,8 @@ jobs:
           fi
           printf -v projects '%s,' "${test_projects[@]}"
           args=(--batch-mode --threads 2 --projects "${projects%,}" install)
+          # Prepare only this group's modules and their upstream dependencies.
+          mvn "${args[@]}" --also-make -DskipTests -DskipITs --show-version --no-transfer-progress --settings settings.xml
           if [[ -n "$MAVEN_PROFILES" ]]; then
             args+=(--activate-profiles "$MAVEN_PROFILES")
           fi
@@ -201,7 +196,6 @@ jobs:
       - uses: ./.github/actions/maven-build-and-analyze
         with:
           maven-threads: "2"
-          skip-tests: "true"
           restore-test-results: "true"
           nexus-username: ${{ secrets.NEXUS_USERNAME }}
           nexus-password: ${{ secrets.NEXUS_PASSWORD }}
