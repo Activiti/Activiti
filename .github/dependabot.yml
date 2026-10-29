@@ -56,10 +56,3 @@ updates:
         update-types:
           - "minor"
           - "patch"
-
-  - package-ecosystem: "pip"
-    directory: "/tests/ci"
-    schedule:
-      interval: "weekly"
-    cooldown:
-      default-days: 3

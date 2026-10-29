@@ -100,8 +100,24 @@ jobs:
       - name: Build and test shard
         shell: bash
         run: |
-          projects=$(python3 .github/scripts/ci_test_results.py projects "$TEST_SHARD")
-          args=(--batch-mode --threads 2 --projects "$projects" install)
+          test_projects=()
+          while IFS= read -r pom; do
+            module=${pom%/pom.xml}
+            case "$module" in
+              ./activiti-core/activiti-engine) group=engine ;;
+              */activiti-spring*) group=spring ;;
+              *) group=other ;;
+            esac
+            if [[ "$group" == "$TEST_SHARD" ]]; then
+              test_projects+=("$module")
+            fi
+          done < <(find . -name pom.xml -not -path '*/target/*' -not -path './.git/*' | sort)
+          if [[ ${#test_projects[@]} -eq 0 ]]; then
+            echo "::error::No Maven modules found for $TEST_SHARD"
+            exit 1
+          fi
+          printf -v projects '%s,' "${test_projects[@]}"
+          args=(--batch-mode --threads 2 --projects "${projects%,}" install)
           if [[ -n "$MAVEN_PROFILES" ]]; then
             args+=(--activate-profiles "$MAVEN_PROFILES")
           fi
@@ -112,19 +128,24 @@ jobs:
           MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
 
-      - name: Collect test reports and coverage
-        if: ${{ always() }}
-        run: python3 .github/scripts/ci_test_results.py collect "$TEST_SHARD"
-        env:
-          TEST_SHARD: ${{ matrix.shard }}
-
-      - name: Upload test reports and coverage
+      - name: Upload test coverage
         if: ${{ always() }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: test-results-${{ matrix.shard }}
-          path: target/ci-test-artifacts/test-results-${{ matrix.shard }}.tar.gz
-          compression-level: 0
+          name: coverage-${{ matrix.shard }}
+          path: '**/target/*.exec'
+          overwrite: true
+          retention-days: 3
+          if-no-files-found: error
+
+      - name: Upload test reports
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: test-reports-${{ matrix.shard }}
+          path: |
+            **/target/surefire-reports/TEST-*.xml
+            **/target/failsafe-reports/TEST-*.xml
           overwrite: true
           retention-days: 3
           if-no-files-found: error
@@ -181,7 +202,7 @@ jobs:
         with:
           maven-threads: "2"
           skip-tests: "true"
-          test-results-artifacts: test-results-*
+          restore-test-results: "true"
           nexus-username: ${{ secrets.NEXUS_USERNAME }}
           nexus-password: ${{ secrets.NEXUS_PASSWORD }}
           sonar-token: ${{ secrets.SONAR_TOKEN }}
