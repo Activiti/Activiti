@@ -14,12 +14,8 @@ inputs:
     description: SonarCloud token. When empty, the analysis is skipped.
     required: false
     default: ""
-  maven-threads:
-    description: Number of Maven reactor threads used for the build.
-    required: false
-    default: "1"
-  restore-test-results:
-    description: Use coverage and reports from the PR test groups instead of rerunning tests.
+  restore-artifacts:
+    description: Use the PR compile and test artifacts instead of rebuilding and rerunning tests.
     required: false
     default: "false"
 
@@ -27,37 +23,44 @@ runs:
   using: composite
   steps:
     - name: Build and Test with Maven
+      if: ${{ inputs.restore-artifacts != 'true' }}
       shell: bash
-      run: |
-        args=(--batch-mode --threads "$MAVEN_THREADS" install)
-        if [[ "$RESTORE_TEST_RESULTS" == "true" ]]; then
-          args+=(-DskipTests -DskipITs)
-        fi
-        read -r -a cli_opts <<< "$MAVEN_CLI_OPTS"
-        mvn "${args[@]}" "${cli_opts[@]}"
+      run: mvn install ${{ env.MAVEN_CLI_OPTS }}
       env:
-        MAVEN_THREADS: ${{ inputs.maven-threads }}
-        RESTORE_TEST_RESULTS: ${{ inputs.restore-test-results }}
         MAVEN_CLI_OPTS: --show-version --no-transfer-progress --settings settings.xml
         MAVEN_USERNAME: ${{ inputs.nexus-username }}
         MAVEN_PASSWORD: ${{ inputs.nexus-password }}
 
+    - name: Download compiled classes
+      if: ${{ inputs.restore-artifacts == 'true' }}
+      uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+      with:
+        name: compiled-classes
+        path: .
+
+    - name: Download reactor dependencies
+      if: ${{ inputs.restore-artifacts == 'true' }}
+      uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+      with:
+        name: reactor-dependencies
+        path: ~/.m2/repository/org/activiti
+
     - name: Download test coverage
-      if: ${{ inputs.restore-test-results == 'true' }}
+      if: ${{ inputs.restore-artifacts == 'true' }}
       uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
       with:
         pattern: coverage-*
         path: target/ci-coverage
 
     - name: Download test reports
-      if: ${{ inputs.restore-test-results == 'true' }}
+      if: ${{ inputs.restore-artifacts == 'true' }}
       uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
       with:
         pattern: test-reports-*
         path: target/ci-test-reports
 
     - name: Validate and restore test results
-      if: ${{ inputs.restore-test-results == 'true' }}
+      if: ${{ inputs.restore-artifacts == 'true' }}
       shell: bash
       run: |
         for group in engine spring other; do
