@@ -554,7 +554,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
         List<String> groupCandidates = groupCandidates(taskId);
         if (!groupCandidates.isEmpty()) {
             List<String> assigneeGroups = userGroupManager.getUserGroups(assignee);
-            if (groupCandidates.stream().anyMatch(assigneeGroups::contains)) {
+            if (assigneeGroups != null && groupCandidates.stream().anyMatch(assigneeGroups::contains)) {
                 return;
             }
         }

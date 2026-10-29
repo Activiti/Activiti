@@ -168,8 +168,9 @@ public class TaskRuntimeImplTest {
         verify(taskService).claim(taskId, newAssignee);
     }
 
-    @Test
-    void assign_should_rejectAssigneeOutsideCandidateGroups() {
+    @ParameterizedTest
+    @MethodSource("nonCandidateAssigneeGroups")
+    void assign_should_rejectAssigneeOutsideCandidateGroups(List<String> assigneeGroups) {
         String taskId = "taskId";
         String newAssignee = "newAssignee";
         AssignTaskPayload assignTaskPayload = TaskPayloadBuilder.assign()
@@ -178,7 +179,7 @@ public class TaskRuntimeImplTest {
             .build();
         doReturn(Collections.emptyList()).when(taskRuntime).userCandidates(taskId);
         doReturn(List.of("candidateGroup")).when(taskRuntime).groupCandidates(taskId);
-        given(userGroupManager.getUserGroups(newAssignee)).willReturn(List.of("otherGroup"));
+        given(userGroupManager.getUserGroups(newAssignee)).willReturn(assigneeGroups);
 
         Throwable thrown = catchThrowable(() -> taskRuntime.assign(assignTaskPayload));
 
@@ -189,6 +190,14 @@ public class TaskRuntimeImplTest {
             );
         verify(taskService, never()).unclaim(taskId);
         verify(taskService, never()).claim(taskId, newAssignee);
+    }
+
+    private static Stream<Arguments> nonCandidateAssigneeGroups() {
+        return Stream.of(
+            Arguments.of((Object) null),
+            Arguments.of(Collections.emptyList()),
+            Arguments.of(List.of("otherGroup"))
+        );
     }
 
     @Test
