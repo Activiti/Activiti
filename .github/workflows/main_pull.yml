@@ -134,16 +134,6 @@ jobs:
           MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
 
-      - name: Check Cloudsmith namespace
-        shell: bash
-        env:
-          CLOUDSMITH_NAMESPACE: ${{ vars.CLOUDSMITH_NAMESPACE }}
-        run: |
-          if [[ -z "$CLOUDSMITH_NAMESPACE" ]]; then
-            echo "::error::Set the CLOUDSMITH_NAMESPACE GitHub organization variable before publishing previews to Cloudsmith."
-            exit 1
-          fi
-
       - name: Authenticate with Cloudsmith
         uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@768b583839a22ef7d882da0c5b82af3832197d00 # v19.7.1
         with:
@@ -154,7 +144,6 @@ jobs:
         shell: bash
         run: mvn --batch-mode deploy '-Pcloudsmith,!alfresco' -Daether.connector.basic.upstreamThreads.cloudsmith=10 -DskipTests -DskipITs ${{ env.MAVEN_CLI_OPTS}}
         env:
-          # Override the runner's -ntp default so batch transfer timings are visible.
           MAVEN_ARGS: ""
           MAVEN_CLI_OPTS: --show-version --settings settings.xml
           MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
