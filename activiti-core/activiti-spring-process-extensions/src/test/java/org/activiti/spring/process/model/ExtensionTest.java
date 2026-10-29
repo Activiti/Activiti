@@ -341,4 +341,19 @@ class ExtensionTest {
             assertThat(isEnabled).isTrue();
         }
     }
+
+    @Test
+    void should_returnServiceTaskType_when_definedForElement() {
+        Extension extension = new Extension();
+        extension.setServiceTaskTypes(Map.of("restConnector_1", "Rest Connector: GET"));
+
+        assertThat(extension.getServiceTaskType("restConnector_1")).isEqualTo("Rest Connector: GET");
+    }
+
+    @Test
+    void should_returnNullServiceTaskType_when_notDefinedForElement() {
+        Extension extension = new Extension();
+
+        assertThat(extension.getServiceTaskType("unknownElement")).isNull();
+    }
 }
