@@ -26,33 +26,9 @@ This repository includes an automated **Preview Propagation** mechanism for test
 3. Test the integration in the downstream PR
 4. When your source PR closes/merges, the test PR automatically closes
 
-Preview builds publish `0.0.1-PR-<number>-SNAPSHOT` to both Nexus and the Cloudsmith
-`activiti-snapshots` repository. Propagation starts after both deployments succeed.
+Preview snapshots (`0.0.1-PR-<number>-SNAPSHOT`) and develop alpha releases are published to both Nexus and Cloudsmith, using `activiti-snapshots` and `activiti-releases`, respectively. Propagation starts after both deployments succeed.
 
-Cloudsmith publishing uses the existing `cloudsmith-auth` action with GitHub OIDC.
-The `Activiti/Activiti` service account must have write access to `activiti-snapshots`
-and `activiti-releases`,
-and the GitHub organization variable `CLOUDSMITH_NAMESPACE` must identify the
-Cloudsmith organization. The action exports `CLOUDSMITH_USERNAME` and a short-lived
-`CLOUDSMITH_API_KEY` for the credentials in `settings.xml`.
-
-The `cloudsmith` profile in `pom.xml` defines the snapshot and release destinations
-under `distributionManagement`, using `https://maven.cloudsmith.io`. The publishing
-job uses `-Pcloudsmith,!alfresco` for its second deployment to disable the
-Nexus destination overrides in `settings.xml`. The first deployment continues to use
-the default `alfresco` settings profile. Snapshot builds in the two registries can
-have different timestamped versions, so downstream consumers should use the
-`0.0.1-PR-<number>-SNAPSHOT` version when testing Cloudsmith resolution.
-
-Pushes to `develop` also publish to both registries. Versions such as
-`9.1.0-alpha.100` use `activiti-releases`; propagation starts after both deployments
-succeed. Formal community releases continue to use the separate staging and
-promotion workflow in `Activiti/activiti-scripts`.
-
-Cloudsmith publishing uses ten upload threads, scoped to the `cloudsmith` Maven
-repository ID. Batch transfer logs are enabled so upload duration can be compared
-with the previous five-thread baseline. This setting changes upload concurrency
-without changing the files published or the Nexus deployment settings.
+For Cloudsmith publishing, set the GitHub Actions variable `CLOUDSMITH_NAMESPACE` to `hyland` and grant the `activiti-activiti` service account write access to both targets. The `cloudsmith-auth` action uses GitHub OIDC to provide temporary `CLOUDSMITH_USERNAME` and `CLOUDSMITH_API_KEY` credentials for `settings.xml`; no static Cloudsmith secret is required.
 
 Each propagation writes the GitHub Actions run ID (`BUILD_RUN_ID`) to `preview-build.properties` in the downstream repository, ensuring a new commit for each new workflow run even when the preview snapshot version is unchanged.
 
