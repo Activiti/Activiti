@@ -912,14 +912,6 @@ limitations under the License.
     </plugins>
   </reporting>
   <profiles>
-    <profile>
-      <id>ci-engine-tests</id>
-      <properties>
-        <!-- The engine module enables its own tests in this CI shard. -->
-        <skipTests>true</skipTests>
-        <skipITs>true</skipITs>
-      </properties>
-    </profile>
     <!-- Activate integration tests -->
     <profile>
       <id>integration-test</id>

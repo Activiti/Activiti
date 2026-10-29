@@ -20,12 +20,10 @@ env:
   MAVEN_VERSION: "3.10.0"
 
 jobs:
-  pre-checks:
+  check-access:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    outputs:
-      preview: ${{ steps.check_pr_preview.outputs.preview }}
     steps:
       - name: Check dependabot/fork build
         if: github.secret_source == 'Dependabot' || (github.secret_source == 'None' && github.event.action != 'milestoned')
@@ -33,6 +31,15 @@ jobs:
         with:
           dependabot-error-message: "This PR requires additional validation, please set the milestone to 'Validating' or ask a reviewer to approve it."
           none-error-message: "This PR requires additional validation, please set the milestone to 'Validating'."
+
+  pre-checks:
+    runs-on: ubuntu-latest
+    needs: check-access
+    permissions:
+      contents: read
+    outputs:
+      preview: ${{ steps.check_pr_preview.outputs.preview }}
+    steps:
       - name: pre-commit
         uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@768b583839a22ef7d882da0c5b82af3832197d00 # v19.7.1
       - name: Ensure SHA pinned actions
@@ -51,7 +58,7 @@ jobs:
   tests:
     name: tests (${{ matrix.shard }})
     runs-on: ubuntu-latest
-    needs: pre-checks
+    needs: check-access
     permissions:
       contents: read
     strategy:
@@ -59,11 +66,11 @@ jobs:
       matrix:
         include:
           - shard: engine
-            projects: activiti-core/activiti-engine
-            profiles: ci-engine-tests,ci-parallel-engine-tests
+            profiles: ci-parallel-engine-tests
+          - shard: spring
+            profiles: ""
           - shard: other
-            projects: ""
-            profiles: ci-skip-engine-tests
+            profiles: ""
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -75,7 +82,7 @@ jobs:
           maven-version: ${{ env.MAVEN_VERSION }}
 
       - name: Set preview version
-        if: ${{ needs.pre-checks.outputs.preview == 'true' }}
+        if: ${{ contains(github.event.pull_request.labels.*.name, 'preview') }}
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
@@ -83,33 +90,40 @@ jobs:
           echo "$VERSION" > VERSION
           mvn -B versions:set -DnewVersion="$VERSION" -DprocessAllModules=true -DgenerateBackupPoms=false
 
+      # Install all reactor dependencies first so test groups can run independently.
+      - name: Build test prerequisites
+        run: mvn --batch-mode --threads 2 install -DskipTests -DskipITs --show-version --no-transfer-progress --settings settings.xml
+        env:
+          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+
       - name: Build and test shard
         shell: bash
         run: |
-          args=(--batch-mode --threads 2 --activate-profiles "$MAVEN_PROFILES" install)
-          if [[ -n "$MAVEN_PROJECTS" ]]; then
-            args+=(--projects "$MAVEN_PROJECTS" --also-make)
+          projects=$(python3 .github/scripts/ci_test_results.py projects "$TEST_SHARD")
+          args=(--batch-mode --threads 2 --projects "$projects" install)
+          if [[ -n "$MAVEN_PROFILES" ]]; then
+            args+=(--activate-profiles "$MAVEN_PROFILES")
           fi
           mvn "${args[@]}" --show-version --no-transfer-progress --settings settings.xml
         env:
-          MAVEN_PROJECTS: ${{ matrix.projects }}
+          TEST_SHARD: ${{ matrix.shard }}
           MAVEN_PROFILES: ${{ matrix.profiles }}
           MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
 
       - name: Collect test reports and coverage
         if: ${{ always() }}
-        run: python3 .github/scripts/ci_test_results.py collect "$TEST_SHARD" "$RESULTS_ARCHIVE"
+        run: python3 .github/scripts/ci_test_results.py collect "$TEST_SHARD"
         env:
           TEST_SHARD: ${{ matrix.shard }}
-          RESULTS_ARCHIVE: ${{ runner.temp }}/test-results-${{ matrix.shard }}.tar.gz
 
       - name: Upload test reports and coverage
         if: ${{ always() }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: test-results-${{ matrix.shard }}
-          path: ${{ runner.temp }}/test-results-${{ matrix.shard }}.tar.gz
+          path: target/ci-test-artifacts/test-results-${{ matrix.shard }}.tar.gz
           compression-level: 0
           overwrite: true
           retention-days: 3
@@ -131,7 +145,7 @@ jobs:
       - name: Require successful checks and test shards
         if: ${{ needs.pre-checks.result != 'success' || needs.tests.result != 'success' }}
         run: |
-          echo "Pre-checks and both test shards must pass before analysis."
+          echo "Pre-checks and all test shards must pass before analysis."
           exit 1
 
       - name: Checkout repository

@@ -1,5 +1,8 @@
 target
 
+# Python CI helpers
+__pycache__/
+
 # Compiled class file
 *.class
 

@@ -27,13 +27,23 @@ inputs:
     required: false
     default: "false"
   test-results-artifacts:
-    description: Artifact pattern containing the engine and other test shard results.
+    description: Artifact pattern containing all test shard results.
     required: false
     default: ""
 
 runs:
   using: composite
   steps:
+    - name: Test CI result helpers
+      shell: bash
+      run: |
+        python3 -m venv "$RUNNER_TEMP/ci-helper-venv"
+        helper_python="$RUNNER_TEMP/ci-helper-venv/bin/python"
+        "$helper_python" -m pip install --disable-pip-version-check --quiet -r tests/ci/requirements.txt
+        "$helper_python" -m coverage run --branch --data-file="$RUNNER_TEMP/ci-helper-coverage" --source=.github/scripts -m unittest discover -s tests/ci
+        mkdir -p target
+        "$helper_python" -m coverage xml --data-file="$RUNNER_TEMP/ci-helper-coverage" -o target/ci-helper-coverage.xml
+
     - name: Build and Test with Maven
       shell: bash
       run: |
@@ -60,14 +70,12 @@ runs:
       with:
         pattern: ${{ inputs.test-results-artifacts }}
         merge-multiple: true
-        path: ${{ runner.temp }}/activiti-test-results
+        path: target/ci-test-results
 
     - name: Restore test reports and coverage
       if: ${{ inputs.test-results-artifacts != '' }}
       shell: bash
-      run: python3 .github/scripts/ci_test_results.py restore "$TEST_RESULTS_DIRECTORY"
-      env:
-        TEST_RESULTS_DIRECTORY: ${{ runner.temp }}/activiti-test-results
+      run: python3 .github/scripts/ci_test_results.py restore
 
     - name: Merge JaCoCo execution files
       shell: bash
@@ -80,7 +88,7 @@ runs:
     - name: Set SONAR_SCANNER_OPTS
       shell: bash
       run: |
-        echo "SONAR_SCANNER_OPTS=sonar:sonar -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=activiti -Dsonar.projectKey=Activiti_Activiti -Dsonar.coverage.jacoco.xmlReportPaths=**/target/site/jacoco*/jacoco.xml" >> $GITHUB_ENV
+        echo "SONAR_SCANNER_OPTS=sonar:sonar -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=activiti -Dsonar.projectKey=Activiti_Activiti -Dsonar.coverage.jacoco.xmlReportPaths=**/target/site/jacoco*/jacoco.xml -Dsonar.python.coverage.reportPaths=${{ github.workspace }}/target/ci-helper-coverage.xml" >> $GITHUB_ENV
 
     - name: Run SonarCloud analysis
       if: ${{ inputs.sonar-token != '' }}
