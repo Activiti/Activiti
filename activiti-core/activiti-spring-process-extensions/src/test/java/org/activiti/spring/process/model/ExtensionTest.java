@@ -365,4 +365,12 @@ class ExtensionTest {
 
         assertThat(extension.getServiceTaskTypes()).isEqualTo(serviceTaskTypes);
     }
+
+    @Test
+    void should_returnNullServiceTaskType_when_serviceTaskTypesIsNull() {
+        Extension extension = new Extension();
+        extension.setServiceTaskTypes(null);
+
+        assertThat(extension.getServiceTaskType("restConnector_1")).isNull();
+    }
 }
