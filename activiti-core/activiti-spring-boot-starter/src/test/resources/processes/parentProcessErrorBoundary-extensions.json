@@ -1,0 +1,44 @@
+{
+  "id": "parentProcessErrorBoundary",
+  "name": "parentProcessErrorBoundaryMapping.bpmn20.xml",
+  "extensions": {
+    "parentProcessErrorBoundary": {
+      "constants": {},
+      "mappings": {
+        "Activity_1w8vukd": {},
+        "Activity_0i0ai32": {
+          "inputs": {
+            "Text0823o4": {
+              "type": "variable",
+              "value": "testError"
+            }
+          }
+        },
+        "Event_032aj1u": {
+          "outputs": {
+            "testError": {
+              "type": "variable",
+              "value": "error"
+            }
+          }
+        }
+      },
+      "properties": {
+        "1ffb8b32-d3bb-41a6-abb5-47fc9738ac22": {
+          "id": "1ffb8b32-d3bb-41a6-abb5-47fc9738ac22",
+          "name": "testError",
+          "type": "json",
+          "model": {
+            "$ref": "#/$defs/primitive/json"
+          },
+          "required": false,
+          "ephemeral": false,
+          "analytics": false,
+          "description": "",
+          "category": "local"
+        }
+      },
+      "assignments": {}
+    }
+  }
+}
