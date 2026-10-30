@@ -392,6 +392,7 @@ class IntegrationContextImplTest {
         IntegrationContextImpl one = new IntegrationContextImpl();
         one.setConnectorType("connector");
         one.setServiceTaskType("Rest Connector: GET");
+        one.setEphemeralVariables(false);
 
         IntegrationContextImpl two = new IntegrationContextImpl(one);
 
