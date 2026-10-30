@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -35,6 +36,8 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntityImpl;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.runtime.api.impl.ExtensionsVariablesMappingProvider;
+import org.activiti.spring.process.ProcessExtensionService;
+import org.activiti.spring.process.model.Extension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -77,6 +80,9 @@ public class IntegrationContextBuilderTest {
     @Mock
     private ServiceTask serviceTask;
 
+    @Mock
+    private ProcessExtensionService processExtensionService;
+
     @BeforeEach
     public void setUp() {
         ProcessEngineConfigurationImpl processEngineConfiguration = mock(ProcessEngineConfigurationImpl.class);
@@ -90,6 +96,8 @@ public class IntegrationContextBuilderTest {
 
         given(processDefinition.getKey()).willReturn(PROCESS_DEFINITION_KEY);
         given(processDefinition.getVersion()).willReturn(PROCESS_DEFINITION_VERSION);
+
+        lenient().when(processExtensionService.getExtensionsForId(any())).thenReturn(new Extension());
     }
 
     @Test
@@ -130,6 +138,21 @@ public class IntegrationContextBuilderTest {
         assertThat(integrationContext.getProcessDefinitionVersion()).isEqualTo(PROCESS_DEFINITION_VERSION);
         assertThat(integrationContext.getParentProcessInstanceId()).isEqualTo(PARENT_PROCESS_INSTANCE_ID);
         assertThat(integrationContext.getInBoundVariables()).containsAllEntriesOf(variables);
+    }
+
+    @Test
+    void should_setServiceTaskType_when_definedInExtensions() {
+        Extension extension = new Extension();
+        extension.setServiceTaskTypes(Map.of(CURRENT_ACTIVITY_ID, "Rest Connector: GET"));
+        given(processExtensionService.getExtensionsForId(PROCESS_DEFINITION_ID)).willReturn(extension);
+        given(inboundVariablesProvider.calculateInputVariables(execution)).willReturn(Map.of());
+        given(execution.getProcessDefinitionId()).willReturn(PROCESS_DEFINITION_ID);
+        given(execution.getCurrentActivityId()).willReturn(CURRENT_ACTIVITY_ID);
+        given(execution.getCurrentFlowElement()).willReturn(serviceTask);
+
+        IntegrationContext integrationContext = builder.from(execution);
+
+        assertThat(integrationContext.getServiceTaskType()).isEqualTo("Rest Connector: GET");
     }
 
     @Test

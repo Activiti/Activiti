@@ -38,6 +38,10 @@ public interface IntegrationContext {
 
     String getConnectorType();
 
+    default String getServiceTaskType() {
+        return null;
+    }
+
     String getAppVersion();
 
     String getClientId();
