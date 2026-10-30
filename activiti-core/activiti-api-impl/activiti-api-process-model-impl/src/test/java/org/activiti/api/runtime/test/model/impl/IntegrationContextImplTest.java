@@ -396,8 +396,7 @@ class IntegrationContextImplTest {
 
         IntegrationContextImpl two = new IntegrationContextImpl(one);
 
-        assertThat(two).isEqualTo(one);
-        assertThat(two.hashCode()).isEqualTo(one.hashCode());
+        assertThat(two).isEqualTo(one).hasSameHashCodeAs(one);
 
         two.setServiceTaskType("Other Connector: POST");
 
