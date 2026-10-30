@@ -29,6 +29,7 @@ public class ProcessInstanceImpl extends ApplicationElementImpl implements Proce
     private Date startDate;
     private Date completedDate;
     private String businessKey;
+    private String correlationId;
     private ProcessInstanceStatus status;
     private String parentId;
     private Integer processDefinitionVersion;
@@ -65,6 +66,11 @@ public class ProcessInstanceImpl extends ApplicationElementImpl implements Proce
     @Override
     public String getBusinessKey() {
         return businessKey;
+    }
+
+    @Override
+    public String getCorrelationId() {
+        return correlationId;
     }
 
     @Override
@@ -132,6 +138,10 @@ public class ProcessInstanceImpl extends ApplicationElementImpl implements Proce
 
     public void setBusinessKey(String businessKey) {
         this.businessKey = businessKey;
+    }
+
+    public void setCorrelationId(String correlationId) {
+        this.correlationId = correlationId;
     }
 
     public void setStatus(ProcessInstanceStatus status) {
@@ -229,6 +239,9 @@ public class ProcessInstanceImpl extends ApplicationElementImpl implements Proce
             completedDate +
             ", businessKey='" +
             businessKey +
+            '\'' +
+            ", correlationId='" +
+            correlationId +
             '\'' +
             ", status=" +
             status +

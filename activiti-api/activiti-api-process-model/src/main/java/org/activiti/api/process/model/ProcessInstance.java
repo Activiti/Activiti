@@ -39,6 +39,10 @@ public interface ProcessInstance extends ApplicationElement {
 
     String getBusinessKey();
 
+    default String getCorrelationId() {
+        return null;
+    }
+
     ProcessInstanceStatus getStatus();
 
     String getProcessDefinitionId();
