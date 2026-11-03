@@ -292,6 +292,14 @@ public class RuntimeTestConfiguration {
         return candidateUserRemovedEvent -> taskCandidateUserRemovedEvents.add(candidateUserRemovedEvent);
     }
 
+    @Bean(name = "script.EXECUTE")
+    public Connector scriptExecuteConnector() {
+        return integrationContext -> {
+            integrationContext.addOutBoundVariables(integrationContext.getInBoundVariables());
+            return integrationContext;
+        };
+    }
+
     @Bean(name = "Variable Mapping Connector.variableMappingActionName")
     public Connector variableMappingActionName() {
         return integrationContext -> {
