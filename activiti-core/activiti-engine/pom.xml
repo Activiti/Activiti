@@ -15,7 +15,6 @@
 
   <properties>
     <activiti-engine.unpack.version>7.2.0</activiti-engine.unpack.version>
-    <postgresql.version>42.7.14</postgresql.version>
   </properties>
 
   <dependencies>
@@ -195,7 +194,6 @@
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
-      <version>${postgresql.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
