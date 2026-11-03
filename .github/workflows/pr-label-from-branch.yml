@@ -21,7 +21,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Label PR from branch name
-        uses: Alfresco/alfresco-build-tools/.github/actions/github-pr-label-from-branch@abbbc5c867475439b56e4998132e780e5b3d1443 # v19.10.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/github-pr-label-from-branch@482401ef42e6503cfa54d5873f1a768a0ecb3e0e # v19.11.0
         with:
           mapping: |
             feat/: enhancement
