@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 import java.util.Map;
 import org.activiti.api.process.model.ProcessInstance;
+import org.activiti.api.process.runtime.connector.Connector;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricVariableInstance;
@@ -30,12 +31,26 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.TestPropertySource;
 import tools.jackson.databind.json.JsonMapper;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @TestPropertySource("classpath:application-history.properties")
 class ProcessRuntimeJsonPatchArrayOutputMappingIT {
+
+    @TestConfiguration
+    static class EmptyScriptConfiguration {
+
+        @Bean(name = "script.EXECUTE")
+        Connector emptyScriptConnector() {
+            return integrationContext -> {
+                integrationContext.addOutBoundVariables(integrationContext.getInBoundVariables());
+                return integrationContext;
+            };
+        }
+    }
 
     private static final String PROCESS_DEFINITION_KEY = "Process_1790951452242";
 
