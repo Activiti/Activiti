@@ -38,7 +38,9 @@ jobs:
         with:
           skip_checkout: true
       - name: Ensure SHA pinned actions
-        uses: hyland/github-actions-ensure-sha-pinned-actions@v2.0.1
+        uses: hyland/github-actions-ensure-sha-pinned-actions@v2.1.0
+        with:
+          lock-aware: 'true'
       - name: Ensure all actions are covered by Dependabot
         uses: Alfresco/alfresco-build-tools/.github/actions/dependabot-missing-actions-check@v19.11.0
 

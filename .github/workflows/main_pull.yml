@@ -36,7 +36,7 @@ jobs:
       - name: pre-commit
         uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@v19.11.0
       - name: Ensure SHA pinned actions
-        uses: hyland/github-actions-ensure-sha-pinned-actions@fix/AAE-55457-github-action-lock-option
+        uses: hyland/github-actions-ensure-sha-pinned-actions@v2.1.0
         with:
           lock-aware: 'true'
       - uses: actions/checkout@v7.0.1
