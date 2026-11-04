@@ -26,6 +26,10 @@ This repository includes an automated **Preview Propagation** mechanism for test
 3. Test the integration in the downstream PR
 4. When your source PR closes/merges, the test PR automatically closes
 
+Preview snapshots (`0.0.1-PR-<number>-SNAPSHOT`) and develop alpha releases are published to both Nexus and Cloudsmith, using `activiti-snapshots` and `activiti-releases`, respectively. Propagation starts after both deployments succeed.
+
+For Cloudsmith publishing, set the GitHub Actions variable `CLOUDSMITH_NAMESPACE` to `hyland` and grant the `activiti-activiti` service account write access to both targets. The `cloudsmith-auth` action uses GitHub OIDC to provide temporary `CLOUDSMITH_USERNAME` and `CLOUDSMITH_API_KEY` credentials for `settings.xml`; no static Cloudsmith secret is required.
+
 Each propagation writes the GitHub Actions run ID (`BUILD_RUN_ID`) to `preview-build.properties` in the downstream repository, ensuring a new commit for each new workflow run even when the preview snapshot version is unchanged.
 
 This eliminates manual version bumping and cleanup while ensuring integration changes are validated before merge.

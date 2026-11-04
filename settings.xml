@@ -10,6 +10,14 @@
         <repositoryOrigin>https://artifacts.alfresco.com</repositoryOrigin>
       </repositoryOrigins>
     </server>
+    <server>
+      <id>cloudsmith</id>
+      <username>${env.CLOUDSMITH_USERNAME}</username>
+      <password>${env.CLOUDSMITH_API_KEY}</password>
+      <repositoryOrigins>
+        <repositoryOrigin>https://maven.cloudsmith.io</repositoryOrigin>
+      </repositoryOrigins>
+    </server>
   </servers>
 
    <profiles>

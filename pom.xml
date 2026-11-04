@@ -201,7 +201,7 @@
     <dependency-check-maven.version>13.0.0</dependency-check-maven.version>
     <exec-maven-plugin.version>3.6.4</exec-maven-plugin.version>
     <extra-enforcer-rules.version>1.12.1</extra-enforcer-rules.version>
-    <jacoco-maven-plugin.version>0.8.15</jacoco-maven-plugin.version>
+    <jacoco-maven-plugin.version>0.8.16</jacoco-maven-plugin.version>
     <license-maven-plugin.version>5.1.2</license-maven-plugin.version>
     <third-party-license-maven-plugin.version>2.7.1</third-party-license-maven-plugin.version>
     <maven-antrun-plugin.version>3.2.0</maven-antrun-plugin.version>
@@ -211,7 +211,7 @@
     <maven-compiler-plugin.version>3.16.0</maven-compiler-plugin.version>
     <maven-dependency-plugin.version>3.11.0</maven-dependency-plugin.version>
     <maven-deploy-plugin.version>3.2.0</maven-deploy-plugin.version>
-    <maven-enforcer-plugin.version>3.6.3</maven-enforcer-plugin.version>
+    <maven-enforcer-plugin.version>3.7.0</maven-enforcer-plugin.version>
     <maven-failsafe-plugin.version>3.6.1</maven-failsafe-plugin.version>
     <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
     <maven-install-plugin.version>3.2.0</maven-install-plugin.version>
@@ -226,9 +226,7 @@
     <maven-source-plugin.version>3.4.0</maven-source-plugin.version>
     <maven-surefire-plugin.version>3.6.1</maven-surefire-plugin.version>
     <sonar-maven-plugin.version>5.8.0.7211</sonar-maven-plugin.version>
-    <spring-boot.version>4.0.7</spring-boot.version>
-    <!-- AAE-51380 temporary Tomcat version override. Remove when upgrading to Spring Boot 4.1.x -->
-    <tomcat.version>11.0.27</tomcat.version>
+    <spring-boot.version>4.0.9</spring-boot.version>
     <jakarta.el-api.version>6.0.1</jakarta.el-api.version>
     <!-- AAE-44603 temporary security fix (CVE-2025-7962). -->
     <sun-jakarta-mail.version>2.0.2</sun-jakarta-mail.version>
@@ -267,13 +265,6 @@
         <scope>import</scope>
       </dependency>
       <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-framework-bom</artifactId>
-        <version>7.0.9</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
         <version>${spring-boot.version}</version>
@@ -285,42 +276,6 @@
         <groupId>com.sun.mail</groupId>
         <artifactId>jakarta.mail</artifactId>
         <version>${sun-jakarta-mail.version}</version>
-      </dependency>
-      <!-- AAE-46198 temporary Tomcat version overrides. Remove when upgrading to Spring Boot 4.1.x -->
-      <dependency>
-        <groupId>org.apache.tomcat</groupId>
-        <artifactId>tomcat-annotations-api</artifactId>
-        <version>${tomcat.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.tomcat</groupId>
-        <artifactId>tomcat-jdbc</artifactId>
-        <version>${tomcat.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.tomcat</groupId>
-        <artifactId>tomcat-jsp-api</artifactId>
-        <version>${tomcat.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.tomcat.embed</groupId>
-        <artifactId>tomcat-embed-core</artifactId>
-        <version>${tomcat.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.tomcat.embed</groupId>
-        <artifactId>tomcat-embed-el</artifactId>
-        <version>${tomcat.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.tomcat.embed</groupId>
-        <artifactId>tomcat-embed-jasper</artifactId>
-        <version>${tomcat.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.tomcat.embed</groupId>
-        <artifactId>tomcat-embed-websocket</artifactId>
-        <version>${tomcat.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -912,6 +867,19 @@ limitations under the License.
     </plugins>
   </reporting>
   <profiles>
+    <profile>
+      <id>cloudsmith</id>
+      <distributionManagement>
+        <repository>
+          <id>cloudsmith</id>
+          <url>https://maven.cloudsmith.io/${env.CLOUDSMITH_NAMESPACE}/activiti-releases/</url>
+        </repository>
+        <snapshotRepository>
+          <id>cloudsmith</id>
+          <url>https://maven.cloudsmith.io/${env.CLOUDSMITH_NAMESPACE}/activiti-snapshots/</url>
+        </snapshotRepository>
+      </distributionManagement>
+    </profile>
     <!-- Activate integration tests -->
     <profile>
       <id>integration-test</id>
