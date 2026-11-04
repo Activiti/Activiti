@@ -190,10 +190,10 @@ If verification reports a moved upstream reference, investigate the change befor
 
 Requires the following secrets to be set:
 
-| Name                         | Description                        |
-| ---------------------------- | ---------------------------------- |
-| BOT_GITHUB_TOKEN             | Token to launch other builds on GH |
-| BOT_GITHUB_USERNAME          | Username to issue propagation PRs  |
-| NEXUS_USERNAME               | Internal Maven repository username |
-| NEXUS_PASSWORD               | Internal Maven repository password |
-| SLACK_NOTIFICATION_BOT_TOKEN | Token to notify slack on failure   |
+| Name                                | Description                        |
+| ----------------------------------- | ---------------------------------- |
+| BOT_GITHUB_TOKEN                    | Token to launch other builds on GH |
+| BOT_GITHUB_USERNAME                 | Username to issue propagation PRs  |
+| NEXUS_USERNAME                      | Internal Maven repository username |
+| NEXUS_PASSWORD                      | Internal Maven repository password |
+| TEAMS_NOTIFICATION_WORKFLOW_WEBHOOK | Webhook to notify Teams on failure |
