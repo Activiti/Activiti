@@ -26,6 +26,7 @@ jobs:
 
       - name: Verify actions lock
         id: verify
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -42,7 +43,7 @@ jobs:
           exit $exit_code
 
       - name: Comment on PR
-        if: failure() && steps.verify.outcome == 'failure' && github.event.pull_request.head.repo.full_name == github.repository
+        if: ${{ !cancelled() && steps.verify.outcome == 'failure' && github.event.pull_request.head.repo.full_name == github.repository }}
         uses: Alfresco/alfresco-build-tools/.github/actions/github-upsert-comment@v19.11.0
         with:
           comment-identifier: actions-lock-verify
