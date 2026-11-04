@@ -25,7 +25,7 @@ workflows:
         - 'actions/checkout@v7.0.1'
         - 'actions/setup-java@v6.1.0'
         - 'alfresco/alfresco-build-tools@v19.11.0'
-        - 'hyland/github-actions-ensure-sha-pinned-actions@v2.0.1'
+        - 'hyland/github-actions-ensure-sha-pinned-actions@fix/AAE-55457-github-action-lock-option'
     '.github/workflows/main_push.yml':
         - 'actions/cache@v6.1.0'
         - 'actions/checkout@v7.0.1'
@@ -145,6 +145,11 @@ dependencies:
         commit: 'sha1-221ba4f4319de6b8e809d1a15528b3ae6a818aa5'
         owner_id: 9919
         repo_id: 1156386970
+    'hyland/github-actions-ensure-sha-pinned-actions@fix/AAE-55457-github-action-lock-option':
+        ref: 'fix/AAE-55457-github-action-lock-option'
+        commit: 'sha1-6370f523db95af9ad5c0d3ad1f63fd58e03d0671'
+        owner_id: 78936072
+        repo_id: 1076976697
     'hyland/github-actions-ensure-sha-pinned-actions@v2.0.1':
         ref: 'v2.0.1'
         commit: 'sha1-7957efb76aba0eec7580a9c0392d3e5bec381359'
