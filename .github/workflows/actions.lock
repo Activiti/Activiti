@@ -147,7 +147,7 @@ dependencies:
         repo_id: 1156386970
     'hyland/github-actions-ensure-sha-pinned-actions@fix/AAE-55457-github-action-lock-option':
         ref: 'fix/AAE-55457-github-action-lock-option'
-        commit: 'sha1-6370f523db95af9ad5c0d3ad1f63fd58e03d0671'
+        commit: 'sha1-a7f2a5cf9aea7f5354c0861aadb59d4e49198d02'
         owner_id: 78936072
         repo_id: 1076976697
     'hyland/github-actions-ensure-sha-pinned-actions@v2.0.1':
