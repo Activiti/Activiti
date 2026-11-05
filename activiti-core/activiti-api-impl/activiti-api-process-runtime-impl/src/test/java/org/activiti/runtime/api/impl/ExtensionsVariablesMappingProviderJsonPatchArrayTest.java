@@ -17,7 +17,7 @@ package org.activiti.runtime.api.impl;
 
 import static org.activiti.engine.impl.bpmn.behavior.MappingExecutionContext.buildMappingExecutionContext;
 import static org.activiti.runtime.api.impl.ExtensionsVariablesMappingProvider.JSON_PATCH_MAPPING_ERROR;
-import static org.activiti.runtime.api.impl.ExtensionsVariablesMappingProvider.MAX_ARRAY_INDEX_GAP;
+import static org.activiti.runtime.api.impl.LenientJsonPatch.MAX_ARRAY_INDEX;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
@@ -46,6 +46,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import tools.jackson.databind.exc.JsonNodeException;
 import tools.jackson.databind.json.JsonMapper;
 
 @ExtendWith(MockitoExtension.class)
@@ -175,11 +176,11 @@ class ExtensionsVariablesMappingProviderJsonPatchArrayTest {
     }
 
     @Test
-    void should_fillGapsWithNull_when_gapIsAtTheLimit() {
+    void should_fillGapsWithNull_when_indexIsAtTheLimit() {
         Object result = writeAtIndex(
             "writeInitializedChildPropertyArray",
             "initializedChildPropertyArray",
-            MAX_ARRAY_INDEX_GAP,
+            MAX_ARRAY_INDEX,
             "X"
         );
 
@@ -187,14 +188,14 @@ class ExtensionsVariablesMappingProviderJsonPatchArrayTest {
             .asInstanceOf(InstanceOfAssertFactories.map(String.class, Object.class))
             .extractingByKey("documents")
             .asInstanceOf(InstanceOfAssertFactories.LIST)
-            .hasSize(MAX_ARRAY_INDEX_GAP + 1)
+            .hasSize(MAX_ARRAY_INDEX + 1)
             .endsWith("X")
             .containsOnlyOnce("X");
     }
 
     @Test
-    void should_fail_when_arrayIndexIsTooFarBeyondArraySize() {
-        int index = MAX_ARRAY_INDEX_GAP + 1;
+    void should_fail_when_arrayIndexIsBeyondTheLimit() {
+        int index = MAX_ARRAY_INDEX + 1;
 
         assertThatThrownBy(() ->
             writeAtIndex("writeInitializedChildPropertyArray", "initializedChildPropertyArray", index, "X")
@@ -208,9 +209,8 @@ class ExtensionsVariablesMappingProviderJsonPatchArrayTest {
                     index +
                     " in JsonPatch path '/documents/" +
                     index +
-                    "' is out of range: the array has 0 elements and at most " +
-                    MAX_ARRAY_INDEX_GAP +
-                    " missing elements can be filled with null"
+                    "' is out of range: the array has 0 elements and cannot be extended beyond index " +
+                    MAX_ARRAY_INDEX
             );
     }
 
@@ -278,10 +278,9 @@ class ExtensionsVariablesMappingProviderJsonPatchArrayTest {
             .isInstanceOf(ActivitiIllegalArgumentException.class)
             .hasMessage(JSON_PATCH_MAPPING_ERROR)
             .cause()
-            .isInstanceOf(ActivitiIllegalArgumentException.class)
-            .hasMessage(
-                "Cannot apply JsonPatch path '/documents/0': segment 'documents' holds a string value instead of an object or array"
-            );
+            .isInstanceOf(JsonNodeException.class)
+            .hasMessageContaining("Cannot replace `JsonNode` of type `tools.jackson.databind.node.StringNode`")
+            .hasMessageContaining("\"/documents\"");
     }
 
     @Test

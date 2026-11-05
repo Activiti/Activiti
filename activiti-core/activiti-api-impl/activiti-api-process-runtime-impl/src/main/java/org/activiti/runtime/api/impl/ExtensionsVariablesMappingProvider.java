@@ -18,14 +18,11 @@ package org.activiti.runtime.api.impl;
 import static java.util.Collections.emptyMap;
 import static org.activiti.spring.process.model.Mapping.SourceMappingType.VARIABLE;
 
-import com.flipkart.zjsonpatch.Jackson3JsonPatch;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
@@ -48,7 +45,6 @@ import org.activiti.spring.process.variable.VariableParsingService;
 import org.apache.commons.lang3.StringUtils;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
-import tools.jackson.databind.node.ArrayNode;
 import tools.jackson.databind.node.NullNode;
 import tools.jackson.databind.node.ObjectNode;
 
@@ -68,30 +64,9 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
 
     private static final List<String> OUTPUT_CATEGORY = List.of("output", "input/output");
 
-    static final int MAX_ARRAY_INDEX_GAP = 10_000;
-
     private static final String ARRAY_VARIABLE_TYPE = "array";
 
-    private static final String END_OF_ARRAY_TOKEN = "-";
-
-    private static final Pattern ARRAY_INDEX_PATTERN = Pattern.compile("\\d+");
-
-    private static final String OPERATION_FIELD = "op";
-
-    private static final String ADD_OPERATION = "add";
-
-    private static final String REPLACE_OPERATION = "replace";
-
-    private static final String REMOVE_OPERATION = "remove";
-
-    private static final Set<String> CONTAINER_CREATING_OPERATIONS = Set.of(
-        ADD_OPERATION,
-        REPLACE_OPERATION,
-        "move",
-        "copy"
-    );
-
-    private static final Set<String> SET_AT_INDEX_OPERATIONS = Set.of(ADD_OPERATION, REPLACE_OPERATION);
+    private final LenientJsonPatch jsonPatch = new LenientJsonPatch();
 
     public ExtensionsVariablesMappingProvider(
         ProcessExtensionService processExtensionService,
@@ -230,8 +205,10 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
             JsonNode patchNode = jsonMapper.convertValue(changesToApply, JsonNode.class);
             replaceVariablesInJsonPath(patchNode, execution, extensions);
 
-            JsonNode oldNode = toRootNode(processVariableCurrentValue, variableDefinition, patchNode);
-            JsonNode patchedNode = applyPatch(oldNode, patchNode);
+            JsonNode patchedNode = jsonPatch.apply(
+                toRootNode(processVariableCurrentValue, variableDefinition),
+                patchNode
+            );
 
             return Optional.ofNullable(jsonMapper.treeToValue(patchedNode, Object.class));
         } catch (Exception e) {
@@ -239,50 +216,16 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
         }
     }
 
-    private JsonNode applyPatch(JsonNode document, JsonNode patchNode) {
-        if (!patchNode.isArray()) {
-            return Jackson3JsonPatch.apply(patchNode, document);
+    private JsonNode toRootNode(Object currentValue, VariableDefinition variableDefinition) {
+        JsonNode currentNode = jsonMapper.valueToTree(currentValue);
+        if (currentNode != null && currentNode.isContainer()) {
+            return currentNode;
         }
-        JsonNode result = document;
-        for (JsonNode operation : patchNode) {
-            if (prepareOperation(result, operation)) {
-                result = Jackson3JsonPatch.apply(jsonMapper.createArrayNode().add(operation), result);
-            }
-        }
-        return result;
-    }
-
-    private JsonNode toRootNode(Object currentValue, VariableDefinition variableDefinition, JsonNode patchNode) {
-        if (isContainerVariable(currentValue)) {
-            return jsonMapper.convertValue(currentValue, JsonNode.class);
-        }
-        if (isArrayVariable(variableDefinition) || isArrayToken(firstPathSegment(patchNode))) {
-            return jsonMapper.createArrayNode();
-        }
-        return jsonMapper.createObjectNode();
-    }
-
-    private boolean isContainerVariable(Object variable) {
-        return (
-            (variable instanceof JsonNode jsonNode && jsonNode.isContainer()) ||
-            variable instanceof Map ||
-            variable instanceof Collection
-        );
+        return isArrayVariable(variableDefinition) ? jsonMapper.createArrayNode() : jsonMapper.createObjectNode();
     }
 
     private boolean isArrayVariable(VariableDefinition variableDefinition) {
         return variableDefinition != null && ARRAY_VARIABLE_TYPE.equalsIgnoreCase(variableDefinition.getType());
-    }
-
-    private String firstPathSegment(JsonNode patchNode) {
-        for (JsonNode patch : patchNode) {
-            String path = textField(patch, "path");
-            if (path != null) {
-                String[] segments = path.split("/", -1);
-                return segments.length > 1 ? segments[1] : null;
-            }
-        }
-        return null;
     }
 
     private void replaceVariablesInJsonPath(JsonNode patchNode, DelegateExecution execution, Extension extensions) {
@@ -355,142 +298,6 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
                 type
             )
         );
-    }
-
-    private boolean prepareOperation(JsonNode document, JsonNode operation) {
-        String op = textField(operation, OPERATION_FIELD);
-        String path = textField(operation, "path");
-        if (op == null || path == null || !path.startsWith("/")) {
-            return true;
-        }
-        if (REMOVE_OPERATION.equals(op)) {
-            return !document.at(path).isMissingNode();
-        }
-        if (!CONTAINER_CREATING_OPERATIONS.contains(op)) {
-            return true;
-        }
-
-        String[] segments = path.split("/", -1);
-        JsonNode parent = document;
-        for (int i = 1; i < segments.length - 1; i++) {
-            parent = getOrCreateContainer(parent, segments[i], segments[i + 1], path);
-        }
-
-        String lastSegment = segments[segments.length - 1];
-        if (SET_AT_INDEX_OPERATIONS.contains(op) && parent instanceof ArrayNode arrayNode) {
-            prepareSetAtIndex((ObjectNode) operation, arrayNode, lastSegment, path);
-        } else if (
-            REPLACE_OPERATION.equals(op) &&
-            parent instanceof ObjectNode objectNode &&
-            !objectNode.has(unescapeJsonPointerSegment(lastSegment))
-        ) {
-            ((ObjectNode) operation).put(OPERATION_FIELD, ADD_OPERATION);
-        }
-        return true;
-    }
-
-    private String textField(JsonNode node, String fieldName) {
-        JsonNode field = node.get(fieldName);
-        return field != null && field.isString() ? field.asString() : null;
-    }
-
-    private JsonNode getOrCreateContainer(JsonNode parent, String segment, String nextSegment, String path) {
-        JsonNode child;
-        if (parent instanceof ArrayNode arrayNode) {
-            int index = parseArrayIndex(segment, arrayNode, path);
-            padWithNulls(arrayNode, index + 1);
-            child = arrayNode.get(index);
-            if (child.isNull()) {
-                child = createContainerFor(nextSegment);
-                arrayNode.set(index, child);
-            }
-        } else {
-            ObjectNode objectNode = (ObjectNode) parent;
-            String key = unescapeJsonPointerSegment(segment);
-            child = objectNode.get(key);
-            if (child == null || child.isNull()) {
-                child = createContainerFor(nextSegment);
-                objectNode.set(key, child);
-            }
-        }
-
-        if (!child.isContainer()) {
-            throw new ActivitiIllegalArgumentException(
-                String.format(
-                    "Cannot apply JsonPatch path '%s': segment '%s' holds a %s value instead of an object or array",
-                    path,
-                    segment,
-                    child.getNodeType().name().toLowerCase(Locale.ROOT)
-                )
-            );
-        }
-        return child;
-    }
-
-    private void prepareSetAtIndex(ObjectNode operation, ArrayNode arrayNode, String segment, String path) {
-        if (END_OF_ARRAY_TOKEN.equals(segment)) {
-            return;
-        }
-        int index = parseArrayIndex(segment, arrayNode, path);
-        padWithNulls(arrayNode, index + 1);
-        operation.put(OPERATION_FIELD, REPLACE_OPERATION);
-    }
-
-    private int parseArrayIndex(String segment, ArrayNode arrayNode, String path) {
-        int index = toArrayIndex(segment);
-        if (index < 0) {
-            throw new ActivitiIllegalArgumentException(
-                String.format(
-                    "Invalid array index '%s' in JsonPatch path '%s': expected a non-negative integer",
-                    segment,
-                    path
-                )
-            );
-        }
-
-        if (index - arrayNode.size() > MAX_ARRAY_INDEX_GAP) {
-            throw new ActivitiIllegalArgumentException(
-                String.format(
-                    "Array index %d in JsonPatch path '%s' is out of range: the array has %d elements and at most %d missing elements can be filled with null",
-                    index,
-                    path,
-                    arrayNode.size(),
-                    MAX_ARRAY_INDEX_GAP
-                )
-            );
-        }
-        return index;
-    }
-
-    private int toArrayIndex(String segment) {
-        if (!ARRAY_INDEX_PATTERN.matcher(segment).matches()) {
-            return -1;
-        }
-        try {
-            return Integer.parseInt(segment);
-        } catch (NumberFormatException _) {
-            return -1;
-        }
-    }
-
-    private void padWithNulls(ArrayNode arrayNode, int size) {
-        while (arrayNode.size() < size) {
-            arrayNode.addNull();
-        }
-    }
-
-    private JsonNode createContainerFor(String nextSegment) {
-        return isArrayToken(nextSegment) ? jsonMapper.createArrayNode() : jsonMapper.createObjectNode();
-    }
-
-    private boolean isArrayToken(String segment) {
-        return (
-            segment != null && (END_OF_ARRAY_TOKEN.equals(segment) || ARRAY_INDEX_PATTERN.matcher(segment).matches())
-        );
-    }
-
-    private String unescapeJsonPointerSegment(String segment) {
-        return segment.replace("~1", "/").replace("~0", "~");
     }
 
     public Map<String, Object> calculateOutPutVariables(
