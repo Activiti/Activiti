@@ -44,7 +44,8 @@ public class AssignmentDefinition {
 
     public enum AssignmentMode {
         SEQUENTIAL("sequential"),
-        MANUAL("manual");
+        MANUAL("manual"),
+        LEAST_LOADED("least_loaded");
 
         private String mode;
 

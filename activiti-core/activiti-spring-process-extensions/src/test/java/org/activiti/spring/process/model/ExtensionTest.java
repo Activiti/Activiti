@@ -17,6 +17,7 @@ package org.activiti.spring.process.model;
 
 import static org.activiti.spring.process.model.AssignmentDefinition.AssignmentEnum.ASSIGNEE;
 import static org.activiti.spring.process.model.AssignmentDefinition.AssignmentEnum.CANDIDATES;
+import static org.activiti.spring.process.model.AssignmentDefinition.AssignmentMode.LEAST_LOADED;
 import static org.activiti.spring.process.model.AssignmentDefinition.AssignmentMode.MANUAL;
 import static org.activiti.spring.process.model.AssignmentDefinition.AssignmentMode.SEQUENTIAL;
 import static org.activiti.spring.process.model.AssignmentDefinition.AssignmentType.EXPRESSION;
@@ -250,12 +251,14 @@ class ExtensionTest {
 
             //then
             assertThat(assignments)
-                .hasSize(3)
+                .hasSize(4)
                 .containsValues(
                     new AssignmentDefinition("1", ASSIGNEE, STATIC, MANUAL),
                     new AssignmentDefinition("2", CANDIDATES, IDENTITY, MANUAL),
-                    new AssignmentDefinition("3", CANDIDATES, EXPRESSION, SEQUENTIAL)
+                    new AssignmentDefinition("3", CANDIDATES, EXPRESSION, SEQUENTIAL),
+                    new AssignmentDefinition("4", CANDIDATES, IDENTITY, LEAST_LOADED)
                 );
+            assertThat(assignments.get("task-4").getMode()).isEqualTo(LEAST_LOADED);
             assertThat(assignments.get("task-1").isAllowSelfService()).isNull();
         }
     }
