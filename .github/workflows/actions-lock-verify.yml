@@ -1,0 +1,60 @@
+name: Verify Actions Lock
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+    paths:
+      - ".github/workflows/**"
+      - ".github/actions/**"
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Verify actions lock
+        id: verify
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set +e
+          gh extension install github/gh-actions-lock
+          gh actions-lock --verify --no-interactive > verify-output.txt 2>&1
+          exit_code=$?
+          cat verify-output.txt
+          {
+            echo "output<<EOF_ACTIONS_LOCK"
+            cat verify-output.txt
+            echo "EOF_ACTIONS_LOCK"
+          } >> "$GITHUB_OUTPUT"
+          exit $exit_code
+
+      - name: Comment on PR
+        if: ${{ !cancelled() && steps.verify.outcome == 'failure' && github.event.pull_request.head.repo.full_name == github.repository }}
+        uses: Alfresco/alfresco-build-tools/.github/actions/github-upsert-comment@v19.11.0
+        with:
+          comment-identifier: actions-lock-verify
+          comment-body: |
+            ## ❌ GitHub Actions lockfile verification failed
+
+            `gh actions-lock --verify` reported problems with `.github/workflows/actions.lock`.
+
+            ```
+            ${{ steps.verify.outputs.output }}
+            ```
+
+            Run `gh actions-lock` locally to fix and commit the updated lockfile.
+            See https://gh.io/actions-lockfile for details.
