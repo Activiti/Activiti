@@ -61,4 +61,8 @@ public interface IntegrationContext {
     <T> T getOutBoundVariable(String name, Class<T> type);
 
     boolean hasEphemeralVariables();
+
+    default ExternalizedContextReference getExternalizedContextReference() {
+        return null;
+    }
 }
