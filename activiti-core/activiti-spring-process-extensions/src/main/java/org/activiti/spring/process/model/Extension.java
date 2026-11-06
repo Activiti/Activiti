@@ -29,6 +29,7 @@ public class Extension {
     private Map<String, ProcessConstantsMapping> constants = new HashMap<>();
     private TemplatesDefinition templates = new TemplatesDefinition();
     private Map<String, AssignmentDefinition> assignments = new HashMap<>();
+    private Map<String, String> serviceTaskTypes = new HashMap<>();
 
     public Map<String, VariableDefinition> getProperties() {
         return properties;
@@ -92,6 +93,18 @@ public class Extension {
 
     public boolean hasMapping(String taskId) {
         return mappings.get(taskId) != null;
+    }
+
+    public Map<String, String> getServiceTaskTypes() {
+        return serviceTaskTypes;
+    }
+
+    public void setServiceTaskTypes(Map<String, String> serviceTaskTypes) {
+        this.serviceTaskTypes = serviceTaskTypes;
+    }
+
+    public String getServiceTaskType(String elementId) {
+        return serviceTaskTypes != null ? serviceTaskTypes.get(elementId) : null;
     }
 
     public boolean shouldMapAllInputs(String elementId) {
