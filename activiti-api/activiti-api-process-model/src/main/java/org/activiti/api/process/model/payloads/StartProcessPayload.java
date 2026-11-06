@@ -27,6 +27,7 @@ public class StartProcessPayload implements Payload {
     private String processDefinitionKey;
     private String name;
     private String businessKey;
+    private String correlationId;
     private Map<String, Object> variables = new HashMap<>();
     private String linkedProcessInstanceId;
     private String linkedProcessInstanceType;
@@ -65,6 +66,14 @@ public class StartProcessPayload implements Payload {
 
     public String getBusinessKey() {
         return businessKey;
+    }
+
+    public String getCorrelationId() {
+        return correlationId;
+    }
+
+    public void setCorrelationId(String correlationId) {
+        this.correlationId = correlationId;
     }
 
     public Map<String, Object> getVariables() {
