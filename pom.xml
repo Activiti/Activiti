@@ -1059,11 +1059,20 @@ limitations under the License.
     </repository>
     <repository>
       <id>activiti-releases</id>
-      <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-releases</url>
+      <url>https://dl.cloudsmith.io/basic/hyland/activiti-releases/maven/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
     </repository>
     <repository>
       <id>activiti-snapshots</id>
-      <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-snapshots</url>
+      <url>https://dl.cloudsmith.io/basic/hyland/activiti-snapshots/maven/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
       <snapshots>
         <enabled>true</enabled>
       </snapshots>
