@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test" id="model-a1fef4b2-2eea-4f7b-8a24-cae00906681f" name="childParent" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+  <bpmn2:process id="parentProcessErrorBoundary" name="parentProcessErrorBoundary" isExecutable="true">
+    <bpmn2:startEvent id="Event_1">
+      <bpmn2:outgoing>Flow_0ljw0vh</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:callActivity id="Activity_1w8vukd" calledElement="childProcessErrorBoundary">
+      <bpmn2:incoming>Flow_0ljw0vh</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0a47a3n</bpmn2:outgoing>
+    </bpmn2:callActivity>
+    <bpmn2:sequenceFlow id="Flow_0ljw0vh" sourceRef="Event_1" targetRef="Activity_1w8vukd"></bpmn2:sequenceFlow>
+    <bpmn2:endEvent id="Event_0oe1klc">
+      <bpmn2:incoming>Flow_0a47a3n</bpmn2:incoming>
+      <bpmn2:incoming>Flow_15q890t</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="Flow_0a47a3n" sourceRef="Activity_1w8vukd" targetRef="Event_0oe1klc"></bpmn2:sequenceFlow>
+    <bpmn2:boundaryEvent id="Event_032aj1u" attachedToRef="Activity_1w8vukd">
+      <bpmn2:outgoing>Flow_0dcmjah</bpmn2:outgoing>
+      <errorEventDefinition></errorEventDefinition>
+    </bpmn2:boundaryEvent>
+    <bpmn2:userTask id="Activity_0i0ai32" name="Error Handler Task" activiti:assignee="${initiator}" activiti:formKey="form-91382149-09df-49c1-972d-16fce2e4d407" activiti:priority="0">
+      <bpmn2:incoming>Flow_0dcmjah</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_15q890t</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:sequenceFlow id="Flow_0dcmjah" sourceRef="Event_032aj1u" targetRef="Activity_0i0ai32"></bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="Flow_15q890t" sourceRef="Activity_0i0ai32" targetRef="Event_0oe1klc"></bpmn2:sequenceFlow>
+  </bpmn2:process>
+  <error id="parentError1" name="Parent Error" errorCode="PARENT_500"></error>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_parentProcessErrorBoundary">
+    <bpmndi:BPMNPlane bpmnElement="parentProcessErrorBoundary" id="BPMNPlane_parentProcessErrorBoundary">
+      <bpmndi:BPMNShape bpmnElement="Event_1" id="BPMNShape_Event_1">
+        <omgdc:Bounds height="36.0" width="36.0" x="332.0" y="240.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Activity_1w8vukd" id="BPMNShape_Activity_1w8vukd">
+        <omgdc:Bounds height="80.0" width="100.0" x="470.0" y="218.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Event_0oe1klc" id="BPMNShape_Event_0oe1klc">
+        <omgdc:Bounds height="36.0" width="36.0" x="652.0" y="240.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Activity_0i0ai32" id="BPMNShape_Activity_0i0ai32">
+        <omgdc:Bounds height="80.0" width="100.0" x="580.0" y="110.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Event_032aj1u" id="BPMNShape_Event_032aj1u">
+        <omgdc:Bounds height="36.0" width="36.0" x="512.0" y="200.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="Flow_0ljw0vh" id="BPMNEdge_Flow_0ljw0vh">
+        <omgdi:waypoint x="368.0" y="258.0"></omgdi:waypoint>
+        <omgdi:waypoint x="419.0" y="258.0"></omgdi:waypoint>
+        <omgdi:waypoint x="419.0" y="250.0"></omgdi:waypoint>
+        <omgdi:waypoint x="470.0" y="250.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_0a47a3n" id="BPMNEdge_Flow_0a47a3n">
+        <omgdi:waypoint x="570.0" y="258.0"></omgdi:waypoint>
+        <omgdi:waypoint x="652.0" y="258.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_0dcmjah" id="BPMNEdge_Flow_0dcmjah">
+        <omgdi:waypoint x="530.0" y="200.0"></omgdi:waypoint>
+        <omgdi:waypoint x="530.0" y="150.0"></omgdi:waypoint>
+        <omgdi:waypoint x="580.0" y="150.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_15q890t" id="BPMNEdge_Flow_15q890t">
+        <omgdi:waypoint x="630.0" y="190.0"></omgdi:waypoint>
+        <omgdi:waypoint x="630.0" y="215.0"></omgdi:waypoint>
+        <omgdi:waypoint x="670.0" y="215.0"></omgdi:waypoint>
+        <omgdi:waypoint x="670.0" y="240.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

@@ -1,0 +1,26 @@
+{
+  "id": "errorEventSubProcessOutputMapping",
+  "name": "testErrorEventSubProcessOutputMapping.bpmn20.xml",
+  "extensions": {
+    "errorEventSubProcessOutputMapping": {
+      "properties": {
+        "subProcessError": {
+          "id": "subProcessError",
+          "name": "subProcessError",
+          "type": "json",
+          "value": ""
+        }
+      },
+      "mappings": {
+        "errorStartEvent": {
+          "outputs": {
+            "subProcessError": {
+              "type": "variable",
+              "value": "error"
+            }
+          }
+        }
+      }
+    }
+  }
+}

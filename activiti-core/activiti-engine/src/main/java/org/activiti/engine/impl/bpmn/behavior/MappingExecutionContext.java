@@ -36,6 +36,12 @@ public class MappingExecutionContext {
         this.activityId = activityId;
     }
 
+    public MappingExecutionContext(DelegateExecution delegateExecution, String activityId) {
+        this.processDefinitionId = delegateExecution.getProcessDefinitionId();
+        this.activityId = activityId;
+        this.execution = delegateExecution;
+    }
+
     public MappingExecutionContext(DelegateExecution delegateExecution, DelegateExecution subProcessExecution) {
         this.processDefinitionId = delegateExecution.getProcessDefinitionId();
         this.activityId = delegateExecution.getCurrentActivityId();
@@ -76,6 +82,13 @@ public class MappingExecutionContext {
 
     public static MappingExecutionContext buildMappingExecutionContext(String processDefinitionId, String activityId) {
         return new MappingExecutionContext(processDefinitionId, activityId);
+    }
+
+    public static MappingExecutionContext buildMappingExecutionContext(
+        DelegateExecution delegateExecution,
+        String activityId
+    ) {
+        return new MappingExecutionContext(delegateExecution, activityId);
     }
 
     @Override

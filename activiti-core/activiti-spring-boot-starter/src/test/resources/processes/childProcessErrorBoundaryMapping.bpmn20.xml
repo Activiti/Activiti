@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test" id="model-3dfb337f-a412-43f8-aabc-dcb29e715742" name="child" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+  <bpmn2:process id="childProcessErrorBoundary" name="child" isExecutable="true">
+    <bpmn2:startEvent id="Event_1">
+      <bpmn2:outgoing>Flow_00kzruy</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:sequenceFlow id="Flow_00kzruy" sourceRef="Event_1" targetRef="Event_05yx0cq"></bpmn2:sequenceFlow>
+    <bpmn2:endEvent id="Event_05yx0cq">
+      <bpmn2:incoming>Flow_00kzruy</bpmn2:incoming>
+      <errorEventDefinition errorRef="childError1"></errorEventDefinition>
+    </bpmn2:endEvent>
+  </bpmn2:process>
+  <error id="childError1" name="Child Not Found" errorCode="CHILD_404"></error>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Process_childProcessErrorBoundary">
+    <bpmndi:BPMNPlane bpmnElement="childProcessErrorBoundary" id="BPMNPlane_PchildProcessErrorBoundary">
+      <bpmndi:BPMNShape bpmnElement="Event_1" id="BPMNShape_Event_1">
+        <omgdc:Bounds height="36.0" width="36.0" x="412.0" y="240.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Event_05yx0cq" id="BPMNShape_Event_05yx0cq">
+        <omgdc:Bounds height="36.0" width="36.0" x="612.0" y="240.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="Flow_00kzruy" id="BPMNEdge_Flow_00kzruy">
+        <omgdi:waypoint x="448.0" y="258.0"></omgdi:waypoint>
+        <omgdi:waypoint x="612.0" y="258.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>
