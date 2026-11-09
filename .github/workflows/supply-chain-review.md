@@ -8,7 +8,7 @@ permissions:
   contents: read
   pull-requests: read
 
-model: gpt-5-mini
+model: gpt-6-luna
 engine:
   id: copilot
 tools:
@@ -39,7 +39,7 @@ safe-outputs:
     supersede-older-reviews: true
   dismiss-pull-request-review:
 
-source: Alfresco/alfresco-build-tools/.github/workflows/supply-chain-review.md@599eebd2a1b84e76d540e41036520df3a64c7cbd
+source: Alfresco/alfresco-build-tools/.github/workflows/supply-chain-review.md@64d172fbbdaef947b1bacc9871e57ede508a245c
 ---
 
 # Supply Chain Review
