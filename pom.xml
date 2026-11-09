@@ -203,7 +203,7 @@
     <extra-enforcer-rules.version>1.12.1</extra-enforcer-rules.version>
     <jacoco-maven-plugin.version>0.8.16</jacoco-maven-plugin.version>
     <license-maven-plugin.version>5.1.2</license-maven-plugin.version>
-    <third-party-license-maven-plugin.version>2.7.1</third-party-license-maven-plugin.version>
+    <third-party-license-maven-plugin.version>2.8.0</third-party-license-maven-plugin.version>
     <maven-antrun-plugin.version>3.2.0</maven-antrun-plugin.version>
     <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
     <checkstyle.version>14.4.0</checkstyle.version>
