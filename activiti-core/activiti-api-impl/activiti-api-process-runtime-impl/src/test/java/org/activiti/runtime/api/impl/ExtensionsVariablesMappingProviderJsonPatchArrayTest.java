@@ -174,11 +174,13 @@ class ExtensionsVariablesMappingProviderJsonPatchArrayTest {
 
     @Test
     void should_throwJsonPatchMappingError_when_indexVariableIsNegative() {
+        Object currentValue = defaultValueOf("initializedChildPropertyArray");
+
         assertThatThrownBy(() ->
             runOutputMapping(
                 "writeInitializedChildPropertyArray",
                 "initializedChildPropertyArray",
-                defaultValueOf("initializedChildPropertyArray"),
+                currentValue,
                 -1,
                 "X"
             )
