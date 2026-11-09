@@ -2,38 +2,6 @@
   "description": "",
   "extensions": {
     "Process_1790951452242": {
-      "constants": {
-        "Activity_0qybw1n": {
-          "_activiti_script_": {
-            "value": "mapping-only-script-5ehik"
-          }
-        },
-        "Activity_1j6z3j0": {
-          "_activiti_script_": {
-            "value": "mapping-only-script-5ehik"
-          }
-        },
-        "Activity_4e3t3s6": {
-          "_activiti_script_": {
-            "value": "mapping-only-script-5ehik"
-          }
-        },
-        "Activity_54i6m43": {
-          "_activiti_script_": {
-            "value": "mapping-only-script-5ehik"
-          }
-        },
-        "Activity_693x2x4": {
-          "_activiti_script_": {
-            "value": "mapping-only-script-5ehik"
-          }
-        },
-        "Activity_1x64492": {
-          "_activiti_script_": {
-            "value": "mapping-only-script-5ehik"
-          }
-        }
-      },
       "mappings": {
         "Activity_0qybw1n": {
           "inputs": {
@@ -302,19 +270,6 @@
             "E",
             "F"
           ],
-          "description": "",
-          "category": "local"
-        },
-        "43be863f-361c-47d8-ba4a-117a0dae14b2": {
-          "id": "43be863f-361c-47d8-ba4a-117a0dae14b2",
-          "name": "jsonInitializedEmptyArray",
-          "type": "json",
-          "model": {
-            "$ref": "#/$defs/primitive/json"
-          },
-          "required": false,
-          "ephemeral": false,
-          "value": [],
           "description": "",
           "category": "local"
         }

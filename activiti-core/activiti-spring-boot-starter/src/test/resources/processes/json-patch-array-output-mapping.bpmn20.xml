@@ -23,7 +23,7 @@
       <bpmn2:endEvent id="Event_1yt3ztg">
         <bpmn2:incoming>Flow_08oqcr1</bpmn2:incoming>
       </bpmn2:endEvent>
-      <bpmn2:serviceTask id="Activity_0qybw1n" name="Map to array" implementation="script.EXECUTE">
+      <bpmn2:serviceTask id="Activity_0qybw1n" name="Map to array" implementation="exampleConnector.MAP">
         <bpmn2:incoming>Flow_0k3kpjw</bpmn2:incoming>
         <bpmn2:outgoing>Flow_08oqcr1</bpmn2:outgoing>
       </bpmn2:serviceTask>
@@ -41,7 +41,7 @@
       <bpmn2:endEvent id="Event_1254pln">
         <bpmn2:incoming>Flow_1s0skri</bpmn2:incoming>
       </bpmn2:endEvent>
-      <bpmn2:serviceTask id="Activity_1j6z3j0" name="Map to array" implementation="script.EXECUTE">
+      <bpmn2:serviceTask id="Activity_1j6z3j0" name="Map to array" implementation="exampleConnector.MAP">
         <bpmn2:incoming>Flow_0isaait</bpmn2:incoming>
         <bpmn2:outgoing>Flow_1s0skri</bpmn2:outgoing>
       </bpmn2:serviceTask>
@@ -58,7 +58,7 @@
       <bpmn2:endEvent id="Event_11cnzwo">
         <bpmn2:incoming>Flow_1vclzsr</bpmn2:incoming>
       </bpmn2:endEvent>
-      <bpmn2:serviceTask id="Activity_4e3t3s6" name="Map to array" implementation="script.EXECUTE">
+      <bpmn2:serviceTask id="Activity_4e3t3s6" name="Map to array" implementation="exampleConnector.MAP">
         <bpmn2:incoming>Flow_0n2tg9l</bpmn2:incoming>
         <bpmn2:outgoing>Flow_1vclzsr</bpmn2:outgoing>
       </bpmn2:serviceTask>
@@ -75,7 +75,7 @@
       <bpmn2:endEvent id="Event_0milivu">
         <bpmn2:incoming>Flow_1rammmz</bpmn2:incoming>
       </bpmn2:endEvent>
-      <bpmn2:serviceTask id="Activity_54i6m43" name="Map to array" implementation="script.EXECUTE">
+      <bpmn2:serviceTask id="Activity_54i6m43" name="Map to array" implementation="exampleConnector.MAP">
         <bpmn2:incoming>Flow_1ugz3yz</bpmn2:incoming>
         <bpmn2:outgoing>Flow_1rammmz</bpmn2:outgoing>
       </bpmn2:serviceTask>
@@ -108,7 +108,7 @@
       <bpmn2:endEvent id="Event_1co69y5">
         <bpmn2:incoming>Flow_0y1jgzt</bpmn2:incoming>
       </bpmn2:endEvent>
-      <bpmn2:serviceTask id="Activity_693x2x4" name="Map to array" implementation="script.EXECUTE">
+      <bpmn2:serviceTask id="Activity_693x2x4" name="Map to array" implementation="exampleConnector.MAP">
         <bpmn2:incoming>Flow_0xgk5cu</bpmn2:incoming>
         <bpmn2:outgoing>Flow_0y1jgzt</bpmn2:outgoing>
       </bpmn2:serviceTask>
@@ -125,7 +125,7 @@
       <bpmn2:endEvent id="Event_0xehm51">
         <bpmn2:incoming>Flow_163cquc</bpmn2:incoming>
       </bpmn2:endEvent>
-      <bpmn2:serviceTask id="Activity_1x64492" name="Map to array" implementation="script.EXECUTE">
+      <bpmn2:serviceTask id="Activity_1x64492" name="Map to array" implementation="exampleConnector.MAP">
         <bpmn2:incoming>Flow_194pnkk</bpmn2:incoming>
         <bpmn2:outgoing>Flow_163cquc</bpmn2:outgoing>
       </bpmn2:serviceTask>

@@ -141,6 +141,13 @@ class ExtensionsVariablesMappingProviderJsonPatchArrayTest {
     }
 
     @Test
+    void should_keepJsonVariableAsArray_when_jsonVariableIsInitializedAsEmptyArray() {
+        Object result = simulateParallelIndexedWrites("writeJsonInitializedEmptyArray", "jsonInitializedEmptyArray");
+
+        assertThat(result).isEqualTo(ARRAY_TO_LOOP_OVER);
+    }
+
+    @Test
     void should_storeEachItemAtItsIndex_when_writesCompleteOutOfOrder() {
         Object childArrayResult = simulateParallelIndexedWrites(
             "writeUninitializedChildPropertyArray",

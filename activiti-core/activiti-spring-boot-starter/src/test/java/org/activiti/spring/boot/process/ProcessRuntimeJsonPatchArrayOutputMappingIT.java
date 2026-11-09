@@ -41,10 +41,10 @@ import tools.jackson.databind.json.JsonMapper;
 class ProcessRuntimeJsonPatchArrayOutputMappingIT {
 
     @TestConfiguration
-    static class EmptyScriptConfiguration {
+    static class ExampleConnectorConfiguration {
 
-        @Bean(name = "script.EXECUTE")
-        Connector emptyScriptConnector() {
+        @Bean(name = "exampleConnector.MAP")
+        Connector exampleConnector() {
             return integrationContext -> {
                 integrationContext.addOutBoundVariables(integrationContext.getInBoundVariables());
                 return integrationContext;

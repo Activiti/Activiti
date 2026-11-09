@@ -53,6 +53,13 @@
           "type": "array",
           "required": false,
           "value": ["A", "B", "C", "D", "E", "F"]
+        },
+        "json-initialized-empty-array-id": {
+          "id": "json-initialized-empty-array-id",
+          "name": "jsonInitializedEmptyArray",
+          "type": "json",
+          "required": false,
+          "value": []
         }
       },
       "mappings": {
@@ -129,6 +136,20 @@
         "writeAlreadyPopulatedArray": {
           "outputs": {
             "alreadyPopulatedArray": {
+              "type": "JSONPATCH",
+              "value": [
+                {
+                  "op": "add",
+                  "path": "/${arrayIndex}",
+                  "value": "${item}"
+                }
+              ]
+            }
+          }
+        },
+        "writeJsonInitializedEmptyArray": {
+          "outputs": {
+            "jsonInitializedEmptyArray": {
               "type": "JSONPATCH",
               "value": [
                 {
