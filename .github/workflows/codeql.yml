@@ -39,7 +39,7 @@ jobs:
     steps:
       - name: Check dependabot build
         if: github.secret_source == 'Dependabot' || (github.secret_source == 'None' && github.event.action != 'milestoned')
-        uses: Alfresco/alfresco-build-tools/.github/actions/github-require-secrets@482401ef42e6503cfa54d5873f1a768a0ecb3e0e # v19.11.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/github-require-secrets@2cebc8f19812b2653361d82e86b25f29cfa4a144 # v19.12.1
         with:
           dependabot-error-message: "This PR requires additional validation, please set the milestone to 'Validating' or ask a reviewer to approve it."
           none-error-message: "This PR requires additional validation, please set the milestone to 'Validating'."
@@ -79,19 +79,19 @@ jobs:
             ${{ runner.os }}-maven-
 
       - name: Set up JDK 25
-        uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78 # v6.2.0
         with:
           java-version: "25"
           distribution: "corretto"
 
       - name: Set up Maven ${{ env.MAVEN_VERSION }}
-        uses: Alfresco/alfresco-build-tools/.github/actions/setup-maven@482401ef42e6503cfa54d5873f1a768a0ecb3e0e # v19.11.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/setup-maven@2cebc8f19812b2653361d82e86b25f29cfa4a144 # v19.12.1
         with:
           version: ${{ env.MAVEN_VERSION }}
 
       # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4.39.1
+        uses: github/codeql-action/init@33d7b85da1a04171e211befe2c739303b9a4c066 # v4.39.3
         with:
           languages: ${{ matrix.language }}
           # If you wish to specify custom queries, you can do so here or in a config file.
@@ -126,6 +126,6 @@ jobs:
       #     ./location_of_script_within_repo/buildscript.sh
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4.39.1
+        uses: github/codeql-action/analyze@33d7b85da1a04171e211befe2c739303b9a4c066 # v4.39.3
         with:
           category: "/language:${{matrix.language}}"
