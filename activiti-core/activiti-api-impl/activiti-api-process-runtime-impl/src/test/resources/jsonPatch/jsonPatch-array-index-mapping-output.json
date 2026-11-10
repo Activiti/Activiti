@@ -1,0 +1,168 @@
+{
+  "id": "arrayOutputMapping",
+  "extensions": {
+    "Process_jsonPatchArrayIndexMappingOutput": {
+      "properties": {
+        "array-index-id": {
+          "id": "array-index-id",
+          "name": "arrayIndex",
+          "type": "integer",
+          "required": false,
+          "value": 0
+        },
+        "uninitialized-child-property-array-id": {
+          "id": "uninitialized-child-property-array-id",
+          "name": "uninitializedChildPropertyArray",
+          "type": "json",
+          "required": false
+        },
+        "initialized-child-property-array-id": {
+          "id": "initialized-child-property-array-id",
+          "name": "initializedChildPropertyArray",
+          "type": "json",
+          "required": false,
+          "value": {
+            "documents": []
+          }
+        },
+        "uninitialized-array-id": {
+          "id": "uninitialized-array-id",
+          "name": "uninitializedArray",
+          "type": "array",
+          "required": false
+        },
+        "initialized-array-id": {
+          "id": "initialized-array-id",
+          "name": "initializedArray",
+          "type": "array",
+          "required": false,
+          "value": []
+        },
+        "already-populated-child-property-array-id": {
+          "id": "already-populated-child-property-array-id",
+          "name": "alreadyPopulatedChildPropertyArray",
+          "type": "json",
+          "required": false,
+          "value": {
+            "documents": ["A", "B", "C", "D", "E"]
+          }
+        },
+        "already-populated-array-id": {
+          "id": "already-populated-array-id",
+          "name": "alreadyPopulatedArray",
+          "type": "array",
+          "required": false,
+          "value": ["A", "B", "C", "D", "E", "F"]
+        },
+        "json-initialized-empty-array-id": {
+          "id": "json-initialized-empty-array-id",
+          "name": "jsonInitializedEmptyArray",
+          "type": "json",
+          "required": false,
+          "value": []
+        }
+      },
+      "mappings": {
+        "writeUninitializedChildPropertyArray": {
+          "outputs": {
+            "uninitializedChildPropertyArray": {
+              "type": "JSONPATCH",
+              "value": [
+                {
+                  "op": "add",
+                  "path": "/documents/${arrayIndex}",
+                  "value": "${item}"
+                }
+              ]
+            }
+          }
+        },
+        "writeInitializedChildPropertyArray": {
+          "outputs": {
+            "initializedChildPropertyArray": {
+              "type": "JSONPATCH",
+              "value": [
+                {
+                  "op": "add",
+                  "path": "/documents/${arrayIndex}",
+                  "value": "${item}"
+                }
+              ]
+            }
+          }
+        },
+        "writeUninitializedArray": {
+          "outputs": {
+            "uninitializedArray": {
+              "type": "JSONPATCH",
+              "value": [
+                {
+                  "op": "add",
+                  "path": "/${arrayIndex}",
+                  "value": "${item}"
+                }
+              ]
+            }
+          }
+        },
+        "writeInitializedArray": {
+          "outputs": {
+            "initializedArray": {
+              "type": "JSONPATCH",
+              "value": [
+                {
+                  "op": "add",
+                  "path": "/${arrayIndex}",
+                  "value": "${item}"
+                }
+              ]
+            }
+          }
+        },
+        "writeAlreadyPopulatedChildPropertyArray": {
+          "outputs": {
+            "alreadyPopulatedChildPropertyArray": {
+              "type": "JSONPATCH",
+              "value": [
+                {
+                  "op": "add",
+                  "path": "/documents/${arrayIndex}",
+                  "value": "${item}"
+                }
+              ]
+            }
+          }
+        },
+        "writeAlreadyPopulatedArray": {
+          "outputs": {
+            "alreadyPopulatedArray": {
+              "type": "JSONPATCH",
+              "value": [
+                {
+                  "op": "add",
+                  "path": "/${arrayIndex}",
+                  "value": "${item}"
+                }
+              ]
+            }
+          }
+        },
+        "writeJsonInitializedEmptyArray": {
+          "outputs": {
+            "jsonInitializedEmptyArray": {
+              "type": "JSONPATCH",
+              "value": [
+                {
+                  "op": "add",
+                  "path": "/${arrayIndex}",
+                  "value": "${item}"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "constants": {}
+    }
+  }
+}
