@@ -150,12 +150,50 @@ Running on GH Actions.
 
 For Dependabot PRs to be validated by CI, the label "CI" should be added to the PR.
 
+### GitHub Actions lockfile
+
+GitHub Actions dependencies are tracked in [`.github/workflows/actions.lock`](.github/workflows/actions.lock) using [gh-actions-lock](https://github.com/github/gh-actions-lock). The lockfile records immutable commit SHAs for direct and transitive action dependencies, making dependency changes visible during review even when workflows reference version tags.
+
+#### Setup
+
+Install the [GitHub CLI](https://cli.github.com/), authenticate with GitHub, and install the extension:
+
+```bash
+gh auth login
+gh extension install github/gh-actions-lock
+```
+
+#### Updating workflows and actions
+
+After adding, removing, or updating an action reference, run these commands from the repository root:
+
+```bash
+gh actions-lock
+gh actions-lock --verify
+```
+
+The first command updates the lockfile and may update action references in workflows. The second verifies dependencies without changing files. Review and commit the generated lockfile together with any workflow or action changes; do not edit the lockfile manually.
+
+For repository-local actions, use repository-root references such as:
+
+```yaml
+- uses: $/.github/actions/setup-java-maven
+```
+
+The extension supports migrating existing `./` references with `gh actions-lock --migrate-local-actions`.
+
+For a quick offline coverage check, run `gh actions-lock --verify-local`. This checks that action references have lockfile entries, but does not validate their trustworthiness or detect moved upstream tags. Use `gh actions-lock --verify` for full verification.
+
+If verification reports a moved upstream reference, investigate the change before accepting a new SHA. After confirming the change is expected, run `gh actions-lock --accept-moved`, review the diff, and verify again. Do not refresh pins blindly to silence a warning.
+
+### CI/CD secrets
+
 Requires the following secrets to be set:
 
-| Name                         | Description                        |
-| ---------------------------- | ---------------------------------- |
-| BOT_GITHUB_TOKEN             | Token to launch other builds on GH |
-| BOT_GITHUB_USERNAME          | Username to issue propagation PRs  |
-| NEXUS_USERNAME               | Internal Maven repository username |
-| NEXUS_PASSWORD               | Internal Maven repository password |
-| SLACK_NOTIFICATION_BOT_TOKEN | Token to notify slack on failure   |
+| Name                                | Description                        |
+| ----------------------------------- | ---------------------------------- |
+| BOT_GITHUB_TOKEN                    | Token to launch other builds on GH |
+| BOT_GITHUB_USERNAME                 | Username to issue propagation PRs  |
+| NEXUS_USERNAME                      | Internal Maven repository username |
+| NEXUS_PASSWORD                      | Internal Maven repository password |
+| TEAMS_NOTIFICATION_WORKFLOW_WEBHOOK | Webhook to notify Teams on failure |

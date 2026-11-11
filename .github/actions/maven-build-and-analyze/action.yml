@@ -50,4 +50,4 @@ runs:
         SONAR_TOKEN: ${{ inputs.sonar-token }}
 
     - name: Echo Longest Test Run
-      uses: ./.github/actions/echo-longest-run
+      uses: $/.github/actions/echo-longest-run
