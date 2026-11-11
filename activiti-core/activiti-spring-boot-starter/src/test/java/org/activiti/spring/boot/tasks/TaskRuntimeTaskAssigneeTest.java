@@ -29,6 +29,8 @@ import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.activiti.spring.boot.test.util.TaskCleanUpUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -205,15 +207,43 @@ public class TaskRuntimeTaskAssigneeTest {
         userAssignTask(taskId, "dean", "john");
     }
 
-    @Test
-    public void shouldReturnIllegalStateExceptionWhenTaskIsNotClaimed() {
-        String taskId = createTask("garth");
+    @ParameterizedTest
+    @ValueSource(booleans = { false, true })
+    public void userCanAssignTaskToCandidateGroupMember(boolean claimed) {
+        securityUtil.logInAs("garth");
+        Task createdTask = taskRuntime.create(
+            TaskPayloadBuilder.create()
+                .withName("group candidate task")
+                .withCandidateUsers("dean")
+                .withCandidateGroup("doctor")
+                .build()
+        );
+        String taskId = createdTask.getId();
+        if (claimed) {
+            claimTask(taskId, "dean");
+        }
 
-        Throwable thrown = catchThrowable(() -> userAssignTask(taskId, "dean", "dean"));
+        Throwable thrown = catchThrowable(() -> userAssignTask(taskId, "dean", "john"));
 
         assertThat(thrown)
             .isInstanceOf(IllegalStateException.class)
-            .hasMessageStartingWith("You cannot release a task that is not claimed");
+            .hasMessageStartingWith("You cannot assign a task to john because the user is not a candidate for it");
+        securityUtil.logInAs("dean");
+        assertThat(taskRuntime.task(taskId).getAssignee()).isEqualTo(claimed ? "dean" : null);
+
+        userAssignTask(taskId, "dean", "garth");
+
+        securityUtil.logInAs("garth");
+        assertThat(taskRuntime.task(taskId).getAssignee()).isEqualTo("garth");
+    }
+
+    @Test
+    public void userCanAssignUnclaimedTaskToCandidateUser() {
+        String taskId = createTask("garth");
+
+        userAssignTask(taskId, "dean", "dean");
+
+        assertThat(taskRuntime.task(taskId).getAssignee()).isEqualTo("dean");
     }
 
     @Test

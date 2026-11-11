@@ -18,7 +18,6 @@ package org.activiti.runtime.api.impl;
 import static java.util.Collections.emptyMap;
 import static org.activiti.spring.process.model.Mapping.SourceMappingType.VARIABLE;
 
-import com.flipkart.zjsonpatch.Jackson3JsonPatch;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -46,7 +45,6 @@ import org.activiti.spring.process.variable.VariableParsingService;
 import org.apache.commons.lang3.StringUtils;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
-import tools.jackson.databind.node.ArrayNode;
 import tools.jackson.databind.node.NullNode;
 import tools.jackson.databind.node.ObjectNode;
 
@@ -65,6 +63,10 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
     public static final String JSON_PATCH_MAPPING_ERROR = "Invalid jsonPatch variable mapping";
 
     private static final List<String> OUTPUT_CATEGORY = List.of("output", "input/output");
+
+    private static final String ARRAY_VARIABLE_TYPE = "array";
+
+    private final LenientJsonPatch jsonPatch = new LenientJsonPatch();
 
     public ExtensionsVariablesMappingProvider(
         ProcessExtensionService processExtensionService,
@@ -193,25 +195,20 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
         Extension extensions
     ) {
         Object executionVariableValue = execution != null ? execution.getVariable(outputVariableName) : null;
+        VariableDefinition variableDefinition = extensions.getPropertyByName(outputVariableName);
         Object processVariableCurrentValue = calculateProcessVariableCurrentValue(
             executionVariableValue,
-            extensions.getPropertyByName(outputVariableName)
+            variableDefinition
         );
 
         try {
-            JsonNode oldNode;
-            if (isObjectVariable(processVariableCurrentValue)) {
-                oldNode = jsonMapper.convertValue(processVariableCurrentValue, JsonNode.class);
-            } else {
-                oldNode = jsonMapper.createObjectNode();
-            }
-
             JsonNode patchNode = jsonMapper.convertValue(changesToApply, JsonNode.class);
-
             replaceVariablesInJsonPath(patchNode, execution, extensions);
-            initializePath(oldNode, patchNode);
 
-            JsonNode patchedNode = Jackson3JsonPatch.apply(patchNode, oldNode);
+            JsonNode patchedNode = jsonPatch.apply(
+                toRootNode(processVariableCurrentValue, variableDefinition),
+                patchNode
+            );
 
             return Optional.ofNullable(jsonMapper.treeToValue(patchedNode, Object.class));
         } catch (Exception e) {
@@ -219,8 +216,16 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
         }
     }
 
-    private boolean isObjectVariable(Object variable) {
-        return variable instanceof ObjectNode || variable instanceof Map;
+    private JsonNode toRootNode(Object currentValue, VariableDefinition variableDefinition) {
+        JsonNode currentNode = jsonMapper.valueToTree(currentValue);
+        if (currentNode != null && currentNode.isContainer()) {
+            return currentNode;
+        }
+        return isArrayVariable(variableDefinition) ? jsonMapper.createArrayNode() : jsonMapper.createObjectNode();
+    }
+
+    private boolean isArrayVariable(VariableDefinition variableDefinition) {
+        return variableDefinition != null && ARRAY_VARIABLE_TYPE.equalsIgnoreCase(variableDefinition.getType());
     }
 
     private void replaceVariablesInJsonPath(JsonNode patchNode, DelegateExecution execution, Extension extensions) {
@@ -293,66 +298,6 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
                 type
             )
         );
-    }
-
-    private void initializePath(JsonNode oldNode, JsonNode patchNode) {
-        for (JsonNode patch : patchNode) {
-            String path = patch.get("path").asString();
-            String[] properties = path.split("/");
-
-            JsonNode currentNode = oldNode;
-
-            for (int i = 1; i < properties.length; i++) {
-                String property = properties[i];
-                if (isArrayElementPath(i, properties, property)) {
-                    prepareArrayElementForReplace((ObjectNode) patch, currentNode, property);
-                } else if (isArrayProperty(currentNode, property)) {
-                    currentNode = handleArrayPath(property, currentNode);
-                } else {
-                    if (!currentNode.has(property) || !currentNode.get(property).isObject()) {
-                        ((ObjectNode) currentNode).set(property, jsonMapper.createObjectNode());
-                    }
-                    currentNode = currentNode.get(property);
-                }
-            }
-        }
-    }
-
-    private boolean isArrayProperty(JsonNode node, String property) {
-        return (
-            node.isArray() ||
-            (!node.isEmpty() && node.has(property) && node.get(property).isArray()) ||
-            property.matches("\\d+")
-        );
-    }
-
-    private void prepareArrayElementForReplace(ObjectNode patch, JsonNode currentNode, String property) {
-        if (currentNode.isArray()) {
-            patch.put("op", "replace");
-            ArrayNode arrayNode = (ArrayNode) currentNode;
-            int index = Integer.parseInt(property);
-            while (arrayNode.size() <= index) {
-                arrayNode.add(jsonMapper.createObjectNode());
-            }
-        }
-    }
-
-    private boolean isArrayElementPath(int index, String[] properties, String property) {
-        return index == properties.length - 1 && StringUtils.isNumeric(property);
-    }
-
-    private JsonNode handleArrayPath(String property, JsonNode currentNode) {
-        if (!currentNode.isArray()) {
-            return currentNode.get(property);
-        }
-        int index = Integer.parseInt(property);
-        ArrayNode arrayNode = (ArrayNode) currentNode;
-
-        while (arrayNode.size() <= index) {
-            arrayNode.add(jsonMapper.createObjectNode());
-        }
-
-        return arrayNode.get(index);
     }
 
     public Map<String, Object> calculateOutPutVariables(
