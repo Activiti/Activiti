@@ -197,16 +197,16 @@
 
     <!-- versions -->
     <asm.version>9.11.1</asm.version>
-    <build-helper-maven-plugin.version>3.6.2</build-helper-maven-plugin.version>
+    <build-helper-maven-plugin.version>3.7.0</build-helper-maven-plugin.version>
     <dependency-check-maven.version>13.0.0</dependency-check-maven.version>
     <exec-maven-plugin.version>3.6.4</exec-maven-plugin.version>
     <extra-enforcer-rules.version>1.12.1</extra-enforcer-rules.version>
     <jacoco-maven-plugin.version>0.8.16</jacoco-maven-plugin.version>
     <license-maven-plugin.version>5.1.2</license-maven-plugin.version>
-    <third-party-license-maven-plugin.version>2.7.1</third-party-license-maven-plugin.version>
+    <third-party-license-maven-plugin.version>2.8.0</third-party-license-maven-plugin.version>
     <maven-antrun-plugin.version>3.2.0</maven-antrun-plugin.version>
     <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
-    <checkstyle.version>14.3.0</checkstyle.version>
+    <checkstyle.version>14.4.0</checkstyle.version>
     <maven-clean-plugin.version>3.5.0</maven-clean-plugin.version>
     <maven-compiler-plugin.version>3.16.0</maven-compiler-plugin.version>
     <maven-dependency-plugin.version>3.11.0</maven-dependency-plugin.version>
@@ -230,7 +230,7 @@
     <jakarta.el-api.version>6.0.1</jakarta.el-api.version>
     <!-- AAE-44603 temporary security fix (CVE-2025-7962). -->
     <sun-jakarta-mail.version>2.0.2</sun-jakarta-mail.version>
-    <versions-maven-plugin.version>2.23.0</versions-maven-plugin.version>
+    <versions-maven-plugin.version>2.24.0</versions-maven-plugin.version>
 
     <!-- configuration properties for tests -->
     <generated-assertions-folder>
