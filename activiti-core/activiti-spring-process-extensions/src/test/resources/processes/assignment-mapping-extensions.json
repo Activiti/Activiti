@@ -22,6 +22,12 @@
           "assignment": "candidates",
           "type": "expression",
           "mode": "sequential"
+        },
+        "task-4": {
+          "id": "4",
+          "assignment": "candidates",
+          "type": "identity",
+          "mode": "least_loaded"
         }
       },
       "mappings": {},
