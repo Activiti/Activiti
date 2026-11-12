@@ -1,0 +1,26 @@
+{
+  "id": "errorBoundaryCatchAllOutputMapping",
+  "name": "testErrorBoundaryEventCatchAllOutputMapping.bpmn20.xml",
+  "extensions": {
+    "errorBoundaryCatchAllOutputMapping": {
+      "properties": {
+        "catchAllError": {
+          "id": "catchAllError",
+          "name": "catchAllError",
+          "type": "json",
+          "value": ""
+        }
+      },
+      "mappings": {
+        "catchAllError": {
+          "outputs": {
+            "catchAllError": {
+              "type": "variable",
+              "value": "error"
+            }
+          }
+        }
+      }
+    }
+  }
+}

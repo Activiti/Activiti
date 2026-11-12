@@ -16,6 +16,7 @@
 package org.activiti.spring.boot;
 
 import org.activiti.engine.impl.bpmn.behavior.VariablesPropagator;
+import org.activiti.engine.impl.bpmn.helper.ErrorContextMappingProvider;
 import org.activiti.engine.impl.event.EventSubscriptionPayloadMappingProvider;
 import org.activiti.runtime.api.impl.ExtensionsVariablesMappingProvider;
 import org.activiti.runtime.api.impl.MappingAwareActivityBehaviorFactory;
@@ -30,23 +31,28 @@ public class DefaultActivityBehaviorFactoryMappingConfigurer implements ProcessE
 
     private final EventSubscriptionPayloadMappingProvider eventSubscriptionPayloadMappingProvider;
 
+    private final ErrorContextMappingProvider errorContextMappingProvider;
+
     private final VariablesPropagator variablesPropagator;
 
     public DefaultActivityBehaviorFactoryMappingConfigurer(
         ExtensionsVariablesMappingProvider variablesMappingProvider,
         ProcessVariablesInitiator processVariablesInitiator,
         EventSubscriptionPayloadMappingProvider eventSubscriptionPayloadMappingProvider,
+        ErrorContextMappingProvider errorContextMappingProvider,
         VariablesPropagator variablesPropagator
     ) {
         this.variablesMappingProvider = variablesMappingProvider;
         this.processVariablesInitiator = processVariablesInitiator;
         this.eventSubscriptionPayloadMappingProvider = eventSubscriptionPayloadMappingProvider;
+        this.errorContextMappingProvider = errorContextMappingProvider;
         this.variablesPropagator = variablesPropagator;
     }
 
     @Override
     public void configure(SpringProcessEngineConfiguration processEngineConfiguration) {
         processEngineConfiguration.setEventSubscriptionPayloadMappingProvider(eventSubscriptionPayloadMappingProvider);
+        processEngineConfiguration.setErrorContextMappingProvider(errorContextMappingProvider);
 
         processEngineConfiguration.setActivityBehaviorFactory(
             new MappingAwareActivityBehaviorFactory(
