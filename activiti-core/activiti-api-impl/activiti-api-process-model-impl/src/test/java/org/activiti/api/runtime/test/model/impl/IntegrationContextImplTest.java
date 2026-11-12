@@ -21,6 +21,8 @@ import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -209,6 +211,16 @@ class IntegrationContextImplTest {
     }
 
     @Test
+    void should_preserveServiceTaskType_when_serialized() throws IOException {
+        IntegrationContextImpl source = new IntegrationContextImpl();
+        source.setServiceTaskType("Rest Connector: GET");
+
+        IntegrationContext target = exchangeIntegrationContext(source);
+
+        assertThat(target.getServiceTaskType()).isEqualTo("Rest Connector: GET");
+    }
+
+    @Test
     void assertThatIntegrationContextImplDoesNotAddVariableValuesIntoToStringMethod() {
         //given
         IntegrationContextImpl integrationContext = new IntegrationContextImpl();
@@ -276,6 +288,7 @@ class IntegrationContextImplTest {
         original.setClientType("clientType");
         original.setAppVersion("1.0.0");
         original.setConnectorType("connectorType");
+        original.setServiceTaskType("Rest Connector: GET");
         original.setEphemeralVariables(true);
         original.addInBoundVariable("inKey", "inValue");
         original.addOutBoundVariable("outKey", "outValue");
@@ -296,6 +309,7 @@ class IntegrationContextImplTest {
         assertThat(copy.getClientType()).isEqualTo(original.getClientType());
         assertThat(copy.getAppVersion()).isEqualTo(original.getAppVersion());
         assertThat(copy.getConnectorType()).isEqualTo(original.getConnectorType());
+        assertThat(copy.getServiceTaskType()).isEqualTo(original.getServiceTaskType());
         assertThat(copy.hasEphemeralVariables()).isEqualTo(original.hasEphemeralVariables());
         assertThat(copy.getInBoundVariables()).isEqualTo(original.getInBoundVariables());
         assertThat(copy.getOutBoundVariables()).isEqualTo(original.getOutBoundVariables());
@@ -371,5 +385,33 @@ class IntegrationContextImplTest {
         integrationContext.clearOutBoundVariables();
 
         assertThat(integrationContext.getOutBoundVariables()).isEmpty();
+    }
+
+    @Test
+    void should_includeServiceTaskType_inEqualsAndHashCode() {
+        IntegrationContextImpl one = new IntegrationContextImpl();
+        one.setConnectorType("connector");
+        one.setServiceTaskType("Rest Connector: GET");
+        one.setEphemeralVariables(false);
+
+        IntegrationContextImpl two = new IntegrationContextImpl(one);
+
+        assertThat(two).isEqualTo(one).hasSameHashCodeAs(one);
+
+        two.setServiceTaskType("Other Connector: POST");
+
+        assertThat(two).isNotEqualTo(one);
+    }
+
+    @Test
+    void should_returnNullServiceTaskType_when_usingInterfaceDefault() {
+        IntegrationContext context = (IntegrationContext) Proxy.newProxyInstance(
+            getClass().getClassLoader(),
+            new Class[] { IntegrationContext.class },
+            (InvocationHandler) (proxy, method, args) ->
+                method.isDefault() ? InvocationHandler.invokeDefault(proxy, method, args) : null
+        );
+
+        assertThat(context.getServiceTaskType()).isNull();
     }
 }
