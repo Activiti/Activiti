@@ -33,6 +33,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 import org.activiti.api.process.model.IntegrationContext;
+import org.activiti.api.runtime.model.impl.ExternalizedContextReferenceImpl;
 import org.activiti.api.runtime.model.impl.IntegrationContextImpl;
 import org.activiti.api.runtime.model.impl.ProcessVariablesMap;
 import org.junit.jupiter.api.Test;
@@ -261,6 +262,23 @@ class IntegrationContextImplTest {
     }
 
     @Test
+    void should_setExternalizedContextReferenceProperty() {
+        IntegrationContextImpl integrationContext = new IntegrationContextImpl();
+
+        assertThat(integrationContext.getExternalizedContextReference()).isNull();
+
+        ExternalizedContextReferenceImpl reference = new ExternalizedContextReferenceImpl(
+            "providerType",
+            "http://example.com"
+        );
+        integrationContext.setExternalizedContextReference(reference);
+
+        assertThat(integrationContext.getExternalizedContextReference()).isEqualTo(reference);
+        assertThat(integrationContext.getExternalizedContextReference().getProviderType()).isEqualTo("providerType");
+        assertThat(integrationContext.getExternalizedContextReference().getUrl()).isEqualTo("http://example.com");
+    }
+
+    @Test
     void should_copyAllFields_when_copyConstructorIsUsed() {
         IntegrationContextImpl original = new IntegrationContextImpl();
         original.setProcessInstanceId("proc123");
@@ -277,6 +295,9 @@ class IntegrationContextImplTest {
         original.setAppVersion("1.0.0");
         original.setConnectorType("connectorType");
         original.setEphemeralVariables(true);
+        original.setExternalizedContextReference(
+            new ExternalizedContextReferenceImpl("providerType", "http://example.com")
+        );
         original.addInBoundVariable("inKey", "inValue");
         original.addOutBoundVariable("outKey", "outValue");
 
@@ -297,6 +318,7 @@ class IntegrationContextImplTest {
         assertThat(copy.getAppVersion()).isEqualTo(original.getAppVersion());
         assertThat(copy.getConnectorType()).isEqualTo(original.getConnectorType());
         assertThat(copy.hasEphemeralVariables()).isEqualTo(original.hasEphemeralVariables());
+        assertThat(copy.getExternalizedContextReference()).isEqualTo(original.getExternalizedContextReference());
         assertThat(copy.getInBoundVariables()).isEqualTo(original.getInBoundVariables());
         assertThat(copy.getOutBoundVariables()).isEqualTo(original.getOutBoundVariables());
         assertThat(copy.getInBoundVariables()).isNotSameAs(original.getInBoundVariables());
