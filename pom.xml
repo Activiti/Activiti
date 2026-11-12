@@ -226,7 +226,7 @@
     <maven-source-plugin.version>3.4.0</maven-source-plugin.version>
     <maven-surefire-plugin.version>3.6.1</maven-surefire-plugin.version>
     <sonar-maven-plugin.version>5.8.0.7211</sonar-maven-plugin.version>
-    <spring-boot.version>4.0.9</spring-boot.version>
+    <spring-boot.version>4.1.2</spring-boot.version>
     <jakarta.el-api.version>6.0.1</jakarta.el-api.version>
     <!-- AAE-44603 temporary security fix (CVE-2025-7962). -->
     <sun-jakarta-mail.version>2.0.2</sun-jakarta-mail.version>
