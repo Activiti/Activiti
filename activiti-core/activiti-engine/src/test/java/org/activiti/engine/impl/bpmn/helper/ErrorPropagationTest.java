@@ -16,32 +16,24 @@
 package org.activiti.engine.impl.bpmn.helper;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyMap;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.Map;
-import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Error;
-import org.activiti.bpmn.model.ServiceTask;
-import org.activiti.bpmn.model.StartEvent;
-import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.impl.bpmn.behavior.VariablesPropagator;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 
 class ErrorPropagationTest {
 
@@ -194,7 +186,7 @@ class ErrorPropagationTest {
         }
 
         @Test
-        void should_includeSourceId_whenSet() {
+        void should_includeAttachedToRef_whenSet() {
             BpmnModel bpmnModel = new BpmnModel();
             bpmnModel.addError("errorId", "NOT_FOUND", "404");
 
@@ -215,117 +207,62 @@ class ErrorPropagationTest {
     }
 
     @Nested
-    class ApplyErrorOutputMappings {
+    class PropagateErrorVariables {
 
-        private ErrorContextMappingProvider provider;
-        private ExecutionEntityManager executionEntityManager;
-
-        @BeforeEach
-        void setUp() {
-            ProcessEngineConfigurationImpl processEngineConfiguration = mock(ProcessEngineConfigurationImpl.class);
-            CommandContext commandContext = mock(CommandContext.class);
-            executionEntityManager = mock(ExecutionEntityManager.class);
-            provider = mock(ErrorContextMappingProvider.class);
-
-            when(processEngineConfiguration.getErrorContextMappingProvider()).thenReturn(provider);
-            when(commandContext.getExecutionEntityManager()).thenReturn(executionEntityManager);
-
-            Context.setProcessEngineConfiguration(processEngineConfiguration);
-            Context.setCommandContext(commandContext);
-        }
+        private final ErrorContext errorContext = new ErrorContext("errorId", "404", "NOT_FOUND");
 
         @AfterEach
         void tearDown() {
-            Context.removeProcessEngineConfiguration();
-            Context.removeCommandContext();
+            // removeProcessEngineConfiguration() pops unconditionally, so only pop when something was pushed
+            if (Context.getProcessEngineConfiguration() != null) {
+                Context.removeProcessEngineConfiguration();
+            }
         }
 
-        /**
-         * Regression: a subprocess-local variable shadowing the mapped target name
-         * must not intercept the write. Variables go to the process-instance execution,
-         * not to the interrupted activity execution that BoundaryEventActivityBehavior
-         * will destroy.
-         */
-        @Test
-        void should_writeToProcessInstance_when_boundaryEventCatches() {
-            ExecutionEntity parentExecution = mock(ExecutionEntity.class);
-            when(parentExecution.getProcessDefinitionId()).thenReturn("proc-def-1");
-
-            ExecutionEntity processInstanceExecution = mock(ExecutionEntity.class);
-            when(parentExecution.getProcessInstance()).thenReturn(processInstanceExecution);
-
-            ServiceTask attachedActivity = new ServiceTask();
-            attachedActivity.setId("serviceTask-1");
-
-            BoundaryEvent boundaryEvent = new BoundaryEvent();
-            boundaryEvent.setId("boundary-1");
-            boundaryEvent.setAttachedToRef(attachedActivity);
-
-            BpmnModel bpmnModel = new BpmnModel();
-            bpmnModel.addError("error1", "NOT_FOUND", "404");
-            Error error = new Error("error1");
-
-            Map<String, Object> mappedVars = Map.of("boundaryErrorCode", "404", "boundaryErrorName", "NOT_FOUND");
-            when(provider.apply(anyMap(), any(DelegateExecution.class), eq("boundary-1"))).thenReturn(mappedVars);
-
-            ErrorPropagation.applyErrorOutputMappings(boundaryEvent, parentExecution, error, bpmnModel, "404");
-
-            @SuppressWarnings("unchecked")
-            ArgumentCaptor<Map<String, Object>> payloadCaptor = ArgumentCaptor.forClass(Map.class);
-            verify(provider).apply(payloadCaptor.capture(), eq(processInstanceExecution), eq("boundary-1"));
-
-            ErrorContext capturedContext = (ErrorContext) payloadCaptor.getValue().get("error");
-            assertThat(capturedContext.getAttachedToRef()).isEqualTo("serviceTask-1");
-
-            verify(processInstanceExecution).setVariables(mappedVars);
-            verify(parentExecution, never()).setVariables(anyMap());
+        private VariablesPropagator givenConfiguredPropagator() {
+            ProcessEngineConfigurationImpl configuration = mock(ProcessEngineConfigurationImpl.class);
+            VariablesPropagator propagator = mock(VariablesPropagator.class);
+            when(configuration.getErrorVariablesPropagator()).thenReturn(propagator);
+            Context.setProcessEngineConfiguration(configuration);
+            return propagator;
         }
 
         @Test
-        void should_writeToParentExecution_when_startEventErrorSubprocess() {
-            ExecutionEntity parentExecution = mock(ExecutionEntity.class);
-            when(parentExecution.getProcessDefinitionId()).thenReturn("proc-def-2");
+        void should_propagateErrorContextToProcessInstance_underErrorKey() {
+            VariablesPropagator propagator = givenConfiguredPropagator();
+            ExecutionEntity catchingExecution = mock(ExecutionEntity.class);
 
-            StartEvent startEvent = new StartEvent();
-            startEvent.setId("start-1");
+            ErrorPropagation.propagateErrorVariables(catchingExecution, errorContext);
 
-            BpmnModel bpmnModel = new BpmnModel();
-            bpmnModel.addError("error2", "SERVICE_UNAVAILABLE", "503");
-            Error error = new Error("error2");
-
-            Map<String, Object> mappedVars = Map.of("subProcessErrorCode", "503");
-            when(provider.apply(anyMap(), any(DelegateExecution.class), eq("start-1"))).thenReturn(mappedVars);
-
-            ErrorPropagation.applyErrorOutputMappings(startEvent, parentExecution, error, bpmnModel, "503");
-
-            verify(provider).apply(anyMap(), eq(parentExecution), eq("start-1"));
-            verify(parentExecution).setVariables(mappedVars);
+            verify(propagator).propagateToProcessInstance(catchingExecution, Map.of("error", errorContext));
+            verify(propagator, never()).propagate(any(), any(Map.class));
         }
 
         @Test
-        void should_notSetVariables_when_providerReturnsEmptyMap() {
-            ExecutionEntity parentExecution = mock(ExecutionEntity.class);
-            when(parentExecution.getProcessDefinitionId()).thenReturn("proc-def-3");
+        void should_doNothing_when_catchingExecutionIsNull() {
+            VariablesPropagator propagator = givenConfiguredPropagator();
 
-            ExecutionEntity processInstanceExecution = mock(ExecutionEntity.class);
-            when(parentExecution.getProcessInstance()).thenReturn(processInstanceExecution);
+            ErrorPropagation.propagateErrorVariables(null, errorContext);
 
-            ServiceTask attachedActivity = new ServiceTask();
-            attachedActivity.setId("serviceTask-2");
+            verifyNoInteractions(propagator);
+        }
 
-            BoundaryEvent boundaryEvent = new BoundaryEvent();
-            boundaryEvent.setId("boundary-2");
-            boundaryEvent.setAttachedToRef(attachedActivity);
+        @Test
+        void should_notFail_when_propagatorIsNull() {
+            ProcessEngineConfigurationImpl configuration = mock(ProcessEngineConfigurationImpl.class);
+            when(configuration.getErrorVariablesPropagator()).thenReturn(null);
+            Context.setProcessEngineConfiguration(configuration);
 
-            BpmnModel bpmnModel = new BpmnModel();
-            Error error = new Error("error3");
+            assertThatCode(() ->
+                ErrorPropagation.propagateErrorVariables(mock(ExecutionEntity.class), errorContext)
+            ).doesNotThrowAnyException();
+        }
 
-            when(provider.apply(anyMap(), any(DelegateExecution.class), anyString())).thenReturn(Map.of());
-
-            ErrorPropagation.applyErrorOutputMappings(boundaryEvent, parentExecution, error, bpmnModel, "500");
-
-            verify(processInstanceExecution, never()).setVariables(anyMap());
-            verify(parentExecution, never()).setVariables(anyMap());
+        @Test
+        void should_notFail_when_noProcessEngineConfigurationInContext() {
+            assertThatCode(() ->
+                ErrorPropagation.propagateErrorVariables(mock(ExecutionEntity.class), errorContext)
+            ).doesNotThrowAnyException();
         }
     }
 }

@@ -17,6 +17,7 @@ package org.activiti.spring.boot;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.activiti.engine.impl.bpmn.behavior.VariablesPropagator;
 import org.activiti.runtime.api.impl.MappingAwareActivityBehaviorFactory;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.junit.jupiter.api.Test;
@@ -29,6 +30,9 @@ public class DefaultActivityBehaviorFactoryMappingConfigurerIT {
     @Autowired
     private SpringProcessEngineConfiguration processEngineConfiguration;
 
+    @Autowired
+    private VariablesPropagator variablesPropagator;
+
     @Test
     public void processEngineConfigurationShouldHaveSetMappingAwareActivityBehaviorFactoryAsActivityBehaviorFactory() {
         assertThat(processEngineConfiguration.getActivityBehaviorFactory()).isInstanceOf(
@@ -37,5 +41,10 @@ public class DefaultActivityBehaviorFactoryMappingConfigurerIT {
         assertThat(processEngineConfiguration.getBpmnParser().getActivityBehaviorFactory()).isInstanceOf(
             MappingAwareActivityBehaviorFactory.class
         );
+    }
+
+    @Test
+    public void processEngineConfigurationShouldUseSpringVariablesPropagatorForErrorVariables() {
+        assertThat(processEngineConfiguration.getErrorVariablesPropagator()).isSameAs(variablesPropagator);
     }
 }

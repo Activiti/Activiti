@@ -260,7 +260,7 @@ public class ErrorPropagation {
                 );
         }
 
-        applyErrorOutputMappings(event, parentExecution, error, bpmnModel, resolvedErrorCode);
+        ErrorContext errorContext = buildErrorContext(error, bpmnModel, resolvedErrorCode);
 
         if (event instanceof StartEvent) {
             ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
@@ -273,6 +273,7 @@ public class ErrorPropagation {
 
             ExecutionEntity eventSubProcessExecution = executionEntityManager.createChildExecution(parentExecution);
             eventSubProcessExecution.setCurrentFlowElement(event);
+            propagateErrorVariables(eventSubProcessExecution, errorContext);
             Context.getAgenda().planContinueProcessOperation(eventSubProcessExecution);
         } else {
             ExecutionEntity boundaryExecution = null;
@@ -282,7 +283,10 @@ public class ErrorPropagation {
                     boundaryExecution = childExecution;
                 }
             }
-
+            if (event instanceof BoundaryEvent boundaryEvent && boundaryEvent.getAttachedToRef() != null) {
+                errorContext.setAttachedToRef(boundaryEvent.getAttachedToRef().getId());
+            }
+            propagateErrorVariables(boundaryExecution, errorContext);
             Context.getAgenda().planTriggerExecutionOperation(boundaryExecution);
         }
     }
@@ -464,51 +468,14 @@ public class ErrorPropagation {
         return defaultExceptionMapping;
     }
 
-    static void applyErrorOutputMappings(
-        Event event,
-        ExecutionEntity parentExecution,
-        Error error,
-        BpmnModel bpmnModel,
-        String resolvedErrorCode
-    ) {
-        if (!(event instanceof BoundaryEvent) && !(event instanceof StartEvent)) {
+    static void propagateErrorVariables(ExecutionEntity catchingExecution, ErrorContext errorContext) {
+        ProcessEngineConfigurationImpl configuration = Context.getProcessEngineConfiguration();
+        if (catchingExecution == null || configuration == null || configuration.getErrorVariablesPropagator() == null) {
             return;
         }
-
-        ErrorContextMappingProvider provider = getErrorContextMappingProvider();
-        if (provider == null) {
-            return;
-        }
-
-        ErrorContext errorContext = buildErrorContext(error, bpmnModel, resolvedErrorCode);
-
-        // Resolve the target execution: for boundary events write to the
-        // process-instance execution (not the interrupted activity); for event
-        // subprocesses parentExecution is already at the process level.
-        ExecutionEntity targetExecution;
-        if (event instanceof BoundaryEvent boundaryEvent) {
-            targetExecution = parentExecution.getProcessInstance();
-            errorContext.setAttachedToRef(boundaryEvent.getAttachedToRef().getId());
-        } else {
-            targetExecution = parentExecution;
-        }
-
-        // Pass the ErrorContext as a single "error" entry so output mappings
-        // can map the entire object to a process variable.
-        Map<String, Object> errorPayload = Map.of("error", errorContext);
-        Map<String, Object> mappedVariables = provider.apply(errorPayload, targetExecution, event.getId());
-
-        if (mappedVariables != null && !mappedVariables.isEmpty()) {
-            targetExecution.setVariables(mappedVariables);
-        }
-    }
-
-    private static ErrorContextMappingProvider getErrorContextMappingProvider() {
-        ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
-        if (processEngineConfiguration == null) {
-            return null;
-        }
-        return processEngineConfiguration.getErrorContextMappingProvider();
+        configuration
+            .getErrorVariablesPropagator()
+            .propagateToProcessInstance(catchingExecution, Map.of("error", errorContext));
     }
 
     /**

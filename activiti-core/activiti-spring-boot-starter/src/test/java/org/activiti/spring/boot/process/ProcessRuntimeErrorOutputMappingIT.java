@@ -44,6 +44,8 @@ class ProcessRuntimeErrorOutputMappingIT {
     private static final String ERROR_BOUNDARY_CATCH_ALL_OUTPUT_MAPPING = "errorBoundaryCatchAllOutputMapping";
     private static final String ERROR_EVENT_SUBPROCESS_OUTPUT_MAPPING = "errorEventSubProcessOutputMapping";
     private static final String PARENT_PROCESS_ERROR_BOUNDARY = "parentProcessErrorBoundary";
+    private static final String ERROR_BOUNDARY_MULTI_INSTANCE_OUTPUT_MAPPING =
+        "errorBoundaryMultiInstanceOutputMapping";
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -130,7 +132,9 @@ class ProcessRuntimeErrorOutputMappingIT {
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 10), getTasksPayload);
         assertThat(tasks.getContent()).extracting(Task::getName).containsExactly("Event Subprocess Task");
 
-        Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
+        // The event subprocess sits inside the embedded subprocess "subProcess"; the mapped
+        // variable must be stored on the process instance, not on the intermediate scope.
+        Map<String, Object> variables = runtimeService.getVariablesLocal(processInstance.getId());
         assertThat(variables).containsKey("subProcessError");
 
         ErrorContext errorContext = (ErrorContext) variables.get("subProcessError");
@@ -167,5 +171,38 @@ class ProcessRuntimeErrorOutputMappingIT {
                 ErrorContext::getAttachedToRef
             )
             .containsExactly("CHILD_404", "childError1", "CHILD_404", "Activity_1w8vukd");
+    }
+
+    /**
+     * The boundary execution of a multi-instance activity is a child of the multi-instance root,
+     * so {@code VariablesPropagator.propagate} would store the raw payload locally without mapping.
+     * Error propagation uses {@code propagateToProcessInstance} so the mapping is still applied.
+     */
+    @Test
+    void should_MapErrorObject_When_BoundaryOnMultiInstanceActivityCatches() {
+        ProcessInstance processInstance = processRuntime.start(
+            ProcessPayloadBuilder.start().withProcessDefinitionKey(ERROR_BOUNDARY_MULTI_INSTANCE_OUTPUT_MAPPING).build()
+        );
+
+        assertThat(processInstance).isNotNull();
+
+        GetTasksPayload getTasksPayload = new GetTasksPayloadBuilder()
+            .withProcessInstanceId(processInstance.getId())
+            .build();
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 10), getTasksPayload);
+        assertThat(tasks.getContent()).extracting(Task::getName).containsExactly("Multi Instance Error Task");
+
+        Map<String, Object> variables = runtimeService.getVariablesLocal(processInstance.getId());
+        assertThat(variables).containsKey("miError").doesNotContainKey("error");
+
+        ErrorContext errorContext = (ErrorContext) variables.get("miError");
+        assertThat(errorContext)
+            .extracting(
+                ErrorContext::getErrorCode,
+                ErrorContext::getErrorId,
+                ErrorContext::getErrorName,
+                ErrorContext::getAttachedToRef
+            )
+            .containsExactly("MI_500", "miErrorId", "MI_FAILED", "miSubProcess");
     }
 }
