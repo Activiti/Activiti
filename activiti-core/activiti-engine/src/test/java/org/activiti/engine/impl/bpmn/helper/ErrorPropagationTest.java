@@ -25,10 +25,14 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.Map;
+import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Error;
+import org.activiti.bpmn.model.ServiceTask;
+import org.activiti.bpmn.model.StartEvent;
 import org.activiti.engine.impl.bpmn.behavior.VariablesPropagator;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.junit.jupiter.api.AfterEach;
@@ -203,6 +207,51 @@ class ErrorPropagationTest {
                     ErrorContext::getAttachedToRef
                 )
                 .containsExactly("404", "errorId", "NOT_FOUND", "Activity_1w8vukd");
+        }
+    }
+
+    @Nested
+    class ResolveAttachedToRef {
+
+        @Test
+        void should_returnAttachedActivityId_when_boundaryEventIsAttached() {
+            ServiceTask attachedActivity = new ServiceTask();
+            attachedActivity.setId("serviceTask-1");
+            BoundaryEvent boundaryEvent = new BoundaryEvent();
+            boundaryEvent.setAttachedToRef(attachedActivity);
+
+            assertThat(ErrorPropagation.resolveAttachedToRef(boundaryEvent)).isEqualTo("serviceTask-1");
+        }
+
+        @Test
+        void should_returnNull_when_boundaryEventHasNoAttachedActivity() {
+            assertThat(ErrorPropagation.resolveAttachedToRef(new BoundaryEvent())).isNull();
+        }
+
+        @Test
+        void should_returnNull_when_eventIsNotBoundaryEvent() {
+            assertThat(ErrorPropagation.resolveAttachedToRef(new StartEvent())).isNull();
+        }
+    }
+
+    @Nested
+    class DefaultErrorVariablesPropagator {
+
+        @Test
+        void should_haveDefaultPropagator_onPlainEngine() {
+            ProcessEngineConfigurationImpl configuration = new StandaloneInMemProcessEngineConfiguration();
+
+            assertThat(configuration.getErrorVariablesPropagator()).isNotNull();
+        }
+
+        @Test
+        void should_returnConfiguredPropagator_when_set() {
+            ProcessEngineConfigurationImpl configuration = new StandaloneInMemProcessEngineConfiguration();
+            VariablesPropagator propagator = mock(VariablesPropagator.class);
+
+            configuration.setErrorVariablesPropagator(propagator);
+
+            assertThat(configuration.getErrorVariablesPropagator()).isSameAs(propagator);
         }
     }
 

@@ -283,9 +283,7 @@ public class ErrorPropagation {
                     boundaryExecution = childExecution;
                 }
             }
-            if (event instanceof BoundaryEvent boundaryEvent && boundaryEvent.getAttachedToRef() != null) {
-                errorContext.setAttachedToRef(boundaryEvent.getAttachedToRef().getId());
-            }
+            errorContext.setAttachedToRef(resolveAttachedToRef(event));
             propagateErrorVariables(boundaryExecution, errorContext);
             Context.getAgenda().planTriggerExecutionOperation(boundaryExecution);
         }
@@ -466,6 +464,17 @@ public class ErrorPropagation {
         }
 
         return defaultExceptionMapping;
+    }
+
+    /**
+     * Returns the id of the activity a boundary event is attached to, or {@code null} for any other
+     * catching event (for example the error start event of an event subprocess).
+     */
+    static String resolveAttachedToRef(Event event) {
+        if (event instanceof BoundaryEvent boundaryEvent && boundaryEvent.getAttachedToRef() != null) {
+            return boundaryEvent.getAttachedToRef().getId();
+        }
+        return null;
     }
 
     static void propagateErrorVariables(ExecutionEntity catchingExecution, ErrorContext errorContext) {
