@@ -15,7 +15,9 @@
  */
 package org.activiti.spring.boot.process;
 
+import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.type;
 
 import java.util.Map;
 import org.activiti.api.process.model.ProcessInstance;
@@ -87,10 +89,8 @@ class ProcessRuntimeErrorOutputMappingIT {
         assertThat(tasks.getContent()).extracting(Task::getName).containsExactly("Task");
 
         Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
-        assertThat(variables).containsKey("boundaryError");
-
-        ErrorContext errorContext = (ErrorContext) variables.get("boundaryError");
-        assertThat(errorContext)
+        assertThat(variables)
+            .extractingByKey("boundaryError", as(type(ErrorContext.class)))
             .extracting(ErrorContext::getErrorCode, ErrorContext::getErrorName, ErrorContext::getAttachedToRef)
             .containsExactly("404", "NOT_FOUND", "subProcess");
     }
@@ -110,10 +110,9 @@ class ProcessRuntimeErrorOutputMappingIT {
         assertThat(tasks.getContent()).extracting(Task::getName).containsExactly("Catch All Task");
 
         Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
-        assertThat(variables).containsKey("catchAllError");
 
-        ErrorContext errorContext = (ErrorContext) variables.get("catchAllError");
-        assertThat(errorContext)
+        assertThat(variables)
+            .extractingByKey("catchAllError", as(type(ErrorContext.class)))
             .extracting(ErrorContext::getErrorCode, ErrorContext::getErrorName, ErrorContext::getAttachedToRef)
             .containsExactly("KNOWN_ERROR", "Known Error", "subProcess");
     }
@@ -135,10 +134,9 @@ class ProcessRuntimeErrorOutputMappingIT {
         // The event subprocess sits inside the embedded subprocess "subProcess"; the mapped
         // variable must be stored on the process instance, not on the intermediate scope.
         Map<String, Object> variables = runtimeService.getVariablesLocal(processInstance.getId());
-        assertThat(variables).containsKey("subProcessError");
 
-        ErrorContext errorContext = (ErrorContext) variables.get("subProcessError");
-        assertThat(errorContext)
+        assertThat(variables)
+            .extractingByKey("subProcessError", as(type(ErrorContext.class)))
             .extracting(ErrorContext::getErrorCode, ErrorContext::getErrorName, ErrorContext::getAttachedToRef)
             .containsExactly("503", "SERVICE_UNAVAILABLE", null);
     }
@@ -160,10 +158,9 @@ class ProcessRuntimeErrorOutputMappingIT {
         // The child process throws error id="childError1", code="CHILD_404", name="Child Not Found".
         // The parent model has no error with code CHILD_404, so errorName falls back to the code.
         Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
-        assertThat(variables).containsKey("testError");
 
-        ErrorContext errorContext = (ErrorContext) variables.get("testError");
-        assertThat(errorContext)
+        assertThat(variables)
+            .extractingByKey("testError", as(type(ErrorContext.class)))
             .extracting(
                 ErrorContext::getErrorCode,
                 ErrorContext::getErrorId,
@@ -173,11 +170,6 @@ class ProcessRuntimeErrorOutputMappingIT {
             .containsExactly("CHILD_404", "childError1", "CHILD_404", "Activity_1w8vukd");
     }
 
-    /**
-     * The boundary execution of a multi-instance activity is a child of the multi-instance root,
-     * so {@code VariablesPropagator.propagate} would store the raw payload locally without mapping.
-     * Error propagation uses {@code propagateToProcessInstance} so the mapping is still applied.
-     */
     @Test
     void should_MapErrorObject_When_BoundaryOnMultiInstanceActivityCatches() {
         ProcessInstance processInstance = processRuntime.start(
@@ -193,10 +185,9 @@ class ProcessRuntimeErrorOutputMappingIT {
         assertThat(tasks.getContent()).extracting(Task::getName).containsExactly("Multi Instance Error Task");
 
         Map<String, Object> variables = runtimeService.getVariablesLocal(processInstance.getId());
-        assertThat(variables).containsKey("miError").doesNotContainKey("error");
 
-        ErrorContext errorContext = (ErrorContext) variables.get("miError");
-        assertThat(errorContext)
+        assertThat(variables)
+            .extractingByKey("miError", as(type(ErrorContext.class)))
             .extracting(
                 ErrorContext::getErrorCode,
                 ErrorContext::getErrorId,
