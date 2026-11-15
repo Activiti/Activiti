@@ -237,7 +237,7 @@ public class ErrorPropagation {
         String resolvedErrorCode = null;
 
         if (bpmnModel != null) {
-            resolvedErrorCode = getResolvedErrorCode(error, bpmnModel);
+            resolvedErrorCode = resolveErrorCode(error, bpmnModel);
         }
 
         if (
@@ -291,7 +291,7 @@ public class ErrorPropagation {
         }
     }
 
-    private static String getResolvedErrorCode(Error error, BpmnModel bpmnModel) {
+    private static String resolveErrorCode(Error error, BpmnModel bpmnModel) {
         return error.getErrorCode() != null ? error.getErrorCode() : retrieveErrorCode(bpmnModel, error.getId());
     }
 
@@ -300,7 +300,7 @@ public class ErrorPropagation {
         Process process = ProcessDefinitionUtil.getProcess(processDefinitionId);
         BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(processDefinitionId);
 
-        String compareErrorCode = getResolvedErrorCode(error, bpmnModel);
+        String compareErrorCode = resolveErrorCode(error, bpmnModel);
 
         eventMap.putAll(findCatchingEventSubprocesses(process, bpmnModel, compareErrorCode));
 
@@ -494,7 +494,7 @@ public class ErrorPropagation {
     static String resolveErrorName(Error error, BpmnModel bpmnModel, String resolvedErrorCode) {
         return bpmnModel
             .findErrorById(error.getId())
-            .filter(e -> error.getErrorCode() == null || error.getErrorCode().equals(e.getErrorCode()))
+            .filter(bpmnError -> error.getErrorCode() == null || error.getErrorCode().equals(bpmnError.getErrorCode()))
             .map(Error::getName)
             .or(() ->
                 Optional.ofNullable(resolvedErrorCode).flatMap(code ->
