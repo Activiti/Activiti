@@ -45,3 +45,5 @@ repos:
     hooks:
       - id: actionlint
         exclude: '^\.github/workflows/.*\.lock\.yml$'
+        # actionlint does not yet recognize repository-root action references.
+        args: ['-ignore', '^specifying action "\$/[^"]+" in invalid format because ref is missing\.']

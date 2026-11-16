@@ -29,19 +29,21 @@ jobs:
     steps:
       - name: Check dependabot/fork build
         if: github.secret_source == 'Dependabot' || (github.secret_source == 'None' && github.event.action != 'milestoned')
-        uses: Alfresco/alfresco-build-tools/.github/actions/github-require-secrets@2cebc8f19812b2653361d82e86b25f29cfa4a144 # v19.12.1
+        uses: Alfresco/alfresco-build-tools/.github/actions/github-require-secrets@v19.11.0
         with:
           dependabot-error-message: "This PR requires additional validation, please set the milestone to 'Validating' or ask a reviewer to approve it."
           none-error-message: "This PR requires additional validation, please set the milestone to 'Validating'."
       - name: pre-commit
-        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@2cebc8f19812b2653361d82e86b25f29cfa4a144 # v19.12.1
+        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@v19.11.0
       - name: Ensure SHA pinned actions
-        uses: hyland/github-actions-ensure-sha-pinned-actions@9f71a10c9852b115cfcb146ec2d8d09e2b89593f # v2.1.1
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        uses: hyland/github-actions-ensure-sha-pinned-actions@v2.1.0
+        with:
+          lock-aware: 'true'
+      - uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
       - name: Ensure all actions are covered by Dependabot
-        uses: Alfresco/alfresco-build-tools/.github/actions/dependabot-missing-actions-check@2cebc8f19812b2653361d82e86b25f29cfa4a144 # v19.12.1
+        uses: Alfresco/alfresco-build-tools/.github/actions/dependabot-missing-actions-check@v19.11.0
       - name: Check PR preview
         id: check_pr_preview
         shell: bash
@@ -58,13 +60,13 @@ jobs:
       version: ${{ env.VERSION }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        uses: actions/checkout@v7.0.1
         with:
           # Sonar needs full history for blame and merge-base detection
           fetch-depth: 0
           persist-credentials: false
 
-      - uses: ./.github/actions/setup-java-maven
+      - uses: $/.github/actions/setup-java-maven
         with:
           maven-version: ${{ env.MAVEN_VERSION }}
 
@@ -86,7 +88,7 @@ jobs:
         if: ${{ needs.pre-checks.outputs.preview == 'true' }}
         run: mvn -B versions:set -DnewVersion="$VERSION" -DprocessAllModules=true -DgenerateBackupPoms=false
 
-      - uses: ./.github/actions/maven-build-and-analyze
+      - uses: $/.github/actions/maven-build-and-analyze
         with:
           nexus-username: ${{ secrets.NEXUS_USERNAME }}
           nexus-password: ${{ secrets.NEXUS_PASSWORD }}
@@ -104,11 +106,11 @@ jobs:
       id-token: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
 
-      - uses: ./.github/actions/setup-java-maven
+      - uses: $/.github/actions/setup-java-maven
         with:
           maven-version: ${{ env.MAVEN_VERSION }}
 
@@ -135,7 +137,7 @@ jobs:
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
 
       - name: Authenticate with Cloudsmith
-        uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@2cebc8f19812b2653361d82e86b25f29cfa4a144 # v19.12.1
+        uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@v19.11.0
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
           verify-auth: "true"
@@ -163,11 +165,11 @@ jobs:
       contents: read
       pull-requests: write
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/checkout@v7.0.1
       - name: Use preview updatebot config
         shell: bash
         run: cp .jx/updatebot-preview.yaml .jx/updatebot.yaml
-      - uses: Alfresco/alfresco-build-tools/.github/actions/jx-updatebot-pr@2cebc8f19812b2653361d82e86b25f29cfa4a144 # v19.12.1
+      - uses: Alfresco/alfresco-build-tools/.github/actions/jx-updatebot-pr@v19.11.0
         env:
           BUILD_RUN_ID: ${{ github.run_id }}
         with:
@@ -197,7 +199,7 @@ jobs:
 
       - name: Close preview PRs if source PR closed while propagating
         if: ${{ steps.source-pr-state.outputs.state != 'OPEN' }}
-        uses: Alfresco/alfresco-build-tools/.github/actions/github-close-orphaned-preview-prs@2cebc8f19812b2653361d82e86b25f29cfa4a144 # v19.12.1
+        uses: Alfresco/alfresco-build-tools/.github/actions/github-close-orphaned-preview-prs@v19.11.0
         with:
           source-pr-number: ${{ github.event.pull_request.number }}
           source-pr-state: ${{ steps.source-pr-state.outputs.state }}
