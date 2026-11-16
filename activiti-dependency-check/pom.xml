@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-parent</artifactId>
-    <version>8.8.2-alpha.1</version>
+    <version>8.8.2-mock</version>
   </parent>
   <artifactId>activiti-dependency-check</artifactId>
   <packaging>pom</packaging>
