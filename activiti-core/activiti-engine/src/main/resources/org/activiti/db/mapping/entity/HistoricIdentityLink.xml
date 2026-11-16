@@ -92,11 +92,11 @@
   </select>
 
   <select id="selectHistoricIdentityLinksByTask" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="historicIdentityLinkResultMap">
-    select * from ${prefix}ACT_HI_IDENTITYLINK where TASK_ID_ = #{parameter}
+    select * from ${prefix}ACT_HI_IDENTITYLINK where TASK_ID_ = #{parameter, jdbcType=VARCHAR}
   </select>
 
   <select id="selectHistoricIdentityLinksByProcessInstance" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="historicIdentityLinkResultMap">
-    select * from ${prefix}ACT_HI_IDENTITYLINK where PROC_INST_ID_ = #{parameter}
+    select * from ${prefix}ACT_HI_IDENTITYLINK where PROC_INST_ID_ = #{parameter, jdbcType=VARCHAR}
   </select>
 
  <select id="selectIdentityLinks" resultMap="historicIdentityLinkResultMap">

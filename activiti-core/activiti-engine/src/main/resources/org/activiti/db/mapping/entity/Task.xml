@@ -256,19 +256,19 @@
   </select>
 
   <select id="selectTasksByParentTaskId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="taskResultMap">
-    select * from ${prefix}ACT_RU_TASK where PARENT_TASK_ID_ = #{parameter}
+    select * from ${prefix}ACT_RU_TASK where PARENT_TASK_ID_ = #{parameter, jdbcType=VARCHAR}
   </select>
 
   <select id="selectTasksByExecutionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="taskResultMap">
     select distinct T.*
     from ${prefix}ACT_RU_TASK T
-    where T.EXECUTION_ID_ = #{parameter}
+    where T.EXECUTION_ID_ = #{parameter, jdbcType=VARCHAR}
   </select>
 
   <select id="selectTasksByProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="taskResultMap">
     select T.*
     from ${prefix}ACT_RU_TASK T
-    where T.PROC_INST_ID_ = #{parameter}
+    where T.PROC_INST_ID_ = #{parameter, jdbcType=VARCHAR}
   </select>
 
   <select id="selectTaskByQueryCriteria" parameterType="org.activiti.engine.impl.TaskQueryImpl" resultMap="taskResultMap">

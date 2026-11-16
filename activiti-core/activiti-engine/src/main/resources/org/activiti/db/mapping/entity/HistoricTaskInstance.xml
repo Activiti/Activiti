@@ -267,13 +267,13 @@
   </select>
 
   <select id="selectHistoricTasksByParentTaskId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="historicTaskInstanceResultMap">
-    select * from ${prefix}ACT_HI_TASKINST where PARENT_TASK_ID_ = #{parameter}
+    select * from ${prefix}ACT_HI_TASKINST where PARENT_TASK_ID_ = #{parameter, jdbcType=VARCHAR}
   </select>
 
   <select id="selectHistoricTaskInstancesByProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="historicTaskInstanceResultMap" >
     select *
     from ${prefix}ACT_HI_TASKINST
-    where PROC_INST_ID_ = #{parameter}
+    where PROC_INST_ID_ = #{parameter, jdbcType=VARCHAR}
   </select>
 
   <!-- select-clause broker (between withJoins and withoutJoins sql scripts) -->

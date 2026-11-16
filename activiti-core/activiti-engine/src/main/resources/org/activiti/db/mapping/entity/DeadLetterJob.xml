@@ -32,13 +32,13 @@
     <select id="selectDeadLetterJobsByExecutionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
         select *
         from ${prefix}ACT_RU_DEADLETTER_JOB J
-        where J.EXECUTION_ID_ = #{parameter}
+        where J.EXECUTION_ID_ = #{parameter, jdbcType=VARCHAR}
     </select>
 
     <select id="selectDeadLetterJobsByProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
         select *
         from ${prefix}ACT_RU_DEADLETTER_JOB J
-        where J.PROCESS_INSTANCE_ID_ = #{parameter}
+        where J.PROCESS_INSTANCE_ID_ = #{parameter, jdbcType=VARCHAR}
     </select>
 
     <!-- TIMER INSERT -->

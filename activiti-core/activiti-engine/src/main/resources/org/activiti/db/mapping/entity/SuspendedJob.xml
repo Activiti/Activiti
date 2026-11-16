@@ -33,13 +33,13 @@
     <select id="selectSuspendedJobsByExecutionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
         select *
         from ${prefix}ACT_RU_SUSPENDED_JOB J
-        where J.EXECUTION_ID_ = #{parameter}
+        where J.EXECUTION_ID_ = #{parameter, jdbcType=VARCHAR}
     </select>
 
     <select id="selectSuspendedJobsByProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
         select *
         from ${prefix}ACT_RU_SUSPENDED_JOB J
-        where J.PROCESS_INSTANCE_ID_ = #{parameter}
+        where J.PROCESS_INSTANCE_ID_ = #{parameter, jdbcType=VARCHAR}
     </select>
 
     <!-- TIMER INSERT -->

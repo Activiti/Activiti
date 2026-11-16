@@ -65,13 +65,13 @@
 	<select id="selectJobsByExecutionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
 		select *
 		from ${prefix}ACT_RU_JOB J
-		where J.EXECUTION_ID_ = #{parameter}
+		where J.EXECUTION_ID_ = #{parameter, jdbcType=VARCHAR}
 	</select>
 
 	<select id="selectJobsByProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
 		select *
 		from ${prefix}ACT_RU_JOB J
-		where J.PROCESS_INSTANCE_ID_ = #{parameter}
+		where J.PROCESS_INSTANCE_ID_ = #{parameter, jdbcType=VARCHAR}
 	</select>
 
 	<select id="selectJobByTypeAndProcessDefinitionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
@@ -359,7 +359,7 @@
 		from ${prefix}ACT_RU_JOB
 		where (RETRIES_ &gt; 0)
 		and (TYPE_ = 'timer')
-		and (EXECUTION_ID_ = #{parameter})
+		and (EXECUTION_ID_ = #{parameter, jdbcType=VARCHAR})
 	</select>
 
 </mapper>

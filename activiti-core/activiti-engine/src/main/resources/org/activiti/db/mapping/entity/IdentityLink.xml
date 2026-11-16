@@ -90,15 +90,15 @@
   </select>
 
   <select id="selectIdentityLinksByTask" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="identityLinkResultMap">
-    select * from ${prefix}ACT_RU_IDENTITYLINK where TASK_ID_ = #{parameter}
+    select * from ${prefix}ACT_RU_IDENTITYLINK where TASK_ID_ = #{parameter, jdbcType=VARCHAR}
   </select>
 
   <select id="selectIdentityLinksByProcessInstance" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="identityLinkResultMap">
-    select * from ${prefix}ACT_RU_IDENTITYLINK where PROC_INST_ID_ = #{parameter}
+    select * from ${prefix}ACT_RU_IDENTITYLINK where PROC_INST_ID_ = #{parameter, jdbcType=VARCHAR}
   </select>
 
   <select id="selectIdentityLinksByProcessDefinition" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="identityLinkResultMap">
-    select * from ${prefix}ACT_RU_IDENTITYLINK where PROC_DEF_ID_ = #{parameter}
+    select * from ${prefix}ACT_RU_IDENTITYLINK where PROC_DEF_ID_ = #{parameter, jdbcType=VARCHAR}
   </select>
 
  <select id="selectIdentityLinks" resultMap="identityLinkResultMap">

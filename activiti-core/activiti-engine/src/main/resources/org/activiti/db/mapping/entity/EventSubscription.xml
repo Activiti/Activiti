@@ -162,7 +162,7 @@
   <select id="selectEventSubscriptionsByExecution" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">
     select *
     from ${prefix}ACT_RU_EVENT_SUBSCR
-    where (EXECUTION_ID_ = #{parameter})
+    where (EXECUTION_ID_ = #{parameter, jdbcType=VARCHAR})
   </select>
 
   <select id="selectEventSubscriptionsByExecutionAndType" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">

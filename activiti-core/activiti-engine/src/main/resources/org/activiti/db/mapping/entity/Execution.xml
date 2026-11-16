@@ -397,7 +397,7 @@
 
   <select id="selectExecutionsWithSameRootProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="executionResultMap">
     <include refid="selectExecutionsFromSql"/>
-    where E.ROOT_PROC_INST_ID_ = (select ROOT_PROC_INST_ID_ from ${prefix}ACT_RU_EXECUTION where ID_ = #{parameter})
+    where E.ROOT_PROC_INST_ID_ = (select ROOT_PROC_INST_ID_ from ${prefix}ACT_RU_EXECUTION where ID_ = #{parameter, jdbcType=VARCHAR})
   </select>
 
   <select id="selectExecution" parameterType="string" resultMap="executionResultMap">
@@ -412,28 +412,28 @@
 
   <select id="selectExecutionsByParentExecutionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="executionResultMap">
     <include refid="selectExecutionsFromSql"/>
-    where E.PARENT_ID_ = #{parameter}
+    where E.PARENT_ID_ = #{parameter, jdbcType=VARCHAR}
   </select>
 
   <select id="selectExecutionsByRootProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="executionResultMap">
     <include refid="selectExecutionsFromSql"/>
-    where E.ROOT_PROC_INST_ID_ = #{parameter}
+    where E.ROOT_PROC_INST_ID_ = #{parameter, jdbcType=VARCHAR}
   </select>
 
   <select id="selectChildExecutionsByProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="executionResultMap">
     <include refid="selectExecutionsFromSql"/>
-    where E.PROC_INST_ID_ = #{parameter} and E.PARENT_ID_ is not null
+    where E.PROC_INST_ID_ = #{parameter, jdbcType=VARCHAR} and E.PARENT_ID_ is not null
   </select>
 
   <select id="selectExecutionsByProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="executionResultMap">
     <include refid="selectExecutionsFromSql"/>
-    where E.PROC_INST_ID_ = #{parameter}
+    where E.PROC_INST_ID_ = #{parameter, jdbcType=VARCHAR}
   </select>
 
   <select id="selectProcessInstanceIdsByProcessDefinitionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultType="string">
     select ID_
     from ${prefix}ACT_RU_EXECUTION
-    where PROC_DEF_ID_ = #{parameter} and PARENT_ID_ is null
+    where PROC_DEF_ID_ = #{parameter, jdbcType=VARCHAR} and PARENT_ID_ is null
   </select>
 
   <select id="selectInactiveExecutionsForProcessInstance" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="executionResultMap">
@@ -1039,7 +1039,7 @@
   <select id="selectSubProcessInstanceBySuperExecutionId" parameterType="string" resultMap="executionResultMap">
     select *
     from ${prefix}ACT_RU_EXECUTION
-    where SUPER_EXEC_ = #{parameter}
+    where SUPER_EXEC_ = #{parameter, jdbcType=VARCHAR}
   </select>
 
   <select id="selectExecutionByNativeQuery" parameterType="java.util.Map" resultMap="executionResultMap">

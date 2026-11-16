@@ -221,13 +221,13 @@
   <select id="selectHistoricProcessInstanceIdsByProcessDefinitionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultType="string">
     select ID_
     from ${prefix}ACT_HI_PROCINST
-    where PROC_DEF_ID_ = #{parameter}
+    where PROC_DEF_ID_ = #{parameter, jdbcType=VARCHAR}
   </select>
 
     <select id="selectHistoricProcessInstanceIdsBySuperProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="historicProcessInstanceResultMap">
     select *
     from ${prefix}ACT_HI_PROCINST
-    where SUPER_PROCESS_INSTANCE_ID_ = #{parameter}
+    where SUPER_PROCESS_INSTANCE_ID_ = #{parameter, jdbcType=VARCHAR}
   </select>
 
 

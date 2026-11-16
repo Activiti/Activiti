@@ -157,7 +157,7 @@
   </sql>
 
   <select id="selectDeploymentsByName" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="deploymentResultMap">
-    select * from ${prefix}ACT_RE_DEPLOYMENT D where NAME_=#{parameter} order by D.DEPLOY_TIME_ desc
+    select * from ${prefix}ACT_RE_DEPLOYMENT D where NAME_=#{parameter, jdbcType=VARCHAR} order by D.DEPLOY_TIME_ desc
   </select>
 
   <select id="selectDeploymentByVersion" parameterType="int" resultMap="deploymentResultMap">
