@@ -32,15 +32,11 @@ public class DbSchemaUpdateTest extends AbstractTestCase {
 
     static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:15-alpine")
         .withCopyFileToContainer(
-            MountableFile.forClasspathResource(
-                "schema-migration-test/from-7.2.0/activiti.postgres.create.engine.sql"
-            ),
+            MountableFile.forClasspathResource("schema-migration-test/from-7.2.0/activiti.postgres.create.engine.sql"),
             "/docker-entrypoint-initdb.d/engine.sql"
         )
         .withCopyFileToContainer(
-            MountableFile.forClasspathResource(
-                "schema-migration-test/from-7.2.0/activiti.postgres.create.history.sql"
-            ),
+            MountableFile.forClasspathResource("schema-migration-test/from-7.2.0/activiti.postgres.create.history.sql"),
             "/docker-entrypoint-initdb.d/history.sql"
         )
         .waitingFor(Wait.forListeningPort());
