@@ -18,13 +18,17 @@ package org.activiti.engine.test.bpmn.event.error;
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.BpmnError;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.impl.bpmn.behavior.NoneVariablesCalculator;
+import org.activiti.engine.impl.bpmn.behavior.VariablesPropagator;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.JvmUtil;
@@ -47,6 +51,35 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
         taskService.complete(task.getId());
         task = taskService.createTaskQuery().singleResult();
         assertThat(task.getName()).isEqualTo("task after catching the error");
+    }
+
+    @Deployment(
+        resources = "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testCatchErrorOnEmbeddedSubprocess.bpmn20.xml"
+    )
+    public void testExceptionWhileExecutingCatchIsNotReplacedByNoCatchingEventError() {
+        VariablesPropagator originalPropagator = processEngineConfiguration.getErrorVariablesPropagator();
+        processEngineConfiguration.setErrorVariablesPropagator(
+            new VariablesPropagator(new NoneVariablesCalculator()) {
+                @Override
+                public void propagateToProcessInstance(
+                    DelegateExecution execution,
+                    Map<String, Object> availableVariables
+                ) {
+                    throw new ActivitiException("Simulated failure while propagating error variables");
+                }
+            }
+        );
+
+        try {
+            runtimeService.startProcessInstanceByKey("boundaryErrorOnEmbeddedSubprocess");
+            Task task = taskService.createTaskQuery().singleResult();
+
+            assertThatThrownBy(() -> taskService.complete(task.getId()))
+                .isNotInstanceOf(BpmnError.class)
+                .hasMessage("Simulated failure while propagating error variables");
+        } finally {
+            processEngineConfiguration.setErrorVariablesPropagator(originalPropagator);
+        }
     }
 
     public void testThrowErrorWithEmptyErrorCode() {

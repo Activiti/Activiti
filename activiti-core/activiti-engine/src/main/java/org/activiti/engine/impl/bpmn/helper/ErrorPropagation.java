@@ -49,31 +49,24 @@ public class ErrorPropagation {
     }
 
     public static void propagateError(String errorRef, DelegateExecution execution) {
-        boolean isCatchExecutedForProcess = false;
-        boolean isCatchExecutedForCallActivity = false;
+        Map<String, List<Event>> eventMap = findCatchingEventsForProcess(
+            execution.getProcessDefinitionId(),
+            new Error(errorRef)
+        );
 
-        try {
-            Map<String, List<Event>> eventMap = findCatchingEventsForProcess(
-                execution.getProcessDefinitionId(),
-                new Error(errorRef)
+        boolean isCatchExecuted = !eventMap.isEmpty() && executeCatch(eventMap, execution, new Error(errorRef));
+
+        if (!isCatchExecuted && isCallActivity(execution)) {
+            isCatchExecuted = findCatchingEventsAndExecuteCatchForCallActivity(errorRef, execution);
+        }
+
+        if (!isCatchExecuted) {
+            throw new BpmnError(
+                errorRef,
+                "No catching boundary event found for error with errorCode '" +
+                    errorRef +
+                    "', neither in same process nor in parent process"
             );
-
-            if (!eventMap.isEmpty()) {
-                isCatchExecutedForProcess = executeCatch(eventMap, execution, new Error(errorRef));
-            }
-
-            if (!isCatchExecutedForProcess && isCallActivity(execution)) {
-                isCatchExecutedForCallActivity = findCatchingEventsAndExecuteCatchForCallActivity(errorRef, execution);
-            }
-        } finally {
-            if (!isCatchExecutedForProcess && !isCatchExecutedForCallActivity) {
-                throw new BpmnError(
-                    errorRef,
-                    "No catching boundary event found for error with errorCode '" +
-                        errorRef +
-                        "', neither in same process nor in parent process"
-                );
-            }
         }
     }
 
