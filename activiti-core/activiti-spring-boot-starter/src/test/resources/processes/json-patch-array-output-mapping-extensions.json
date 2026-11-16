@@ -1,0 +1,284 @@
+{
+  "description": "",
+  "extensions": {
+    "Process_1790951452242": {
+      "mappings": {
+        "Activity_0qybw1n": {
+          "inputs": {
+            "someStringVal": {
+              "type": "value",
+              "value": "${arrayItem1}"
+            }
+          },
+          "outputs": {
+            "uninitializedChildPropertyArray": {
+              "type": "jsonPatch",
+              "value": [
+                {
+                  "op": "add",
+                  "path": "/documents/${arrayIndex1}",
+                  "value": "${someStringVal}"
+                }
+              ]
+            }
+          }
+        },
+        "Activity_1j6z3j0": {
+          "inputs": {
+            "someStringVal": {
+              "type": "value",
+              "value": "${arrayItem2}"
+            }
+          },
+          "outputs": {
+            "initializedChildPropertyArray": {
+              "type": "jsonPatch",
+              "value": [
+                {
+                  "op": "add",
+                  "path": "/documents/${arrayIndex2}",
+                  "value": "${someStringVal}"
+                }
+              ]
+            }
+          }
+        },
+        "Activity_4e3t3s6": {
+          "inputs": {
+            "someStringVal": {
+              "type": "value",
+              "value": "${arrayItem3}"
+            }
+          },
+          "outputs": {
+            "uninitializedArray": {
+              "type": "jsonPatch",
+              "value": [
+                {
+                  "op": "add",
+                  "path": "/${arrayIndex3}",
+                  "value": "${someStringVal}"
+                }
+              ]
+            }
+          }
+        },
+        "Activity_54i6m43": {
+          "inputs": {
+            "someStringVal": {
+              "type": "value",
+              "value": "${arrayItem4}"
+            }
+          },
+          "outputs": {
+            "initializedArray": {
+              "type": "jsonPatch",
+              "value": [
+                {
+                  "op": "add",
+                  "path": "/${arrayIndex4}",
+                  "value": "${someStringVal}"
+                }
+              ]
+            }
+          }
+        },
+        "Activity_693x2x4": {
+          "inputs": {
+            "someStringVal": {
+              "type": "value",
+              "value": "${arrayItem5}"
+            }
+          },
+          "outputs": {
+            "alreadyPopulatedChildPropertyArray": {
+              "type": "jsonPatch",
+              "value": [
+                {
+                  "op": "add",
+                  "path": "/documents/${arrayIndex5}",
+                  "value": "${someStringVal}"
+                }
+              ]
+            }
+          }
+        },
+        "Activity_1x64492": {
+          "inputs": {
+            "someStringVal": {
+              "type": "value",
+              "value": "${arrayItem6}"
+            }
+          },
+          "outputs": {
+            "alreadyPopulatedArray": {
+              "type": "jsonPatch",
+              "value": [
+                {
+                  "op": "add",
+                  "path": "/${arrayIndex6}",
+                  "value": "${someStringVal}"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "properties": {
+        "69ca225a-aef4-4627-9444-7a178e291e94": {
+          "id": "69ca225a-aef4-4627-9444-7a178e291e94",
+          "name": "uninitializedChildPropertyArray",
+          "type": "json",
+          "model": {
+            "$ref": "#/$defs/primitive/json"
+          },
+          "required": false,
+          "ephemeral": false,
+          "description": "",
+          "category": "local"
+        },
+        "abf472e7-b982-40fd-86a0-e4a0bd771538": {
+          "id": "abf472e7-b982-40fd-86a0-e4a0bd771538",
+          "name": "initializedChildPropertyArray",
+          "type": "json",
+          "model": {
+            "$ref": "#/$defs/primitive/json"
+          },
+          "required": false,
+          "ephemeral": false,
+          "value": {
+            "documents": []
+          },
+          "description": "",
+          "category": "local"
+        },
+        "5709a109-f36c-4b6d-91b7-7ddc2ccdee55": {
+          "id": "5709a109-f36c-4b6d-91b7-7ddc2ccdee55",
+          "name": "uninitializedArray",
+          "type": "array",
+          "model": {
+            "type": "array",
+            "description": "Array of string items",
+            "items": {
+              "$ref": "#/$defs/primitive/string"
+            },
+            "examples": [
+              [
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+              ]
+            ]
+          },
+          "required": false,
+          "ephemeral": false,
+          "description": "",
+          "category": "local"
+        },
+        "a0320f3e-1875-4b35-be9d-6775372f206e": {
+          "id": "a0320f3e-1875-4b35-be9d-6775372f206e",
+          "name": "initializedArray",
+          "type": "array",
+          "model": {
+            "type": "array",
+            "description": "Array of string items",
+            "items": {
+              "$ref": "#/$defs/primitive/string"
+            },
+            "examples": [
+              [
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+              ]
+            ]
+          },
+          "required": false,
+          "ephemeral": false,
+          "value": [],
+          "description": "",
+          "category": "local"
+        },
+        "77eafd88-de64-4503-94ac-6d8ebd7d76ae": {
+          "id": "77eafd88-de64-4503-94ac-6d8ebd7d76ae",
+          "name": "arrayToLoopOver",
+          "type": "array",
+          "model": {
+            "type": "array",
+            "description": "Array of string items",
+            "items": {
+              "$ref": "#/$defs/primitive/string"
+            },
+            "examples": [
+              [
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+              ]
+            ]
+          },
+          "required": false,
+          "ephemeral": false,
+          "value": [
+            "ONE",
+            "TWO",
+            "THREE",
+            "FOUR",
+            "FIVE"
+          ],
+          "description": "",
+          "category": "local"
+        },
+        "b4150eb0-5c54-431d-aff5-4e335055c5e3": {
+          "id": "b4150eb0-5c54-431d-aff5-4e335055c5e3",
+          "name": "alreadyPopulatedChildPropertyArray",
+          "type": "json",
+          "model": {
+            "$ref": "#/$defs/primitive/json"
+          },
+          "required": false,
+          "ephemeral": false,
+          "value": {
+            "documents": [
+              "A",
+              "B",
+              "C",
+              "D",
+              "E"
+            ]
+          },
+          "description": "",
+          "category": "local"
+        },
+        "b8984185-f3e4-4984-99b8-bedc5f18f857": {
+          "id": "b8984185-f3e4-4984-99b8-bedc5f18f857",
+          "name": "alreadyPopulatedArray",
+          "type": "array",
+          "model": {
+            "type": "array",
+            "description": "Array of string items",
+            "items": {
+              "$ref": "#/$defs/primitive/string"
+            },
+            "examples": [
+              [
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+              ]
+            ]
+          },
+          "required": false,
+          "ephemeral": false,
+          "value": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F"
+          ],
+          "description": "",
+          "category": "local"
+        }
+      },
+      "assignments": {}
+    }
+  },
+  "id": "process-ae03105d-1e63-4333-8bb2-204ece0eac99",
+  "key": "show-array-output-ma-f8at1",
+  "name": "Show Array Output Mapping",
+  "type": "PROCESS"
+}
