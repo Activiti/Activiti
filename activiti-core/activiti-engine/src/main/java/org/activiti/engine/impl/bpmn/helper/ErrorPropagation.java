@@ -156,7 +156,7 @@ public class ErrorPropagation {
         }
 
         String errorCode = getErrorCodeFromExecution(execution, errorRef);
-        Error error = new Error(errorRef, errorCode);
+        Error error = new Error(errorRef, getErrorNameFromExecution(execution, errorRef), errorCode);
         ExecutionEntity parentExecution = processInstanceExecution.getSuperExecution();
         Set<String> toDeleteProcessInstanceIds = new HashSet<>();
         toDeleteProcessInstanceIds.add(execution.getProcessInstanceId());
@@ -186,6 +186,14 @@ public class ErrorPropagation {
         }
         BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(execution.getProcessDefinitionId());
         return bpmnModel != null ? bpmnModel.getErrorCode(errorRef) : null;
+    }
+
+    private static String getErrorNameFromExecution(DelegateExecution execution, String errorRef) {
+        if (execution == null || errorRef == null) {
+            return null;
+        }
+        BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(execution.getProcessDefinitionId());
+        return bpmnModel != null ? bpmnModel.findErrorById(errorRef).map(Error::getName).orElse(null) : null;
     }
 
     private static void deleteProcessInstanceEntity(
@@ -486,6 +494,9 @@ public class ErrorPropagation {
     }
 
     static String resolveErrorName(Error error, BpmnModel bpmnModel, String resolvedErrorCode) {
+        if (error.getName() != null) {
+            return error.getName();
+        }
         return bpmnModel
             .findErrorById(error.getId())
             .filter(bpmnError -> error.getErrorCode() == null || error.getErrorCode().equals(bpmnError.getErrorCode()))

@@ -155,13 +155,13 @@ class ProcessRuntimeErrorOutputMappingIT {
         assertThat(tasks.getContent()).extracting(Task::getName).containsExactly("Error Handler Task");
 
         // The child process throws error id="childError1", code="CHILD_404", name="Child Not Found".
-        // The parent model has no error with code CHILD_404, so errorName falls back to the code.
+        // The name is taken from the child model, even though the parent model has no such error.
         Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
 
         assertThat(variables)
             .extractingByKey("testError", as(MAP))
             .extractingByKeys("errorId", "errorCode", "errorName", "attachedToRef")
-            .containsExactly("childError1", "CHILD_404", "CHILD_404", "Activity_1w8vukd");
+            .containsExactly("childError1", "CHILD_404", "Child Not Found", "Activity_1w8vukd");
     }
 
     @Test

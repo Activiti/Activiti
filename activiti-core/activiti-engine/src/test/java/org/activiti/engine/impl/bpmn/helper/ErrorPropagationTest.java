@@ -129,6 +129,20 @@ class ErrorPropagationTest {
             // Must resolve to "NOT_FOUND" (code 404), not "INTERNAL_ERROR" (id "sharedId")
             assertThat(result).isEqualTo("NOT_FOUND");
         }
+
+        @Test
+        void should_returnThrownErrorName_when_errorCarriesName() {
+            // Error thrown by a child process: its name comes from the child model
+            BpmnModel catchingModel = new BpmnModel();
+            catchingModel.addError("parentError", "Parent Error", "CHILD_404");
+
+            Error error = new Error("childError", "Child Not Found", "CHILD_404");
+
+            String result = ErrorPropagation.resolveErrorName(error, catchingModel, "CHILD_404");
+
+            // The thrown error's name wins over a lookup in the catching model
+            assertThat(result).isEqualTo("Child Not Found");
+        }
     }
 
     @Nested
