@@ -106,14 +106,14 @@
 
   <select id="selectEventLogEntries" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="eventLogEntryResultMap">
     select * from ${prefix}ACT_EVT_LOG
-    WHERE LOG_NR_ &gt; #{parameter.startLogNr}
-    AND LOG_NR_ &lt; #{parameter.endLogNr}
+    WHERE LOG_NR_ &gt; #{parameter.startLogNr, jdbcType=BIGINT}
+    AND LOG_NR_ &lt; #{parameter.endLogNr, jdbcType=BIGINT}
     ORDER BY LOG_NR_
   </select>
 
   <select id="selectEventLogEntriesByProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="eventLogEntryResultMap">
     select * from ${prefix}ACT_EVT_LOG
-    WHERE PROC_INST_ID_ = #{parameter.processInstanceId}
+    WHERE PROC_INST_ID_ = #{parameter.processInstanceId, jdbcType=VARCHAR}
     ORDER BY LOG_NR_
   </select>
 

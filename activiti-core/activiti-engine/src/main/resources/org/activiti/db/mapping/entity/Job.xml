@@ -52,14 +52,14 @@
 
 	<select id="selectJobsByTypeAndProcessDefinitionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
 		select * from ${prefix}ACT_RU_JOB
-		where HANDLER_TYPE_ = #{parameter.handlerType}
-		and PROC_DEF_ID_ = #{parameter.processDefinitionId}
+		where HANDLER_TYPE_ = #{parameter.handlerType, jdbcType=VARCHAR}
+		and PROC_DEF_ID_ = #{parameter.processDefinitionId, jdbcType=VARCHAR}
 	</select>
 
 	<select id="selectJobsByConfiguration" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
 		select * from ${prefix}ACT_RU_JOB
-		where HANDLER_TYPE_ = #{parameter.handlerType}
-		and HANDLER_CFG_ like #{parameter.handlerConfiguration}${wildcardEscapeClause}
+		where HANDLER_TYPE_ = #{parameter.handlerType, jdbcType=VARCHAR}
+		and HANDLER_CFG_ like #{parameter.handlerConfiguration, jdbcType=VARCHAR}${wildcardEscapeClause}
 	</select>
 
 	<select id="selectJobsByExecutionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
@@ -77,14 +77,14 @@
 	<select id="selectJobByTypeAndProcessDefinitionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
 		select J.*
 		from ${prefix}ACT_RU_JOB J
-		where J.TYPE_ = #{parameter.handlerType}
-		and J.PROC_DEF_ID_ = #{parameter.processDefinitionId}
+		where J.TYPE_ = #{parameter.handlerType, jdbcType=VARCHAR}
+		and J.PROC_DEF_ID_ = #{parameter.processDefinitionId, jdbcType=VARCHAR}
 	</select>
 
 	<select id="selectJobByProcessDefinitionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
 		select J.*
 		from ${prefix}ACT_RU_JOB J
-		where J.PROC_DEF_ID_ = #{parameter.processDefinitionId}
+		where J.PROC_DEF_ID_ = #{parameter.processDefinitionId, jdbcType=VARCHAR}
 	</select>
 
 

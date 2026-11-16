@@ -292,14 +292,14 @@
   <select id="selectProcessDefinitionsByKeyAndVersion" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="processDefinitionResultMap">
     select *
     from ${prefix}ACT_RE_PROCDEF
-    where KEY_ = #{parameter.processDefinitionKey} and VERSION_ = #{parameter.processDefinitionVersion} and (TENANT_ID_ = '' or TENANT_ID_ is null)
+    where KEY_ = #{parameter.processDefinitionKey, jdbcType=VARCHAR} and VERSION_ = #{parameter.processDefinitionVersion, jdbcType=INTEGER} and (TENANT_ID_ = '' or TENANT_ID_ is null)
   </select>
 
 
    <select id="selectProcessDefinitionsByKeyAndVersionAndTenantId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="processDefinitionResultMap">
     select *
     from ${prefix}ACT_RE_PROCDEF
-    where KEY_ = #{parameter.processDefinitionKey} and VERSION_ = #{parameter.processDefinitionVersion} and TENANT_ID_ = #{parameter.tenantId}
+    where KEY_ = #{parameter.processDefinitionKey, jdbcType=VARCHAR} and VERSION_ = #{parameter.processDefinitionVersion, jdbcType=INTEGER} and TENANT_ID_ = #{parameter.tenantId, jdbcType=VARCHAR}
   </select>
 
   <select id="selectLatestProcessDefinitionByKey" parameterType="string" resultMap="processDefinitionResultMap">

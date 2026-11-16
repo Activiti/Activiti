@@ -108,42 +108,42 @@
   <select id="selectIdentityLinkByTaskUserGroupAndType" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="identityLinkResultMap">
     select *
     from ${prefix}ACT_RU_IDENTITYLINK
-    where TASK_ID_ = #{parameter.taskId}
+    where TASK_ID_ = #{parameter.taskId, jdbcType=VARCHAR}
       <if test="parameter.userId != null">
-        and USER_ID_ = #{parameter.userId}
+        and USER_ID_ = #{parameter.userId, jdbcType=VARCHAR}
       </if>
       <if test="parameter.groupId != null">
-        and GROUP_ID_ = #{parameter.groupId}
+        and GROUP_ID_ = #{parameter.groupId, jdbcType=VARCHAR}
       </if>
       <if test="parameter.type != null">
-        and TYPE_ = #{parameter.type}
+        and TYPE_ = #{parameter.type, jdbcType=VARCHAR}
       </if>
   </select>
 
    <select id="selectIdentityLinkByProcessInstanceUserGroupAndType" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="identityLinkResultMap">
     select *
     from ${prefix}ACT_RU_IDENTITYLINK
-    where PROC_INST_ID_ = #{parameter.processInstanceId}
+    where PROC_INST_ID_ = #{parameter.processInstanceId, jdbcType=VARCHAR}
       <if test="parameter.userId != null">
-        and USER_ID_ = #{parameter.userId}
+        and USER_ID_ = #{parameter.userId, jdbcType=VARCHAR}
       </if>
       <if test="parameter.groupId != null">
-        and GROUP_ID_ = #{parameter.groupId}
+        and GROUP_ID_ = #{parameter.groupId, jdbcType=VARCHAR}
       </if>
       <if test="parameter.type != null">
-        and TYPE_ = #{parameter.type}
+        and TYPE_ = #{parameter.type, jdbcType=VARCHAR}
       </if>
   </select>
 
   <select id="selectIdentityLinkByProcessDefinitionUserAndGroup" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="identityLinkResultMap">
     select *
     from ${prefix}ACT_RU_IDENTITYLINK
-    where PROC_DEF_ID_ = #{parameter.processDefinitionId}
+    where PROC_DEF_ID_ = #{parameter.processDefinitionId, jdbcType=VARCHAR}
       <if test="parameter.userId != null">
-        and USER_ID_ = #{parameter.userId}
+        and USER_ID_ = #{parameter.userId, jdbcType=VARCHAR}
       </if>
       <if test="parameter.groupId != null">
-        and GROUP_ID_ = #{parameter.groupId}
+        and GROUP_ID_ = #{parameter.groupId, jdbcType=VARCHAR}
       </if>
   </select>
 

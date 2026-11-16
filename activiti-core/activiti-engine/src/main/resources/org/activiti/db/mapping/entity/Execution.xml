@@ -184,7 +184,7 @@
     update ${prefix}ACT_RU_EXECUTION
     set
       LOCK_TIME_ = #{lockTime, jdbcType=TIMESTAMP}
-    where ID_ = #{id}
+    where ID_ = #{id, jdbcType=VARCHAR}
       and (LOCK_TIME_ is null OR LOCK_TIME_ &lt; #{expirationTime, jdbcType=TIMESTAMP})
   </update>
 
@@ -192,7 +192,7 @@
     update ${prefix}ACT_RU_EXECUTION
     set
       LOCK_TIME_ = null
-    where ID_ = #{id}
+    where ID_ = #{id, jdbcType=VARCHAR}
   </update>
 
   <update id="updateExecutionRelatedEntityCountEnabled" parameterType="boolean">
@@ -438,20 +438,20 @@
 
   <select id="selectInactiveExecutionsForProcessInstance" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="executionResultMap">
     <include refid="selectExecutionsFromSql"/>
-  	where E.PROC_INST_ID_ = #{parameter.processInstanceId}
-  	and E.IS_ACTIVE_ = #{parameter.isActive}
+    where E.PROC_INST_ID_ = #{parameter.processInstanceId, jdbcType=VARCHAR}
+    and E.IS_ACTIVE_ = #{parameter.isActive, jdbcType=BOOLEAN}
   </select>
 
   <select id="selectInactiveExecutionsInActivityAndProcessInstance" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="executionResultMap">
     <include refid="selectExecutionsFromSql"/>
-  	where E.ACT_ID_ = #{parameter.activityId}
-  	and E.PROC_INST_ID_ = #{parameter.processInstanceId}
-  	and E.IS_ACTIVE_ = #{parameter.isActive}
+    where E.ACT_ID_ = #{parameter.activityId, jdbcType=VARCHAR}
+    and E.PROC_INST_ID_ = #{parameter.processInstanceId, jdbcType=VARCHAR}
+    and E.IS_ACTIVE_ = #{parameter.isActive, jdbcType=BOOLEAN}
   </select>
 
   <select id="selectExecutionsByParentExecutionAndActivityIds" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="executionResultMap">
     <include refid="selectExecutionsFromSql"/>
-    where E.PARENT_ID_ = #{parameter.parentExecutionId}
+    where E.PARENT_ID_ = #{parameter.parentExecutionId, jdbcType=VARCHAR}
     and E.ACT_ID_ in
     <foreach item="activityId" collection="parameter.activityIds" open="(" separator="," close=")">
           #{activityId}

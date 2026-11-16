@@ -106,15 +106,15 @@
   <select id="selectHistoricIdentityLinkByTaskUserGroupAndType" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="historicIdentityLinkResultMap">
     select *
     from ${prefix}ACT_HI_IDENTITYLINK
-    where TASK_ID_ = #{parameter.taskId}
+    where TASK_ID_ = #{parameter.taskId, jdbcType=VARCHAR}
       <if test="parameter.userId != null">
-        and USER_ID_ = #{parameter.userId}
+        and USER_ID_ = #{parameter.userId, jdbcType=VARCHAR}
       </if>
       <if test="parameter.groupId != null">
-        and GROUP_ID_ = #{parameter.groupId}
+        and GROUP_ID_ = #{parameter.groupId, jdbcType=VARCHAR}
       </if>
       <if test="parameter.type != null">
-        and TYPE_ = #{parameter.type}
+        and TYPE_ = #{parameter.type, jdbcType=VARCHAR}
       </if>
   </select>
 </mapper>

@@ -241,8 +241,8 @@
 	<select id="selectTimerJobByTypeAndProcessDefinitionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
 		select J.*
 		from ${prefix}ACT_RU_TIMER_JOB J
-		where J.HANDLER_TYPE_ = #{parameter.handlerType}
-		and J.PROC_DEF_ID_ = #{parameter.processDefinitionId}
+		where J.HANDLER_TYPE_ = #{parameter.handlerType, jdbcType=VARCHAR}
+		and J.PROC_DEF_ID_ = #{parameter.processDefinitionId, jdbcType=VARCHAR}
 	</select>
 
 	<select id="selectTimerJobsByProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
@@ -261,8 +261,8 @@
 		select J.*
 		from ${prefix}ACT_RU_TIMER_JOB J
 		inner join ${prefix}ACT_RE_PROCDEF P on J.PROC_DEF_ID_ = P.ID_
-		where J.HANDLER_TYPE_ = #{parameter.handlerType}
-		and P.KEY_ = #{parameter.processDefinitionKey}
+		where J.HANDLER_TYPE_ = #{parameter.handlerType, jdbcType=VARCHAR}
+		and P.KEY_ = #{parameter.processDefinitionKey, jdbcType=VARCHAR}
 		and (P.TENANT_ID_ = '' or P.TENANT_ID_ is null)
 	</select>
 
@@ -270,9 +270,9 @@
 		select J.*
 		from ${prefix}ACT_RU_TIMER_JOB J
 		inner join ${prefix}ACT_RE_PROCDEF P on J.PROC_DEF_ID_ = P.ID_
-		where J.HANDLER_TYPE_ = #{parameter.handlerType}
-		and P.KEY_ = #{parameter.processDefinitionKey}
-		and P.TENANT_ID_ = #{parameter.tenantId}
+		where J.HANDLER_TYPE_ = #{parameter.handlerType, jdbcType=VARCHAR}
+		and P.KEY_ = #{parameter.processDefinitionKey, jdbcType=VARCHAR}
+		and P.TENANT_ID_ = #{parameter.tenantId, jdbcType=VARCHAR}
 	</select>
 
 	<!-- JOB DELETE STATEMENTS -->
