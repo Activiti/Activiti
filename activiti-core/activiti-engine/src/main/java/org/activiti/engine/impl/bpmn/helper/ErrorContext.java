@@ -17,13 +17,6 @@ package org.activiti.engine.impl.bpmn.helper;
 
 import java.io.Serializable;
 
-/**
- * Contextual data about a caught BPMN error, passed through the output
- * mapping pipeline and optionally stored as a process variable.
- *
- * <p>Implements {@link Serializable} so it can be set directly as a
- * process variable value.</p>
- */
 public class ErrorContext implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -31,12 +24,13 @@ public class ErrorContext implements Serializable {
     private final String errorId;
     private final String errorCode;
     private final String errorName;
-    private String attachedToRef;
+    private final String attachedToRef;
 
-    public ErrorContext(String errorId, String errorCode, String errorName) {
+    public ErrorContext(String errorId, String errorCode, String errorName, String attachedToRef) {
         this.errorId = errorId;
         this.errorCode = errorCode;
         this.errorName = errorName;
+        this.attachedToRef = attachedToRef;
     }
 
     public String getErrorId() {
@@ -53,9 +47,5 @@ public class ErrorContext implements Serializable {
 
     public String getAttachedToRef() {
         return attachedToRef;
-    }
-
-    public void setAttachedToRef(String attachedToRef) {
-        this.attachedToRef = attachedToRef;
     }
 }

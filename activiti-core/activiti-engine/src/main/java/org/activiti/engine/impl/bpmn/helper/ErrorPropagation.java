@@ -42,6 +42,8 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class ErrorPropagation {
 
+    public static final String ERROR_CONTEXT_MAPPING_KEY = "error";
+
     public static void propagateError(BpmnError error, DelegateExecution execution) {
         propagateError(error.getErrorCode(), execution);
     }
@@ -260,7 +262,7 @@ public class ErrorPropagation {
                 );
         }
 
-        ErrorContext errorContext = buildErrorContext(error, bpmnModel, resolvedErrorCode);
+        ErrorContext errorContext = buildErrorContext(error, bpmnModel, resolvedErrorCode, event);
 
         if (event instanceof StartEvent) {
             ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
@@ -283,7 +285,6 @@ public class ErrorPropagation {
                     boundaryExecution = childExecution;
                 }
             }
-            errorContext.setAttachedToRef(resolveAttachedToRef(event));
             propagateErrorVariables(boundaryExecution, errorContext);
             Context.getAgenda().planTriggerExecutionOperation(boundaryExecution);
         }
@@ -466,10 +467,6 @@ public class ErrorPropagation {
         return defaultExceptionMapping;
     }
 
-    /**
-     * Returns the id of the activity a boundary event is attached to, or {@code null} for any other
-     * catching event (for example the error start event of an event subprocess).
-     */
     static String resolveAttachedToRef(Event event) {
         if (event instanceof BoundaryEvent boundaryEvent && boundaryEvent.getAttachedToRef() != null) {
             return boundaryEvent.getAttachedToRef().getId();
@@ -484,22 +481,14 @@ public class ErrorPropagation {
         }
         configuration
             .getErrorVariablesPropagator()
-            .propagateToProcessInstance(catchingExecution, Map.of("error", errorContext));
+            .propagateToProcessInstance(catchingExecution, Map.of(ERROR_CONTEXT_MAPPING_KEY, errorContext));
     }
 
-    /**
-     * Builds an {@link ErrorContext} containing errorCode, errorId, and errorName.
-     */
-    static ErrorContext buildErrorContext(Error error, BpmnModel bpmnModel, String resolvedErrorCode) {
+    static ErrorContext buildErrorContext(Error error, BpmnModel bpmnModel, String resolvedErrorCode, Event event) {
         String errorName = bpmnModel != null ? resolveErrorName(error, bpmnModel, resolvedErrorCode) : null;
-        return new ErrorContext(error.getId(), resolvedErrorCode, errorName);
+        return new ErrorContext(error.getId(), resolvedErrorCode, errorName, resolveAttachedToRef(event));
     }
 
-    /**
-     * Resolves the error name from the BPMN model.
-     * First tries direct lookup by error id, then searches by error code.
-     * Falls back to the resolved error code if no BPMN error definition is found.
-     */
     static String resolveErrorName(Error error, BpmnModel bpmnModel, String resolvedErrorCode) {
         return bpmnModel
             .findErrorById(error.getId())

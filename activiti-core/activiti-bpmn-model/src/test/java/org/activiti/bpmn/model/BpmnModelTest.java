@@ -63,7 +63,6 @@ public class BpmnModelTest {
         bpmnModel.addError("errorRef2", "Error Two", "CODE_002");
 
         assertThat(bpmnModel.findErrorById("errorRef2"))
-            .isPresent()
             .get()
             .extracting(Error::getId, Error::getName, Error::getErrorCode)
             .containsExactly("errorRef2", "Error Two", "CODE_002");
@@ -94,7 +93,6 @@ public class BpmnModelTest {
         bpmnModel.addError("errorRef2", "Error Two", "CODE_002");
 
         assertThat(bpmnModel.findErrorByErrorCode("CODE_002"))
-            .isPresent()
             .get()
             .extracting(Error::getId, Error::getName, Error::getErrorCode)
             .containsExactly("errorRef2", "Error Two", "CODE_002");

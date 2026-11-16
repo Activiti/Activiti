@@ -15,6 +15,7 @@
  */
 package org.activiti.engine.impl.bpmn.helper;
 
+import static org.activiti.engine.impl.bpmn.helper.ErrorPropagation.ERROR_CONTEXT_MAPPING_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.ArgumentMatchers.any;
@@ -139,7 +140,7 @@ class ErrorPropagationTest {
 
             Error error = new Error("errorId");
 
-            ErrorContext payload = ErrorPropagation.buildErrorContext(error, bpmnModel, "404");
+            ErrorContext payload = ErrorPropagation.buildErrorContext(error, bpmnModel, "404", null);
 
             assertThat(payload)
                 .extracting(
@@ -157,7 +158,7 @@ class ErrorPropagationTest {
 
             Error error = new Error("REQUEST_TIMEOUT");
 
-            ErrorContext payload = ErrorPropagation.buildErrorContext(error, bpmnModel, "REQUEST_TIMEOUT");
+            ErrorContext payload = ErrorPropagation.buildErrorContext(error, bpmnModel, "REQUEST_TIMEOUT", null);
 
             assertThat(payload)
                 .extracting(ErrorContext::getErrorCode, ErrorContext::getErrorId, ErrorContext::getErrorName)
@@ -168,7 +169,7 @@ class ErrorPropagationTest {
         void should_buildPayload_withoutName_whenBpmnModelIsNull() {
             Error error = new Error("errorId");
 
-            ErrorContext payload = ErrorPropagation.buildErrorContext(error, null, "404");
+            ErrorContext payload = ErrorPropagation.buildErrorContext(error, null, "404", null);
 
             assertThat(payload)
                 .extracting(ErrorContext::getErrorCode, ErrorContext::getErrorId, ErrorContext::getErrorName)
@@ -182,7 +183,7 @@ class ErrorPropagationTest {
 
             Error error = new Error("503"); // connector passes error code as id
 
-            ErrorContext payload = ErrorPropagation.buildErrorContext(error, bpmnModel, "503");
+            ErrorContext payload = ErrorPropagation.buildErrorContext(error, bpmnModel, "503", null);
 
             assertThat(payload)
                 .extracting(ErrorContext::getErrorCode, ErrorContext::getErrorId, ErrorContext::getErrorName)
@@ -190,14 +191,18 @@ class ErrorPropagationTest {
         }
 
         @Test
-        void should_includeAttachedToRef_whenSet() {
+        void should_setAttachedToRef_when_eventIsBoundaryEvent() {
             BpmnModel bpmnModel = new BpmnModel();
             bpmnModel.addError("errorId", "NOT_FOUND", "404");
 
             Error error = new Error("errorId");
 
-            ErrorContext payload = ErrorPropagation.buildErrorContext(error, bpmnModel, "404");
-            payload.setAttachedToRef("Activity_1w8vukd");
+            ServiceTask attachedActivity = new ServiceTask();
+            attachedActivity.setId("Activity_1w8vukd");
+            BoundaryEvent boundaryEvent = new BoundaryEvent();
+            boundaryEvent.setAttachedToRef(attachedActivity);
+
+            ErrorContext payload = ErrorPropagation.buildErrorContext(error, bpmnModel, "404", boundaryEvent);
 
             assertThat(payload)
                 .extracting(
@@ -258,7 +263,7 @@ class ErrorPropagationTest {
     @Nested
     class PropagateErrorVariables {
 
-        private final ErrorContext errorContext = new ErrorContext("errorId", "404", "NOT_FOUND");
+        private final ErrorContext errorContext = new ErrorContext("errorId", "404", "NOT_FOUND", null);
 
         @AfterEach
         void tearDown() {
@@ -283,7 +288,10 @@ class ErrorPropagationTest {
 
             ErrorPropagation.propagateErrorVariables(catchingExecution, errorContext);
 
-            verify(propagator).propagateToProcessInstance(catchingExecution, Map.of("error", errorContext));
+            verify(propagator).propagateToProcessInstance(
+                catchingExecution,
+                Map.of(ERROR_CONTEXT_MAPPING_KEY, errorContext)
+            );
             verify(propagator, never()).propagate(any(), any(Map.class));
         }
 
