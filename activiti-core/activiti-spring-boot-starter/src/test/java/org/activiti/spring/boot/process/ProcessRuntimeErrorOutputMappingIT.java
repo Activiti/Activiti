@@ -17,7 +17,7 @@ package org.activiti.spring.boot.process;
 
 import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.InstanceOfAssertFactories.type;
+import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 
 import java.util.Map;
 import org.activiti.api.process.model.ProcessInstance;
@@ -30,7 +30,6 @@ import org.activiti.api.task.model.builders.GetTasksPayloadBuilder;
 import org.activiti.api.task.model.payloads.GetTasksPayload;
 import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.engine.RuntimeService;
-import org.activiti.engine.impl.bpmn.helper.ErrorContext;
 import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
 import org.junit.jupiter.api.AfterEach;
@@ -90,9 +89,9 @@ class ProcessRuntimeErrorOutputMappingIT {
 
         Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
         assertThat(variables)
-            .extractingByKey("boundaryError", as(type(ErrorContext.class)))
-            .extracting(ErrorContext::getErrorCode, ErrorContext::getErrorName, ErrorContext::getAttachedToRef)
-            .containsExactly("404", "NOT_FOUND", "subProcess");
+            .extractingByKey("boundaryError", as(MAP))
+            .extractingByKeys("errorId", "errorCode", "errorName", "attachedToRef")
+            .containsExactly("errorId", "404", "NOT_FOUND", "subProcess");
     }
 
     @Test
@@ -112,8 +111,8 @@ class ProcessRuntimeErrorOutputMappingIT {
         Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
 
         assertThat(variables)
-            .extractingByKey("catchAllError", as(type(ErrorContext.class)))
-            .extracting(ErrorContext::getErrorCode, ErrorContext::getErrorName, ErrorContext::getAttachedToRef)
+            .extractingByKey("catchAllError", as(MAP))
+            .extractingByKeys("errorCode", "errorName", "attachedToRef")
             .containsExactly("KNOWN_ERROR", "Known Error", "subProcess");
     }
 
@@ -136,9 +135,9 @@ class ProcessRuntimeErrorOutputMappingIT {
         Map<String, Object> variables = runtimeService.getVariablesLocal(processInstance.getId());
 
         assertThat(variables)
-            .extractingByKey("subProcessError", as(type(ErrorContext.class)))
-            .extracting(ErrorContext::getErrorCode, ErrorContext::getErrorName, ErrorContext::getAttachedToRef)
-            .containsExactly("503", "SERVICE_UNAVAILABLE", null);
+            .extractingByKey("subProcessError", as(MAP))
+            .extractingByKeys("errorId", "errorCode", "errorName", "attachedToRef")
+            .containsExactly("errorId", "503", "SERVICE_UNAVAILABLE", null);
     }
 
     @Test
@@ -160,14 +159,9 @@ class ProcessRuntimeErrorOutputMappingIT {
         Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
 
         assertThat(variables)
-            .extractingByKey("testError", as(type(ErrorContext.class)))
-            .extracting(
-                ErrorContext::getErrorCode,
-                ErrorContext::getErrorId,
-                ErrorContext::getErrorName,
-                ErrorContext::getAttachedToRef
-            )
-            .containsExactly("CHILD_404", "childError1", "CHILD_404", "Activity_1w8vukd");
+            .extractingByKey("testError", as(MAP))
+            .extractingByKeys("errorId", "errorCode", "errorName", "attachedToRef")
+            .containsExactly("childError1", "CHILD_404", "CHILD_404", "Activity_1w8vukd");
     }
 
     @Test
@@ -187,13 +181,8 @@ class ProcessRuntimeErrorOutputMappingIT {
         Map<String, Object> variables = runtimeService.getVariablesLocal(processInstance.getId());
 
         assertThat(variables)
-            .extractingByKey("miError", as(type(ErrorContext.class)))
-            .extracting(
-                ErrorContext::getErrorCode,
-                ErrorContext::getErrorId,
-                ErrorContext::getErrorName,
-                ErrorContext::getAttachedToRef
-            )
-            .containsExactly("MI_500", "miErrorId", "MI_FAILED", "miSubProcess");
+            .extractingByKey("miError", as(MAP))
+            .extractingByKeys("errorId", "errorCode", "errorName", "attachedToRef")
+            .containsExactly("miErrorId", "MI_500", "MI_FAILED", "miSubProcess");
     }
 }

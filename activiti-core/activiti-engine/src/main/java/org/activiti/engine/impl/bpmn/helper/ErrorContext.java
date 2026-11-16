@@ -15,11 +15,7 @@
  */
 package org.activiti.engine.impl.bpmn.helper;
 
-import java.io.Serializable;
-
-public class ErrorContext implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class ErrorContext {
 
     private final String errorId;
     private final String errorCode;

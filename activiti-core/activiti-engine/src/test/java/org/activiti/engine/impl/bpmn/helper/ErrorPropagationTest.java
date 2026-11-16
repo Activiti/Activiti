@@ -39,6 +39,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import tools.jackson.databind.json.JsonMapper;
 
 class ErrorPropagationTest {
 
@@ -264,6 +265,7 @@ class ErrorPropagationTest {
     class PropagateErrorVariables {
 
         private final ErrorContext errorContext = new ErrorContext("errorId", "404", "NOT_FOUND", null);
+        private final JsonMapper jsonMapper = JsonMapper.builder().build();
 
         @AfterEach
         void tearDown() {
@@ -278,6 +280,7 @@ class ErrorPropagationTest {
             VariablesPropagator propagator = mock(VariablesPropagator.class);
             when(configuration.getErrorVariablesPropagator()).thenReturn(propagator);
             Context.setProcessEngineConfiguration(configuration);
+            when(configuration.getObjectMapper()).thenReturn(jsonMapper);
             return propagator;
         }
 
@@ -290,7 +293,7 @@ class ErrorPropagationTest {
 
             verify(propagator).propagateToProcessInstance(
                 catchingExecution,
-                Map.of(ERROR_CONTEXT_MAPPING_KEY, errorContext)
+                Map.of(ERROR_CONTEXT_MAPPING_KEY, jsonMapper.valueToTree(errorContext))
             );
             verify(propagator, never()).propagate(any(), any(Map.class));
         }

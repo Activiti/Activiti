@@ -474,7 +474,10 @@ public class ErrorPropagation {
         }
         configuration
             .getErrorVariablesPropagator()
-            .propagateToProcessInstance(catchingExecution, Map.of(ERROR_CONTEXT_MAPPING_KEY, errorContext));
+            .propagateToProcessInstance(
+                catchingExecution,
+                Map.of(ERROR_CONTEXT_MAPPING_KEY, configuration.getObjectMapper().valueToTree(errorContext))
+            );
     }
 
     static ErrorContext buildErrorContext(Error error, BpmnModel bpmnModel, String resolvedErrorCode, Event event) {
