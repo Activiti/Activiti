@@ -1,0 +1,12 @@
+{
+  "id": "childProcessErrorBoundary",
+  "name": "childProcessErrorBoundary.bpmn20.xml",
+  "extensions": {
+    "childProcessErrorBoundary": {
+      "constants": {},
+      "mappings": {},
+      "properties": {},
+      "assignments": {}
+    }
+  }
+}
