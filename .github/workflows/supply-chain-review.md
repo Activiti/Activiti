@@ -2,6 +2,7 @@
 on:
   slash_command:
     name: supply-chain-review
+    events: [pull_request_comment]
   reaction: rocket
 
 permissions:
@@ -39,7 +40,8 @@ safe-outputs:
     supersede-older-reviews: true
   dismiss-pull-request-review:
 
-source: Alfresco/alfresco-build-tools/.github/workflows/supply-chain-review.md@64d172fbbdaef947b1bacc9871e57ede508a245c
+source: Alfresco/alfresco-build-tools/.github/workflows/supply-chain-review.md@9f69d52b74df4ac39ec71c9594de3ce507b947f2
+source-sha: "9f69d52b74df4ac39ec71c9594de3ce507b947f2"
 ---
 
 # Supply Chain Review
