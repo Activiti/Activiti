@@ -33,7 +33,7 @@ repos:
       - id: check-github-workflows
         exclude: ^\.github/workflows/.*\.lock\.yml$
   - repo: https://github.com/returntocorp/semgrep
-    rev: ac37d1f6e47b17648b8f854d6e2f2d72fade2567 # frozen: v1.184.0
+    rev: 9240f708f8d7e2fbd38b67aa6cd17704b1f81e14 # frozen: v1.185.0
     hooks:
       - id: semgrep
         types_or:
