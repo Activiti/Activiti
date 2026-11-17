@@ -26,7 +26,7 @@ This repository includes an automated **Preview Propagation** mechanism for test
 3. Test the integration in the downstream PR
 4. When your source PR closes/merges, the test PR automatically closes
 
-Preview snapshots (`0.0.1-PR-<number>-SNAPSHOT`) and develop alpha releases are published to Cloudsmith only, using `activiti-snapshots` and `activiti-releases`, respectively. Propagation starts after the deployment succeeds.
+Preview snapshots (`0.0.1-PR-<number>-SNAPSHOT`) and develop alpha releases are published to Cloudsmith, using `activiti-snapshots` and `activiti-releases`, respectively. Until all consumers resolve Activiti from Cloudsmith, CI also publishes them to the same Nexus repositories. Nexus is not used to resolve artifacts. Propagation starts after both deployments succeed.
 
 ## Maven repositories
 
