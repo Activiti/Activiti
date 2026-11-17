@@ -29,19 +29,19 @@ jobs:
     steps:
       - name: Check dependabot/fork build
         if: github.secret_source == 'Dependabot' || (github.secret_source == 'None' && github.event.action != 'milestoned')
-        uses: Alfresco/alfresco-build-tools/.github/actions/github-require-secrets@2cebc8f19812b2653361d82e86b25f29cfa4a144 # v19.12.1
+        uses: Alfresco/alfresco-build-tools/.github/actions/github-require-secrets@3bbbfc459dd15452e68e3cefcbc56596d88d71ee # v19.15.0
         with:
           dependabot-error-message: "This PR requires additional validation, please set the milestone to 'Validating' or ask a reviewer to approve it."
           none-error-message: "This PR requires additional validation, please set the milestone to 'Validating'."
       - name: pre-commit
-        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@2cebc8f19812b2653361d82e86b25f29cfa4a144 # v19.12.1
+        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@3bbbfc459dd15452e68e3cefcbc56596d88d71ee # v19.15.0
       - name: Ensure SHA pinned actions
         uses: hyland/github-actions-ensure-sha-pinned-actions@9f71a10c9852b115cfcb146ec2d8d09e2b89593f # v2.1.1
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Ensure all actions are covered by Dependabot
-        uses: Alfresco/alfresco-build-tools/.github/actions/dependabot-missing-actions-check@2cebc8f19812b2653361d82e86b25f29cfa4a144 # v19.12.1
+        uses: Alfresco/alfresco-build-tools/.github/actions/dependabot-missing-actions-check@3bbbfc459dd15452e68e3cefcbc56596d88d71ee # v19.15.0
       - name: Check PR preview
         id: check_pr_preview
         shell: bash
@@ -152,7 +152,7 @@ jobs:
       - name: Use preview updatebot config
         shell: bash
         run: cp .jx/updatebot-preview.yaml .jx/updatebot.yaml
-      - uses: Alfresco/alfresco-build-tools/.github/actions/jx-updatebot-pr@2cebc8f19812b2653361d82e86b25f29cfa4a144 # v19.12.1
+      - uses: Alfresco/alfresco-build-tools/.github/actions/jx-updatebot-pr@3bbbfc459dd15452e68e3cefcbc56596d88d71ee # v19.15.0
         env:
           BUILD_RUN_ID: ${{ github.run_id }}
         with:
@@ -182,7 +182,7 @@ jobs:
 
       - name: Close preview PRs if source PR closed while propagating
         if: ${{ steps.source-pr-state.outputs.state != 'OPEN' }}
-        uses: Alfresco/alfresco-build-tools/.github/actions/github-close-orphaned-preview-prs@2cebc8f19812b2653361d82e86b25f29cfa4a144 # v19.12.1
+        uses: Alfresco/alfresco-build-tools/.github/actions/github-close-orphaned-preview-prs@3bbbfc459dd15452e68e3cefcbc56596d88d71ee # v19.15.0
         with:
           source-pr-number: ${{ github.event.pull_request.number }}
           source-pr-state: ${{ steps.source-pr-state.outputs.state }}
