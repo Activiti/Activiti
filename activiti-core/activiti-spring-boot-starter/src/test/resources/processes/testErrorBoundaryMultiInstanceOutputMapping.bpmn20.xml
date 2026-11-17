@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:activiti="http://activiti.org/bpmn" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Activiti Modeler" exporterVersion="3.0.0-beta.3">
+  <bpmn:error id="miErrorId" name="MI_FAILED" errorCode="MI_500" />
+  <bpmn:process id="errorBoundaryMultiInstanceOutputMapping" name="errorBoundaryMultiInstanceOutputMapping" isExecutable="true">
+    <bpmn:startEvent id="theStart">
+      <bpmn:outgoing>flow1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <!-- Multi-instance embedded subprocess: each instance throws the error.
+         The boundary execution is a child of the multi-instance root execution. -->
+    <bpmn:subProcess id="miSubProcess">
+      <bpmn:incoming>flow1</bpmn:incoming>
+      <bpmn:outgoing>flow3</bpmn:outgoing>
+      <bpmn:multiInstanceLoopCharacteristics isSequential="true">
+        <bpmn:loopCardinality>2</bpmn:loopCardinality>
+      </bpmn:multiInstanceLoopCharacteristics>
+      <bpmn:startEvent id="miSubStart">
+        <bpmn:outgoing>flow2</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:sequenceFlow id="flow2" sourceRef="miSubStart" targetRef="miSubEnd" />
+      <bpmn:endEvent id="miSubEnd">
+        <bpmn:incoming>flow2</bpmn:incoming>
+        <bpmn:errorEventDefinition errorRef="miErrorId" />
+      </bpmn:endEvent>
+    </bpmn:subProcess>
+    <bpmn:sequenceFlow id="flow1" sourceRef="theStart" targetRef="miSubProcess" />
+    <bpmn:endEvent id="theEnd">
+      <bpmn:incoming>flow3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="flow3" sourceRef="miSubProcess" targetRef="theEnd" />
+    <bpmn:boundaryEvent id="catchMiError" attachedToRef="miSubProcess">
+      <bpmn:outgoing>flow4</bpmn:outgoing>
+      <bpmn:errorEventDefinition errorRef="miErrorId" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="flow4" sourceRef="catchMiError" targetRef="miErrorTask" />
+    <bpmn:userTask id="miErrorTask" name="Multi Instance Error Task" activiti:candidateUsers="user">
+      <bpmn:incoming>flow4</bpmn:incoming>
+      <bpmn:outgoing>flow5</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="flow5" sourceRef="miErrorTask" targetRef="errorEnd" />
+    <bpmn:endEvent id="errorEnd">
+      <bpmn:incoming>flow5</bpmn:incoming>
+    </bpmn:endEvent>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="errorBoundaryMultiInstanceOutputMapping">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="theStart">
+        <dc:Bounds x="179" y="159" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="SubProcess_mi_di" bpmnElement="miSubProcess" isExpanded="true">
+        <dc:Bounds x="261" y="87" width="350" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BoundaryEvent_mi_di" bpmnElement="catchMiError">
+        <dc:Bounds x="418" y="270" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_mi_di" bpmnElement="miErrorTask">
+        <dc:Bounds x="386" y="364" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

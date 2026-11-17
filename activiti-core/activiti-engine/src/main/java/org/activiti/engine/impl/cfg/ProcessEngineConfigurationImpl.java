@@ -75,6 +75,8 @@ import org.activiti.engine.impl.asyncexecutor.DefaultAsyncJobExecutor;
 import org.activiti.engine.impl.asyncexecutor.DefaultJobManager;
 import org.activiti.engine.impl.asyncexecutor.ExecuteAsyncRunnableFactory;
 import org.activiti.engine.impl.asyncexecutor.JobManager;
+import org.activiti.engine.impl.bpmn.behavior.NoneVariablesCalculator;
+import org.activiti.engine.impl.bpmn.behavior.VariablesPropagator;
 import org.activiti.engine.impl.bpmn.data.ItemInstance;
 import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
 import org.activiti.engine.impl.bpmn.deployer.BpmnDeploymentHelper;
@@ -440,6 +442,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     private IntegrationContextManager integrationContextManager;
     private EventSubscriptionPayloadMappingProvider eventSubscriptionPayloadMappingProvider =
         new EventSubscriptionPayloadMappingProvider() {};
+    private VariablesPropagator errorVariablesPropagator = new VariablesPropagator(new NoneVariablesCalculator());
     // History Manager
 
     protected HistoryManager historyManager;
@@ -3944,6 +3947,14 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         EventSubscriptionPayloadMappingProvider eventSubscriptionPayloadMappingProvider
     ) {
         this.eventSubscriptionPayloadMappingProvider = eventSubscriptionPayloadMappingProvider;
+    }
+
+    public VariablesPropagator getErrorVariablesPropagator() {
+        return errorVariablesPropagator;
+    }
+
+    public void setErrorVariablesPropagator(VariablesPropagator errorVariablesPropagator) {
+        this.errorVariablesPropagator = errorVariablesPropagator;
     }
 
     public ProcessDefinitionHelper getProcessDefinitionHelper() {

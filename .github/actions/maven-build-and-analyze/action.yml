@@ -1,15 +1,9 @@
 name: Maven build and analyze
 description: >-
   Builds and tests the project with Maven, aggregates JaCoCo coverage and runs
-  the SonarCloud analysis. Java must be set up before calling this action.
+  the SonarCloud analysis. Run setup-java-maven before calling this action.
 
 inputs:
-  nexus-username:
-    description: Nexus username for Maven.
-    required: true
-  nexus-password:
-    description: Nexus password for Maven.
-    required: true
   sonar-token:
     description: SonarCloud token. When empty, the analysis is skipped.
     required: false
@@ -22,9 +16,7 @@ runs:
       shell: bash
       run: mvn install ${{ env.MAVEN_CLI_OPTS }}
       env:
-        MAVEN_CLI_OPTS: --show-version --no-transfer-progress --settings settings.xml
-        MAVEN_USERNAME: ${{ inputs.nexus-username }}
-        MAVEN_PASSWORD: ${{ inputs.nexus-password }}
+        MAVEN_CLI_OPTS: --show-version --no-transfer-progress
 
     - name: Merge JaCoCo execution files
       shell: bash
@@ -44,9 +36,7 @@ runs:
       shell: bash
       run: mvn ${{ env.SONAR_SCANNER_OPTS }} ${{ env.MAVEN_CLI_OPTS }}
       env:
-        MAVEN_CLI_OPTS: --show-version --no-transfer-progress --settings settings.xml
-        MAVEN_USERNAME: ${{ inputs.nexus-username }}
-        MAVEN_PASSWORD: ${{ inputs.nexus-password }}
+        MAVEN_CLI_OPTS: --show-version --no-transfer-progress
         SONAR_TOKEN: ${{ inputs.sonar-token }}
 
     - name: Echo Longest Test Run
