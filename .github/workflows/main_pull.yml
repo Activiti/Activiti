@@ -54,6 +54,7 @@ jobs:
     permissions:
       actions: write
       contents: read
+      id-token: write
     outputs:
       version: ${{ env.VERSION }}
     steps:
@@ -67,6 +68,7 @@ jobs:
       - uses: ./.github/actions/setup-java-maven
         with:
           maven-version: ${{ env.MAVEN_VERSION }}
+          cloudsmith-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
 
       - name: Set preview version
         if: ${{ needs.pre-checks.outputs.preview == 'true' }}
@@ -88,8 +90,6 @@ jobs:
 
       - uses: ./.github/actions/maven-build-and-analyze
         with:
-          nexus-username: ${{ secrets.NEXUS_USERNAME }}
-          nexus-password: ${{ secrets.NEXUS_PASSWORD }}
           sonar-token: ${{ secrets.SONAR_TOKEN }}
 
   publish:
@@ -111,6 +111,7 @@ jobs:
       - uses: ./.github/actions/setup-java-maven
         with:
           maven-version: ${{ env.MAVEN_VERSION }}
+          cloudsmith-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
 
       - name: Set preview version
         run: |
@@ -126,28 +127,12 @@ jobs:
       - name: Update pom files to the new version
         run: mvn -B versions:set -DnewVersion="$VERSION" -DprocessAllModules=true -DgenerateBackupPoms=false
 
-      - name: Deploy preview to Nexus
-        shell: bash
-        run: mvn deploy -DskipTests -DskipITs ${{ env.MAVEN_CLI_OPTS}}
-        env:
-          MAVEN_CLI_OPTS: --show-version --no-transfer-progress --settings settings.xml
-          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-
-      - name: Authenticate with Cloudsmith
-        uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@2cebc8f19812b2653361d82e86b25f29cfa4a144 # v19.12.1
-        with:
-          oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
-          verify-auth: "true"
-
       - name: Deploy preview to Cloudsmith
         shell: bash
-        run: mvn --batch-mode deploy '-Pcloudsmith,!alfresco' -Daether.connector.basic.upstreamThreads.cloudsmith=10 -DskipTests -DskipITs ${{ env.MAVEN_CLI_OPTS}}
+        run: mvn --batch-mode deploy -Pcloudsmith -Daether.connector.basic.upstreamThreads.cloudsmith=10 -DskipTests -DskipITs ${{ env.MAVEN_CLI_OPTS}}
         env:
           MAVEN_ARGS: ""
-          MAVEN_CLI_OPTS: --show-version --settings settings.xml
-          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+          MAVEN_CLI_OPTS: --show-version
           CLOUDSMITH_NAMESPACE: ${{ vars.CLOUDSMITH_NAMESPACE }}
 
   propagate-preview:

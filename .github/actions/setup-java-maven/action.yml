@@ -1,9 +1,16 @@
 name: Setup Java and Maven cache
-description: Restores the Maven ~/.m2 cache, sets up the JDK and installs the requested Maven version.
+description: >-
+  Restores the Maven ~/.m2 cache, sets up the JDK, installs the requested Maven
+  version and configures Maven to resolve all artifacts through Cloudsmith.
+  The job must have the `id-token: write` permission. Fork pull requests get no
+  OIDC token, so they skip Cloudsmith and resolve from the POM repositories.
 
 inputs:
   maven-version:
     description: The Maven version to set up.
+    required: true
+  cloudsmith-namespace:
+    description: The Cloudsmith organisation namespace.
     required: true
   java-version:
     description: The Java version to set up.
@@ -34,3 +41,17 @@ runs:
       uses: Alfresco/alfresco-build-tools/.github/actions/setup-maven@2cebc8f19812b2653361d82e86b25f29cfa4a144 # v19.12.1
       with:
         version: ${{ inputs.maven-version }}
+
+    - name: Authenticate with Cloudsmith
+      if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
+      uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@2cebc8f19812b2653361d82e86b25f29cfa4a144 # v19.12.1
+      with:
+        oidc-namespace: ${{ inputs.cloudsmith-namespace }}
+        verify-auth: "true"
+
+    - name: Use the Cloudsmith Maven settings
+      if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
+      shell: bash
+      run: |
+        mkdir -p ~/.m2
+        cp settings.xml ~/.m2/settings.xml

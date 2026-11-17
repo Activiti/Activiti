@@ -49,6 +49,7 @@ jobs:
     permissions:
       actions: write
       contents: write
+      id-token: write
     outputs:
       version: ${{ steps.tag.outputs.version }}
     steps:
@@ -57,13 +58,21 @@ jobs:
         with:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
+      # maven-tag runs Maven with --settings settings.xml, so its mirror needs Cloudsmith credentials.
+      - name: Authenticate with Cloudsmith
+        uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@2cebc8f19812b2653361d82e86b25f29cfa4a144 # v19.12.1
+        with:
+          oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
+          verify-auth: "true"
+
       - uses: Alfresco/alfresco-build-tools/.github/actions/maven-tag@2cebc8f19812b2653361d82e86b25f29cfa4a144 # v19.12.1
         id: tag
         with:
           java-version: "25"
           maven-version: ${{ env.MAVEN_VERSION }}
-          maven-username: ${{ secrets.NEXUS_USERNAME }}
-          maven-password: ${{ secrets.NEXUS_PASSWORD }}
+          # The Cloudsmith settings read CLOUDSMITH_USERNAME and CLOUDSMITH_API_KEY, not these inputs.
+          maven-username: ""
+          maven-password: ""
           git-username: ${{ secrets.BOT_GITHUB_USERNAME }}
           m2-cache-exclusion-pattern: org/activiti
 
@@ -76,6 +85,7 @@ jobs:
     permissions:
       actions: write
       contents: read
+      id-token: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -88,11 +98,10 @@ jobs:
       - uses: ./.github/actions/setup-java-maven
         with:
           maven-version: ${{ env.MAVEN_VERSION }}
+          cloudsmith-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
 
       - uses: ./.github/actions/maven-build-and-analyze
         with:
-          nexus-username: ${{ secrets.NEXUS_USERNAME }}
-          nexus-password: ${{ secrets.NEXUS_PASSWORD }}
           sonar-token: ${{ secrets.SONAR_TOKEN }}
 
   publish:
@@ -115,29 +124,14 @@ jobs:
       - uses: ./.github/actions/setup-java-maven
         with:
           maven-version: ${{ env.MAVEN_VERSION }}
-
-      - name: Deploy to Nexus
-        shell: bash
-        run: mvn deploy -DskipTests -DskipITs ${{ env.MAVEN_CLI_OPTS}}
-        env:
-          MAVEN_CLI_OPTS: --show-version --no-transfer-progress --settings settings.xml
-          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-
-      - name: Authenticate with Cloudsmith
-        uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@2cebc8f19812b2653361d82e86b25f29cfa4a144 # v19.12.1
-        with:
-          oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
-          verify-auth: "true"
+          cloudsmith-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
 
       - name: Deploy to Cloudsmith
         shell: bash
-        run: mvn --batch-mode deploy '-Pcloudsmith,!alfresco' -Daether.connector.basic.upstreamThreads.cloudsmith=10 -DskipTests -DskipITs ${{ env.MAVEN_CLI_OPTS}}
+        run: mvn --batch-mode deploy -Pcloudsmith -Daether.connector.basic.upstreamThreads.cloudsmith=10 -DskipTests -DskipITs ${{ env.MAVEN_CLI_OPTS}}
         env:
           MAVEN_ARGS: ""
-          MAVEN_CLI_OPTS: --show-version --settings settings.xml
-          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+          MAVEN_CLI_OPTS: --show-version
           CLOUDSMITH_NAMESPACE: ${{ vars.CLOUDSMITH_NAMESPACE }}
 
   propagate:
