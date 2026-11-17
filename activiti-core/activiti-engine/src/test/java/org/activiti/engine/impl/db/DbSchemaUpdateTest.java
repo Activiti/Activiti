@@ -17,7 +17,6 @@ package org.activiti.engine.impl.db;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.nio.file.Path;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.ProcessEngineImpl;
@@ -33,15 +32,11 @@ public class DbSchemaUpdateTest extends AbstractTestCase {
 
     static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:15-alpine")
         .withCopyFileToContainer(
-            MountableFile.forHostPath(
-                Path.of("target/activiti-engine/org/activiti/db/create/activiti.postgres.create.engine.sql")
-            ),
+            MountableFile.forClasspathResource("schema-migration-test/from-7.2.0/activiti.postgres.create.engine.sql"),
             "/docker-entrypoint-initdb.d/engine.sql"
         )
         .withCopyFileToContainer(
-            MountableFile.forHostPath(
-                Path.of("target/activiti-engine/org/activiti/db/create/activiti.postgres.create.history.sql")
-            ),
+            MountableFile.forClasspathResource("schema-migration-test/from-7.2.0/activiti.postgres.create.history.sql"),
             "/docker-entrypoint-initdb.d/history.sql"
         )
         .waitingFor(Wait.forListeningPort());

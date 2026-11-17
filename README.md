@@ -26,9 +26,15 @@ This repository includes an automated **Preview Propagation** mechanism for test
 3. Test the integration in the downstream PR
 4. When your source PR closes/merges, the test PR automatically closes
 
-Preview snapshots (`0.0.1-PR-<number>-SNAPSHOT`) and develop alpha releases are published to both Nexus and Cloudsmith, using `activiti-snapshots` and `activiti-releases`, respectively. Propagation starts after both deployments succeed.
+Preview snapshots (`0.0.1-PR-<number>-SNAPSHOT`) and develop alpha releases are published to Cloudsmith, using `activiti-snapshots` and `activiti-releases`, respectively. Until all consumers resolve Activiti from Cloudsmith, CI also publishes them to the same Nexus repositories. Nexus is not used to resolve artifacts. Propagation starts after both deployments succeed.
 
-For Cloudsmith publishing, set the GitHub Actions variable `CLOUDSMITH_NAMESPACE` to `hyland` and grant the `activiti-activiti` service account write access to both targets. The `cloudsmith-auth` action uses GitHub OIDC to provide temporary `CLOUDSMITH_USERNAME` and `CLOUDSMITH_API_KEY` credentials for `settings.xml`; no static Cloudsmith secret is required.
+## Maven repositories
+
+- Local builds need no credentials and no `settings.xml`. The POM resolves from Maven Central and the public Cloudsmith `activiti-releases` and `activiti-snapshots` repositories.
+- CI resolves every artifact through the Cloudsmith `cic-ext-pull-through` cache, so all dependencies go through the Cloudsmith supply-chain policies. The `setup-java-maven` action copies [settings.xml](settings.xml) to `~/.m2/settings.xml`. Its mirror (`mirrorOf *`) sends all requests to the cache.
+- The `cloudsmith-auth` action uses GitHub OIDC to provide temporary `CLOUDSMITH_USERNAME` and `CLOUDSMITH_API_KEY` credentials. No static Cloudsmith secret is necessary. Set the GitHub Actions variable `CLOUDSMITH_NAMESPACE` to `hyland`. Jobs that run Maven need the `id-token: write` permission.
+- Fork PRs get no OIDC token. They skip the mirror and resolve from the POM repositories. They do not publish.
+- If a Cloudsmith policy quarantines a dependency, the CI build fails but a local build can pass. Ask the Cloudsmith administrators to review the package.
 
 Each propagation writes the GitHub Actions run ID (`BUILD_RUN_ID`) to `preview-build.properties` in the downstream repository, ensuring a new commit for each new workflow run even when the preview snapshot version is unchanged.
 
@@ -156,6 +162,4 @@ Requires the following secrets to be set:
 | ---------------------------- | ---------------------------------- |
 | BOT_GITHUB_TOKEN             | Token to launch other builds on GH |
 | BOT_GITHUB_USERNAME          | Username to issue propagation PRs  |
-| NEXUS_USERNAME               | Internal Maven repository username |
-| NEXUS_PASSWORD               | Internal Maven repository password |
 | SLACK_NOTIFICATION_BOT_TOKEN | Token to notify slack on failure   |

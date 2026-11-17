@@ -56,4 +56,73 @@ public class BpmnModelTest {
 
         assertThat(bpmnModel.getErrorCode("errorRef")).isNull();
     }
+
+    @Test
+    public void findErrorById_shouldReturnError_whenIdExists() {
+        bpmnModel.addError("errorRef1", "Error One", "CODE_001");
+        bpmnModel.addError("errorRef2", "Error Two", "CODE_002");
+
+        assertThat(bpmnModel.findErrorById("errorRef2"))
+            .get()
+            .extracting(Error::getId, Error::getName, Error::getErrorCode)
+            .containsExactly("errorRef2", "Error Two", "CODE_002");
+    }
+
+    @Test
+    public void findErrorById_shouldReturnEmpty_whenIdDoesNotExist() {
+        bpmnModel.addError("errorRef1", "Error One", "CODE_001");
+
+        assertThat(bpmnModel.findErrorById("nonExistentErrorRef")).isEmpty();
+    }
+
+    @Test
+    public void findErrorById_shouldReturnEmpty_whenIdIsNull() {
+        bpmnModel.addError("errorRef1", "Error One", "CODE_001");
+
+        assertThat(bpmnModel.findErrorById(null)).isEmpty();
+    }
+
+    @Test
+    public void findErrorById_shouldReturnEmpty_whenModelHasNoErrors() {
+        assertThat(bpmnModel.findErrorById("errorRef1")).isEmpty();
+    }
+
+    @Test
+    public void findErrorByErrorCode_shouldReturnError_whenCodeExists() {
+        bpmnModel.addError("errorRef1", "Error One", "CODE_001");
+        bpmnModel.addError("errorRef2", "Error Two", "CODE_002");
+
+        assertThat(bpmnModel.findErrorByErrorCode("CODE_002"))
+            .get()
+            .extracting(Error::getId, Error::getName, Error::getErrorCode)
+            .containsExactly("errorRef2", "Error Two", "CODE_002");
+    }
+
+    @Test
+    public void findErrorByErrorCode_shouldReturnEmpty_whenCodeDoesNotExist() {
+        bpmnModel.addError("errorRef1", "Error One", "CODE_001");
+
+        assertThat(bpmnModel.findErrorByErrorCode("UNKNOWN_CODE")).isEmpty();
+    }
+
+    @Test
+    public void findErrorByErrorCode_shouldReturnEmpty_whenModelHasNoErrors() {
+        assertThat(bpmnModel.findErrorByErrorCode("CODE_001")).isEmpty();
+    }
+
+    @Test
+    public void findErrorByErrorCode_shouldReturnFirstError_whenMultipleErrorsShareSameCode() {
+        bpmnModel.addError("errorRef1", "First", "SHARED_CODE");
+        bpmnModel.addError("errorRef2", "Second", "SHARED_CODE");
+
+        assertThat(bpmnModel.findErrorByErrorCode("SHARED_CODE")).get().extracting(Error::getId).isEqualTo("errorRef1");
+    }
+
+    @Test
+    public void findErrorByErrorCode_shouldSkipErrorsWithNullErrorCode() {
+        bpmnModel.addError("errorRef1", "No Code", null);
+        bpmnModel.addError("errorRef2", "With Code", "CODE_002");
+
+        assertThat(bpmnModel.findErrorByErrorCode("CODE_002")).get().extracting(Error::getId).isEqualTo("errorRef2");
+    }
 }
