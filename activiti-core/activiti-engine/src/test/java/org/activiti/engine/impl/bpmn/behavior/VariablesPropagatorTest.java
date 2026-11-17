@@ -148,4 +148,68 @@ public class VariablesPropagatorTest {
         //then
         verify(execution).setVariablesLocal(availableVariables);
     }
+
+    @Test
+    public void propagateToProcessInstance_should_setMappedVariablesOnProcessInstance() {
+        //given
+        final String processInstanceId = UUID.randomUUID().toString();
+        final DelegateExecution execution = buildExecution(processInstanceId, false);
+        final ExecutionEntity processInstanceEntity = mock(ExecutionEntity.class);
+        given(executionEntityManager.findById(processInstanceId)).willReturn(processInstanceEntity);
+
+        final Map<String, Object> availableVariables = Collections.singletonMap("error", "errorContext");
+        final Map<String, Object> outboundVariables = Collections.singletonMap("myError", "errorContext");
+        given(
+            variablesCalculator.calculateOutPutVariables(
+                MappingExecutionContext.buildMappingExecutionContext(execution),
+                availableVariables
+            )
+        ).willReturn(outboundVariables);
+
+        //when
+        variablesPropagator.propagateToProcessInstance(execution, availableVariables);
+
+        //then
+        verify(processInstanceEntity).setVariables(outboundVariables);
+        verify(execution, never()).setVariablesLocal(any());
+    }
+
+    @Test
+    public void propagateToProcessInstance_should_applyMapping_when_parentIsMultiInstanceRoot() {
+        //given
+        final String processInstanceId = UUID.randomUUID().toString();
+        final DelegateExecution execution = buildExecution(processInstanceId, true);
+        final ExecutionEntity processInstanceEntity = mock(ExecutionEntity.class);
+        given(executionEntityManager.findById(processInstanceId)).willReturn(processInstanceEntity);
+
+        final Map<String, Object> availableVariables = Collections.singletonMap("error", "errorContext");
+        final Map<String, Object> outboundVariables = Collections.singletonMap("myError", "errorContext");
+        given(
+            variablesCalculator.calculateOutPutVariables(
+                MappingExecutionContext.buildMappingExecutionContext(execution),
+                availableVariables
+            )
+        ).willReturn(outboundVariables);
+
+        //when
+        variablesPropagator.propagateToProcessInstance(execution, availableVariables);
+
+        //then
+        verify(processInstanceEntity).setVariables(outboundVariables);
+        verify(execution, never()).setVariablesLocal(any());
+    }
+
+    @Test
+    public void propagateToProcessInstance_should_doNothing_when_processInstanceIdIsNull() {
+        //given
+        final DelegateExecution execution = buildExecution(null, false);
+        final Map<String, Object> availableVariables = Collections.singletonMap("error", "errorContext");
+
+        //when
+        variablesPropagator.propagateToProcessInstance(execution, availableVariables);
+
+        //then
+        verify(executionEntityManager, never()).findById(any());
+        verify(variablesCalculator, never()).calculateOutPutVariables(any(), any());
+    }
 }

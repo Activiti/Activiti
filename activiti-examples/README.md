@@ -7,13 +7,13 @@ This repository contains Activiti Core Examples using the new ProcessRuntime and
 - activiti-api-basic-full-example: simple example combining ProcessRuntime and TaskRuntime APIs
 - activiti-api-spring-integration-example: simple example combining Spring Integration framework and the new ProcessRuntime APis
 
-These examples are updated regularly to consume our frequent releases which can be found in our Alfresco Nexus Repository:
+These examples are updated regularly to consume our frequent releases which can be found in our public Cloudsmith repository:
 
 ```
 <repositories>
     <repository>
       <id>activiti-releases</id>
-      <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-releases</url>
+      <url>https://dl.cloudsmith.io/public/hyland/activiti-releases/maven/</url>
     </repository>
 </repositories>
 ```

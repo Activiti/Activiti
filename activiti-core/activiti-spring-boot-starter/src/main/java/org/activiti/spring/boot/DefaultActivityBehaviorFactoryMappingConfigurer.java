@@ -47,6 +47,7 @@ public class DefaultActivityBehaviorFactoryMappingConfigurer implements ProcessE
     @Override
     public void configure(SpringProcessEngineConfiguration processEngineConfiguration) {
         processEngineConfiguration.setEventSubscriptionPayloadMappingProvider(eventSubscriptionPayloadMappingProvider);
+        processEngineConfiguration.setErrorVariablesPropagator(variablesPropagator);
 
         processEngineConfiguration.setActivityBehaviorFactory(
             new MappingAwareActivityBehaviorFactory(
