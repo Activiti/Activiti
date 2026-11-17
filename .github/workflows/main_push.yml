@@ -28,19 +28,19 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: dependabot check
         id: dependabot
-        uses: Alfresco/alfresco-build-tools/.github/actions/github-pr-check-metadata@2cebc8f19812b2653361d82e86b25f29cfa4a144 # v19.12.1
+        uses: Alfresco/alfresco-build-tools/.github/actions/github-pr-check-metadata@3bbbfc459dd15452e68e3cefcbc56596d88d71ee # v19.15.0
         with:
           gh-token: ${{ secrets.BOT_GITHUB_TOKEN }}
           actor: "dependabot[bot]"
           label: github_actions
       - name: pre-commit
-        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@2cebc8f19812b2653361d82e86b25f29cfa4a144 # v19.12.1
+        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@3bbbfc459dd15452e68e3cefcbc56596d88d71ee # v19.15.0
         with:
           skip_checkout: true
       - name: Ensure SHA pinned actions
         uses: hyland/github-actions-ensure-sha-pinned-actions@9f71a10c9852b115cfcb146ec2d8d09e2b89593f # v2.1.1
       - name: Ensure all actions are covered by Dependabot
-        uses: Alfresco/alfresco-build-tools/.github/actions/dependabot-missing-actions-check@2cebc8f19812b2653361d82e86b25f29cfa4a144 # v19.12.1
+        uses: Alfresco/alfresco-build-tools/.github/actions/dependabot-missing-actions-check@3bbbfc459dd15452e68e3cefcbc56596d88d71ee # v19.15.0
 
   create-tag:
     runs-on: ubuntu-latest
@@ -49,6 +49,7 @@ jobs:
     permissions:
       actions: write
       contents: write
+      id-token: write
     outputs:
       version: ${{ steps.tag.outputs.version }}
     steps:
@@ -57,13 +58,21 @@ jobs:
         with:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/maven-tag@2cebc8f19812b2653361d82e86b25f29cfa4a144 # v19.12.1
+      # maven-tag runs Maven with --settings settings.xml, so its mirror needs Cloudsmith credentials.
+      - name: Authenticate with Cloudsmith
+        uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@3bbbfc459dd15452e68e3cefcbc56596d88d71ee # v19.15.0
+        with:
+          oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
+          verify-auth: "true"
+
+      - uses: Alfresco/alfresco-build-tools/.github/actions/maven-tag@3bbbfc459dd15452e68e3cefcbc56596d88d71ee # v19.15.0
         id: tag
         with:
           java-version: "25"
           maven-version: ${{ env.MAVEN_VERSION }}
-          maven-username: ${{ secrets.NEXUS_USERNAME }}
-          maven-password: ${{ secrets.NEXUS_PASSWORD }}
+          # The Cloudsmith settings read CLOUDSMITH_USERNAME and CLOUDSMITH_API_KEY, not these inputs.
+          maven-username: ""
+          maven-password: ""
           git-username: ${{ secrets.BOT_GITHUB_USERNAME }}
           m2-cache-exclusion-pattern: org/activiti
 
@@ -76,6 +85,7 @@ jobs:
     permissions:
       actions: write
       contents: read
+      id-token: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -88,11 +98,10 @@ jobs:
       - uses: ./.github/actions/setup-java-maven
         with:
           maven-version: ${{ env.MAVEN_VERSION }}
+          cloudsmith-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
 
       - uses: ./.github/actions/maven-build-and-analyze
         with:
-          nexus-username: ${{ secrets.NEXUS_USERNAME }}
-          nexus-password: ${{ secrets.NEXUS_PASSWORD }}
           sonar-token: ${{ secrets.SONAR_TOKEN }}
 
   publish:
@@ -115,29 +124,27 @@ jobs:
       - uses: ./.github/actions/setup-java-maven
         with:
           maven-version: ${{ env.MAVEN_VERSION }}
+          cloudsmith-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
 
+      # Temporary: keep publishing to Nexus until all consumers resolve Activiti from Cloudsmith.
       - name: Deploy to Nexus
         shell: bash
-        run: mvn deploy -DskipTests -DskipITs ${{ env.MAVEN_CLI_OPTS}}
+        run: >-
+          mvn --batch-mode deploy -DskipTests -DskipITs
+          -DaltReleaseDeploymentRepository=alfresco::https://artifacts.alfresco.com/nexus/content/repositories/activiti-releases/
+          -DaltSnapshotDeploymentRepository=alfresco::https://artifacts.alfresco.com/nexus/content/repositories/activiti-snapshots/
+          ${{ env.MAVEN_CLI_OPTS }}
         env:
-          MAVEN_CLI_OPTS: --show-version --no-transfer-progress --settings settings.xml
+          MAVEN_CLI_OPTS: --show-version --no-transfer-progress
           MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-
-      - name: Authenticate with Cloudsmith
-        uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@2cebc8f19812b2653361d82e86b25f29cfa4a144 # v19.12.1
-        with:
-          oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
-          verify-auth: "true"
 
       - name: Deploy to Cloudsmith
         shell: bash
-        run: mvn --batch-mode deploy '-Pcloudsmith,!alfresco' -Daether.connector.basic.upstreamThreads.cloudsmith=10 -DskipTests -DskipITs ${{ env.MAVEN_CLI_OPTS}}
+        run: mvn --batch-mode deploy -Pcloudsmith -Daether.connector.basic.upstreamThreads.cloudsmith=10 -DskipTests -DskipITs ${{ env.MAVEN_CLI_OPTS}}
         env:
           MAVEN_ARGS: ""
-          MAVEN_CLI_OPTS: --show-version --settings settings.xml
-          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+          MAVEN_CLI_OPTS: --show-version
           CLOUDSMITH_NAMESPACE: ${{ vars.CLOUDSMITH_NAMESPACE }}
 
   propagate:
@@ -155,18 +162,18 @@ jobs:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
       - name: Get branch name
-        uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@2cebc8f19812b2653361d82e86b25f29cfa4a144 # v19.12.1
+        uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@3bbbfc459dd15452e68e3cefcbc56596d88d71ee # v19.15.0
 
       - name: Configure propagation git author
         if: ${{ env.BRANCH_NAME == 'develop' }}
-        uses: Alfresco/alfresco-build-tools/.github/actions/configure-git-author@2cebc8f19812b2653361d82e86b25f29cfa4a144 # v19.12.1
+        uses: Alfresco/alfresco-build-tools/.github/actions/configure-git-author@3bbbfc459dd15452e68e3cefcbc56596d88d71ee # v19.15.0
         with:
           username: ${{ vars.HXPS_GIT_USERNAME }}
           email: ${{ vars.HXPS_GIT_EMAIL }}
           global: "true"
 
       - name: Propagate
-        uses: Alfresco/alfresco-build-tools/.github/actions/jx-updatebot-pr@2cebc8f19812b2653361d82e86b25f29cfa4a144 # v19.12.1
+        uses: Alfresco/alfresco-build-tools/.github/actions/jx-updatebot-pr@3bbbfc459dd15452e68e3cefcbc56596d88d71ee # v19.15.0
         if: ${{ env.BRANCH_NAME == 'develop' }}
         env:
           DEVELOPMENT_BRANCH: ${{ github.ref_name }}
@@ -194,6 +201,6 @@ jobs:
       contents: read
     steps:
       - name: Teams Notification
-        uses: Alfresco/alfresco-build-tools/.github/actions/send-teams-notification@2cebc8f19812b2653361d82e86b25f29cfa4a144 # v19.12.1
+        uses: Alfresco/alfresco-build-tools/.github/actions/send-teams-notification@3bbbfc459dd15452e68e3cefcbc56596d88d71ee # v19.15.0
         with:
           webhook-url: ${{ secrets.TEAMS_NOTIFICATION_WORKFLOW_WEBHOOK }}

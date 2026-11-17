@@ -1,0 +1,26 @@
+{
+  "id": "errorBoundaryMultiInstanceOutputMapping",
+  "name": "testErrorBoundaryMultiInstanceOutputMapping.bpmn20.xml",
+  "extensions": {
+    "errorBoundaryMultiInstanceOutputMapping": {
+      "properties": {
+        "miError": {
+          "id": "miError",
+          "name": "miError",
+          "type": "json",
+          "value": ""
+        }
+      },
+      "mappings": {
+        "catchMiError": {
+          "outputs": {
+            "miError": {
+              "type": "variable",
+              "value": "error"
+            }
+          }
+        }
+      }
+    }
+  }
+}
