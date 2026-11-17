@@ -16,6 +16,15 @@
         <repositoryOrigin>https://dl.cloudsmith.io</repositoryOrigin>
       </repositoryOrigins>
     </server>
+    <!-- Temporary: Nexus deployment only. No mirror or repository resolves artifacts from Nexus. -->
+    <server>
+      <id>alfresco</id>
+      <username>${env.MAVEN_USERNAME}</username>
+      <password>${env.MAVEN_PASSWORD}</password>
+      <repositoryOrigins>
+        <repositoryOrigin>https://artifacts.alfresco.com</repositoryOrigin>
+      </repositoryOrigins>
+    </server>
   </servers>
 
   <mirrors>

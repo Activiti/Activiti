@@ -126,6 +126,19 @@ jobs:
           maven-version: ${{ env.MAVEN_VERSION }}
           cloudsmith-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
 
+      # Temporary: keep publishing to Nexus until all consumers resolve Activiti from Cloudsmith.
+      - name: Deploy to Nexus
+        shell: bash
+        run: >-
+          mvn --batch-mode deploy -DskipTests -DskipITs
+          -DaltReleaseDeploymentRepository=alfresco::https://artifacts.alfresco.com/nexus/content/repositories/activiti-releases/
+          -DaltSnapshotDeploymentRepository=alfresco::https://artifacts.alfresco.com/nexus/content/repositories/activiti-snapshots/
+          ${{ env.MAVEN_CLI_OPTS }}
+        env:
+          MAVEN_CLI_OPTS: --show-version --no-transfer-progress
+          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+
       - name: Deploy to Cloudsmith
         shell: bash
         run: mvn --batch-mode deploy -Pcloudsmith -Daether.connector.basic.upstreamThreads.cloudsmith=10 -DskipTests -DskipITs ${{ env.MAVEN_CLI_OPTS}}
