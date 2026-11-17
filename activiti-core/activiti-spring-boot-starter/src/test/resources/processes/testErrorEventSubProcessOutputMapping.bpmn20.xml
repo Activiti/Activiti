@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:activiti="http://activiti.org/bpmn" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Activiti Modeler" exporterVersion="3.0.0-beta.3">
+  <bpmn:error id="errorId" name="SERVICE_UNAVAILABLE" errorCode="503" />
+  <bpmn:process id="errorEventSubProcessOutputMapping" name="errorEventSubProcessOutputMapping" isExecutable="true">
+    <bpmn:startEvent id="theStart">
+      <bpmn:outgoing>flow1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:subProcess id="subProcess">
+      <bpmn:incoming>flow1</bpmn:incoming>
+      <bpmn:outgoing>flow5</bpmn:outgoing>
+      <bpmn:startEvent id="subStart">
+        <bpmn:outgoing>flow2</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:sequenceFlow id="flow2" sourceRef="subStart" targetRef="subEnd" />
+      <bpmn:endEvent id="subEnd">
+        <bpmn:incoming>flow2</bpmn:incoming>
+        <bpmn:errorEventDefinition errorRef="errorId" />
+      </bpmn:endEvent>
+      <!-- Error event subprocess catches the error -->
+      <bpmn:subProcess id="errorEventSubProcess" triggeredByEvent="true">
+        <bpmn:startEvent id="errorStartEvent">
+          <bpmn:outgoing>flow3</bpmn:outgoing>
+          <bpmn:errorEventDefinition errorRef="errorId" />
+        </bpmn:startEvent>
+        <bpmn:sequenceFlow id="flow3" sourceRef="errorStartEvent" targetRef="errorTask" />
+        <bpmn:userTask id="errorTask" name="Event Subprocess Task" activiti:candidateUsers="user">
+          <bpmn:incoming>flow3</bpmn:incoming>
+          <bpmn:outgoing>flow4</bpmn:outgoing>
+        </bpmn:userTask>
+        <bpmn:sequenceFlow id="flow4" sourceRef="errorTask" targetRef="subEnd1" />
+        <bpmn:endEvent id="subEnd1">
+          <bpmn:incoming>flow4</bpmn:incoming>
+        </bpmn:endEvent>
+      </bpmn:subProcess>
+    </bpmn:subProcess>
+    <bpmn:sequenceFlow id="flow1" sourceRef="theStart" targetRef="subProcess" />
+    <bpmn:endEvent id="theEnd">
+      <bpmn:incoming>flow5</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="flow5" sourceRef="subProcess" targetRef="theEnd" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="errorEventSubProcessOutputMapping">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="theStart">
+        <dc:Bounds x="151" y="249" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="SubProcess_1wrow5i_di" bpmnElement="subProcess" isExpanded="true">
+        <dc:Bounds x="291" y="81" width="534" height="410" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="SubProcess_0s0d7uo_di" bpmnElement="errorEventSubProcess" isExpanded="true">
+        <dc:Bounds x="397" y="234" width="350" height="200" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
