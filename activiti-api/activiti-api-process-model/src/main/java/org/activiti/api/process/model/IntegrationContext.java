@@ -38,9 +38,7 @@ public interface IntegrationContext {
 
     String getConnectorType();
 
-    default String getServiceTaskType() {
-        return null;
-    }
+    String getServiceTaskType();
 
     String getAppVersion();
 

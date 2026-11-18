@@ -21,8 +21,6 @@ import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Proxy;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -55,6 +53,8 @@ import tools.jackson.databind.node.StringNode;
 
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
 class IntegrationContextImplTest {
+
+    private static final String SERVICE_TASK_TYPE = "Rest Connector: GET";
 
     @Autowired
     private JsonMapper jsonMapper;
@@ -213,11 +213,11 @@ class IntegrationContextImplTest {
     @Test
     void should_preserveServiceTaskType_when_serialized() throws IOException {
         IntegrationContextImpl source = new IntegrationContextImpl();
-        source.setServiceTaskType("Rest Connector: GET");
+        source.setServiceTaskType(SERVICE_TASK_TYPE);
 
         IntegrationContext target = exchangeIntegrationContext(source);
 
-        assertThat(target.getServiceTaskType()).isEqualTo("Rest Connector: GET");
+        assertThat(target.getServiceTaskType()).isEqualTo(SERVICE_TASK_TYPE);
     }
 
     @Test
@@ -288,7 +288,7 @@ class IntegrationContextImplTest {
         original.setClientType("clientType");
         original.setAppVersion("1.0.0");
         original.setConnectorType("connectorType");
-        original.setServiceTaskType("Rest Connector: GET");
+        original.setServiceTaskType(SERVICE_TASK_TYPE);
         original.setEphemeralVariables(true);
         original.addInBoundVariable("inKey", "inValue");
         original.addOutBoundVariable("outKey", "outValue");
@@ -391,7 +391,7 @@ class IntegrationContextImplTest {
     void should_includeServiceTaskType_inEqualsAndHashCode() {
         IntegrationContextImpl one = new IntegrationContextImpl();
         one.setConnectorType("connector");
-        one.setServiceTaskType("Rest Connector: GET");
+        one.setServiceTaskType(SERVICE_TASK_TYPE);
         one.setEphemeralVariables(false);
 
         IntegrationContextImpl two = new IntegrationContextImpl(one);
@@ -401,17 +401,5 @@ class IntegrationContextImplTest {
         two.setServiceTaskType("Other Connector: POST");
 
         assertThat(two).isNotEqualTo(one);
-    }
-
-    @Test
-    void should_returnNullServiceTaskType_when_usingInterfaceDefault() {
-        IntegrationContext context = (IntegrationContext) Proxy.newProxyInstance(
-            getClass().getClassLoader(),
-            new Class[] { IntegrationContext.class },
-            (InvocationHandler) (proxy, method, args) ->
-                method.isDefault() ? InvocationHandler.invokeDefault(proxy, method, args) : null
-        );
-
-        assertThat(context.getServiceTaskType()).isNull();
     }
 }
