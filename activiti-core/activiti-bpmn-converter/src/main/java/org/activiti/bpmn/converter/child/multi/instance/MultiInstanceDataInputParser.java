@@ -30,8 +30,10 @@ public class MultiInstanceDataInputParser implements ElementParser<MultiInstance
     }
 
     @Override
-    public void setInformation(XMLStreamReader reader, MultiInstanceLoopCharacteristics loopCharacteristics)
-        throws XMLStreamException {
+    public void setInformation(
+        XMLStreamReader reader,
+        MultiInstanceLoopCharacteristics loopCharacteristics
+    ) throws XMLStreamException {
         loopCharacteristics.setInputDataItem(reader.getElementText());
     }
 }

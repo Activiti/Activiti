@@ -61,8 +61,11 @@ public class MultiInstanceExport implements BpmnXMLConstants {
         xtw.writeEndElement();
     }
 
-    private static void writeAttributeIfNotEmpty(String attributeName, String value, XMLStreamWriter xtw)
-        throws Exception {
+    private static void writeAttributeIfNotEmpty(
+        String attributeName,
+        String value,
+        XMLStreamWriter xtw
+    ) throws Exception {
         if (StringUtils.isNotEmpty(value)) {
             BpmnXMLUtil.writeQualifiedAttribute(attributeName, value, xtw);
         }

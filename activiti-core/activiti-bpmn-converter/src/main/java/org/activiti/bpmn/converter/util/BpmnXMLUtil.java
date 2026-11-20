@@ -186,8 +186,11 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
         }
     }
 
-    public static void writeQualifiedAttribute(String attributeName, String value, XMLStreamWriter xtw)
-        throws Exception {
+    public static void writeQualifiedAttribute(
+        String attributeName,
+        String value,
+        XMLStreamWriter xtw
+    ) throws Exception {
         if (StringUtils.isNotEmpty(value)) {
             xtw.writeAttribute(ACTIVITI_EXTENSIONS_PREFIX, ACTIVITI_EXTENSIONS_NAMESPACE, attributeName, value);
         }

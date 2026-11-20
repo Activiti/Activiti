@@ -32,8 +32,12 @@ import org.apache.ibatis.type.TypeReference;
 public class ByteArrayRefTypeHandler extends TypeReference<ByteArrayRef> implements TypeHandler<ByteArrayRef> {
 
     @Override
-    public void setParameter(PreparedStatement ps, int i, ByteArrayRef parameter, JdbcType jdbcType)
-        throws SQLException {
+    public void setParameter(
+        PreparedStatement ps,
+        int i,
+        ByteArrayRef parameter,
+        JdbcType jdbcType
+    ) throws SQLException {
         ps.setString(i, getValueToSet(parameter));
     }
 

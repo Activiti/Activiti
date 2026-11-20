@@ -304,8 +304,7 @@ public class ProcessVariablesPayloadValidatorTest {
     }
 
     @Test
-    public void should_throwIllegalStateException_when_payloadVariableWithExpressionInObjectVariable()
-        throws IOException {
+    public void should_throwIllegalStateException_when_payloadVariableWithExpressionInObjectVariable() throws IOException {
         Throwable throwable = catchThrowable(() ->
             processVariablesValidator.checkPayloadVariables(
                 ProcessPayloadBuilder.setVariables()

@@ -51,8 +51,12 @@ public class IbatisVariableTypeHandler implements TypeHandler<VariableType> {
         return type;
     }
 
-    public void setParameter(PreparedStatement ps, int i, VariableType parameter, JdbcType jdbcType)
-        throws SQLException {
+    public void setParameter(
+        PreparedStatement ps,
+        int i,
+        VariableType parameter,
+        JdbcType jdbcType
+    ) throws SQLException {
         String typeName = parameter.getTypeName();
         ps.setString(i, typeName);
     }
