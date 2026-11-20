@@ -25,6 +25,7 @@ public class StartProcessPayloadBuilder {
     private String processDefinitionKey;
     private String name;
     private String businessKey;
+    private String correlationId;
     private Map<String, Object> variables = new HashMap<>();
     private String linkedProcessInstanceId;
     private String linkedProcessInstanceType;
@@ -44,6 +45,11 @@ public class StartProcessPayloadBuilder {
 
     public StartProcessPayloadBuilder withBusinessKey(String businessKey) {
         this.businessKey = businessKey;
+        return this;
+    }
+
+    public StartProcessPayloadBuilder withCorrelationId(String correlationId) {
+        this.correlationId = correlationId;
         return this;
     }
 
@@ -80,6 +86,7 @@ public class StartProcessPayloadBuilder {
             businessKey,
             variables
         );
+        startProcessPayload.setCorrelationId(correlationId);
         startProcessPayload.setLinkedProcessInstanceId(linkedProcessInstanceId);
         startProcessPayload.setLinkedProcessInstanceType(linkedProcessInstanceType);
         return startProcessPayload;
