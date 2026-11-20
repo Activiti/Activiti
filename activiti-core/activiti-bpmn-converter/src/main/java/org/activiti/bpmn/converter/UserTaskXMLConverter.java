@@ -156,8 +156,11 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
 
     @Override
     @SuppressWarnings("unchecked")
-    protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw)
-        throws Exception {
+    protected void writeAdditionalAttributes(
+        BaseElement element,
+        BpmnModel model,
+        XMLStreamWriter xtw
+    ) throws Exception {
         UserTask userTask = (UserTask) element;
         writeQualifiedAttribute(ATTRIBUTE_TASK_USER_ASSIGNEE, userTask.getAssignee(), xtw);
         writeQualifiedAttribute(ATTRIBUTE_TASK_USER_OWNER, userTask.getOwner(), xtw);
@@ -291,8 +294,11 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
     }
 
     @Override
-    protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw)
-        throws Exception {}
+    protected void writeAdditionalChildElements(
+        BaseElement element,
+        BpmnModel model,
+        XMLStreamWriter xtw
+    ) throws Exception {}
 
     public class HumanPerformerParser extends BaseChildElementParser {
 
@@ -302,8 +308,11 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
         }
 
         @Override
-        public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model)
-            throws Exception {
+        public void parseChildElement(
+            XMLStreamReader xtr,
+            BaseElement parentElement,
+            BpmnModel model
+        ) throws Exception {
             String resourceElement = XMLStreamReaderUtil.moveDown(xtr);
             if (StringUtils.isNotEmpty(resourceElement) && ELEMENT_RESOURCE_ASSIGNMENT.equals(resourceElement)) {
                 String expression = XMLStreamReaderUtil.moveDown(xtr);
@@ -322,8 +331,11 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
         }
 
         @Override
-        public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model)
-            throws Exception {
+        public void parseChildElement(
+            XMLStreamReader xtr,
+            BaseElement parentElement,
+            BpmnModel model
+        ) throws Exception {
             String resourceElement = XMLStreamReaderUtil.moveDown(xtr);
             if (StringUtils.isNotEmpty(resourceElement) && ELEMENT_RESOURCE_ASSIGNMENT.equals(resourceElement)) {
                 String expression = XMLStreamReaderUtil.moveDown(xtr);
@@ -380,8 +392,11 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
         }
 
         @Override
-        public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model)
-            throws Exception {
+        public void parseChildElement(
+            XMLStreamReader xtr,
+            BaseElement parentElement,
+            BpmnModel model
+        ) throws Exception {
             String identityLinkType = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_NAME);
 
             // the attribute value may be unqualified

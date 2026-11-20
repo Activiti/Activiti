@@ -108,8 +108,7 @@ public class ExpressionResolverTest {
     }
 
     @Test
-    public void containsExpression_should_returnFalse_when_ObjectNodeDoesNotContainExpressionPattern()
-        throws Exception {
+    public void containsExpression_should_returnFalse_when_ObjectNodeDoesNotContainExpressionPattern() throws Exception {
         //given
         ObjectNode objectNode = mapper.readValue("{\"name\":  \"Peter\"}", ObjectNode.class);
 
@@ -333,8 +332,7 @@ public class ExpressionResolverTest {
     }
 
     @Test
-    public void resolveExpressionsMap_should_replaceExpressionByValue_when_ObjectNodeContainsAnExpression()
-        throws IOException {
+    public void resolveExpressionsMap_should_replaceExpressionByValue_when_ObjectNodeContainsAnExpression() throws IOException {
         //given
         Expression nameExpression = buildExpression("${name}");
         given(expressionEvaluator.evaluate(nameExpression, expressionManager, delegateInterceptor)).willReturn("John");
@@ -357,8 +355,7 @@ public class ExpressionResolverTest {
     }
 
     @Test
-    public void resolveExpressionsMap_should_removeExpressionContent_when_ObjecNodeContainsAnExpressionUnableToBeResolved()
-        throws IOException {
+    public void resolveExpressionsMap_should_removeExpressionContent_when_ObjecNodeContainsAnExpressionUnableToBeResolved() throws IOException {
         //given
         Expression nameExpression = buildExpression("${name}");
         given(expressionEvaluator.evaluate(nameExpression, expressionManager, delegateInterceptor)).willThrow(

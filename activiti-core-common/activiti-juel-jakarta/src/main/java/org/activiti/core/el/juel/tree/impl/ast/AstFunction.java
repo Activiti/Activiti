@@ -53,7 +53,8 @@ public class AstFunction extends AstRightValue implements FunctionNode {
      * @throws IllegalAccessException
      */
     protected Object invoke(Bindings bindings, ELContext context, Object base, Method method)
-        throws InvocationTargetException, IllegalAccessException {
+        throws InvocationTargetException, IllegalAccessException
+    {
         Class<?>[] types = method.getParameterTypes();
         Object[] params = null;
         if (types.length > 0) {

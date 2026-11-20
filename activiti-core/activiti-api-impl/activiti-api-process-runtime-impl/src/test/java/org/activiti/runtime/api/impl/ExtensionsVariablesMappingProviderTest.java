@@ -594,8 +594,7 @@ public class ExtensionsVariablesMappingProviderTest {
     }
 
     @Test
-    public void should_throwActivitiIllegalArgumentException_when_jsonPatchMappingContainsInvalidPathVariableType()
-        throws IOException {
+    public void should_throwActivitiIllegalArgumentException_when_jsonPatchMappingContainsInvalidPathVariableType() throws IOException {
         DelegateExecution execution = initExpressionResolverTest(
             JSONPATCH_TEST_FILES_PATH,
             "jsonPatch-invalid-path-variable-type.json",
@@ -612,8 +611,7 @@ public class ExtensionsVariablesMappingProviderTest {
     }
 
     @Test
-    public void should_throwActivitiIllegalArgumentException_when_jsonPatchMappingContainsEmptyPathVariable()
-        throws IOException {
+    public void should_throwActivitiIllegalArgumentException_when_jsonPatchMappingContainsEmptyPathVariable() throws IOException {
         DelegateExecution execution = initExpressionResolverTest(
             JSONPATCH_TEST_FILES_PATH,
             "jsonPatch-invalid-path-variable-empty.json",
@@ -630,8 +628,7 @@ public class ExtensionsVariablesMappingProviderTest {
     }
 
     @Test
-    public void should_throwActivitiIllegalArgumentException_when_jsonPatchMappingContainsUndefinedPathVariable()
-        throws IOException {
+    public void should_throwActivitiIllegalArgumentException_when_jsonPatchMappingContainsUndefinedPathVariable() throws IOException {
         DelegateExecution execution = initExpressionResolverTest(
             JSONPATCH_TEST_FILES_PATH,
             "jsonPatch-invalid-path-variable-undefined.json",
@@ -647,13 +644,18 @@ public class ExtensionsVariablesMappingProviderTest {
         ).isEqualTo(exception.getCause().getMessage());
     }
 
-    private DelegateExecution initExpressionResolverTest(String fileName, String processDefinitionKey)
-        throws IOException {
+    private DelegateExecution initExpressionResolverTest(
+        String fileName,
+        String processDefinitionKey
+    ) throws IOException {
         return initExpressionResolverTest(fileName, processDefinitionKey, new ArrayList<>());
     }
 
-    private DelegateExecution initExpressionResolverTest(String filePath, String fileName, String processDefinitionKey)
-        throws IOException {
+    private DelegateExecution initExpressionResolverTest(
+        String filePath,
+        String fileName,
+        String processDefinitionKey
+    ) throws IOException {
         return initExpressionResolverTest(filePath, fileName, processDefinitionKey, new ArrayList<>());
     }
 
@@ -901,8 +903,7 @@ public class ExtensionsVariablesMappingProviderTest {
     }
 
     @Test
-    public void should_throwActivitiIllegalArgumentException_when_expressionIsOutputMappingUsingMapAll()
-        throws Exception {
+    public void should_throwActivitiIllegalArgumentException_when_expressionIsOutputMappingUsingMapAll() throws Exception {
         DelegateExecution execution = initExpressionResolverTest(
             "expression-in-mapping-all-output-value.json",
             "Process_expressionMappingOutputValue"
@@ -1002,8 +1003,7 @@ public class ExtensionsVariablesMappingProviderTest {
     }
 
     @Test
-    public void should_calculateInputVariables_when_variableIsInProcessInstanceContextButNotDefinedInExtensions()
-        throws Exception {
+    public void should_calculateInputVariables_when_variableIsInProcessInstanceContextButNotDefinedInExtensions() throws Exception {
         ProcessExtensionModel extensions = OBJECT_MAPPER.readValue(
             new File("src/test/resources/task-variable-implicit-mapping-extensions.json"),
             ProcessExtensionModel.class
@@ -1023,8 +1023,7 @@ public class ExtensionsVariablesMappingProviderTest {
     }
 
     @Test
-    public void should_calculateOutputVariables_when_variableIsInProcessInstanceContextButNotDefinedInExtensions()
-        throws Exception {
+    public void should_calculateOutputVariables_when_variableIsInProcessInstanceContextButNotDefinedInExtensions() throws Exception {
         ProcessExtensionModel extensions = OBJECT_MAPPER.readValue(
             new File("src/test/resources/task-variable-implicit-mapping-extensions.json"),
             ProcessExtensionModel.class
@@ -1051,8 +1050,7 @@ public class ExtensionsVariablesMappingProviderTest {
     }
 
     @Test
-    public void should_resolveExpressionsBasedInExecutionContext_when_calculatingOutputMappingAndHasExecution()
-        throws Exception {
+    public void should_resolveExpressionsBasedInExecutionContext_when_calculatingOutputMappingAndHasExecution() throws Exception {
         DelegateExecution execution = initExpressionResolverTest(
             "expression-based-in-execution-in-mapping-output-value.json",
             "Process_expressionMappingOutputValue"

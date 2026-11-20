@@ -73,7 +73,8 @@ public class TaskComparatorTest {
 
     @Test
     public void checkingChanges_whenThereAreChanges_shouldReturnFalse()
-        throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        throws NoSuchMethodException, InvocationTargetException, IllegalAccessException
+    {
         TaskComparatorImpl taskComparator = new TaskComparatorImpl();
 
         // GIVEN: a TaskComparator with a task to be compared to
@@ -222,7 +223,8 @@ public class TaskComparatorTest {
     }
 
     private void assertThatAllChangesExceptOneAreFalse(TaskComparator taskComparator, Method hasChangedMethod)
-        throws InvocationTargetException, IllegalAccessException {
+        throws InvocationTargetException, IllegalAccessException
+    {
         assertThat((Boolean) hasChangedMethod.invoke(taskComparator, null)).isTrue();
 
         final List<Method> remainingMethods = Arrays.stream(TaskComparator.class.getDeclaredMethods())

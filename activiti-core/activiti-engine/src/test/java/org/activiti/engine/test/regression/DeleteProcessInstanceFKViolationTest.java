@@ -118,8 +118,12 @@ class DeleteProcessInstanceFKViolationTest {
         return processEngineConfiguration.getDataSource().getConnection();
     }
 
-    private void insertVariable(Connection conn, String name, String executionId, String textValue)
-        throws SQLException {
+    private void insertVariable(
+        Connection conn,
+        String name,
+        String executionId,
+        String textValue
+    ) throws SQLException {
         try (
             PreparedStatement ps = conn.prepareStatement(
                 "INSERT INTO ACT_RU_VARIABLE (ID_, REV_, TYPE_, NAME_, EXECUTION_ID_, PROC_INST_ID_, TEXT_) " +
@@ -135,8 +139,13 @@ class DeleteProcessInstanceFKViolationTest {
         }
     }
 
-    private void insertVariable(Connection conn, String name, String executionId, String type, String byteArrayId)
-        throws SQLException {
+    private void insertVariable(
+        Connection conn,
+        String name,
+        String executionId,
+        String type,
+        String byteArrayId
+    ) throws SQLException {
         try (
             PreparedStatement ps = conn.prepareStatement(
                 "INSERT INTO ACT_RU_VARIABLE (ID_, REV_, TYPE_, NAME_, EXECUTION_ID_, PROC_INST_ID_, BYTEARRAY_ID_) " +

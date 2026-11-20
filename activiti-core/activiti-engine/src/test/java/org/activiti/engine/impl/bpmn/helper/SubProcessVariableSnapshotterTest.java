@@ -54,8 +54,7 @@ public class SubProcessVariableSnapshotterTest {
     }
 
     @Test
-    public void setVariablesSnapshots_should_set_parent_variables_in_the_snapshot_holder_when_parent_is_multi_instance()
-        throws Exception {
+    public void setVariablesSnapshots_should_set_parent_variables_in_the_snapshot_holder_when_parent_is_multi_instance() throws Exception {
         //given
         Map<String, Object> parentVariables = singletonMap("parentCount", 1L);
         ExecutionEntity parentExecution = buildExecutionEntity(parentVariables);
@@ -81,8 +80,7 @@ public class SubProcessVariableSnapshotterTest {
     }
 
     @Test
-    public void setVariablesSnapshots_should_not_set_parent_variables_in_the_snapshot_holder_when_parent_is_not_multi_instance()
-        throws Exception {
+    public void setVariablesSnapshots_should_not_set_parent_variables_in_the_snapshot_holder_when_parent_is_not_multi_instance() throws Exception {
         //given
         Map<String, Object> parentVariables = singletonMap("parentCount", 1L);
         ExecutionEntity parentExecution = buildExecutionEntity(parentVariables);

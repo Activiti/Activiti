@@ -47,10 +47,16 @@ public class ComplexGatewayXMLConverter extends BaseBpmnXMLConverter {
     }
 
     @Override
-    protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw)
-        throws Exception {}
+    protected void writeAdditionalAttributes(
+        BaseElement element,
+        BpmnModel model,
+        XMLStreamWriter xtw
+    ) throws Exception {}
 
     @Override
-    protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw)
-        throws Exception {}
+    protected void writeAdditionalChildElements(
+        BaseElement element,
+        BpmnModel model,
+        XMLStreamWriter xtw
+    ) throws Exception {}
 }

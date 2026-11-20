@@ -43,8 +43,9 @@ public class ConnectorAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public List<ConnectorDefinition> connectorDefinitions(ConnectorDefinitionService connectorDefinitionService)
-        throws IOException {
+    public List<ConnectorDefinition> connectorDefinitions(
+        ConnectorDefinitionService connectorDefinitionService
+    ) throws IOException {
         List<ConnectorDefinition> connectorDefinitions = connectorDefinitionService.get();
         return connectorDefinitions == null ? emptyList() : connectorDefinitions;
     }
