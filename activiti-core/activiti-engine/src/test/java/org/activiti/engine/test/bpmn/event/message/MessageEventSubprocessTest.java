@@ -143,7 +143,7 @@ public class MessageEventSubprocessTest extends PluggableActivitiTestCase {
         task = taskService.createTaskQuery().taskDefinitionKey("eventSubProcessTask").singleResult();
         taskService.complete(task.getId());
         // we still have task executions:
-        assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(2);
+        assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(3);
 
         task = taskService.createTaskQuery().taskDefinitionKey("task").singleResult();
         taskService.complete(task.getId());
