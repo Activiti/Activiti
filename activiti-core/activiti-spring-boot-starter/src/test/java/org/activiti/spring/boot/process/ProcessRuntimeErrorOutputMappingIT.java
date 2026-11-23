@@ -45,8 +45,10 @@ class ProcessRuntimeErrorOutputMappingIT {
     private static final String ERROR_BOUNDARY_CATCH_ALL_OUTPUT_MAPPING = "errorBoundaryCatchAllOutputMapping";
     private static final String ERROR_EVENT_SUBPROCESS_OUTPUT_MAPPING = "errorEventSubProcessOutputMapping";
     private static final String PARENT_PROCESS_ERROR_BOUNDARY = "parentProcessErrorBoundary";
+    private static final String CHILD_PROCESS_ERROR_BOUNDARY = "childProcessErrorBoundary";
     private static final String ERROR_BOUNDARY_MULTI_INSTANCE_OUTPUT_MAPPING =
         "errorBoundaryMultiInstanceOutputMapping";
+    private static final String ERROR_THROWN_FROM_CODE_OUTPUT_MAPPING = "errorThrownFromCodeOutputMapping";
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -90,8 +92,15 @@ class ProcessRuntimeErrorOutputMappingIT {
         Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
         assertThat(variables)
             .extractingByKey("boundaryError", as(MAP))
-            .extractingByKeys("errorId", "errorCode", "errorName", "attachedToRef")
-            .containsExactly("errorId", "404", "NOT_FOUND", "subProcess");
+            .extractingByKeys(
+                "errorId",
+                "errorCode",
+                "errorName",
+                "attachedToRef",
+                "sourceElementKey",
+                "sourceProcessDefinitionKey"
+            )
+            .containsExactly("errorId", "404", "NOT_FOUND", "subProcess", "subEnd", ERROR_BOUNDARY_OUTPUT_MAPPING);
     }
 
     @Test
@@ -112,8 +121,22 @@ class ProcessRuntimeErrorOutputMappingIT {
 
         assertThat(variables)
             .extractingByKey("catchAllError", as(MAP))
-            .extractingByKeys("errorCode", "errorName", "attachedToRef")
-            .containsExactly("KNOWN_ERROR", "Known Error", "subProcess");
+            .extractingByKeys(
+                "errorId",
+                "errorCode",
+                "errorName",
+                "attachedToRef",
+                "sourceElementKey",
+                "sourceProcessDefinitionKey"
+            )
+            .containsExactly(
+                "knownErrorId",
+                "KNOWN_ERROR",
+                "Known Error",
+                "subProcess",
+                "subEnd",
+                ERROR_BOUNDARY_CATCH_ALL_OUTPUT_MAPPING
+            );
     }
 
     @Test
@@ -136,8 +159,22 @@ class ProcessRuntimeErrorOutputMappingIT {
 
         assertThat(variables)
             .extractingByKey("subProcessError", as(MAP))
-            .extractingByKeys("errorId", "errorCode", "errorName", "attachedToRef")
-            .containsExactly("errorId", "503", "SERVICE_UNAVAILABLE", null);
+            .extractingByKeys(
+                "errorId",
+                "errorCode",
+                "errorName",
+                "attachedToRef",
+                "sourceElementKey",
+                "sourceProcessDefinitionKey"
+            )
+            .containsExactly(
+                "errorId",
+                "503",
+                "SERVICE_UNAVAILABLE",
+                null,
+                "subEnd",
+                ERROR_EVENT_SUBPROCESS_OUTPUT_MAPPING
+            );
     }
 
     @Test
@@ -160,8 +197,22 @@ class ProcessRuntimeErrorOutputMappingIT {
 
         assertThat(variables)
             .extractingByKey("testError", as(MAP))
-            .extractingByKeys("errorId", "errorCode", "errorName", "attachedToRef")
-            .containsExactly("childError1", "CHILD_404", "Child Not Found", "Activity_1w8vukd");
+            .extractingByKeys(
+                "errorId",
+                "errorCode",
+                "errorName",
+                "attachedToRef",
+                "sourceElementKey",
+                "sourceProcessDefinitionKey"
+            )
+            .containsExactly(
+                "childError1",
+                "CHILD_404",
+                "Child Not Found",
+                "Activity_1w8vukd",
+                "Event_05yx0cq",
+                CHILD_PROCESS_ERROR_BOUNDARY
+            );
     }
 
     @Test
@@ -182,7 +233,60 @@ class ProcessRuntimeErrorOutputMappingIT {
 
         assertThat(variables)
             .extractingByKey("miError", as(MAP))
-            .extractingByKeys("errorId", "errorCode", "errorName", "attachedToRef")
-            .containsExactly("miErrorId", "MI_500", "MI_FAILED", "miSubProcess");
+            .extractingByKeys(
+                "errorId",
+                "errorCode",
+                "errorName",
+                "attachedToRef",
+                "sourceElementKey",
+                "sourceProcessDefinitionKey"
+            )
+            .containsExactly(
+                "miErrorId",
+                "MI_500",
+                "MI_FAILED",
+                "miSubProcess",
+                "miSubEnd",
+                ERROR_BOUNDARY_MULTI_INSTANCE_OUTPUT_MAPPING
+            );
+    }
+
+    @Test
+    void should_MapErrorObject_When_ErrorThrownFromCodeIsCaughtByBoundaryEvent() {
+        ProcessInstance processInstance = processRuntime.start(
+            ProcessPayloadBuilder.start().withProcessDefinitionKey(ERROR_THROWN_FROM_CODE_OUTPUT_MAPPING).build()
+        );
+
+        assertThat(processInstance).isNotNull();
+
+        GetTasksPayload getTasksPayload = new GetTasksPayloadBuilder()
+            .withProcessInstanceId(processInstance.getId())
+            .build();
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 10), getTasksPayload);
+        assertThat(tasks.getContent()).extracting(Task::getName).containsExactly("Code Error Task");
+
+        // The delegate throws new BpmnError("CODE_ERROR"), so only the error code is known: it is also used as the
+        // error id, and the name is resolved from the error with that code in the model. The boundary sits on the
+        // throwing service task, so the catching and the throwing element are the same.
+        Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
+
+        assertThat(variables)
+            .extractingByKey("codeError", as(MAP))
+            .extractingByKeys(
+                "errorId",
+                "errorCode",
+                "errorName",
+                "attachedToRef",
+                "sourceElementKey",
+                "sourceProcessDefinitionKey"
+            )
+            .containsExactly(
+                "CODE_ERROR",
+                "CODE_ERROR",
+                "Code Error",
+                "throwingServiceTask",
+                "throwingServiceTask",
+                ERROR_THROWN_FROM_CODE_OUTPUT_MAPPING
+            );
     }
 }

@@ -1,0 +1,26 @@
+{
+  "id": "errorThrownFromCodeOutputMapping",
+  "name": "testErrorThrownFromCodeOutputMapping.bpmn20.xml",
+  "extensions": {
+    "errorThrownFromCodeOutputMapping": {
+      "properties": {
+        "codeError": {
+          "id": "codeError",
+          "name": "codeError",
+          "type": "json",
+          "value": ""
+        }
+      },
+      "mappings": {
+        "catchCodeError": {
+          "outputs": {
+            "codeError": {
+              "type": "variable",
+              "value": "error"
+            }
+          }
+        }
+      }
+    }
+  }
+}
