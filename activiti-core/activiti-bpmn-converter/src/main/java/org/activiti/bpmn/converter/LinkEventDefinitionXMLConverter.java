@@ -44,8 +44,11 @@ public class LinkEventDefinitionXMLConverter {
         xtw.writeEndElement();
     }
 
-    private void writeAttribute(XMLStreamWriter xtw, String attributeName, String attributeValue)
-        throws XMLStreamException {
+    private void writeAttribute(
+        XMLStreamWriter xtw,
+        String attributeName,
+        String attributeValue
+    ) throws XMLStreamException {
         if (attributeValue != null) {
             xtw.writeAttribute(attributeName, attributeValue);
         }

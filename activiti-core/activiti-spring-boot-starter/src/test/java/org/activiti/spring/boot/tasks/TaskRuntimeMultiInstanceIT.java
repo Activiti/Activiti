@@ -1612,8 +1612,7 @@ public class TaskRuntimeMultiInstanceIT {
     }
 
     @Test
-    void should_beAbleToExecuteMultiInstanceServiceTasksAndNotMultiInstantiatedServiceTasksWithoutRaceConditions()
-        throws Exception {
+    void should_beAbleToExecuteMultiInstanceServiceTasksAndNotMultiInstantiatedServiceTasksWithoutRaceConditions() throws Exception {
         //given
         CompletableFuture<ProcessInstance> singleInstanceCompletableFuture = CompletableFuture.supplyAsync(() ->
             processBaseRuntime.startProcessWithProcessDefinitionKey(

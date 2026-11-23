@@ -51,11 +51,9 @@ public class NativeProcessInstanceQueryImpl
     }
 
     public long executeCount(CommandContext commandContext, Map<String, Object> parameterMap) {
-        return (
-            commandContext
-                .getExecutionEntityManager()
-                // can use execution count, since the result type doesn't matter
-                .findExecutionCountByNativeQuery(parameterMap)
-        );
+        return commandContext
+            .getExecutionEntityManager()
+            // can use execution count, since the result type doesn't matter
+            .findExecutionCountByNativeQuery(parameterMap);
     }
 }

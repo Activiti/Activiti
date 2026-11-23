@@ -65,8 +65,11 @@ public class BoundaryEventXMLConverter extends BaseBpmnXMLConverter {
     }
 
     @Override
-    protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw)
-        throws Exception {
+    protected void writeAdditionalAttributes(
+        BaseElement element,
+        BpmnModel model,
+        XMLStreamWriter xtw
+    ) throws Exception {
         BoundaryEvent boundaryEvent = (BoundaryEvent) element;
         if (boundaryEvent.getAttachedToRef() != null) {
             writeDefaultAttribute(ATTRIBUTE_BOUNDARY_ATTACHEDTOREF, boundaryEvent.getAttachedToRef().getId(), xtw);
@@ -86,8 +89,11 @@ public class BoundaryEventXMLConverter extends BaseBpmnXMLConverter {
     }
 
     @Override
-    protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw)
-        throws Exception {
+    protected void writeAdditionalChildElements(
+        BaseElement element,
+        BpmnModel model,
+        XMLStreamWriter xtw
+    ) throws Exception {
         BoundaryEvent boundaryEvent = (BoundaryEvent) element;
         writeEventDefinitions(boundaryEvent, boundaryEvent.getEventDefinitions(), model, xtw);
     }

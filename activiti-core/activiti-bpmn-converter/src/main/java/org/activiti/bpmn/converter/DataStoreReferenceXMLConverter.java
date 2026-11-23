@@ -46,8 +46,11 @@ public class DataStoreReferenceXMLConverter extends BaseBpmnXMLConverter {
     }
 
     @Override
-    protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw)
-        throws Exception {
+    protected void writeAdditionalAttributes(
+        BaseElement element,
+        BpmnModel model,
+        XMLStreamWriter xtw
+    ) throws Exception {
         DataStoreReference dataStoreRef = (DataStoreReference) element;
         if (StringUtils.isNotEmpty(dataStoreRef.getDataStoreRef())) {
             xtw.writeAttribute(ATTRIBUTE_DATA_STORE_REF, dataStoreRef.getDataStoreRef());
@@ -59,8 +62,11 @@ public class DataStoreReferenceXMLConverter extends BaseBpmnXMLConverter {
     }
 
     @Override
-    protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw)
-        throws Exception {
+    protected void writeAdditionalChildElements(
+        BaseElement element,
+        BpmnModel model,
+        XMLStreamWriter xtw
+    ) throws Exception {
         DataStoreReference dataStoreRef = (DataStoreReference) element;
         if (StringUtils.isNotEmpty(dataStoreRef.getDataState())) {
             xtw.writeStartElement(ELEMENT_DATA_STATE);

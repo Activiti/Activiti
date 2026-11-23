@@ -89,8 +89,12 @@ public class RootPropertyResolver extends ELResolver {
     }
 
     @Override
-    public void setValue(ELContext context, Object base, Object property, Object value)
-        throws PropertyNotWritableException {
+    public void setValue(
+        ELContext context,
+        Object base,
+        Object property,
+        Object value
+    ) throws PropertyNotWritableException {
         if (resolve(context, base, property)) {
             if (readOnly) {
                 throw new PropertyNotWritableException("Resolver is read only!");

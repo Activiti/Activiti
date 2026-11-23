@@ -101,8 +101,7 @@ public class ProcessVariablesInitiatorIT {
     }
 
     @Test
-    public void calculateVariablesFromExtensionFileShouldGivePriorityToProvidedValuesOverDefaultValues()
-        throws Exception {
+    public void calculateVariablesFromExtensionFileShouldGivePriorityToProvidedValuesOverDefaultValues() throws Exception {
         //given
         try (
             InputStream inputStream = Thread.currentThread()
@@ -135,8 +134,7 @@ public class ProcessVariablesInitiatorIT {
     }
 
     @Test
-    public void calculateVariablesFromExtensionFileShouldThrowExceptionWhenMandatoryVariableIsMissing()
-        throws Exception {
+    public void calculateVariablesFromExtensionFileShouldThrowExceptionWhenMandatoryVariableIsMissing() throws Exception {
         //given
         try (
             InputStream inputStream = Thread.currentThread()
@@ -166,8 +164,7 @@ public class ProcessVariablesInitiatorIT {
     }
 
     @Test
-    public void calculateVariablesFromExtensionFileShouldThrowExceptionWhenProvidedValueHasNotTheSameTypeAsInTheDefinition()
-        throws Exception {
+    public void calculateVariablesFromExtensionFileShouldThrowExceptionWhenProvidedValueHasNotTheSameTypeAsInTheDefinition() throws Exception {
         //given
         try (
             InputStream inputStream = Thread.currentThread()
@@ -292,8 +289,7 @@ public class ProcessVariablesInitiatorIT {
     }
 
     @Test
-    public void calculateOutputVariablesShouldRejectUnmappedObjectForStringVariableWhenOutputMappingExists()
-        throws Exception {
+    public void calculateOutputVariablesShouldRejectUnmappedObjectForStringVariableWhenOutputMappingExists() throws Exception {
         try (
             InputStream inputStream = Thread.currentThread()
                 .getContextClassLoader()

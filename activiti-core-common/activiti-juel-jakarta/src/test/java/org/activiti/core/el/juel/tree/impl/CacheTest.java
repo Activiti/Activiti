@@ -68,7 +68,8 @@ public class CacheTest extends TestCase {
     }
 
     long testMultiThread(final int cacheSize, final int numberOfThreads, final int numberOfLookups)
-        throws InterruptedException, ExecutionException {
+        throws InterruptedException, ExecutionException
+    {
         final Cache cache = new Cache(cacheSize, numberOfThreads);
         final Builder builder = new Builder();
         final Random random = new Random(7);

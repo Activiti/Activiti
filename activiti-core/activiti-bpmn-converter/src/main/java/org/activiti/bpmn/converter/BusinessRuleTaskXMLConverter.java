@@ -62,8 +62,11 @@ public class BusinessRuleTaskXMLConverter extends BaseBpmnXMLConverter {
     }
 
     @Override
-    protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw)
-        throws Exception {
+    protected void writeAdditionalAttributes(
+        BaseElement element,
+        BpmnModel model,
+        XMLStreamWriter xtw
+    ) throws Exception {
         BusinessRuleTask businessRuleTask = (BusinessRuleTask) element;
         String inputVariables = convertToDelimitedString(businessRuleTask.getInputVariables());
         if (StringUtils.isNotEmpty(inputVariables)) {
@@ -85,6 +88,9 @@ public class BusinessRuleTaskXMLConverter extends BaseBpmnXMLConverter {
     }
 
     @Override
-    protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw)
-        throws Exception {}
+    protected void writeAdditionalChildElements(
+        BaseElement element,
+        BpmnModel model,
+        XMLStreamWriter xtw
+    ) throws Exception {}
 }
