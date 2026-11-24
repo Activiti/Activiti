@@ -542,16 +542,12 @@
     <if test="candidateGroups != null &amp;&amp; candidateGroups.size() &gt; 0">
       <bind name="distinctMode" value="'distinct'"/>
     </if>
-    <if test="orQueryObjects != null &amp;&amp; orQueryObjects.size() &gt; 0">
-      <foreach item="orQueryObject" index="orIndex" collection="orQueryObjects">
-        <if test="orQueryObject.candidateGroups != null &amp;&amp; orQueryObject.candidateGroups.size()>0">
-          <bind name="distinctMode" value="'distinct'"/>
-        </if>
-        <!-- we need "distinct" when we have BOTH "and" and "or" operator for "involvedGroups" -->
-        <if test="(orQueryObject.involvedGroups != null &amp;&amp; orQueryObject.involvedGroups.size() &gt; 0) &amp;&amp; (involvedGroups != null &amp;&amp; involvedGroups.size() &gt; 0)">
-          <bind name="distinctMode" value="'distinct'"/>
-        </if>
-      </foreach>
+    <if test="orQueryObjects != null &amp;&amp; orQueryObjects.{? candidateGroups != null &amp;&amp; candidateGroups.size() &gt; 0}.size() &gt; 0">
+      <bind name="distinctMode" value="'distinct'"/>
+    </if>
+    <!-- we need "distinct" when we have BOTH "and" and "or" operator for "involvedGroups" -->
+    <if test="involvedGroups != null &amp;&amp; involvedGroups.size() &gt; 0 &amp;&amp; orQueryObjects != null &amp;&amp; orQueryObjects.{? involvedGroups != null &amp;&amp; involvedGroups.size() &gt; 0}.size() &gt; 0">
+      <bind name="distinctMode" value="'distinct'"/>
     </if>
 
     <choose>

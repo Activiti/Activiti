@@ -38,13 +38,13 @@ runs:
         distribution: ${{ inputs.java-distribution }}
 
     - name: Setup Maven ${{ inputs.maven-version }}
-      uses: Alfresco/alfresco-build-tools/.github/actions/setup-maven@3bbbfc459dd15452e68e3cefcbc56596d88d71ee # v19.15.0
+      uses: Alfresco/alfresco-build-tools/.github/actions/setup-maven@16298278308f674c76542d61658da190e975e31c # v19.16.0
       with:
         version: ${{ inputs.maven-version }}
 
     - name: Authenticate with Cloudsmith
       if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
-      uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@3bbbfc459dd15452e68e3cefcbc56596d88d71ee # v19.15.0
+      uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@16298278308f674c76542d61658da190e975e31c # v19.16.0
       with:
         oidc-namespace: ${{ inputs.cloudsmith-namespace }}
         verify-auth: "true"
