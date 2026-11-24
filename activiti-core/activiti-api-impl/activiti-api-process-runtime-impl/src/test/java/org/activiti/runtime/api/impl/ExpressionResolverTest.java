@@ -378,7 +378,10 @@ public class ExpressionResolverTest {
             .filteredOn(event -> event.getLevel() == Level.DEBUG)
             .hasSize(2)
             .allMatch(event -> event.getThrowableProxy() == null)
-            .allMatch(event -> event.getFormattedMessage().contains("Unknown property used in expression: ${missingVar}"));
+            .allMatch(event ->
+                event.getFormattedMessage().contains("Unknown property used in expression: ${missingVar}")
+            );
+
     }
 
     @Test
