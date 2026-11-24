@@ -381,7 +381,6 @@ public class ExpressionResolverTest {
             .allMatch(event ->
                 event.getFormattedMessage().contains("Unknown property used in expression: ${missingVar}")
             );
-
     }
 
     @Test
