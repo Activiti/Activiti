@@ -80,6 +80,7 @@ public class ExpressionResolverTest {
     @AfterEach
     public void tearDown() {
         resolverLogger.detachAppender(logAppender);
+        logAppender.stop();
         resolverLogger.setLevel(originalLogLevel);
     }
 
@@ -400,6 +401,33 @@ public class ExpressionResolverTest {
             .singleElement()
             .satisfies(event -> {
                 assertThat(event.getFormattedMessage()).contains("${brokenExpression}");
+                assertThat(event.getThrowableProxy()).isNotNull();
+            });
+    }
+
+    @Test
+    public void resolveExpressionsMap_should_logWarningWithStackTrace_when_unknownPropertyIsNestedDeeperInCauseChain() {
+        //given
+        Expression expression = buildExpression("${myService.run()}");
+        given(expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor)).willThrow(
+            new ActivitiException(
+                "Error while evaluating expression: ${myService.run()}",
+                new RuntimeException(
+                    "Failure inside called method",
+                    new PropertyNotFoundException("Cannot resolve identifier 'nestedVar'")
+                )
+            )
+        );
+
+        //when
+        expressionResolver.resolveExpressionsMap(expressionEvaluator, singletonMap("result", "${myService.run()}"));
+
+        //then
+        assertThat(logAppender.list)
+            .filteredOn(event -> event.getLevel() == Level.WARN)
+            .singleElement()
+            .satisfies(event -> {
+                assertThat(event.getFormattedMessage()).contains("${myService.run()}");
                 assertThat(event.getThrowableProxy()).isNotNull();
             });
     }
