@@ -21,12 +21,23 @@ public class ErrorContext {
     private final String errorCode;
     private final String errorName;
     private final String attachedToRef;
+    private final String sourceElementKey;
+    private final String sourceProcessDefinitionKey;
 
-    public ErrorContext(String errorId, String errorCode, String errorName, String attachedToRef) {
+    public ErrorContext(
+        String errorId,
+        String errorCode,
+        String errorName,
+        String attachedToRef,
+        String sourceElementKey,
+        String sourceProcessDefinitionKey
+    ) {
         this.errorId = errorId;
         this.errorCode = errorCode;
         this.errorName = errorName;
         this.attachedToRef = attachedToRef;
+        this.sourceElementKey = sourceElementKey;
+        this.sourceProcessDefinitionKey = sourceProcessDefinitionKey;
     }
 
     public String getErrorId() {
@@ -43,5 +54,13 @@ public class ErrorContext {
 
     public String getAttachedToRef() {
         return attachedToRef;
+    }
+
+    public String getSourceElementKey() {
+        return sourceElementKey;
+    }
+
+    public String getSourceProcessDefinitionKey() {
+        return sourceProcessDefinitionKey;
     }
 }

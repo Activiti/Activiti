@@ -155,16 +155,25 @@ class ErrorPropagationTest {
 
             Error error = new Error("errorId");
 
-            ErrorContext payload = ErrorPropagation.buildErrorContext(error, bpmnModel, "404", null);
+            ErrorContext payload = ErrorPropagation.buildErrorContext(
+                error,
+                bpmnModel,
+                "404",
+                null,
+                "subEnd",
+                "process"
+            );
 
             assertThat(payload)
                 .extracting(
                     ErrorContext::getErrorCode,
                     ErrorContext::getErrorId,
                     ErrorContext::getErrorName,
-                    ErrorContext::getAttachedToRef
+                    ErrorContext::getAttachedToRef,
+                    ErrorContext::getSourceElementKey,
+                    ErrorContext::getSourceProcessDefinitionKey
                 )
-                .containsExactly("404", "errorId", "NOT_FOUND", null);
+                .containsExactly("404", "errorId", "NOT_FOUND", null, "subEnd", "process");
         }
 
         @Test
@@ -173,7 +182,14 @@ class ErrorPropagationTest {
 
             Error error = new Error("REQUEST_TIMEOUT");
 
-            ErrorContext payload = ErrorPropagation.buildErrorContext(error, bpmnModel, "REQUEST_TIMEOUT", null);
+            ErrorContext payload = ErrorPropagation.buildErrorContext(
+                error,
+                bpmnModel,
+                "REQUEST_TIMEOUT",
+                null,
+                null,
+                null
+            );
 
             assertThat(payload)
                 .extracting(ErrorContext::getErrorCode, ErrorContext::getErrorId, ErrorContext::getErrorName)
@@ -184,7 +200,7 @@ class ErrorPropagationTest {
         void should_buildPayload_withoutName_whenBpmnModelIsNull() {
             Error error = new Error("errorId");
 
-            ErrorContext payload = ErrorPropagation.buildErrorContext(error, null, "404", null);
+            ErrorContext payload = ErrorPropagation.buildErrorContext(error, null, "404", null, null, null);
 
             assertThat(payload)
                 .extracting(ErrorContext::getErrorCode, ErrorContext::getErrorId, ErrorContext::getErrorName)
@@ -198,7 +214,7 @@ class ErrorPropagationTest {
 
             Error error = new Error("503"); // connector passes error code as id
 
-            ErrorContext payload = ErrorPropagation.buildErrorContext(error, bpmnModel, "503", null);
+            ErrorContext payload = ErrorPropagation.buildErrorContext(error, bpmnModel, "503", null, null, null);
 
             assertThat(payload)
                 .extracting(ErrorContext::getErrorCode, ErrorContext::getErrorId, ErrorContext::getErrorName)
@@ -217,16 +233,26 @@ class ErrorPropagationTest {
             BoundaryEvent boundaryEvent = new BoundaryEvent();
             boundaryEvent.setAttachedToRef(attachedActivity);
 
-            ErrorContext payload = ErrorPropagation.buildErrorContext(error, bpmnModel, "404", boundaryEvent);
+            ErrorContext payload = ErrorPropagation.buildErrorContext(
+                error,
+                bpmnModel,
+                "404",
+                boundaryEvent,
+                "Event_05yx0cq",
+                "childProcess"
+            );
 
+            // attachedToRef is where the error was caught, sourceElementKey/sourceProcessDefinitionKey where it was thrown
             assertThat(payload)
                 .extracting(
                     ErrorContext::getErrorCode,
                     ErrorContext::getErrorId,
                     ErrorContext::getErrorName,
-                    ErrorContext::getAttachedToRef
+                    ErrorContext::getAttachedToRef,
+                    ErrorContext::getSourceElementKey,
+                    ErrorContext::getSourceProcessDefinitionKey
                 )
-                .containsExactly("404", "errorId", "NOT_FOUND", "Activity_1w8vukd");
+                .containsExactly("404", "errorId", "NOT_FOUND", "Activity_1w8vukd", "Event_05yx0cq", "childProcess");
         }
     }
 
@@ -278,7 +304,7 @@ class ErrorPropagationTest {
     @Nested
     class PropagateErrorVariables {
 
-        private final ErrorContext errorContext = new ErrorContext("errorId", "404", "NOT_FOUND", null);
+        private final ErrorContext errorContext = new ErrorContext("errorId", "404", "NOT_FOUND", null, null, null);
         private final JsonMapper jsonMapper = JsonMapper.builder().build();
 
         @AfterEach
