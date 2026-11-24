@@ -54,7 +54,15 @@ public class ErrorPropagation {
             new Error(errorRef)
         );
 
-        boolean isCatchExecuted = !eventMap.isEmpty() && executeCatch(eventMap, execution, new Error(errorRef));
+        boolean isCatchExecuted =
+            !eventMap.isEmpty() &&
+            executeCatch(
+                eventMap,
+                execution,
+                new Error(errorRef),
+                execution.getCurrentActivityId(),
+                getProcessDefinitionKeyFromExecution(execution)
+            );
 
         if (!isCatchExecuted && isCallActivity(execution)) {
             isCatchExecuted = findCatchingEventsAndExecuteCatchForCallActivity(errorRef, execution);
@@ -73,7 +81,9 @@ public class ErrorPropagation {
     protected static boolean executeCatch(
         Map<String, List<Event>> eventMap,
         DelegateExecution delegateExecution,
-        Error error
+        Error error,
+        String sourceElementKey,
+        String sourceProcessDefinitionKey
     ) {
         Event matchingEvent = null;
         ExecutionEntity currentExecution = (ExecutionEntity) delegateExecution;
@@ -133,7 +143,14 @@ public class ErrorPropagation {
         }
 
         if (matchingEvent != null && parentExecution != null) {
-            executeEventHandler(matchingEvent, parentExecution, currentExecution, error);
+            executeEventHandler(
+                matchingEvent,
+                parentExecution,
+                currentExecution,
+                error,
+                sourceElementKey,
+                sourceProcessDefinitionKey
+            );
             return true;
         } else {
             return false;
@@ -158,6 +175,8 @@ public class ErrorPropagation {
         String errorCode = getErrorCodeFromExecution(execution, errorRef);
         Error error = new Error(errorRef, getErrorNameFromExecution(execution, errorRef), errorCode);
         ExecutionEntity parentExecution = processInstanceExecution.getSuperExecution();
+        String sourceElementKey = execution.getCurrentActivityId();
+        String sourceProcessDefinitionKey = getProcessDefinitionKeyFromExecution(execution);
         Set<String> toDeleteProcessInstanceIds = new HashSet<>();
         toDeleteProcessInstanceIds.add(execution.getProcessInstanceId());
 
@@ -170,7 +189,7 @@ public class ErrorPropagation {
                 for (String processInstanceId : toDeleteProcessInstanceIds) {
                     deleteProcessInstanceEntity(errorRef, execution, executionEntityManager, processInstanceId);
                 }
-                return executeCatch(eventMap, parentExecution, error);
+                return executeCatch(eventMap, parentExecution, error, sourceElementKey, sourceProcessDefinitionKey);
             }
             toDeleteProcessInstanceIds.add(parentExecution.getProcessInstanceId());
             ExecutionEntity superExecution = parentExecution.getSuperExecution();
@@ -178,6 +197,10 @@ public class ErrorPropagation {
         }
 
         return false;
+    }
+
+    private static String getProcessDefinitionKeyFromExecution(DelegateExecution execution) {
+        return ProcessDefinitionUtil.getProcessDefinition(execution.getProcessDefinitionId()).getKey();
     }
 
     private static String getErrorCodeFromExecution(DelegateExecution execution, String errorRef) {
@@ -234,7 +257,9 @@ public class ErrorPropagation {
         Event event,
         ExecutionEntity parentExecution,
         ExecutionEntity currentExecution,
-        Error error
+        Error error,
+        String sourceElementKey,
+        String sourceProcessDefinitionKey
     ) {
         BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(parentExecution.getProcessDefinitionId());
         String resolvedErrorCode = null;
@@ -263,7 +288,14 @@ public class ErrorPropagation {
                 );
         }
 
-        ErrorContext errorContext = buildErrorContext(error, bpmnModel, resolvedErrorCode, event);
+        ErrorContext errorContext = buildErrorContext(
+            error,
+            bpmnModel,
+            resolvedErrorCode,
+            event,
+            sourceElementKey,
+            sourceProcessDefinitionKey
+        );
 
         if (event instanceof StartEvent) {
             ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
@@ -488,9 +520,23 @@ public class ErrorPropagation {
             );
     }
 
-    static ErrorContext buildErrorContext(Error error, BpmnModel bpmnModel, String resolvedErrorCode, Event event) {
+    static ErrorContext buildErrorContext(
+        Error error,
+        BpmnModel bpmnModel,
+        String resolvedErrorCode,
+        Event event,
+        String sourceElementKey,
+        String sourceProcessDefinitionKey
+    ) {
         String errorName = bpmnModel != null ? resolveErrorName(error, bpmnModel, resolvedErrorCode) : null;
-        return new ErrorContext(error.getId(), resolvedErrorCode, errorName, resolveAttachedToRef(event));
+        return new ErrorContext(
+            error.getId(),
+            resolvedErrorCode,
+            errorName,
+            resolveAttachedToRef(event),
+            sourceElementKey,
+            sourceProcessDefinitionKey
+        );
     }
 
     static String resolveErrorName(Error error, BpmnModel bpmnModel, String resolvedErrorCode) {
