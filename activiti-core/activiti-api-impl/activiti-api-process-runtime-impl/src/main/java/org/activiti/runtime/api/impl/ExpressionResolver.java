@@ -15,6 +15,7 @@
  */
 package org.activiti.runtime.api.impl;
 
+import jakarta.el.PropertyNotFoundException;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -108,7 +109,7 @@ public class ExpressionResolver {
                 delegateInterceptor
             );
         } catch (final Exception e) {
-            logger.warn("Unable to resolve expression in variables", e);
+            logUnresolvedExpression(sourceString, e);
             return null;
         }
     }
@@ -126,12 +127,21 @@ public class ExpressionResolver {
                 final Object value = expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor);
                 matcher.appendReplacement(sb, Objects.toString(value));
             } catch (final Exception e) {
-                logger.warn("Unable to resolve expression in variables", e);
+                logUnresolvedExpression(expressionKey, e);
                 matcher.appendReplacement(sb, "");
             }
         }
         matcher.appendTail(sb);
         return sb.toString();
+    }
+
+    private void logUnresolvedExpression(final String expression, final Exception e) {
+        if (e.getCause() instanceof PropertyNotFoundException) {
+            // Unresolvable name (unset variable, null base, or typo in the model)
+            logger.debug("Unable to resolve expression {} in variables: {}", expression, e.getMessage());
+        } else {
+            logger.warn("Unable to resolve expression {} in variables", expression, e);
+        }
     }
 
     public List<String> findVariableNamesContainingExpressions(final Map<String, ?> source) {
