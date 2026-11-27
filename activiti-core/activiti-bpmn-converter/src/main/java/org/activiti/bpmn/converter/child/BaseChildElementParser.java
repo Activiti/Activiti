@@ -36,8 +36,11 @@ public abstract class BaseChildElementParser implements BpmnXMLConstants {
 
     public abstract String getElementName();
 
-    public abstract void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model)
-        throws Exception;
+    public abstract void parseChildElement(
+        XMLStreamReader xtr,
+        BaseElement parentElement,
+        BpmnModel model
+    ) throws Exception;
 
     protected void parseChildElements(
         XMLStreamReader xtr,

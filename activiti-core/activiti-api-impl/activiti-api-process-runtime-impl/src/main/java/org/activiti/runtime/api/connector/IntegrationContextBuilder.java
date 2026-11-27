@@ -27,6 +27,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.runtime.api.impl.ExtensionsVariablesMappingProvider;
+import org.activiti.spring.process.ProcessExtensionService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,13 +38,16 @@ public class IntegrationContextBuilder {
 
     private final ExtensionsVariablesMappingProvider inboundVariablesProvider;
     private final ExpressionManager expressionManager;
+    private final ProcessExtensionService processExtensionService;
 
     public IntegrationContextBuilder(
         ExtensionsVariablesMappingProvider inboundVariablesProvider,
-        ExpressionManager expressionManager
+        ExpressionManager expressionManager,
+        ProcessExtensionService processExtensionService
     ) {
         this.inboundVariablesProvider = inboundVariablesProvider;
         this.expressionManager = expressionManager;
+        this.processExtensionService = processExtensionService;
     }
 
     public IntegrationContext from(IntegrationContextEntity integrationContextEntity, DelegateExecution execution) {
@@ -87,6 +91,11 @@ public class IntegrationContextBuilder {
         ServiceTask serviceTask = (ServiceTask) execution.getCurrentFlowElement();
         if (serviceTask != null) {
             integrationContext.setConnectorType(serviceTask.getImplementation());
+            integrationContext.setServiceTaskType(
+                processExtensionService
+                    .getExtensionsForId(execution.getProcessDefinitionId())
+                    .getServiceTaskType(execution.getCurrentActivityId())
+            );
             integrationContext.setClientName(resolveServiceTaskNameExpression(serviceTask, execution));
             integrationContext.setClientType(ServiceTask.class.getSimpleName());
         }

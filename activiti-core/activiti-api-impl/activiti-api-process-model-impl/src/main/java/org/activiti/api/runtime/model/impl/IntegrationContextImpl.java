@@ -43,6 +43,7 @@ public class IntegrationContextImpl implements IntegrationContext {
     private String clientType;
     private String appVersion;
     private String connectorType;
+    private String serviceTaskType;
     private Boolean ephemeralVariables;
 
     public IntegrationContextImpl() {
@@ -72,6 +73,7 @@ public class IntegrationContextImpl implements IntegrationContext {
         this.clientType = other.getClientType();
         this.appVersion = other.getAppVersion();
         this.connectorType = other.getConnectorType();
+        this.serviceTaskType = other.getServiceTaskType();
         this.ephemeralVariables = other.hasEphemeralVariables();
     }
 
@@ -127,6 +129,15 @@ public class IntegrationContextImpl implements IntegrationContext {
 
     public void setConnectorType(String connectorType) {
         this.connectorType = connectorType;
+    }
+
+    @Override
+    public String getServiceTaskType() {
+        return serviceTaskType;
+    }
+
+    public void setServiceTaskType(String serviceTaskType) {
+        this.serviceTaskType = serviceTaskType;
     }
 
     @Override
@@ -242,6 +253,7 @@ public class IntegrationContextImpl implements IntegrationContext {
             clientName,
             clientType,
             connectorType,
+            serviceTaskType,
             executionId,
             id,
             inBoundVariables,
@@ -275,6 +287,7 @@ public class IntegrationContextImpl implements IntegrationContext {
             Objects.equals(clientName, other.clientName) &&
             Objects.equals(clientType, other.clientType) &&
             Objects.equals(connectorType, other.connectorType) &&
+            Objects.equals(serviceTaskType, other.serviceTaskType) &&
             Objects.equals(executionId, other.executionId) &&
             Objects.equals(id, other.id) &&
             Objects.equals(inBoundVariables, other.inBoundVariables) &&
@@ -325,6 +338,8 @@ public class IntegrationContextImpl implements IntegrationContext {
             .append(appVersion)
             .append(", connectorType=")
             .append(connectorType)
+            .append(", serviceTaskType=")
+            .append(serviceTaskType)
             .append(", ephemeralVariables=")
             .append(ephemeralVariables)
             .append("]");

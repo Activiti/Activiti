@@ -1,7 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+  <!--
+    CI only: the setup-java-maven action copies this file to ~/.m2/settings.xml.
+    Local builds do not need it: the POM resolves from Maven Central and the
+    public Cloudsmith repositories without credentials.
+  -->
   <servers>
+    <server>
+      <id>cloudsmith</id>
+      <username>${env.CLOUDSMITH_USERNAME}</username>
+      <password>${env.CLOUDSMITH_API_KEY}</password>
+      <repositoryOrigins>
+        <repositoryOrigin>https://maven.cloudsmith.io</repositoryOrigin>
+        <repositoryOrigin>https://dl.cloudsmith.io</repositoryOrigin>
+      </repositoryOrigins>
+    </server>
+    <!-- Temporary: Nexus deployment only. No mirror or repository resolves artifacts from Nexus. -->
     <server>
       <id>alfresco</id>
       <username>${env.MAVEN_USERNAME}</username>
@@ -10,28 +25,15 @@
         <repositoryOrigin>https://artifacts.alfresco.com</repositoryOrigin>
       </repositoryOrigins>
     </server>
-    <server>
-      <id>cloudsmith</id>
-      <username>${env.CLOUDSMITH_USERNAME}</username>
-      <password>${env.CLOUDSMITH_API_KEY}</password>
-      <repositoryOrigins>
-        <repositoryOrigin>https://maven.cloudsmith.io</repositoryOrigin>
-      </repositoryOrigins>
-    </server>
   </servers>
 
-   <profiles>
-    <profile>
-      <id>alfresco</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <properties>
-        <altDeploymentRepository>alfresco::https://artifacts.alfresco.com/nexus/content/repositories/activiti-snapshots/</altDeploymentRepository>
-        <altReleaseDeploymentRepository>alfresco::https://artifacts.alfresco.com/nexus/content/repositories/activiti-releases/</altReleaseDeploymentRepository>
-        <altSnapshotDeploymentRepository>alfresco::https://artifacts.alfresco.com/nexus/content/repositories/activiti-snapshots/</altSnapshotDeploymentRepository>
-      </properties>
-    </profile>
-  </profiles>
-
+  <mirrors>
+    <!-- Resolve every artifact through the Cloudsmith pull-through cache and its supply-chain policies. -->
+    <mirror>
+      <id>cloudsmith</id>
+      <name>Cloudsmith pull-through cache</name>
+      <mirrorOf>*</mirrorOf>
+      <url>https://dl.cloudsmith.io/basic/hyland/cic-ext-pull-through/maven/</url>
+    </mirror>
+  </mirrors>
 </settings>

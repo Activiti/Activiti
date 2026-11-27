@@ -52,8 +52,11 @@ public class SequenceFlowXMLConverter extends BaseBpmnXMLConverter {
     }
 
     @Override
-    protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw)
-        throws Exception {
+    protected void writeAdditionalAttributes(
+        BaseElement element,
+        BpmnModel model,
+        XMLStreamWriter xtw
+    ) throws Exception {
         SequenceFlow sequenceFlow = (SequenceFlow) element;
         writeDefaultAttribute(ATTRIBUTE_FLOW_SOURCE_REF, sequenceFlow.getSourceRef(), xtw);
         writeDefaultAttribute(ATTRIBUTE_FLOW_TARGET_REF, sequenceFlow.getTargetRef(), xtw);
@@ -63,8 +66,11 @@ public class SequenceFlowXMLConverter extends BaseBpmnXMLConverter {
     }
 
     @Override
-    protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw)
-        throws Exception {
+    protected void writeAdditionalChildElements(
+        BaseElement element,
+        BpmnModel model,
+        XMLStreamWriter xtw
+    ) throws Exception {
         SequenceFlow sequenceFlow = (SequenceFlow) element;
 
         if (StringUtils.isNotEmpty(sequenceFlow.getConditionExpression())) {

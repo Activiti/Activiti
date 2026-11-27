@@ -74,8 +74,11 @@ public class CallActivityXMLConverter extends BaseBpmnXMLConverter {
     }
 
     @Override
-    protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw)
-        throws Exception {
+    protected void writeAdditionalAttributes(
+        BaseElement element,
+        BpmnModel model,
+        XMLStreamWriter xtw
+    ) throws Exception {
         CallActivity callActivity = (CallActivity) element;
         if (StringUtils.isNotEmpty(callActivity.getCalledElement())) {
             xtw.writeAttribute(ATTRIBUTE_CALL_ACTIVITY_CALLEDELEMENT, callActivity.getCalledElement());
@@ -118,8 +121,11 @@ public class CallActivityXMLConverter extends BaseBpmnXMLConverter {
     }
 
     @Override
-    protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw)
-        throws Exception {}
+    protected void writeAdditionalChildElements(
+        BaseElement element,
+        BpmnModel model,
+        XMLStreamWriter xtw
+    ) throws Exception {}
 
     private boolean writeIOParameters(
         String elementName,
@@ -160,8 +166,11 @@ public class CallActivityXMLConverter extends BaseBpmnXMLConverter {
             return ELEMENT_CALL_ACTIVITY_IN_PARAMETERS;
         }
 
-        public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model)
-            throws Exception {
+        public void parseChildElement(
+            XMLStreamReader xtr,
+            BaseElement parentElement,
+            BpmnModel model
+        ) throws Exception {
             String source = xtr.getAttributeValue(null, ATTRIBUTE_IOPARAMETER_SOURCE);
             String sourceExpression = xtr.getAttributeValue(null, ATTRIBUTE_IOPARAMETER_SOURCE_EXPRESSION);
             String target = xtr.getAttributeValue(null, ATTRIBUTE_IOPARAMETER_TARGET);
@@ -189,8 +198,11 @@ public class CallActivityXMLConverter extends BaseBpmnXMLConverter {
             return ELEMENT_CALL_ACTIVITY_OUT_PARAMETERS;
         }
 
-        public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model)
-            throws Exception {
+        public void parseChildElement(
+            XMLStreamReader xtr,
+            BaseElement parentElement,
+            BpmnModel model
+        ) throws Exception {
             String source = xtr.getAttributeValue(null, ATTRIBUTE_IOPARAMETER_SOURCE);
             String sourceExpression = xtr.getAttributeValue(null, ATTRIBUTE_IOPARAMETER_SOURCE_EXPRESSION);
             String target = xtr.getAttributeValue(null, ATTRIBUTE_IOPARAMETER_TARGET);

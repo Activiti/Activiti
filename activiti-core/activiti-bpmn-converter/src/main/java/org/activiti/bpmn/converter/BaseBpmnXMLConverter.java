@@ -242,8 +242,11 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
 
     protected abstract String getXMLElementName();
 
-    protected abstract void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw)
-        throws Exception;
+    protected abstract void writeAdditionalAttributes(
+        BaseElement element,
+        BpmnModel model,
+        XMLStreamWriter xtw
+    ) throws Exception;
 
     protected boolean writeExtensionChildElements(
         BaseElement element,
@@ -253,8 +256,11 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
         return didWriteExtensionStartElement;
     }
 
-    protected abstract void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw)
-        throws Exception;
+    protected abstract void writeAdditionalChildElements(
+        BaseElement element,
+        BpmnModel model,
+        XMLStreamWriter xtw
+    ) throws Exception;
 
     // To BpmnModel converter convenience methods
 
@@ -413,8 +419,11 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
         return didWriteExtensionStartElement;
     }
 
-    protected boolean writeListeners(BaseElement element, boolean didWriteExtensionStartElement, XMLStreamWriter xtw)
-        throws Exception {
+    protected boolean writeListeners(
+        BaseElement element,
+        boolean didWriteExtensionStartElement,
+        XMLStreamWriter xtw
+    ) throws Exception {
         return ActivitiListenerExport.writeListeners(element, didWriteExtensionStartElement, xtw);
     }
 
@@ -445,8 +454,11 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
         }
     }
 
-    protected void writeTimerDefinition(Event parentEvent, TimerEventDefinition timerDefinition, XMLStreamWriter xtw)
-        throws Exception {
+    protected void writeTimerDefinition(
+        Event parentEvent,
+        TimerEventDefinition timerDefinition,
+        XMLStreamWriter xtw
+    ) throws Exception {
         xtw.writeStartElement(ELEMENT_EVENT_TIMERDEFINITION);
         if (StringUtils.isNotEmpty(timerDefinition.getCalendarName())) {
             writeQualifiedAttribute(ATTRIBUTE_CALENDAR_NAME, timerDefinition.getCalendarName(), xtw);
@@ -482,8 +494,11 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
         xtw.writeEndElement();
     }
 
-    protected void writeSignalDefinition(Event parentEvent, SignalEventDefinition signalDefinition, XMLStreamWriter xtw)
-        throws Exception {
+    protected void writeSignalDefinition(
+        Event parentEvent,
+        SignalEventDefinition signalDefinition,
+        XMLStreamWriter xtw
+    ) throws Exception {
         xtw.writeStartElement(ELEMENT_EVENT_SIGNALDEFINITION);
         writeDefaultAttribute(ATTRIBUTE_SIGNAL_REF, signalDefinition.getSignalRef(), xtw);
         if (parentEvent instanceof ThrowEvent && signalDefinition.isAsync()) {
@@ -578,8 +593,11 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
         xtw.writeEndElement();
     }
 
-    protected void writeErrorDefinition(Event parentEvent, ErrorEventDefinition errorDefinition, XMLStreamWriter xtw)
-        throws Exception {
+    protected void writeErrorDefinition(
+        Event parentEvent,
+        ErrorEventDefinition errorDefinition,
+        XMLStreamWriter xtw
+    ) throws Exception {
         xtw.writeStartElement(ELEMENT_EVENT_ERRORDEFINITION);
         writeDefaultAttribute(ATTRIBUTE_ERROR_REF, errorDefinition.getErrorRef(), xtw);
         boolean didWriteExtensionStartElement = BpmnXMLUtil.writeExtensionElements(errorDefinition, false, xtw);
@@ -619,8 +637,11 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
         BpmnXMLUtil.writeQualifiedAttribute(attributeName, value, xtw);
     }
 
-    protected void writeIncomingOutgoingFlowElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw)
-        throws Exception {
+    protected void writeIncomingOutgoingFlowElements(
+        BaseElement element,
+        BpmnModel model,
+        XMLStreamWriter xtw
+    ) throws Exception {
         if (FlowNode.class.isAssignableFrom(element.getClass())) {
             BpmnXMLUtil.writeIncomingAndOutgoingFlowElement((FlowNode) element, xtw);
         }

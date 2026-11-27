@@ -30,8 +30,10 @@ public class MultiInstanceCompletionConditionParser implements ElementParser<Mul
     }
 
     @Override
-    public void setInformation(XMLStreamReader reader, MultiInstanceLoopCharacteristics loopCharacteristics)
-        throws XMLStreamException {
+    public void setInformation(
+        XMLStreamReader reader,
+        MultiInstanceLoopCharacteristics loopCharacteristics
+    ) throws XMLStreamException {
         loopCharacteristics.setCompletionCondition(reader.getElementText());
     }
 }

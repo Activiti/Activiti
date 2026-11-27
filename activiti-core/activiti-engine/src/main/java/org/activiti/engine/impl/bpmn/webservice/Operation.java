@@ -50,8 +50,10 @@ public class Operation {
         setInMessage(inMessage);
     }
 
-    public MessageInstance sendMessage(MessageInstance message, ConcurrentMap<QName, URL> overridenEndpointAddresses)
-        throws Exception {
+    public MessageInstance sendMessage(
+        MessageInstance message,
+        ConcurrentMap<QName, URL> overridenEndpointAddresses
+    ) throws Exception {
         return this.implementation.sendFor(message, this, overridenEndpointAddresses);
     }
 

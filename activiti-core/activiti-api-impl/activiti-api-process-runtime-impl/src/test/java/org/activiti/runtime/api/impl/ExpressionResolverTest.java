@@ -22,6 +22,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
+import jakarta.el.PropertyNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -30,11 +35,13 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.interceptor.DelegateInterceptor;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.slf4j.LoggerFactory;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.node.ObjectNode;
@@ -55,9 +62,26 @@ public class ExpressionResolverTest {
     @Mock
     private DelegateInterceptor delegateInterceptor;
 
+    private final Logger resolverLogger = (Logger) LoggerFactory.getLogger(ExpressionResolver.class);
+
+    private final ListAppender<ILoggingEvent> logAppender = new ListAppender<>();
+
+    private Level originalLogLevel;
+
     @BeforeEach
     public void setUp() {
         expressionResolver = new ExpressionResolver(expressionManager, mapper, delegateInterceptor);
+        originalLogLevel = resolverLogger.getLevel();
+        resolverLogger.setLevel(Level.DEBUG);
+        logAppender.start();
+        resolverLogger.addAppender(logAppender);
+    }
+
+    @AfterEach
+    public void tearDown() {
+        resolverLogger.detachAppender(logAppender);
+        logAppender.stop();
+        resolverLogger.setLevel(originalLogLevel);
     }
 
     @Test
@@ -108,8 +132,7 @@ public class ExpressionResolverTest {
     }
 
     @Test
-    public void containsExpression_should_returnFalse_when_ObjectNodeDoesNotContainExpressionPattern()
-        throws Exception {
+    public void containsExpression_should_returnFalse_when_ObjectNodeDoesNotContainExpressionPattern() throws Exception {
         //given
         ObjectNode objectNode = mapper.readValue("{\"name\":  \"Peter\"}", ObjectNode.class);
 
@@ -333,8 +356,84 @@ public class ExpressionResolverTest {
     }
 
     @Test
-    public void resolveExpressionsMap_should_replaceExpressionByValue_when_ObjectNodeContainsAnExpression()
-        throws IOException {
+    public void resolveExpressionsMap_should_notLogWarning_when_expressionUsesUnknownProperty() {
+        //given
+        Expression expression = buildExpression("${missingVar}");
+        given(expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor)).willThrow(
+            new ActivitiException(
+                "Unknown property used in expression: ${missingVar}",
+                new PropertyNotFoundException("Cannot resolve identifier 'missingVar'")
+            )
+        );
+
+        //when
+        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
+            expressionEvaluator,
+            Map.of("object", "${missingVar}", "text", "Hello ${missingVar}!")
+        );
+
+        //then
+        assertThat(result).containsEntry("object", null).containsEntry("text", "Hello !");
+        assertThat(logAppender.list).noneMatch(event -> event.getLevel().isGreaterOrEqual(Level.WARN));
+        assertThat(logAppender.list)
+            .filteredOn(event -> event.getLevel() == Level.DEBUG)
+            .hasSize(2)
+            .allMatch(event -> event.getThrowableProxy() == null)
+            .allMatch(event ->
+                event.getFormattedMessage().contains("Unknown property used in expression: ${missingVar}")
+            );
+    }
+
+    @Test
+    public void resolveExpressionsMap_should_logWarningWithStackTrace_when_expressionEvaluationFails() {
+        //given
+        Expression expression = buildExpression("${brokenExpression}");
+        given(expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor)).willThrow(
+            new ActivitiException("Error while evaluating expression: ${brokenExpression}")
+        );
+
+        //when
+        expressionResolver.resolveExpressionsMap(expressionEvaluator, singletonMap("result", "${brokenExpression}"));
+
+        //then
+        assertThat(logAppender.list)
+            .filteredOn(event -> event.getLevel() == Level.WARN)
+            .singleElement()
+            .satisfies(event -> {
+                assertThat(event.getFormattedMessage()).contains("${brokenExpression}");
+                assertThat(event.getThrowableProxy()).isNotNull();
+            });
+    }
+
+    @Test
+    public void resolveExpressionsMap_should_logWarningWithStackTrace_when_unknownPropertyIsNestedDeeperInCauseChain() {
+        //given
+        Expression expression = buildExpression("${myService.run()}");
+        given(expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor)).willThrow(
+            new ActivitiException(
+                "Error while evaluating expression: ${myService.run()}",
+                new RuntimeException(
+                    "Failure inside called method",
+                    new PropertyNotFoundException("Cannot resolve identifier 'nestedVar'")
+                )
+            )
+        );
+
+        //when
+        expressionResolver.resolveExpressionsMap(expressionEvaluator, singletonMap("result", "${myService.run()}"));
+
+        //then
+        assertThat(logAppender.list)
+            .filteredOn(event -> event.getLevel() == Level.WARN)
+            .singleElement()
+            .satisfies(event -> {
+                assertThat(event.getFormattedMessage()).contains("${myService.run()}");
+                assertThat(event.getThrowableProxy()).isNotNull();
+            });
+    }
+
+    @Test
+    public void resolveExpressionsMap_should_replaceExpressionByValue_when_ObjectNodeContainsAnExpression() throws IOException {
         //given
         Expression nameExpression = buildExpression("${name}");
         given(expressionEvaluator.evaluate(nameExpression, expressionManager, delegateInterceptor)).willReturn("John");
@@ -357,8 +456,7 @@ public class ExpressionResolverTest {
     }
 
     @Test
-    public void resolveExpressionsMap_should_removeExpressionContent_when_ObjecNodeContainsAnExpressionUnableToBeResolved()
-        throws IOException {
+    public void resolveExpressionsMap_should_removeExpressionContent_when_ObjecNodeContainsAnExpressionUnableToBeResolved() throws IOException {
         //given
         Expression nameExpression = buildExpression("${name}");
         given(expressionEvaluator.evaluate(nameExpression, expressionManager, delegateInterceptor)).willThrow(
