@@ -22,6 +22,7 @@ import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.CompensateEventDefinition;
 import org.activiti.bpmn.model.EndEvent;
+import org.activiti.bpmn.model.EventSubProcess;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.Process;
@@ -164,12 +165,20 @@ public class EndExecutionOperation extends AbstractOperation {
 
         SubProcess subProcess = execution.getCurrentFlowElement().getSubProcess();
 
+        List<ExecutionEntity> eventScopeExecutions = getEventScopeExecutions(executionEntityManager, parentExecution);
+        if (
+            !eventScopeExecutions.isEmpty() &&
+            !hasActiveNonEventSubProcessSiblings(executionEntityManager, parentExecution)
+        ) {
+            for (ExecutionEntity eventScopeExecution : eventScopeExecutions) {
+                executionEntityManager.deleteChildExecutions(eventScopeExecution, null);
+                executionEntityManager.deleteExecutionAndRelatedData(eventScopeExecution, null);
+            }
+        }
+
         // If there are no more active child executions, the process can be continued
         // If not (eg an embedded subprocess still has active elements, we cannot continue)
-        if (
-            getNumberOfActiveChildExecutionsForExecution(executionEntityManager, parentExecution.getId()) == 0 ||
-            isAllEventScopeExecutions(executionEntityManager, parentExecution)
-        ) {
+        if (getNumberOfActiveChildExecutionsForExecution(executionEntityManager, parentExecution.getId()) == 0) {
             ExecutionEntity executionToContinue = null;
 
             if (subProcess != null) {
@@ -381,23 +390,106 @@ public class EndExecutionOperation extends AbstractOperation {
         return activeChildExecutions;
     }
 
-    protected boolean isAllEventScopeExecutions(
+    /**
+     * Collects the event-scope children of the given execution. An event-scope execution holds the
+     * subscription that keeps an event sub-process start event listening while its enclosing scope
+     * is active.
+     */
+    protected List<ExecutionEntity> getEventScopeExecutions(
         ExecutionEntityManager executionEntityManager,
         ExecutionEntity parentExecution
     ) {
-        boolean allEventScopeExecutions = true;
+        List<ExecutionEntity> eventScopeExecutions = new ArrayList<>(1);
         List<ExecutionEntity> executions = executionEntityManager.findChildExecutionsByParentExecutionId(
             parentExecution.getId()
         );
         for (ExecutionEntity childExecution : executions) {
-            if (childExecution.isEventScope() && childExecution.getExecutions().size() == 0) {
-                executionEntityManager.deleteExecutionAndRelatedData(childExecution, null);
-            } else {
-                allEventScopeExecutions = false;
-                break;
+            if (childExecution.isEventScope()) {
+                eventScopeExecutions.add(childExecution);
             }
         }
-        return allEventScopeExecutions;
+        return eventScopeExecutions;
+    }
+
+    /**
+     * Whether the given execution still has active children outside of any event sub-process.
+     * Event-scope executions themselves are excluded (they are the candidates for reaping), as are
+     * executions running inside an event sub-process: those exist because the event sub-process was
+     * triggered rather than because the enclosing scope is still working. The execution that is
+     * currently being ended is skipped as well, since its deletion may not have been flushed yet.
+     */
+    protected boolean hasActiveNonEventSubProcessSiblings(
+        ExecutionEntityManager executionEntityManager,
+        ExecutionEntity parentExecution
+    ) {
+        List<ExecutionEntity> childExecutions = executionEntityManager.findChildExecutionsByParentExecutionId(
+            parentExecution.getId()
+        );
+        for (ExecutionEntity childExecution : childExecutions) {
+            if (childExecution.getId().equals(execution.getId())) {
+                continue;
+            }
+            if (
+                !childExecution.isEventScope() &&
+                !isInEventSubProcess(executionEntityManager, childExecution) &&
+                childExecution.isActive() &&
+                !childExecution.isEnded()
+            ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Whether the given execution belongs to an event sub-process.
+     * <p>
+     * The check walks up the execution hierarchy and, for each execution, consults the BPMN model:
+     * an execution is inside an event sub-process when its current flow element either <em>is</em> an
+     * {@link EventSubProcess} or is nested (at any depth) within one. Scope executions do not always
+     * carry a resolvable flow element, so as a last resort the descendants are inspected too - the
+     * activities running inside the event sub-process always reference a proper flow element.
+     */
+    protected boolean isInEventSubProcess(
+        ExecutionEntityManager executionEntityManager,
+        ExecutionEntity executionEntity
+    ) {
+        ExecutionEntity currentExecutionEntity = executionEntity;
+        while (currentExecutionEntity != null) {
+            if (isEventSubProcessFlowElement(currentExecutionEntity.getCurrentFlowElement())) {
+                return true;
+            }
+            currentExecutionEntity = currentExecutionEntity.getParent();
+        }
+
+        for (ExecutionEntity childExecution : executionEntityManager.findChildExecutionsByParentExecutionId(
+            executionEntity.getId()
+        )) {
+            if (isInEventSubProcess(executionEntityManager, childExecution)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Whether the flow element is an {@link EventSubProcess} or is nested within one.
+     */
+    protected boolean isEventSubProcessFlowElement(FlowElement flowElement) {
+        if (flowElement == null) {
+            return false;
+        }
+        if (flowElement instanceof EventSubProcess) {
+            return true;
+        }
+        SubProcess enclosingSubProcess = flowElement.getSubProcess();
+        while (enclosingSubProcess != null) {
+            if (enclosingSubProcess instanceof EventSubProcess) {
+                return true;
+            }
+            enclosingSubProcess = enclosingSubProcess.getSubProcess();
+        }
+        return false;
     }
 
     protected boolean allChildExecutionsEnded(

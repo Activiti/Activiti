@@ -352,6 +352,9 @@ public class BpmnModel {
     }
 
     public Signal getSignal(String id) {
+        if (id == null) {
+            return null;
+        }
         for (Signal signal : signals) {
             if (id.equals(signal.getId())) {
                 return signal;
